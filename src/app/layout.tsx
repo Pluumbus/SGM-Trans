@@ -1,6 +1,9 @@
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { Providers } from "./providers";
+import { Toaster } from "@/components/ui/toaster";
+import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,7 +20,18 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={inter.className}>{children}</body>
+        <body
+          className={`${inter.className} min-h-screen bg-background font-sans antialiased`}
+        >
+          <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+            <div className="relative flex flex-col h-screen ">
+              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow mb-4">
+                {children}
+              </main>
+            </div>
+            <Toaster />
+          </Providers>
+        </body>
       </html>
     </ClerkProvider>
   );
