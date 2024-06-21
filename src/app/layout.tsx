@@ -8,8 +8,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "SGD Trans",
-  description: "Транспортная компания. Перевоз грузов из России в Казахстан",
+  title: "SGM-Trans",
+  description: "Транспортная компания. Перевоз грузов России и Казахстана.",
 };
 
 export default function RootLayout({
@@ -23,7 +23,9 @@ export default function RootLayout({
         <body
           className={`${inter.className} min-h-screen bg-background font-sans antialiased`}
         >
-          <Providers themeProps={{ attribute: "class", defaultTheme: "light" }}>
+          <Providers
+            themeProps={{ attribute: "class", defaultTheme: "light", children }}
+          >
             <div className="relative flex flex-col h-screen ">
               <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow mb-4">
                 {children}
