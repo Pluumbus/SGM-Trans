@@ -14,6 +14,7 @@ function AssignRole() {
     if (response.ok) {
       alert("Role assigned successfully");
     } else {
+      console.log(response);
       alert("Error assigning role");
     }
   };
@@ -32,7 +33,7 @@ function AssignRole() {
         value={role}
         onChange={(e) => setRole(e.target.value)}
       />
-      <button onClick={assignRole}>Assign Role</button>
+      <button onClick={assignRole}>Добавить роль</button>
     </div>
   );
 }
