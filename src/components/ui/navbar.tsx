@@ -2,7 +2,7 @@
 import Link from "next/link";
 import logo from "../../app/imgs/logo.png";
 
-import { ProfileButtons } from "./ProfileButtons";
+import { ProfileButtons } from "../../app/profile/ProfileButtons";
 import Image from "next/image";
 
 const Navbar = () => {

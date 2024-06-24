@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
+import Navbar from "@/components/ui/navbar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +28,10 @@ export default function RootLayout({
             themeProps={{ attribute: "class", defaultTheme: "light", children }}
           >
             <div className="relative flex flex-col h-screen ">
-              <main className="container mx-auto max-w-[100rem] pt-16 px-6 flex-grow mb-4">
+              <header>
+                <Navbar />
+              </header>
+              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow mb-4">
                 {children}
               </main>
             </div>
