@@ -27,7 +27,7 @@ export default function RootLayout({
             themeProps={{ attribute: "class", defaultTheme: "light", children }}
           >
             <div className="relative flex flex-col h-screen ">
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow mb-4">
+              <main className="container mx-auto max-w-[100rem] pt-16 px-6 flex-grow mb-4">
                 {children}
               </main>
             </div>

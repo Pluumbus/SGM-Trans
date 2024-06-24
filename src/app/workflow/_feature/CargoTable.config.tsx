@@ -22,7 +22,7 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
-      filter: false,
+      filter: true,
     },
     {
       accessorKey: "receipt_address",
