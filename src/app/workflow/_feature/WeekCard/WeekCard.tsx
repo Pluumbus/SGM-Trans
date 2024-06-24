@@ -1,17 +1,11 @@
 "use client";
-import {
-  Accordion,
-  AccordionItem,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-} from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 
 export const WeekCard = () => {
   const tmp = Array.from({ length: 10 }, (_, i) => i);
+
   return (
     <div className="flex gap-4 w-full min-h-44">
       <Accordion selectionMode="multiple">
