@@ -1,7 +1,9 @@
-import { authMiddleware } from "@clerk/nextjs/server";
+import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-export default authMiddleware({
-  publicRoutes: ["/", "/workflow"],
+const isProtectedRoute = createRouteMatcher(["/workflow(.*)"]);
+
+export default clerkMiddleware((auth, req) => {
+  if (isProtectedRoute(req)) auth().protect();
 });
 
 export const config = {

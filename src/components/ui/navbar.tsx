@@ -1,8 +1,7 @@
 "use client";
+
 import Link from "next/link";
 import logo from "../../app/imgs/logo.png";
-
-import { ProfileButtons } from "../../app/profile/ProfileButtons";
 import Image from "next/image";
 
 const Navbar = () => {
@@ -18,9 +17,9 @@ const Navbar = () => {
               Таблицы
             </div>
           </Link>
-          <Link href="/">
+          <Link href="/workflow">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Статистика
+              workflow
             </div>
           </Link>
           <Link href="/">
@@ -29,7 +28,6 @@ const Navbar = () => {
             </div>
           </Link>
         </nav>
-        <ProfileButtons />
       </div>
     </header>
   );
