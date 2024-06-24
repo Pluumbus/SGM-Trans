@@ -3,6 +3,7 @@
 import Link from "next/link";
 import logo from "../../app/imgs/logo.png";
 import Image from "next/image";
+import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 
 const Navbar = () => {
   return (
@@ -19,7 +20,7 @@ const Navbar = () => {
           </Link>
           <Link href="/workflow">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              workflow
+              Workflow
             </div>
           </Link>
           <Link href="/">
@@ -28,6 +29,12 @@ const Navbar = () => {
             </div>
           </Link>
         </nav>
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
     </header>
   );
