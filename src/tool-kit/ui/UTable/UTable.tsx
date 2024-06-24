@@ -63,16 +63,13 @@ export const UTable = <T extends DataType<T>>({
   });
 
   return (
-    <Table
-      color="primary"
-      aria-label={name}
-      isStriped
-      isCompact
-      bottomContent={<UPagination tInstance={tInstance} />}
-      topContent={<UTableTopContent tInstance={tInstance} />}
-    >
-      <TableHeader>{renderColumns(tInstance)}</TableHeader>
-      <TableBody>{renderRows(tInstance, mConfig?.row)}</TableBody>
-    </Table>
+    <div>
+      <UTableTopContent tInstance={tInstance} />
+      <Table color="primary" aria-label={name} isStriped isCompact>
+        <TableHeader>{renderColumns(tInstance)}</TableHeader>
+        <TableBody>{renderRows(tInstance, mConfig?.row)}</TableBody>
+      </Table>
+      <UPagination tInstance={tInstance} />
+    </div>
   );
 };

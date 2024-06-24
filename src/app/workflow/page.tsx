@@ -2,10 +2,13 @@
 import { UTable } from "@/tool-kit/ui";
 import { NextPage } from "next";
 import { useMemo } from "react";
-import { getBaseColumnsConfig } from "./_feature/CargoTable.config";
+
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
-import mockData from "./_feature/mock.data";
+
 import { Cargo } from "./_feature/types";
+import { getBaseColumnsConfig } from "./_feature/Table/CargoTable.config";
+import mockData from "./_feature/Table/mock.data";
+import { WeekCard } from "./_feature/WeekCard";
 
 interface Props {}
 
@@ -23,12 +26,15 @@ const Page: NextPage<Props> = ({}) => {
   }, []);
 
   return (
-    <UTable
-      data={mMockData}
-      columns={columns}
-      name="Cargo Table"
-      config={config}
-    />
+    <div>
+      <WeekCard />
+      {/* <UTable
+        data={mMockData}
+        columns={columns}
+        name="Cargo Table"
+        config={config}
+      /> */}
+    </div>
   );
 };
 

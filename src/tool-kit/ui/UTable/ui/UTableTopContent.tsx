@@ -9,7 +9,7 @@ export const UTableTopContent = ({ tInstance }: any) => {
   );
 
   return (
-    <div>
+    <div className="mb-2 px-4">
       <ColumnSelector tInstance={tInstance} />
 
       <div className="flex gap-4 items-end flex-wrap sm:flex-nowrap">

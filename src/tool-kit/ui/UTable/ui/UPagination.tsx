@@ -1,6 +1,11 @@
-import { Button, Input, Pagination } from "@nextui-org/react";
+import { Button, Input } from "@nextui-org/react";
 import { Table } from "@tanstack/react-table";
 import { SelectRowsPerPage } from "./SelectRowsPerPage";
+import { MdKeyboardArrowRight } from "react-icons/md";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+
+import { MdKeyboardDoubleArrowRight } from "react-icons/md";
+import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 interface UPaginationProps<T> {
   tInstance: Table<T>;
@@ -20,35 +25,39 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
     }
   };
   return (
-    <div className="flex items-center gap-4 justify-center">
+    <div className="flex items-center gap-4 justify-center my-4">
       <div className="flex gap-2">
         <Button
           className="border rounded p-1"
           onClick={() => tInstance.firstPage()}
           disabled={!tInstance.getCanPreviousPage()}
+          isIconOnly
         >
-          {"<<"}
+          <MdKeyboardDoubleArrowLeft />
         </Button>
         <Button
           className="border rounded p-1"
           onClick={() => tInstance.previousPage()}
           disabled={!tInstance.getCanPreviousPage()}
+          isIconOnly
         >
-          {"<"}
+          <MdKeyboardArrowLeft />
         </Button>
         <Button
           className="border rounded p-1"
           onClick={() => tInstance.nextPage()}
           disabled={!tInstance.getCanNextPage()}
+          isIconOnly
         >
-          {">"}
+          <MdKeyboardArrowRight />
         </Button>
         <Button
           className="border rounded p-1"
           onClick={() => tInstance.lastPage()}
           disabled={!tInstance.getCanNextPage()}
+          isIconOnly
         >
-          {">>"}
+          <MdKeyboardDoubleArrowRight />
         </Button>
       </div>
       <span className="flex items-center gap-2">

@@ -17,16 +17,16 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "created_at",
-      header: "Created At",
+      header: "Дата создания",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
+        <span>{new Date(info?.getValue()).toLocaleDateString()}</span>
       ),
       filter: true,
     },
     {
       accessorKey: "receipt_address",
-      header: "Receipt Address",
+      header: "Адрес получения",
       size: 30,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -35,7 +35,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "unloading_city",
-      header: "Unloading City",
+      header: "Город разгрузки",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -44,7 +44,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "weight",
-      header: "Weight",
+      header: "Вес",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -53,7 +53,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "volume",
-      header: "Volume",
+      header: "Объем",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -62,7 +62,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "quantity",
-      header: "Quantity",
+      header: "Количество",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -71,7 +71,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "driver",
-      header: "Driver",
+      header: "Водитель",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -80,7 +80,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "amount",
-      header: "Amount",
+      header: "Сумма",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -89,7 +89,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "is_unpalletizing",
-      header: "Is Unpalletizing",
+      header: "Распалетирование",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -98,7 +98,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "comments",
-      header: "Comments",
+      header: "Комментарии",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -107,7 +107,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "client_name",
-      header: "Client Name",
+      header: "Имя клиента",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -116,7 +116,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "client_bin",
-      header: "Client BIN",
+      header: "БИН клиента",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -125,7 +125,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "cargo_name",
-      header: "Cargo Name",
+      header: "Название груза",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -134,7 +134,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "payer",
-      header: "Payer",
+      header: "Плательщик",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -143,7 +143,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "transportation_manager",
-      header: "Transportation Manager",
+      header: "Менеджер по перевозкам",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -152,7 +152,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "is_documents",
-      header: "Is Documents",
+      header: "Наличие документов",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -161,7 +161,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: "Статус",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -170,16 +170,16 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "arrival_date",
-      header: "Arrival Date",
+      header: "Дата прибытия",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
+        <span>{new Date(info.getValue())?.toLocaleDateString()}</span>
       ),
       filter: false,
     },
     {
       accessorKey: "sgm_manager",
-      header: "SGM Manager",
+      header: "Менеджер SGM",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -188,7 +188,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "payment",
-      header: "Payment",
+      header: "Оплата",
       size: 20,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -197,7 +197,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "loading_scheme",
-      header: "Loading Scheme",
+      header: "Схема загрузки",
       size: 25,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -206,7 +206,7 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "user_id",
-      header: "User ID",
+      header: "ID пользователя",
       size: 15,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
