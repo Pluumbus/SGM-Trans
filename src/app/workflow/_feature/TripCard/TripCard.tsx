@@ -29,12 +29,14 @@ export const TripCard = () => {
     return mockData;
   }, []);
   return (
-    <UTable
-      data={mMockData}
-      columns={columns}
-      name="Cargo Table"
-      config={config}
-    />
+    // <UTable
+    //   data={mMockData}
+    //   columns={columns}
+    //   name="Cargo Table"
+    //   config={config}
+    // />
+    <></>
+    //TODO Fix
   );
 };
 

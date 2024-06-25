@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import logo from "../../app/imgs/logo.png";
+import logo from "../../app/_imgs/logo.png";
 import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { ProfileButton } from "@/app/profile/profileButton";
 
 const Navbar = () => {
   return (
@@ -25,7 +26,7 @@ const Navbar = () => {
           </Link>
           <Link href="/">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Что то
+              Статистика
             </div>
           </Link>
         </nav>
@@ -33,7 +34,7 @@ const Navbar = () => {
           <SignInButton />
         </SignedOut>
         <SignedIn>
-          <UserButton />
+          <ProfileButton />
         </SignedIn>
       </div>
     </header>
