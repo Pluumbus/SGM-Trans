@@ -8,7 +8,7 @@ export default function ProfilePage() {
   return (
     <div>
       <Dashboard />
-      {/* <AssignRole /> */}
+      <AssignRole />
       <Button color="danger">
         <SignOutButton>Выйти</SignOutButton>
       </Button>
