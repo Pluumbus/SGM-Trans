@@ -4,7 +4,7 @@ import { DataType, RowConfigProps } from "../types";
 
 export const renderRows = <T extends DataType<T>>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>
+  config: RowConfigProps<T>,
 ) => {
   return tInstance.getRowModel().rows.map((row) => (
     <TableRow

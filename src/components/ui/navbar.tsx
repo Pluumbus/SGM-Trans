@@ -14,14 +14,14 @@ const Navbar = () => {
           <Image src={logo} alt="" width={156} height={120} />
         </div>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <Link href="/">
+          <Link href="/workflow">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
               Таблицы
             </div>
           </Link>
           <Link href="/workflow">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Workflow
+              Недели
             </div>
           </Link>
           <Link href="/">
