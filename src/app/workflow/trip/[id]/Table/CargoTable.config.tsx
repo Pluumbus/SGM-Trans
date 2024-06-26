@@ -2,7 +2,7 @@
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
-import { Cargo } from "./types";
+import { Cargo } from "../types";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<Cargo> = [
