@@ -9,7 +9,8 @@
   "plugins": [
     "react",
     "@typescript-eslint",
-    "prettier"
+    "prettier",
+    "import"
   ],
   "rules": {
     "react/no-unescaped-entities": "off",
