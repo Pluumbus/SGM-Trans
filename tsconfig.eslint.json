@@ -1,0 +1,6 @@
+{
+    "extends": "./tsconfig.json",
+    "include": ["**/*.ts", "**/*.tsx", "postcss.config.js", ".next/types/**/*.ts"],
+    "exclude": ["node_modules", "eslint.config.js"]
+  }
+  
