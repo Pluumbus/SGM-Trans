@@ -5,7 +5,7 @@ import { TableFilters } from "./TableFilters";
 export const UTableTopContent = ({ tInstance }: any) => {
   const headers = useMemo(
     () => tInstance.getHeaderGroups()[0].headers,
-    [tInstance]
+    [tInstance],
   );
 
   return (
