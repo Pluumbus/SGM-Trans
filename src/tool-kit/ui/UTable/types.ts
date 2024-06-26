@@ -1,9 +1,9 @@
-import { Cell, ColumnDef, Row } from "@tanstack/react-table";
+import { AccessorFn, Cell, ColumnDef, Row } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 export type DataType<T> = Record<string, T>;
 
-type ColumnType<T> = ColumnDef<DataType<T>>;
+export type ColumnType<T> = ColumnDef<DataType<T>>;
 
 export type RowConfigProps<T> = {
   setRowData?: (info: Row<T>) => void;
@@ -16,14 +16,14 @@ export type UseTableConfig<T> = {
 
 export type UseTableProps<T> = {
   name: string;
-  data: DataType<T>[];
-  columns: ColumnType<T>[];
+  data: T[];
+  columns: ColumnDef<T>[];
   config?: UseTableConfig<T>;
 };
 
 export type UseTableColumnsSchema<T> = Array<{
   accessorKey: string;
-  accessorFn?: (info: Cell<T, ReactNode>) => any;
+  accessorFn?: AccessorFn<T, any>;
   header: string;
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;

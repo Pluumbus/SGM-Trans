@@ -2,7 +2,7 @@ import { TableCell, TableRow } from "@nextui-org/react";
 import { Table, flexRender } from "@tanstack/react-table";
 import { DataType, RowConfigProps } from "../types";
 
-export const renderRows = <T extends DataType<T>>(
+export const renderRows = <T,>(
   tInstance: Table<T>,
   config: RowConfigProps<T>
 ) => {

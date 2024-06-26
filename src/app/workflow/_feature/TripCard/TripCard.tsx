@@ -1,6 +1,7 @@
+"use client";
 import { useMemo } from "react";
 import { getBaseTripColumnsConfig } from "./TripTable.config";
-import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
+import { ColumnType, UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
 import { useRouter } from "next/navigation";
 
@@ -28,15 +29,14 @@ export const TripCard = () => {
   const mMockData = useMemo(() => {
     return mockData;
   }, []);
+
   return (
-    // <UTable
-    //   data={mMockData}
-    //   columns={columns}
-    //   name="Cargo Table"
-    //   config={config}
-    // />
-    <></>
-    //TODO Fix
+    <UTable
+      data={mMockData}
+      columns={columns}
+      name="Cargo Table"
+      config={config}
+    />
   );
 };
 

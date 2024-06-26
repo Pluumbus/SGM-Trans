@@ -10,18 +10,18 @@ import {
   getPaginationRowModel,
   PaginationState,
 } from "@tanstack/react-table";
-import { DataType, UseTableProps } from "./types";
+import { UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
 import { ReactNode, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 
-export const UTable = <T extends DataType<T>>({
+export const UTable = <T,>({
   data = [],
   columns = [],
   name = "some table",
   config,
-}: UseTableProps<DataType<T>>): ReactNode => {
+}: UseTableProps<T>): ReactNode => {
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e) => {
       e.filterFn = "includesString";
@@ -43,7 +43,7 @@ export const UTable = <T extends DataType<T>>({
     pageSize: Number(rowsPerPage),
   });
 
-  const tInstance = useReactTable({
+  const tInstance = useReactTable<T>({
     data: mData,
     columns: mColumns,
     getCoreRowModel: getCoreRowModel(),
@@ -67,7 +67,7 @@ export const UTable = <T extends DataType<T>>({
       <UTableTopContent tInstance={tInstance} />
       <Table color="primary" aria-label={name} isStriped isCompact>
         <TableHeader>{renderColumns(tInstance)}</TableHeader>
-        <TableBody>{renderRows(tInstance, mConfig?.row)}</TableBody>
+        <TableBody>{renderRows(tInstance, mConfig!.row)}</TableBody>
       </Table>
       <UPagination tInstance={tInstance} />
     </div>

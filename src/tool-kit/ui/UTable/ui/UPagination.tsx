@@ -1,4 +1,4 @@
-import { Button, Input } from "@nextui-org/react";
+import { Button, Divider, Input } from "@nextui-org/react";
 import { Table } from "@tanstack/react-table";
 import { SelectRowsPerPage } from "./SelectRowsPerPage";
 import { MdKeyboardArrowRight } from "react-icons/md";
@@ -28,7 +28,6 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
     <div className="flex items-center gap-4 justify-center my-4">
       <div className="flex gap-2">
         <Button
-          className="border rounded p-1"
           onClick={() => tInstance.firstPage()}
           disabled={!tInstance.getCanPreviousPage()}
           isIconOnly
@@ -36,7 +35,6 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
           <MdKeyboardDoubleArrowLeft />
         </Button>
         <Button
-          className="border rounded p-1"
           onClick={() => tInstance.previousPage()}
           disabled={!tInstance.getCanPreviousPage()}
           isIconOnly
@@ -44,7 +42,6 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
           <MdKeyboardArrowLeft />
         </Button>
         <Button
-          className="border rounded p-1"
           onClick={() => tInstance.nextPage()}
           disabled={!tInstance.getCanNextPage()}
           isIconOnly
@@ -52,7 +49,6 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
           <MdKeyboardArrowRight />
         </Button>
         <Button
-          className="border rounded p-1"
           onClick={() => tInstance.lastPage()}
           disabled={!tInstance.getCanNextPage()}
           isIconOnly
@@ -60,17 +56,19 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
           <MdKeyboardDoubleArrowRight />
         </Button>
       </div>
+      <Divider orientation="vertical" className="h-5" />
       <span className="flex items-center gap-2">
-        <div>Page</div>
+        <div>Страница:</div>
         <strong>
           {tInstance.getState().pagination.pageIndex + 1} of{" "}
           {tInstance.getPageCount().toLocaleString()}
         </strong>
       </span>
+      <Divider orientation="vertical" className="h-5" />
       <span className="flex items-center gap-2">
+        <span>Перейти на страницу: </span>
         <Input
           type="number"
-          label="Go to page:"
           max={tInstance.getPageCount()}
           defaultValue={(
             tInstance.getState().pagination.pageIndex + 1
@@ -79,6 +77,7 @@ export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
           className="w-32 text-large"
         />
       </span>
+      <Divider orientation="vertical" className="h-5" />
       <div>
         <SelectRowsPerPage tInstance={tInstance} />
       </div>

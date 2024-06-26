@@ -5,14 +5,14 @@ import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { TripType } from "./TripCard";
 
-export const getBaseTripColumnsConfig = () => {
-  const columnsConfig: UseTableColumnsSchema<TripType> = [
+export const getBaseTripColumnsConfig = (): UseTableColumnsSchema<TripType> => {
+  const columnsConfig = [
     {
       accessorKey: "trip_number",
       header: "Номер рейса",
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
-        <span>{info?.getValue()}</span>
+        <span>{info?.getValue()?.toString()}</span>
       ),
       filter: true,
     },
@@ -53,7 +53,7 @@ export const getBaseTripColumnsConfig = () => {
       ),
       filter: false,
     },
-  ];
+  ] satisfies UseTableColumnsSchema<TripType>;
 
   return columnsConfig;
 };

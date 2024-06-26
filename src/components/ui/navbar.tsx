@@ -3,7 +3,7 @@
 import Link from "next/link";
 import logo from "../../app/_imgs/logo.png";
 import Image from "next/image";
-import { SignInButton, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/app/profile/profileButton";
 
 const Navbar = () => {
@@ -11,7 +11,9 @@ const Navbar = () => {
     <header className="text-gray-600 body-font bg-white shadow">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between">
         <div className="">
-          <Image src={logo} alt="" width={156} height={120} />
+          <Link href={"/"}>
+            <Image src={logo} alt="" width={156} height={120} />
+          </Link>
         </div>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
           <Link href="/">

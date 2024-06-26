@@ -31,28 +31,29 @@ export const ColumnSelector = ({ tInstance }: any) => {
               isSelected={tInstance.getIsAllColumnsVisible()}
               onChange={tInstance.getToggleAllColumnsVisibilityHandler()}
             >
-              Toggle All
+              Выбрать все
             </Checkbox>
           </DropdownItem>
-
-          {tInstance.getAllLeafColumns().map((column) => (
-            <DropdownItem key={column.id} textValue={column.id}>
-              <Checkbox
-                color="default"
-                key={column.id}
-                isDisabled={
-                  tInstance.getVisibleLeafColumns().length == 1 &&
-                  column.getIsVisible()
-                }
-                isSelected={column.getIsVisible()}
-                onChange={column.getToggleVisibilityHandler()}
-              >
-                {column.columnDef.header == ""
-                  ? column.columnDef.id
-                  : column.columnDef.header}
-              </Checkbox>
-            </DropdownItem>
-          ))}
+          <DropdownItem>
+            <div className="max-h-96 flex flex-col overflow-y-scroll overflow-x-hidden">
+              {tInstance.getAllLeafColumns().map((column) => (
+                <Checkbox
+                  key={column.id}
+                  color="default"
+                  isDisabled={
+                    tInstance.getVisibleLeafColumns().length == 1 &&
+                    column.getIsVisible()
+                  }
+                  isSelected={column.getIsVisible()}
+                  onChange={column.getToggleVisibilityHandler()}
+                >
+                  {column.columnDef.header == ""
+                    ? column.columnDef.id
+                    : column.columnDef.header}
+                </Checkbox>
+              ))}
+            </div>
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
     </div>
