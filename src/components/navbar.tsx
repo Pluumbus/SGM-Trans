@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import logo from "../../app/_imgs/logo.png";
+import logo from "../app/_imgs/logo.png";
 import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { ProfileButton } from "@/app/profile/profileButton";
+import { ProfileButton } from "@/components/profileButton";
 
 const Navbar = () => {
   return (
@@ -16,21 +16,21 @@ const Navbar = () => {
           </Link>
         </div>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <Link href="/workflow">
+          <Link href="/workflow/kz">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Таблицы
+              Таблица КЗ
             </div>
           </Link>
-          <Link href="/workflow">
+          <Link href="/workflow/ru">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Недели
+              Таблица МСК
             </div>
           </Link>
-          <Link href="/">
+          {/* <Link href="/">
             <div className="mr-5 cursor-pointer hover:text-gray-900">
               Статистика
             </div>
-          </Link>
+          </Link> */}
         </nav>
         <SignedOut>
           <SignInButton />

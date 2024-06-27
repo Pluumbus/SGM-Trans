@@ -1,9 +1,16 @@
-"use client";
-import getClerkClient from "@/utils/clerk/clerk";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import {
+  useMutation,
+  useQuery,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import getClerkClient from "@/utils/clerk/clerk";
+import { User } from "@clerk/nextjs/server";
 
-export default function AssignRole() {
+const queryClient = new QueryClient();
+
+function AssignRoleComponent() {
   const [userId, setUserId] = useState<string>("");
   const [role, setRole] = useState<string>("");
 
@@ -23,16 +30,26 @@ export default function AssignRole() {
       }
     },
   });
+
   const handleSetRole = () => {
     setRoleMutation();
   };
-  const { data } = useQuery({
+
+  const { data, error, isLoading } = useQuery({
     queryKey: ["allUsers"],
     queryFn: async () => {
       const clerk = await getClerkClient();
-      return JSON.parse(JSON.stringify(clerk.users.getUserList()));
+      const users = await clerk.users.getUserList();
+      const userList = users.data.map((user: User) => ({
+        id: user.id,
+        email: user.emailAddresses[0]?.emailAddress || "No email",
+      }));
+      return userList;
     },
   });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error.message}</div>;
 
   return (
     <div>
@@ -49,7 +66,24 @@ export default function AssignRole() {
         onChange={(e) => setRole(e.target.value)}
       />
       <button onClick={handleSetRole}>Добавить роль</button>
-      <div> {data}</div>
+      <div>
+        {data &&
+          data.map((user: any) => (
+            <div key={user.id}>
+              {user.id} - {user.email}
+            </div>
+          ))}
+      </div>
     </div>
   );
 }
+
+function AssignRole() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AssignRoleComponent />
+    </QueryClientProvider>
+  );
+}
+
+export default AssignRole;
