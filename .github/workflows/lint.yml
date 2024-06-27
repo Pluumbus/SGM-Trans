@@ -20,7 +20,7 @@ jobs:
           node-version: "16" # или любая другая версия Node.js, которую вы используете
 
       - name: Install dependencies
-        run: npm install
+        run: yarn install --frozen-lockfile
 
       - name: Run ESLint
-        run: npm run lint
+        run: yarn lint
