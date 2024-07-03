@@ -1,10 +1,10 @@
 import { TableCell, TableRow } from "@nextui-org/react";
 import { Table, flexRender } from "@tanstack/react-table";
-import { DataType, RowConfigProps } from "../types";
+import { RowConfigProps } from "../types";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>,
+  config: RowConfigProps<T>
 ) => {
   return tInstance.getRowModel().rows.map((row) => (
     <TableRow

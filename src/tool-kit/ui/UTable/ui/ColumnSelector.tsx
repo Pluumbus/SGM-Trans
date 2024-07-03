@@ -36,7 +36,7 @@ export const ColumnSelector = ({ tInstance }: any) => {
           </DropdownItem>
           <DropdownItem>
             <div className="max-h-96 flex flex-col overflow-y-scroll overflow-x-hidden">
-              {tInstance.getAllLeafColumns().map((column) => (
+              {tInstance.getAllLeafColumns().map((column: any) => (
                 <Checkbox
                   key={column.id}
                   color="default"

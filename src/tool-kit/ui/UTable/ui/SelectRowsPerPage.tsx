@@ -14,7 +14,7 @@ export const SelectRowsPerPage = ({ tInstance }: any) => {
       <Autocomplete
         className="w-48"
         selectedKey={rowsPerPage}
-        onSelectionChange={(e) => {
+        onSelectionChange={(e: any) => {
           handleRowsChange(e);
         }}
       >

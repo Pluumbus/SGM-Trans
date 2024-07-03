@@ -1,29 +1,43 @@
 import { TableColumn } from "@nextui-org/react";
-import { Table } from "@tanstack/react-table";
-import { DataType } from "../types";
+import { Table, HeaderGroup, SortingState } from "@tanstack/react-table";
 
-export const renderColumns = (tInstance: Table<DataType>) => {
+type TableInstance<T> = Table<T> & {
+  setSorting: (sorting: SortingState) => void;
+  getHeaderGroups: () => HeaderGroup<T>[];
+  getState: () => { sorting: SortingState };
+};
+
+export const renderColumns = <T,>(tInstance: TableInstance<T>) => {
   const { setSorting } = tInstance;
-  return tInstance.getHeaderGroups()[0].headers.map((header) => (
-    <TableColumn
-      style={{ width: `${header.getSize()}px` }}
-      key={header.id}
-      allowsSorting
-      isSorted={
-        tInstance.getState().sorting.find((sort) => sort.id === header.id) !==
-        undefined
-      }
-      isSortedDesc={
-        tInstance.getState().sorting.find((sort) => sort.id === header.id)?.desc
-      }
-      onClick={() => {
-        const isSortedDesc = tInstance
-          .getState()
-          .sorting.find((sort) => sort.id === header.id)?.desc;
-        setSorting([{ id: header.id, desc: !isSortedDesc }]);
-      }}
-    >
-      {header.isPlaceholder ? null : header.column.columnDef.header?.toString()}
-    </TableColumn>
-  ));
+
+  return tInstance.getHeaderGroups()[0].headers.map((header) => {
+    const isSorted = tInstance
+      .getState()
+      .sorting.some((sort) => sort.id === header.id);
+    const isSortedDesc = tInstance
+      .getState()
+      .sorting.find((sort) => sort.id === header.id)?.desc;
+
+    return (
+      <TableColumn
+        style={{ width: `${header.getSize()}px` }}
+        key={header.id}
+        allowsSorting
+        onClick={() => {
+          setSorting([{ id: header.id, desc: !isSortedDesc }]);
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          {header.isPlaceholder
+            ? null
+            : header.column.columnDef.header?.toString()}
+          {isSorted && (
+            <span style={{ marginLeft: "4px" }}>
+              {isSortedDesc ? "🔽" : "🔼"}
+            </span>
+          )}
+        </div>
+      </TableColumn>
+    );
+  });
 };
