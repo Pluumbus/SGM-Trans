@@ -5,7 +5,7 @@ import { Avatar } from "@nextui-org/react";
 import Link from "next/link";
 
 export const ProfileButton = () => {
-  const { user, isLoaded } = useUser();
+  const { user } = useUser();
   const balance = (user?.publicMetadata?.balance as string | undefined) ?? "0";
   return (
     <>

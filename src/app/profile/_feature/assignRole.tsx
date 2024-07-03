@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import {
   useMutation,
@@ -5,15 +6,13 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import getClerkClient from "@/utils/clerk/clerk";
-import { User } from "@clerk/nextjs/server";
+import { Avatar } from "@nextui-org/react";
 
 const queryClient = new QueryClient();
 
 function AssignRoleComponent() {
   const [userId, setUserId] = useState<string>("");
   const [role, setRole] = useState<string>("");
-
   const { mutate: setRoleMutation } = useMutation({
     mutationKey: ["setRole"],
     mutationFn: async () => {
@@ -35,22 +34,18 @@ function AssignRoleComponent() {
     setRoleMutation();
   };
 
-  const { data, error, isLoading } = useQuery({
-    queryKey: ["allUsers"],
+  const { data, isLoading } = useQuery({
+    queryKey: ["users-list"],
     queryFn: async () => {
-      const clerk = await getClerkClient();
-      const users = await clerk.users.getUserList();
-      const userList = users.data.map((user: User) => ({
-        id: user.id,
-        email: user.emailAddresses[0]?.emailAddress || "No email",
-      }));
-      return userList;
+      const response = await fetch("/api/getUsers");
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+      return response.json();
     },
   });
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error.message}</div>;
-
   return (
     <div>
       <input
@@ -69,8 +64,9 @@ function AssignRoleComponent() {
       <div>
         {data &&
           data.map((user: any) => (
-            <div key={user.id}>
-              {user.id} - {user.email}
+            <div key={user.id} className="border-small mt-3 rounded-xl">
+              <Avatar src={user.avatar} />
+              {user.userName}
             </div>
           ))}
       </div>
