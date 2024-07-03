@@ -5,8 +5,8 @@ import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { TripType } from "./TripCard";
 
-export const getBaseTripColumnsConfig = (): UseTableColumnsSchema<TripType> => {
-  const columnsConfig = [
+export const getBaseTripColumnsConfig = () => {
+  const columnsConfig: UseTableColumnsSchema<TripType>[] = [
     {
       accessorKey: "trip_number",
       header: "Номер рейса",
@@ -53,7 +53,7 @@ export const getBaseTripColumnsConfig = (): UseTableColumnsSchema<TripType> => {
       ),
       filter: false,
     },
-  ] satisfies UseTableColumnsSchema<TripType>;
+  ];
 
   return columnsConfig;
 };
