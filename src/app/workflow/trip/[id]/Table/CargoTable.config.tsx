@@ -5,16 +5,16 @@ import { ReactNode } from "react";
 import { Cargo } from "../types";
 
 export const getBaseColumnsConfig = () => {
-  const columnsConfig: UseTableColumnsSchema<Cargo> = [
+  const columnsConfig: UseTableColumnsSchema<Cargo>[] = [
     {
       accessorKey: "id",
       accessorFn: () => {},
       header: "ID",
       size: 10,
+      filter: false,
       cell: (info: Cell<Cargo, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
-      filter: false,
     },
     {
       accessorKey: "created_at",
