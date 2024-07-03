@@ -17,13 +17,13 @@ export type UseTableConfig<T> = {
 export type UseTableProps<T> = {
   name: string;
   data: T[];
-  columns: ColumnDef<T>[];
+  columns: UseTableColumnsSchema<T>[];
   config?: UseTableConfig<T>;
 };
 
 export type UseTableColumnsSchema<T> = Array<{
   accessorKey: string;
-  accessorFn?: AccessorFn<T, any>;
+  accessorFn: AccessorFn<T, any>;
   header: string;
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;

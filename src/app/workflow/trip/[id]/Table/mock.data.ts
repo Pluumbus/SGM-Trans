@@ -1,4 +1,4 @@
-import { Cargo } from "./types";
+import { Cargo } from "../types";
 
 const mockData: Cargo[] = [
   {
