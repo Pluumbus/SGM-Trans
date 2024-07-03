@@ -21,11 +21,11 @@ export type UseTableProps<T> = {
   config?: UseTableConfig<T>;
 };
 
-export type UseTableColumnsSchema<T> = Array<{
+export type UseTableColumnsSchema<T> = {
   accessorKey: string;
   accessorFn: AccessorFn<T, any>;
   header: string;
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;
   filter: boolean;
-}>;
+};
