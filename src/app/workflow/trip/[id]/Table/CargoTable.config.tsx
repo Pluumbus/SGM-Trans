@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 import { Cargo } from "../types";
 
 export const getBaseColumnsConfig = () => {
-  const columnsConfig: UseTableColumnsSchema<Cargo> = [
+  const columnsConfig: UseTableColumnsSchema<Cargo>[] = [
     {
       accessorKey: "id",
       accessorFn: () => {},

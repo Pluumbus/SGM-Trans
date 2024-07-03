@@ -21,6 +21,7 @@ const Page: NextPage = ({}) => {
     return mockData;
   }, []);
   const { id } = useParams();
+
   return (
     <div>
       <div>
