@@ -1,4 +1,10 @@
-import { AccessorFn, Cell, ColumnDef, Row } from "@tanstack/react-table";
+import {
+  AccessorFn,
+  Cell,
+  ColumnDef,
+  FilterFn,
+  Row,
+} from "@tanstack/react-table";
 import { ReactNode } from "react";
 
 export type DataType<T> = Record<string, T>;
@@ -28,4 +34,5 @@ export type UseTableColumnsSchema<T> = {
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;
   filter: boolean;
+  filterFn: string | undefined;
 };

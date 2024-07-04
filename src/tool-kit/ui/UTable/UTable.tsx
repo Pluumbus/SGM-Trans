@@ -9,8 +9,9 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   PaginationState,
+  ColumnDef,
 } from "@tanstack/react-table";
-import { UseTableProps } from "./types";
+import { UseTableColumnsSchema, UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
 import { ReactNode, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
@@ -45,7 +46,7 @@ export const UTable = <T,>({
 
   const tInstance = useReactTable<T>({
     data: mData,
-    columns: mColumns,
+    columns: mColumns as UseTableColumnsSchema<T> extends ColumnDef<T>,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
