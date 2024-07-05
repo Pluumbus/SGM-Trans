@@ -6,6 +6,7 @@ import getClerkClient from "@/utils/clerk/clerk";
 import { User } from "@clerk/nextjs/server";
 import { UsersList } from "./_feature/types";
 import RoleBasedRedirect from "@/components/RoleBasedRedirect";
+import AssignRole from "./_feature/assignRole";
 
 async function getData(): Promise<UsersList[]> {
   const clerk = await getClerkClient();
@@ -25,6 +26,7 @@ export default async function ProfilePage() {
   const data = await getData();
   return (
     <div>
+      <AssignRole />
       <RoleBasedRedirect allowedRoles={["Admin"]}>
         <DataTable columns={columns} data={data} />
       </RoleBasedRedirect>

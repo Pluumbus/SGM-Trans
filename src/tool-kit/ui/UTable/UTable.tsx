@@ -17,7 +17,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 
-export const UTable = <T,>({
+export const UTable = ({
   data = [],
   columns = [],
   name = "some table",
@@ -46,7 +46,7 @@ export const UTable = <T,>({
 
   const tInstance = useReactTable<T>({
     data: mData,
-    columns: mColumns as UseTableColumnsSchema<T> extends ColumnDef<T>,
+    columns: mColumns as UseTableColumnsSchema<T>,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
