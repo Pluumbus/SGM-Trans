@@ -12,12 +12,12 @@ type Dictionary = {
   [key: string]: ReactElement;
 };
 export const rolesList: Dictionary = {
-  Admin: <div>Админ</div>,
-  Logist: <div>Логист</div>,
-  LogisctMSC: <div>Логист Москва</div>,
-  SuperLogist: <div>Супер Логист</div>,
-  WarehouseManager: <div>Зав.Склада</div>,
-  WarehouseManagerMSC: <div>Зав.Склада Москва</div>,
-  Cashier: <div>Кассир</div>,
-  Base: <div>Пользователь</div>,
+  Admin: <span>Админ</span>,
+  Logist: <span>Логист</span>,
+  LogisctMSC: <span>Логист Москва</span>,
+  SuperLogist: <span>Супер Логист</span>,
+  WarehouseManager: <span>Зав.Склада</span>,
+  WarehouseManagerMSC: <span>Зав.Склада Москва</span>,
+  Cashier: <span>Кассир</span>,
+  Base: <span>Пользователь</span>,
 };

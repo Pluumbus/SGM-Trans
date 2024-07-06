@@ -23,8 +23,9 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { rolesList, UsersList } from "../_feature/types";
 import { useUser } from "@clerk/nextjs";
-import { Input } from "postcss";
+import { Input } from "@nextui-org/react";
 import { useState } from "react";
+import { useDeprecatedInvertedScale } from "framer-motion";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -63,112 +64,123 @@ export const columns: ColumnDef<UsersList>[] = [
     accessorKey: "actions",
     header: "Действия",
     cell: ({ row }) => {
-      const user = row.original;
-      const { isOpen, onOpen, onOpenChange } = useDisclosure();
-      const [role, setRole] = useState<string>("");
-      const [balance, setBalance] = useState<string>("");
+      const [isOpenRole, setIsOpenRole] = useState(false);
+      const [isOpenBalance, setIsOpenBalance] = useState(false);
+      const [role, setRole] = useState("");
+      const [balance, setBalance] = useState("");
+      const [userId, setUserId] = useState("");
+
+      const { mutate: setRoleMutation } = useMutation({
+        mutationKey: ["setRole"],
+        mutationFn: async () => {
+          const response = await fetch("/api/setRole", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, role }),
+          });
+          if (response.ok) {
+            alert("Роль выдана");
+          } else {
+            console.log(response);
+            alert("Произошла непредвиденная ошибка");
+          }
+        },
+      });
+      const { mutate: setBalanceMutation } = useMutation({
+        mutationKey: ["setBalance"],
+        mutationFn: async () => {
+          const response = await fetch("/api/setBalance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, balance }),
+          });
+          if (response.ok) {
+            alert("Баланс обновлен");
+          } else {
+            console.log(response);
+            alert("Произошла непредвиденная ошибка");
+          }
+        },
+      });
+      const handleSetRole = (userId: string) => {
+        setUserId(userId);
+        setRoleMutation();
+      };
+      const handleSetBalance = (userId: string) => {
+        setUserId(userId);
+        setBalanceMutation();
+      };
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <ButtonCn variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Открыть меню</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </ButtonCn>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Button onPress={onOpen} variant="light">
-                Выдать роль
-              </Button>
-              <Modal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                isDismissable={false}
-                isKeyboardDismissDisabled={true}
-              >
-                <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalBody>
-                        <input
-                          type="text"
-                          placeholder="Введите роль"
-                          value={role}
-                          onChange={(e) => setRole(e.target.value)}
-                        />
-                      </ModalBody>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <Button onPress={onOpen} variant="light">
-                Обновить баланс
-              </Button>
-              <Modal
-                isOpen={isOpen}
-                onOpenChange={onOpenChange}
-                isDismissable={false}
-                isKeyboardDismissDisabled={true}
-              >
-                <ModalContent>
-                  {(onClose) => (
-                    <>
-                      <ModalBody>
-                        <input
-                          type="text"
-                          placeholder="Введите баланс"
-                          value={role}
-                          onChange={(e) => setBalance(e.target.value)}
-                        />
-                      </ModalBody>
-                    </>
-                  )}
-                </ModalContent>
-              </Modal>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <ButtonCn variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Открыть меню</span>
+                <MoreHorizontal className="h-4 w-4" />
+              </ButtonCn>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem>
+                <Button onClick={() => setIsOpenRole(true)} variant="light">
+                  Выдать роль
+                </Button>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>
+                <Button onClick={() => setIsOpenBalance(true)} variant="light">
+                  Обновить баланс
+                </Button>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Modal
+            isOpen={isOpenRole}
+            onOpenChange={() => setIsOpenRole(false)}
+            isDismissable={false}
+            isKeyboardDismissDisabled={true}
+          >
+            <ModalContent>
+              <ModalBody>
+                <form
+                  onSubmit={() => handleSetRole(row.original.id)}
+                  className="w-2/3"
+                >
+                  <Input
+                    type="text"
+                    placeholder="Введите роль"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                  />
+                </form>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+
+          <Modal
+            isOpen={isOpenBalance}
+            onOpenChange={() => setIsOpenBalance(false)}
+            isDismissable={false}
+            isKeyboardDismissDisabled={true}
+          >
+            <ModalContent>
+              <ModalBody>
+                <form
+                  onSubmit={() => handleSetBalance(row.original.id)}
+                  className="w-2/3"
+                >
+                  <Input
+                    type="text"
+                    placeholder="Введите баланс"
+                    value={balance}
+                    onChange={(e) => setBalance(e.target.value)}
+                  />
+                </form>
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+        </>
       );
     },
   },
 ];
-
-// function AssingRole(userId: string, role: string) {
-//   const { mutate: setRoleMutation } = useMutation({
-//     mutationKey: ["setRole"],
-//     mutationFn: async () => {
-//       const response = await fetch("/api/setRole", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ userId, role }),
-//       });
-//       if (response.ok) {
-//         alert("Роль выдана");
-//       } else {
-//         console.log(response);
-//         alert("Произошла непредвиденная ошибка");
-//       }
-//     },
-//   });
-// }
-// function AssignBalance(userId: string, balance: string) {
-//   const { mutate: setBalanceMutation } = useMutation({
-//     mutationKey: ["setBalance"],
-//     mutationFn: async () => {
-//       const response = await fetch("/api/setBalance", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({ userId, balance }),
-//       });
-//       if (response.ok) {
-//         alert("Баланс пополнен");
-//       } else {
-//         console.log(response);
-//         alert("Произошла непредвиденная ошибка");
-//       }
-//     },
-//   });
-// }

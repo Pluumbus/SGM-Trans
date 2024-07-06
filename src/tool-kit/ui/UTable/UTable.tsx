@@ -17,7 +17,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 
-export const UTable = <T,>({
+export const UTable = ({
   data = [],
   columns = [],
   name = "some table",
