@@ -46,7 +46,7 @@ export const UTable = <T,>({
 
   const tInstance = useReactTable<T>({
     data: mData,
-    columns: mColumns as UseTableColumnsSchema<T> extends ColumnDef<T>,
+    columns: mColumns as UseTableColumnsSchema<T>,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
