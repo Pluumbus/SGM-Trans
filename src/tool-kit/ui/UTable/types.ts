@@ -23,7 +23,7 @@ export type UseTableConfig<T> = {
 export type UseTableProps<T> = {
   name: string;
   data: T[];
-  columns: Array<UseTableColumnsSchema<T> extends ColumnDef<T, any>>;
+  columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>;
   config?: UseTableConfig<T>;
 };
 
