@@ -13,7 +13,6 @@ const Page: NextPage<Props> = ({}) => {
     <div>
       <span className="flex justify-center font-semibold">
         {slug === "kz" ? "Таблица КЗ" : "Таблица МСК"}
-        {/* TODO Далее уже корректить какой рендер нужен для мск таблички пока что темплейт */}
       </span>
       <WeekCard />
     </div>

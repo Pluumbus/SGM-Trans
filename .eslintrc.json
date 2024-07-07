@@ -3,6 +3,7 @@
     "next/core-web-vitals",
     "eslint:recommended",
     "plugin:react/recommended",
+    "plugin:prettier/recommended",
     "plugin:@typescript-eslint/recommended"
   ],
   "plugins": ["react", "@typescript-eslint", "prettier", "import"],
@@ -12,7 +13,7 @@
     "@next/next/no-typos": "off",
     "@next/next/no-assign-module-variable": "off",
     "react/prop-types": "off",
-    "@typescript-eslint/no-explicit-any": "warn",
+    
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "no-console": "warn", // Включить предупреждение для console.log и других консольных методов
     "no-debugger": "error", // Запретить использование debugger

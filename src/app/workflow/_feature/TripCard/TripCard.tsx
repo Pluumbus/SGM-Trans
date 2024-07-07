@@ -1,12 +1,13 @@
 "use client";
 import { useMemo } from "react";
 import { getBaseTripColumnsConfig } from "./TripTable.config";
-import { ColumnType, UseTableConfig } from "@/tool-kit/ui/UTable/types";
+import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
 import { useRouter } from "next/navigation";
 
 export type TripType = {
   trip_number: string;
+  week_id: string;
   weight: string;
   volume: string;
   quantity: string;
