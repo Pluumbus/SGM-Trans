@@ -9,7 +9,6 @@ export const getBaseTripColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<TripType>[] = [
     {
       accessorKey: "trip_number",
-      accessorFn: () => {},
       header: "Номер рейса",
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
@@ -20,7 +19,6 @@ export const getBaseTripColumnsConfig = () => {
     {
       accessorKey: "weight",
       header: "Вес",
-      accessorFn: () => {},
       size: 30,
       cell: (info: Cell<TripType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
@@ -29,7 +27,6 @@ export const getBaseTripColumnsConfig = () => {
     },
     {
       accessorKey: "volume",
-      accessorFn: () => {},
       header: "Объем",
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
@@ -40,7 +37,6 @@ export const getBaseTripColumnsConfig = () => {
 
     {
       accessorKey: "quantity",
-      accessorFn: () => {},
       header: "Кол-во",
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
@@ -51,7 +47,6 @@ export const getBaseTripColumnsConfig = () => {
     {
       accessorKey: "amount",
       header: "Сумма",
-      accessorFn: () => {},
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>

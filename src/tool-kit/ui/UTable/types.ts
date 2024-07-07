@@ -23,16 +23,16 @@ export type UseTableConfig<T> = {
 export type UseTableProps<T> = {
   name: string;
   data: T[];
-  columns: UseTableColumnsSchema<T>[];
+  columns: Array<UseTableColumnsSchema<T> extends ColumnDef<T, any>>;
   config?: UseTableConfig<T>;
 };
 
 export type UseTableColumnsSchema<T> = {
   accessorKey: string;
-  accessorFn: AccessorFn<T, any>;
+  accessorFn?: AccessorFn<T, any>;
   header: string;
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;
   filter: boolean;
-  filterFn: string | undefined;
+  filterFn?: string | undefined;
 };

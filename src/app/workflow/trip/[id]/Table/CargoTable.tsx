@@ -14,7 +14,7 @@ const tableCols = [
 
 export const getCargoTableCfg = () => {
   const fmCols = getBaseColumnsConfig().filter((column) =>
-    tableCols.includes(column.accessorKey),
+    tableCols.includes(column.accessorKey)
   );
   return fmCols;
 };

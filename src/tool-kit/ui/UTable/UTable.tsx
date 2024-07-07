@@ -17,14 +17,14 @@ import { ReactNode, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 
-export const UTable = ({
+export const UTable = <T,>({
   data = [],
   columns = [],
   name = "some table",
   config,
 }: UseTableProps<T>): ReactNode => {
   const mColumns = useMemo(() => {
-    const normalCols = columns.map((e) => {
+    const normalCols = columns.map((e: any) => {
       e.filterFn = "includesString";
       return e;
     });
@@ -46,7 +46,7 @@ export const UTable = ({
 
   const tInstance = useReactTable<T>({
     data: mData,
-    columns: mColumns as UseTableColumnsSchema<T>,
+    columns: mColumns as ColumnDef<T, any>[],
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
