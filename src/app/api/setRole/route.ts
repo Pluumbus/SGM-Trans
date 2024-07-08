@@ -7,7 +7,7 @@ export async function POST(req: NextRequest) {
   try {
     const { userId, role, balance } = await req.json();
 
-    await clerk.users.updateUser(userId, { publicMetadata: { role , balance } });
+    await clerk.users.updateUser(userId, { publicMetadata: { role, balance } });
 
     return NextResponse.json(
       { message: "Role assigned successfully" },

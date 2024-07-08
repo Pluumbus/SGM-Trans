@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
