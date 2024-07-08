@@ -21,3 +21,12 @@ export const rolesList: Dictionary = {
   Cashier: <span>Кассир</span>,
   Base: <span>Пользователь</span>,
 };
+export const roleNamesList = [
+  "Админ",
+  "Логист",
+  "Логист Москва",
+  "Супер Логист",
+  "Зав.Склада",
+  "Зав.Склада Москва",
+  "Кассир",
+];

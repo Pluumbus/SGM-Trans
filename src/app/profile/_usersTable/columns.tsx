@@ -16,16 +16,16 @@ import {
   Modal,
   Button,
   ModalContent,
-  ModalHeader,
-  useDisclosure,
   ModalBody,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { rolesList, UsersList } from "../_feature/types";
+import { roleNamesList, rolesList, UsersList } from "../_feature/types";
 import { useUser } from "@clerk/nextjs";
 import { Input } from "@nextui-org/react";
 import { useState } from "react";
-import { useDeprecatedInvertedScale } from "framer-motion";
+import React from "react";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -57,7 +57,7 @@ export const columns: ColumnDef<UsersList>[] = [
     accessorKey: "balance",
     header: "Баланс",
     cell: ({ row }) => {
-      return row.original.balance ?? "0";
+      return (row.original.balance == "" || undefined) ?? "0";
     },
   },
   {
@@ -66,8 +66,8 @@ export const columns: ColumnDef<UsersList>[] = [
     cell: ({ row }) => {
       const [isOpenRole, setIsOpenRole] = useState(false);
       const [isOpenBalance, setIsOpenBalance] = useState(false);
-      const [role, setRole] = useState("");
-      const [balance, setBalance] = useState("");
+      const [role, setRole] = useState(row.original.role);
+      const [balance, setBalance] = useState(row.original.balance);
       const [userId, setUserId] = useState("");
 
       const { mutate: setRoleMutation } = useMutation({
@@ -76,7 +76,7 @@ export const columns: ColumnDef<UsersList>[] = [
           const response = await fetch("/api/setRole", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, role }),
+            body: JSON.stringify({ userId, role, balance }),
           });
           if (response.ok) {
             alert("Роль выдана");
@@ -92,7 +92,7 @@ export const columns: ColumnDef<UsersList>[] = [
           const response = await fetch("/api/setBalance", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, balance }),
+            body: JSON.stringify({ userId, role, balance }),
           });
           if (response.ok) {
             alert("Баланс обновлен");
@@ -105,6 +105,9 @@ export const columns: ColumnDef<UsersList>[] = [
       const handleSetRole = (userId: string) => {
         setUserId(userId);
         setRoleMutation();
+      };
+      const onInputChange = (value) => {
+        setRole(value);
       };
       const handleSetBalance = (userId: string) => {
         setUserId(userId);
@@ -146,12 +149,21 @@ export const columns: ColumnDef<UsersList>[] = [
                   onSubmit={() => handleSetRole(row.original.id)}
                   className="w-2/3"
                 >
-                  <Input
+                  {/* <Input
                     type="text"
                     placeholder="Введите роль"
                     value={role}
                     onChange={(e) => setRole(e.target.value)}
-                  />
+                  /> */}
+                  <Autocomplete
+                    label="Введите роль"
+                    className="max-w-xs"
+                    onInputChange={onInputChange}
+                  >
+                    {roleNamesList.map((role: string) => (
+                      <AutocompleteItem key={role}>{role}</AutocompleteItem>
+                    ))}
+                  </Autocomplete>
                 </form>
               </ModalBody>
             </ModalContent>
