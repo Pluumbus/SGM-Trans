@@ -1,5 +1,3 @@
-"use client";
-
 import { NextPage } from "next";
 import { WeekCard } from "../_feature/WeekCard";
 import { useParams } from "next/navigation";
