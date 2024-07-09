@@ -32,7 +32,7 @@ export default function RootLayout({
               <header>
                 <Navbar />
               </header>
-              <main className="container mx-auto max-w-7xl pt-16 px-6 flex-grow mb-4">
+              <main className="w-full pt-16 px-6 flex-grow mb-4">
                 {children}
               </main>
             </div>

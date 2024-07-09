@@ -1,5 +1,6 @@
 import { TableColumn } from "@nextui-org/react";
 import { Table, HeaderGroup, SortingState } from "@tanstack/react-table";
+import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 
 type TableInstance<T> = Table<T> & {
   setSorting: (sorting: SortingState) => void;
@@ -22,18 +23,26 @@ export const renderColumns = <T,>(tInstance: TableInstance<T>) => {
       <TableColumn
         style={{ width: `${header.getSize()}px` }}
         key={header.id}
-        allowsSorting
         onClick={() => {
           setSorting([{ id: header.id, desc: !isSortedDesc }]);
         }}
       >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          {header.isPlaceholder
-            ? null
-            : header.column.columnDef.header?.toString()}
+        <div
+          style={{ display: "flex", alignItems: "center" }}
+          className="cursor-pointer hover:bg-opacity-20"
+        >
+          <span className="">
+            {header.isPlaceholder
+              ? null
+              : header.column.columnDef.header?.toString()}
+          </span>
           {isSorted && (
             <span style={{ marginLeft: "4px" }}>
-              {isSortedDesc ? "🔽" : "🔼"}
+              {isSortedDesc ? (
+                <FaArrowUp className="text-[0.6rem]" />
+              ) : (
+                <FaArrowDown className="text-[0.6rem]" />
+              )}
             </span>
           )}
         </div>

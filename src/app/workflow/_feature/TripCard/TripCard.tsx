@@ -32,12 +32,14 @@ export const TripCard = () => {
   }, []);
 
   return (
-    <UTable
-      data={mMockData}
-      columns={columns}
-      name="Cargo Table"
-      config={config}
-    />
+    <div>
+      <UTable
+        data={mMockData}
+        columns={columns}
+        name="Cargo Table"
+        config={config}
+      />
+    </div>
   );
 };
 
