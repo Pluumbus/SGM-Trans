@@ -1,5 +1,5 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["**/*.ts", "**/*.tsx", "postcss.config.js","src/**/*", ".next/types/**/*.ts"],
+    "include": ["**/*.ts", "**/*.tsx","src/**/*", "next.config.js","postcss.config.js",".next/types/**/*.ts"],
     "exclude": ["node_modules", "dist", ".next", "path/to/problematic/files","eslint.config.js"]
   }
