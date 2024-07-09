@@ -10,5 +10,5 @@ export default function Page() {
 }
 
 export async function generateStaticParams() {
-  return []; // Возвращаем пустой массив
+  return [];
 }
