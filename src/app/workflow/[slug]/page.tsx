@@ -20,3 +20,6 @@ const Page: NextPage<Props> = ({}) => {
   );
 };
 export default Page;
+export async function generateStaticParams() {
+  return [];
+}

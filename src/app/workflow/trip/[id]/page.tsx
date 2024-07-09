@@ -38,3 +38,7 @@ const Page: NextPage = ({}) => {
 };
 
 export default Page;
+
+export async function generateStaticParams() {
+  return [];
+}
