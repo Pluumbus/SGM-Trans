@@ -12,8 +12,7 @@ const getClerkClient = async () => {
     publishableKey: clerkPublishableKey,
   });
 };
-export const checkRole = async (req : any, allowedRoles: string[]): Promise<boolean> => {
-  const { userId } = getAuth(req);
+export const checkRole = async (userId : string, allowedRoles: string[]): Promise<boolean> => {
 
   if (!userId) {
     return false;

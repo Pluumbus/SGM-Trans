@@ -2,18 +2,21 @@
 
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { checkRole } from "./roleChecker";
+import { useQuery } from "@tanstack/react-query";
 //TODO: Do it better
 const RoleBasedRedirect: React.FC<{
   allowedRoles: string[];
   children: React.ReactNode;
 }> = ({ allowedRoles, children }) => {
   const [hasAccess, setHasAccess] = useState(false);
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
   useEffect(() => {
     const checkUserRole = () => {
       try {
-        const userRole = user?.publicMetadata.role as string | "Пользователь";
+        const userRole =
+          isLoaded && (user?.publicMetadata.role as string | "Пользователь");
         if (allowedRoles.includes(userRole)) {
           setHasAccess(true);
         }
@@ -22,9 +25,8 @@ const RoleBasedRedirect: React.FC<{
         console.error("Error fetching user role:", error);
       }
     };
-
     checkUserRole();
-  }, [allowedRoles]);
+  }, [allowedRoles, user]);
   if (!hasAccess) {
     return <></>;
   }
