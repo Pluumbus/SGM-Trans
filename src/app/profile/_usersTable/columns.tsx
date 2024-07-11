@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
@@ -16,16 +15,16 @@ import {
   Modal,
   Button,
   ModalContent,
-  ModalHeader,
-  useDisclosure,
   ModalBody,
+  Autocomplete,
+  AutocompleteItem,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { rolesList, UsersList } from "../_feature/types";
-import { useUser } from "@clerk/nextjs";
+import { roleNamesList, UsersList } from "../../../components/roles/types";
 import { Input } from "@nextui-org/react";
 import { useState } from "react";
-import { useDeprecatedInvertedScale } from "framer-motion";
+import React from "react";
+import { BiSend } from "react-icons/bi";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -47,18 +46,10 @@ export const columns: ColumnDef<UsersList>[] = [
   {
     accessorKey: "role",
     header: "Роль",
-    cell: ({ row }) => {
-      const { user } = useUser();
-      const role = user?.publicMetadata?.role as string | undefined;
-      return row.original.role == undefined ? "Пользователь" : rolesList[role!];
-    },
   },
   {
     accessorKey: "balance",
     header: "Баланс",
-    cell: ({ row }) => {
-      return row.original.balance ?? "0";
-    },
   },
   {
     accessorKey: "actions",
@@ -66,8 +57,8 @@ export const columns: ColumnDef<UsersList>[] = [
     cell: ({ row }) => {
       const [isOpenRole, setIsOpenRole] = useState(false);
       const [isOpenBalance, setIsOpenBalance] = useState(false);
-      const [role, setRole] = useState("");
-      const [balance, setBalance] = useState("");
+      const [role, setRole] = useState(row.original.role);
+      const [balance, setBalance] = useState(row.original.balance);
       const [userId, setUserId] = useState("");
 
       const { mutate: setRoleMutation } = useMutation({
@@ -76,8 +67,9 @@ export const columns: ColumnDef<UsersList>[] = [
           const response = await fetch("/api/setRole", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, role }),
+            body: JSON.stringify({ userId, role, balance }),
           });
+          console.log(userId, role, balance);
           if (response.ok) {
             alert("Роль выдана");
           } else {
@@ -86,13 +78,14 @@ export const columns: ColumnDef<UsersList>[] = [
           }
         },
       });
+
       const { mutate: setBalanceMutation } = useMutation({
         mutationKey: ["setBalance"],
         mutationFn: async () => {
           const response = await fetch("/api/setBalance", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, balance }),
+            body: JSON.stringify({ userId, role, balance }),
           });
           if (response.ok) {
             alert("Баланс обновлен");
@@ -105,6 +98,9 @@ export const columns: ColumnDef<UsersList>[] = [
       const handleSetRole = (userId: string) => {
         setUserId(userId);
         setRoleMutation();
+      };
+      const onInputChange = (value) => {
+        setRole(value);
       };
       const handleSetBalance = (userId: string) => {
         setUserId(userId);
@@ -144,14 +140,22 @@ export const columns: ColumnDef<UsersList>[] = [
               <ModalBody>
                 <form
                   onSubmit={() => handleSetRole(row.original.id)}
-                  className="w-2/3"
+                  className="w-2/3 flex"
                 >
-                  <Input
-                    type="text"
-                    placeholder="Введите роль"
-                    value={role}
-                    onChange={(e) => setRole(e.target.value)}
-                  />
+                  <Autocomplete
+                    label="Введите роль"
+                    className="max-w-xs"
+                    onInputChange={onInputChange}
+                  >
+                    {roleNamesList.map((role: string) => (
+                      <AutocompleteItem key={role}>{role}</AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  <div className="max-w-xs">
+                    <Button type="submit" isIconOnly>
+                      <BiSend />
+                    </Button>
+                  </div>
                 </form>
               </ModalBody>
             </ModalContent>
@@ -167,7 +171,7 @@ export const columns: ColumnDef<UsersList>[] = [
               <ModalBody>
                 <form
                   onSubmit={() => handleSetBalance(row.original.id)}
-                  className="w-2/3"
+                  className="w-2/3 flex"
                 >
                   <Input
                     type="text"
@@ -175,6 +179,9 @@ export const columns: ColumnDef<UsersList>[] = [
                     value={balance}
                     onChange={(e) => setBalance(e.target.value)}
                   />
+                  <Button type="submit" isIconOnly>
+                    <BiSend />
+                  </Button>
                 </form>
               </ModalBody>
             </ModalContent>

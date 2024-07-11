@@ -1,4 +1,5 @@
 import { SignIn } from "@clerk/nextjs";
+import React from "react";
 
 export default function Page() {
   return (
@@ -7,3 +8,6 @@ export default function Page() {
     </div>
   );
 }
+// export async function generateStaticParams() {
+//   return [];
+// }

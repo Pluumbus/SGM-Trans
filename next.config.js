@@ -1,9 +1,15 @@
-module.exports = {
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  output: "standalone",
+  trailingSlash: true,
+  skipTrailingSlashRedirect: true,
   typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
     ignoreBuildErrors: true,
   },
-}
+  experimental: {
+    typedRoutes: true,
+  },
+  reactStrictMode: true,
+};
+
+module.exports = nextConfig;

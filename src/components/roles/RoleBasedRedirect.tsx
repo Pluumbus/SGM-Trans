@@ -13,10 +13,11 @@ const RoleBasedRedirect: React.FC<{
   useEffect(() => {
     const checkUserRole = () => {
       try {
-        const userRole = user?.publicMetadata.role as string | "Guest";
+        const userRole = user?.publicMetadata.role as string | "Пользователь";
         if (allowedRoles.includes(userRole)) {
           setHasAccess(true);
         }
+        console.log(hasAccess);
       } catch (error) {
         console.error("Error fetching user role:", error);
       }

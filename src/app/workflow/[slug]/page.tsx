@@ -1,21 +1,13 @@
-"use client";
-
 import { NextPage } from "next";
-import { WeekCard } from "../_feature/WeekCard";
-import { useParams } from "next/navigation";
+import SlugRender from "./baseRender";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const { slug } = useParams();
-
-  return (
-    <div>
-      <span className="flex justify-center font-semibold">
-        {slug === "kz" ? "Таблица КЗ" : "Таблица МСК"}
-      </span>
-      <WeekCard />
-    </div>
-  );
+  return <SlugRender />;
 };
 export default Page;
+
+export async function generateStaticParams() {
+  return [];
+}

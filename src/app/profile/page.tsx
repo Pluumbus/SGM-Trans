@@ -1,12 +1,13 @@
-import { SignOutButton } from "@clerk/nextjs";
+import { ClerkProvider, SignOutButton } from "@clerk/nextjs";
 import { Button } from "@nextui-org/react";
 import { DataTable } from "./_usersTable/data-table";
 import { columns } from "./_usersTable/columns";
 import getClerkClient from "@/utils/clerk/clerk";
 import { User } from "@clerk/nextjs/server";
-import { UsersList } from "./_feature/types";
-import RoleBasedRedirect from "@/components/RoleBasedRedirect";
+import { UsersList } from "../../components/roles/types";
+import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import AssignRole from "./_feature/assignRole";
+import React from "react";
 
 async function getData(): Promise<UsersList[]> {
   const clerk = await getClerkClient();
@@ -26,8 +27,8 @@ export default async function ProfilePage() {
   const data = await getData();
   return (
     <div>
-      <AssignRole />
-      <RoleBasedRedirect allowedRoles={["Admin"]}>
+      {/* <AssignRole /> */}
+      <RoleBasedRedirect allowedRoles={["Админ"]}>
         <DataTable columns={columns} data={data} />
       </RoleBasedRedirect>
       <div className="flex justify-end mt-10">

@@ -1,21 +1,15 @@
-import { NextPage } from "next";
+"use client";
+import { UTable } from "@/tool-kit/ui";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { getBaseColumnsConfig } from "./Table/CargoTable.config";
-import { CargoType } from "../../_feature/types";
+import { Cargo } from "../../_feature/types";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import mockData from "./Table/mock.data";
-import {
-  Cities,
-  CitiesRU,
-  Drivers,
-  DriversWithCars,
-  DriversWithCarsWithTrailers,
-} from "@/lib/references";
 
-const Page: NextPage = ({}) => {
+const RenderUiTable = ({}) => {
   const columns = useMemo(() => getBaseColumnsConfig(), []);
-  const config: UseTableConfig<CargoType> = {
+  const config: UseTableConfig<Cargo> = {
     row: {
       setRowData(info) {},
       className: "cursor-pointer",
@@ -29,8 +23,6 @@ const Page: NextPage = ({}) => {
 
   return (
     <div>
-      <Cities />
-
       <div>
         <span>Номер рейса: {id}</span>
       </div>
@@ -44,8 +36,4 @@ const Page: NextPage = ({}) => {
   );
 };
 
-export default Page;
-
-export async function generateStaticParams() {
-  return [];
-}
+export default RenderUiTable;

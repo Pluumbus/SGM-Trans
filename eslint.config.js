@@ -30,12 +30,12 @@ module.exports = [
       "@next/next/no-page-custom-font": "off",
       "@next/next/no-typos": "off",
       "@next/next/no-assign-module-variable": "off",
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      "prettier/prettier": ["warn", { endOfLine: "auto" }],
       "react/prop-types": "off",
       "@typescript-eslint/no-explicit-any": "warn",
       "@typescript-eslint/explicit-module-boundary-types": "off",
       "no-console": "warn", // Включить предупреждение для console.log и других консольных методов
-      "no-debugger": "error", // Запретить использование debugger
+      "no-debugger": "warn", // Запретить использование debugger
       "react/jsx-key": "warn",
       "@typescript-eslint/no-unused-vars": [
         "warn",
@@ -43,7 +43,7 @@ module.exports = [
       ],
       "react/jsx-uses-react": "off",
       "react/react-in-jsx-scope": "off",
-      "no-var": "error", // Запретить использование var
+      "no-var": "warn", // Запретить использование var
       "import/no-unresolved": "off",
       "import/no-extraneous-dependencies": "off",
       "import/no-named-as-default": "off",

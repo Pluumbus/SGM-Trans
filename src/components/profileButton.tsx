@@ -3,6 +3,7 @@
 import { useUser } from "@clerk/nextjs";
 import { Avatar } from "@nextui-org/react";
 import Link from "next/link";
+import React from "react";
 
 export const ProfileButton = () => {
   const { user } = useUser();

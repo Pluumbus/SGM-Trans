@@ -5,6 +5,7 @@ import logo from "../app/_imgs/logo.png";
 import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/components/profileButton";
+import React from "react";
 
 const Navbar = () => {
   return (
@@ -33,7 +34,7 @@ const Navbar = () => {
           </Link> */}
         </nav>
         <SignedOut>
-          <SignInButton />
+          <SignInButton>Войти</SignInButton>
         </SignedOut>
         <SignedIn>
           <ProfileButton />
