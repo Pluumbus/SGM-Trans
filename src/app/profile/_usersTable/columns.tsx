@@ -22,9 +22,12 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { roleNamesList, UsersList } from "../../../components/roles/types";
 import { Input } from "@nextui-org/react";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import React from "react";
 import { BiSend } from "react-icons/bi";
+import { useClerk } from "@clerk/nextjs";
+import { setUserRole } from "./api";
+import { useToast } from "@/components/ui/use-toast";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -61,21 +64,29 @@ export const columns: ColumnDef<UsersList>[] = [
       const [balance, setBalance] = useState(row.original.balance);
       const [userId, setUserId] = useState("");
 
+      const { toast } = useToast();
+
       const { mutate: setRoleMutation } = useMutation({
         mutationKey: ["setRole"],
-        mutationFn: async () => {
-          const response = await fetch("/api/setRole", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, role, balance }),
+        mutationFn: async () =>
+          await setUserRole({
+            userId,
+            publicMetadata: {
+              balance,
+              role,
+            },
+          }),
+        onSuccess() {
+          toast({
+            title: "Вы успешно обновили роль",
+            description: `Вы назначили ${role} для ${userId}`,
           });
-          console.log(userId, role, balance);
-          if (response.ok) {
-            alert("Роль выдана");
-          } else {
-            console.log(response);
-            alert("Произошла непредвиденная ошибка");
-          }
+        },
+        onError(e) {
+          toast({
+            title: "Ошибка",
+            description: `${e}`,
+          });
         },
       });
 
@@ -95,7 +106,8 @@ export const columns: ColumnDef<UsersList>[] = [
           }
         },
       });
-      const handleSetRole = (userId: string) => {
+      const handleSetRole = (e: FormEvent, userId: string) => {
+        e.preventDefault();
         setUserId(userId);
         setRoleMutation();
       };
@@ -139,7 +151,7 @@ export const columns: ColumnDef<UsersList>[] = [
             <ModalContent>
               <ModalBody>
                 <form
-                  onSubmit={() => handleSetRole(row.original.id)}
+                  onSubmit={(e) => handleSetRole(e, row.original.id)}
                   className="w-2/3 flex"
                 >
                   <Autocomplete

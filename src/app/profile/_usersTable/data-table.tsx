@@ -2,7 +2,6 @@
 "use client";
 
 import {
-  ColumnDef,
   ColumnFiltersState,
   flexRender,
   getCoreRowModel,
@@ -19,20 +18,20 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
+import { Button } from "@nextui-org/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import React from "react";
-import { Input } from "@nextui-org/react";
+import { Input, Spinner } from "@nextui-org/react";
+import { useQuery } from "@tanstack/react-query";
+import { getUserList } from "../_api/requests";
+import { columns } from "./columns";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-}
+export function DataTable() {
+  const { data, isLoading } = useQuery({
+    queryKey: ["Get users for admin panel"],
+    queryFn: async () => await getUserList(),
+  });
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-}: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
@@ -47,6 +46,9 @@ export function DataTable<TData, TValue>({
       columnFilters,
     },
   });
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div>
