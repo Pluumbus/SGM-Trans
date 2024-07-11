@@ -34,7 +34,7 @@ const Navbar = () => {
           </Link> */}
         </nav>
         <SignedOut>
-          <SignInButton />
+          <SignInButton>Войти</SignInButton>
         </SignedOut>
         <SignedIn>
           <ProfileButton />
