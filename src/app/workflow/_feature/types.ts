@@ -1,5 +1,6 @@
-export type Cargo = {
+export type CargoType = {
   id: bigint;
+  trip_id: string;
   created_at: Date;
   receipt_address: string;
   unloading_city: string;

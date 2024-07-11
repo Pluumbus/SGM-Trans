@@ -1,5 +1,5 @@
 "use client";
-import { Accordion, AccordionItem, Button } from "@nextui-org/react";
+import { Accordion, AccordionItem } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 import { AddWeek } from "./AddWeek";
