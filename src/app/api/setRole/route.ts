@@ -11,13 +11,13 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json(
       { message: "Role assigned successfully" },
-      { status: 200 },
+      { status: 200 }
     );
   } catch (error) {
     console.error("Error assigning role:", error);
     return NextResponse.json(
       { error: "Error assigning role" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
