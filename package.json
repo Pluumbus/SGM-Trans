@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "prebuild":"mkdir out",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --config eslint.config.js ."
