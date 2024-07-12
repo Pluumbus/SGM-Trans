@@ -3,13 +3,13 @@ import { UTable } from "@/tool-kit/ui";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import { getBaseColumnsConfig } from "./Table/CargoTable.config";
-import { Cargo } from "../../_feature/types";
+import { CargoType } from "../../_feature/types";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import mockData from "./Table/mock.data";
 
 const RenderUiTable = ({}) => {
   const columns = useMemo(() => getBaseColumnsConfig(), []);
-  const config: UseTableConfig<Cargo> = {
+  const config: UseTableConfig<CargoType> = {
     row: {
       setRowData(info) {},
       className: "cursor-pointer",

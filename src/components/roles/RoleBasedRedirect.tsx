@@ -2,9 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { checkRole } from "./roleChecker";
-import { useQuery } from "@tanstack/react-query";
-//TODO: Do it better
+
 const RoleBasedRedirect: React.FC<{
   allowedRoles: string[];
   children: React.ReactNode;
