@@ -6,9 +6,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    typedRoutes: true,
-  },
+
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -19,15 +17,6 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
-  },
-  exportPathMap: async function (
-    defaultPathMap,
-    { dev, dir, outDir, distDir, buildId }
-  ) {
-    return {
-      "/": { page: "/" },
-      // Add other routes here
-    };
   },
 };
 
