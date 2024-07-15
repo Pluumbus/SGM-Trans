@@ -6,10 +6,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    typedRoutes: true,
-  },
-  reactStrictMode: true,
+
   images: {
     remotePatterns: [
       {
