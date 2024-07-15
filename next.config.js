@@ -1,6 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "standalone",
+  basePath: "/",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   typescript: {
@@ -8,6 +9,7 @@ const nextConfig = {
   },
 
   images: {
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: "https",
