@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NEXT_PUBLIC_OUTPUT || "standalone",
+  output: "standalone",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   typescript: {
