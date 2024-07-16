@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  output: "standalone",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   typescript: {
@@ -17,6 +17,19 @@ const nextConfig = {
         pathname: "/**",
       },
     ],
+  },
+  async headers() {
+    return [
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "no-store, max-age=0",
+          },
+        ],
+      },
+    ];
   },
 };
 

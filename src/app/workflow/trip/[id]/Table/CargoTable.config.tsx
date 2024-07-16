@@ -1,37 +1,34 @@
 "use client";
+import { CargoType } from "@/app/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
-import { Cargo } from "../types";
 
 export const getBaseColumnsConfig = () => {
-  const columnsConfig: UseTableColumnsSchema<Cargo>[] = [
+  const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
     {
       accessorKey: "id",
-
       header: "ID",
       size: 10,
       filter: false,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
     },
     {
       accessorKey: "created_at",
-
       header: "Дата создания",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{new Date(info?.getValue() as string).toLocaleDateString()}</span>
       ),
       filter: true,
     },
     {
       accessorKey: "receipt_address",
-
       header: "Адрес получения",
       size: 30,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -41,7 +38,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Город разгрузки",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -51,7 +48,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Вес",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -61,7 +58,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Объем",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -71,7 +68,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Количество",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -81,7 +78,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Водитель",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -91,7 +88,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Сумма",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -101,7 +98,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Распалетирование",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -111,7 +108,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Комментарии",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -121,7 +118,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Имя клиента",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -131,7 +128,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "БИН клиента",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -141,7 +138,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Название груза",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -151,7 +148,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Плательщик",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -161,7 +158,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Менеджер по перевозкам",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -171,7 +168,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Наличие документов",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -181,7 +178,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Статус",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -191,7 +188,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Дата прибытия",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{new Date(info.getValue() as string)?.toLocaleDateString()}</span>
       ),
       filter: false,
@@ -201,7 +198,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Менеджер SGM",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -211,7 +208,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Оплата",
       size: 20,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -221,7 +218,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "Схема загрузки",
       size: 25,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,
@@ -231,7 +228,7 @@ export const getBaseColumnsConfig = () => {
 
       header: "ID пользователя",
       size: 15,
-      cell: (info: Cell<Cargo, ReactNode>) => (
+      cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{info.getValue()?.toString()}</span>
       ),
       filter: false,

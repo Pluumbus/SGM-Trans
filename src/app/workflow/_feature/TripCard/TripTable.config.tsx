@@ -12,7 +12,7 @@ export const getBaseTripColumnsConfig = () => {
       header: "Номер рейса",
       size: 20,
       cell: (info: Cell<TripType, ReactNode>) => (
-        <span>{info?.getValue()?.toString()}</span>
+        <span>{info.getValue()?.toString()}</span>
       ),
       filter: true,
     },
