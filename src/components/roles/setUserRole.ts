@@ -2,7 +2,7 @@
 
 import getClerkClient from "@/utils/clerk/clerk";
 
-export const setUserRole = async ({
+export const setUserData = async ({
   userId,
   publicMetadata: { role, balance },
 }: {

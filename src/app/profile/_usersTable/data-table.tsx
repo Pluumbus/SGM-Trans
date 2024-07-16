@@ -114,7 +114,7 @@ export function DataTable() {
         <div className="flex items-center justify-between space-x-2 py-1">
           <div>
             <Button
-              variant="ghost"
+              variant="light"
               size="sm"
               onClick={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
@@ -124,7 +124,7 @@ export function DataTable() {
           </div>
           <div>
             <Button
-              variant="ghost"
+              variant="light"
               size="sm"
               onClick={() => table.nextPage()}
               disabled={!table.getCanNextPage()}

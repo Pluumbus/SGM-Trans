@@ -1,15 +1,23 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "standalone",
+  output: "export",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   typescript: {
     ignoreBuildErrors: true,
   },
-  experimental: {
-    typedRoutes: true,
+
+  images: {
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "encrypted-tbn0.gstatic.com",
+        port: "",
+        pathname: "/**",
+      },
+    ],
   },
-  reactStrictMode: true,
 };
 
 module.exports = nextConfig;

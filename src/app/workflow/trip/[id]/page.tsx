@@ -1,17 +1,12 @@
+"use client";
 import { NextPage } from "next";
+import { UTable } from "@/tool-kit/ui";
+import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useParams } from "next/navigation";
 import { useMemo } from "react";
-import { getBaseColumnsConfig } from "./Table/CargoTable.config";
 import { CargoType } from "../../_feature/types";
-import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
+import { getBaseColumnsConfig } from "./Table/CargoTable.config";
 import mockData from "./Table/mock.data";
-import {
-  Cities,
-  CitiesRU,
-  Drivers,
-  DriversWithCars,
-  DriversWithCarsWithTrailers,
-} from "@/lib/references";
 
 const Page: NextPage = ({}) => {
   const columns = useMemo(() => getBaseColumnsConfig(), []);
@@ -29,8 +24,6 @@ const Page: NextPage = ({}) => {
 
   return (
     <div>
-      <Cities />
-
       <div>
         <span>Номер рейса: {id}</span>
       </div>
@@ -45,7 +38,3 @@ const Page: NextPage = ({}) => {
 };
 
 export default Page;
-
-export async function generateStaticParams() {
-  return [];
-}

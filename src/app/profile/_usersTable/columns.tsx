@@ -25,8 +25,7 @@ import { Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import React from "react";
 import { BiSend } from "react-icons/bi";
-import { useClerk } from "@clerk/nextjs";
-import { setUserRole } from "./api";
+import { setUserData } from "../../../components/roles/setUserRole";
 import { useToast } from "@/components/ui/use-toast";
 
 export const columns: ColumnDef<UsersList>[] = [
@@ -63,13 +62,12 @@ export const columns: ColumnDef<UsersList>[] = [
       const [role, setRole] = useState(row.original.role);
       const [balance, setBalance] = useState(row.original.balance);
       const [userId, setUserId] = useState("");
-
       const { toast } = useToast();
 
       const { mutate: setRoleMutation } = useMutation({
         mutationKey: ["setRole"],
         mutationFn: async () =>
-          await setUserRole({
+          await setUserData({
             userId,
             publicMetadata: {
               balance,
@@ -78,8 +76,7 @@ export const columns: ColumnDef<UsersList>[] = [
           }),
         onSuccess() {
           toast({
-            title: "Вы успешно обновили роль",
-            description: `Вы назначили ${role} для ${userId}`,
+            title: `Вы успешно обновили данные для ${row.original.userName}`,
           });
         },
         onError(e) {
@@ -90,22 +87,6 @@ export const columns: ColumnDef<UsersList>[] = [
         },
       });
 
-      const { mutate: setBalanceMutation } = useMutation({
-        mutationKey: ["setBalance"],
-        mutationFn: async () => {
-          const response = await fetch("/api/setBalance", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId, role, balance }),
-          });
-          if (response.ok) {
-            alert("Баланс обновлен");
-          } else {
-            console.log(response);
-            alert("Произошла непредвиденная ошибка");
-          }
-        },
-      });
       const handleSetRole = (e: FormEvent, userId: string) => {
         e.preventDefault();
         setUserId(userId);
@@ -114,10 +95,7 @@ export const columns: ColumnDef<UsersList>[] = [
       const onInputChange = (value) => {
         setRole(value);
       };
-      const handleSetBalance = (userId: string) => {
-        setUserId(userId);
-        setBalanceMutation();
-      };
+
       return (
         <>
           <DropdownMenu>
@@ -142,29 +120,24 @@ export const columns: ColumnDef<UsersList>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Modal
-            isOpen={isOpenRole}
-            onOpenChange={() => setIsOpenRole(false)}
-            isDismissable={false}
-            isKeyboardDismissDisabled={true}
-          >
+          <Modal isOpen={isOpenRole} onOpenChange={() => setIsOpenRole(false)}>
             <ModalContent>
               <ModalBody>
                 <form
                   onSubmit={(e) => handleSetRole(e, row.original.id)}
-                  className="w-2/3 flex"
+                  className="flex"
                 >
                   <Autocomplete
                     label="Введите роль"
-                    className="max-w-xs"
+                    className="max-w-xs w-2/4"
                     onInputChange={onInputChange}
                   >
                     {roleNamesList.map((role: string) => (
                       <AutocompleteItem key={role}>{role}</AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  <div className="max-w-xs">
-                    <Button type="submit" isIconOnly>
+                  <div className="max-w-xs ml-10">
+                    <Button type="submit" isIconOnly size="lg" variant="light">
                       <BiSend />
                     </Button>
                   </div>
@@ -182,7 +155,7 @@ export const columns: ColumnDef<UsersList>[] = [
             <ModalContent>
               <ModalBody>
                 <form
-                  onSubmit={() => handleSetBalance(row.original.id)}
+                  onSubmit={(e) => handleSetRole(e, row.original.id)}
                   className="w-2/3 flex"
                 >
                   <Input

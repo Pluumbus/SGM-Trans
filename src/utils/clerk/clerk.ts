@@ -12,16 +12,5 @@ const getClerkClient = async () => {
     publishableKey: clerkPublishableKey,
   });
 };
-export const checkRole = async (req : any, allowedRoles: string[]): Promise<boolean> => {
-  const { userId } = getAuth(req);
 
-  if (!userId) {
-    return false;
-  }
-
-  const user = await (await getClerkClient()).users.getUser(userId);
-  const userRole = user.publicMetadata?.role as string;
-
-  return allowedRoles.includes(userRole);
-};
 export default getClerkClient;
