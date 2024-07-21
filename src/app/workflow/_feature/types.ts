@@ -1,5 +1,5 @@
 export type CargoType = {
-  id: bigint;
+  id: number;
   trip_id: string;
   created_at: Date;
   receipt_address: string;
@@ -18,7 +18,7 @@ export type CargoType = {
   transportation_manager: string;
   is_documents: boolean;
   status: string;
-  arrival_date: Date;
+  arrival_date: string;
   sgm_manager: string;
   payment: string;
   loading_scheme: string;
