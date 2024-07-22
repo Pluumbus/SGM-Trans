@@ -24,3 +24,9 @@ export type CargoType = {
   loading_scheme: string;
   user_id: string;
 };
+
+export type WeekType = {
+  id: number;
+  created_at: Date;
+  user_id: string;
+};

@@ -1,10 +1,6 @@
-import { Cargo } from "@/app/workflow/trip/[id]/types";
 import { useToast } from "@/components/ui/use-toast";
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
-  Calendar,
   Checkbox,
   DateInput,
   Divider,
@@ -14,18 +10,19 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  useDisclosure,
 } from "@nextui-org/react";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { addCargo } from "../requests";
-import { CargoType } from "../../types";
+import { addCargo } from "../WeekCard/requests";
+import { CargoType } from "../types";
 
 export const CargoModal = ({
   isOpenCargo,
   onOpenChangeCargo,
+  trip_id,
 }: {
+  trip_id: string;
   isOpenCargo: boolean;
   onOpenChangeCargo: () => void;
 }) => {
@@ -48,7 +45,7 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
-    mutate(data);
+    mutate({ ...data, trip_id });
   };
 
   return (

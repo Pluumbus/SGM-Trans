@@ -14,7 +14,7 @@ export type TripType = {
   amount: string;
 };
 
-export const TripCard = () => {
+export const TripCard = ({ trips }: { trips: TripType[] }) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const router = useRouter();
 
@@ -27,14 +27,19 @@ export const TripCard = () => {
     },
   };
 
-  const mMockData = useMemo(() => {
-    return mockData;
-  }, []);
+  // Trip w/o weeks
+  const getCleanTrip = (trips) => {
+    return trips.map((e) => {
+      delete e.weeks;
+      return e;
+    });
+  };
 
   return (
     <div>
+      <pre>{JSON.stringify(getCleanTrip(trips), null, 2)}</pre>
       <UTable
-        data={mMockData}
+        data={trips}
         columns={columns}
         name="Cargo Table"
         config={config}
@@ -42,27 +47,3 @@ export const TripCard = () => {
     </div>
   );
 };
-
-const mockData: Array<TripType> = [
-  {
-    trip_number: "1",
-    amount: "1800000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "80 кг",
-  },
-  {
-    trip_number: "2",
-    amount: "8900000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "70 кг",
-  },
-  {
-    trip_number: "3",
-    amount: "2900000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "80 кг",
-  },
-];
