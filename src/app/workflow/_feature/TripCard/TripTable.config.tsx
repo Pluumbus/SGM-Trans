@@ -17,7 +17,7 @@ export const getBaseTripColumnsConfig = () => {
       filter: true,
     },
     {
-      accessorKey: "weight",
+      accessorKey: "amount",
       header: "Вес",
       size: 30,
       cell: (info: Cell<TripType, ReactNode>) => (

@@ -1,5 +1,5 @@
 "use client";
-import { Accordion, AccordionItem, Spinner } from "@nextui-org/react";
+import { Accordion, AccordionItem, Divider, Spinner } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 import { AddWeek } from "./AddWeek";
@@ -56,7 +56,9 @@ export const WeekCard = () => {
   return (
     <div>
       <AddWeek />
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre> */}
+      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
+      <Divider />
+      <pre>{JSON.stringify(groupedWeeks, null, 2)}</pre> */}
 
       <div className="flex gap-4 w-full min-h-44">
         <Accordion selectionMode="multiple">
@@ -80,9 +82,9 @@ const SummaryOfTrip = ({ week }) => {
   const { user } = useUser();
   return (
     <div className="flex gap-2">
-      <span>{week.trips.length} trips</span>
+      <span>рейсов: {week.trips.length}</span>
       <span>
-        {week.trips.reduce((acc, trip) => acc + trip.cargos.length, 0)} cargos
+        грузов: {week.trips.reduce((acc, trip) => acc + trip.cargos.length, 0)}
       </span>
       <span>{new Date(week.created_at).toLocaleDateString()}</span>
       <span>{new Date(week.created_at).toLocaleTimeString()}</span>
