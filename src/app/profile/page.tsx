@@ -7,6 +7,8 @@ import {
   QueryClient,
 } from "@tanstack/react-query";
 import { getUserList } from "./_api/requests";
+import { SignOutButton } from "@clerk/nextjs";
+import RenderButton from "@/components/pdfGen";
 
 export default async function ProfilePage() {
   const queryClient = new QueryClient();
@@ -15,10 +17,14 @@ export default async function ProfilePage() {
     queryFn: async () => await getUserList(),
   });
   return (
-    <HydrationBoundary state={dehydrate(queryClient)}>
-      <RoleBasedRedirect allowedRoles={["Админ"]}>
-        <DataTable />
-      </RoleBasedRedirect>
-    </HydrationBoundary>
+    <div>
+      <HydrationBoundary state={dehydrate(queryClient)}>
+        <RoleBasedRedirect allowedRoles={["Админ"]}>
+          <DataTable />
+        </RoleBasedRedirect>
+      </HydrationBoundary>
+      <RenderButton />
+      <SignOutButton></SignOutButton>
+    </div>
   );
 }
