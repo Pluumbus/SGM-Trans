@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: "export",
+  output: "standalone",
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
   typescript: {
@@ -21,3 +21,4 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
+ 
