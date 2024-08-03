@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const isProduction = process.env.NODE_ENV === "production";
-const outputDir = process.env.BRANCH === 'dev' ? 'dev' : '.next';
+const outputDir = process.env.BRANCH === "dev" ? "dev" : ".next";
 
 const nextConfig = {
-  output: 'export',
+  output: "export",
   distDir: outputDir,
   compiler: {
     reactRemoveProperties: isProduction,
@@ -34,4 +34,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
- 
