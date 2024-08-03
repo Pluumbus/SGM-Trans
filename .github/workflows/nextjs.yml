@@ -1,8 +1,10 @@
 name: Deploy Next.js site 
+
 on:
   push:
     branches: ["main"]
   workflow_dispatch:
+
 permissions:
   contents: read
   pages: write
@@ -47,11 +49,14 @@ jobs:
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
+      - name: List build output
+        run: ls -la .next
+
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: site
-          path: out
+          path: .next
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,10 +66,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: site
-          path: out
+          path: .next
 
       - name: List build directory
-        run: ls out
+        run: ls -la .next
 
       - name: Copy files via SSH
         env:
@@ -75,4 +80,4 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > private_key
           chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no -P $SSH_PORT -r out/* $SSH_USER@$SSH_HOST:/opt/web
+          scp -i private_key -o StrictHostKeyChecking=no -P $SSH_PORT -r .next/* $SSH_USER@$SSH_HOST:/opt/web
