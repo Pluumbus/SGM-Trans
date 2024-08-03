@@ -3,7 +3,7 @@ const isProduction = process.env.NODE_ENV === "production";
 const outputDir = process.env.BRANCH === 'dev' ? 'dev' : '.next';
 
 const nextConfig = {
-  output: 'standalone',
+  output: 'export',
   distDir: outputDir,
   compiler: {
     reactRemoveProperties: isProduction,
