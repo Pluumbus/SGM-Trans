@@ -1,14 +1,17 @@
-import { SignIn } from "@clerk/nextjs";
+import { SignIn, SignUp } from "@clerk/nextjs";
+import { NextPage } from "next";
 import React from "react";
-
-export default function Page() {
+interface Props {
+  params: {};
+}
+const Page: NextPage<Props> = ({}) => {
   return (
     <div className="flex justify-center py-24">
       <SignIn />
     </div>
   );
-}
+};
 export async function generateStaticParams() {
-  // Поскольку ваш маршрут является динамическим и может быть пустым, вернем массив с пустым объектом
   return [{}];
 }
+export default Page;
