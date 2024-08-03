@@ -1,4 +1,3 @@
-"use client";
 import { SignUp } from "@clerk/nextjs";
 import React from "react";
 
@@ -8,4 +7,7 @@ export default function Page() {
       <SignUp />
     </div>
   );
+}
+export async function generateStaticParams() {
+  return [{}];
 }
