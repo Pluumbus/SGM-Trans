@@ -12,15 +12,11 @@ export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         setIsEditing((prev) => !prev);
       }}
     >
-      {isEditing ? (
-        <Textarea
-          variant="underlined"
-          className="min-w-20"
-          defaultValue={info.getValue()?.toString()}
-        />
-      ) : (
-        <span>{info.getValue()?.toString()}</span>
-      )}
+      <Textarea
+        variant="underlined"
+        className="min-w-20"
+        defaultValue={info.getValue()?.toString()}
+      />
     </div>
   );
 };

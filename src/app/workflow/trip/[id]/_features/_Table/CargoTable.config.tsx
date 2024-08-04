@@ -13,7 +13,7 @@ export const getBaseColumnsConfig = () => {
       size: 10,
       filter: false,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
+        <span>{Number(info.row.id) + 1}</span>
       ),
     },
     {

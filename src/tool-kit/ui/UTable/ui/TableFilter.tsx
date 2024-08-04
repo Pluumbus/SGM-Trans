@@ -63,7 +63,7 @@
 import { useState, useEffect } from "react";
 import { Input } from "@nextui-org/react";
 
-export const TableFilter = ({ tInstance, headerId }) => {
+export const TableFilter = ({ tInstance, headerId, header }) => {
   const [filterValue, setFilterValue] = useState("");
 
   useEffect(() => {
@@ -86,10 +86,13 @@ export const TableFilter = ({ tInstance, headerId }) => {
   return (
     <Input
       isClearable
+      onClick={() => {
+        console.log(header);
+      }}
       variant="underlined"
       value={filterValue}
       onChange={onFilterChange}
-      placeholder={`Отсортировать по ${headerId}`}
+      placeholder={`Отсортировать по ${header}`}
     />
   );
 };
