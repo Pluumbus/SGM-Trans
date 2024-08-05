@@ -1,3 +1,5 @@
+import logo from "../../app/_imgs/logo.png";
+
 export const stylesTemp = `body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -107,9 +109,12 @@ export const bodyHtmlTemp =
                 <p>ТОО «SGM - Trans»</p>
                 <p>г. Нур-Султан, ул. Пушкина, 39</p>
                 <p>тел.: 8 (7172) 48-43-41</p>
-                <p>skype: perevozchik-sgm</p>
                 <p>e-mail: admin@sgm-trans.com</p>
                 <p><a href="http://www.sgm-trans.com/">www.sgm-trans.com</a></p>
+            </div>
+            <div>
+            ${logo}
+            <img src="${logo}"/>
             </div>
         </header>
 
@@ -135,7 +140,7 @@ export const bodyHtmlTemp =
                     <td>Подпись</td>
                 </tr>
             </table>
-            <p>склад №2</p>
+            <p>Cклад №2</p>
         </section>
     </div>`
 // `<div class="container">
