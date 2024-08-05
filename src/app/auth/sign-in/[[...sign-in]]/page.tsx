@@ -1,5 +1,7 @@
+
 import { SignIn, SignUp } from "@clerk/nextjs";
 import { NextPage } from "next";
+
 import React from "react";
 interface Props {
   params: {};

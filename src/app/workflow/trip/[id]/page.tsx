@@ -1,40 +1,26 @@
+
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { NextPage } from "next";
-import { UTable } from "@/tool-kit/ui";
-import mockData from "./Table/mock.data";
-import { getBaseColumnsConfig } from "./Table/CargoTable.config";
-import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
-import { CargoType } from "../../_feature/types";
-interface Props {
-  params: {
-    id: string;
-  };
-}
+import { getCargos } from "../_api";
+import { WorkflowPage } from "./_features/Page";
 
-const Page: NextPage<Props> = ({ params }) => {
-  const { id } = params;
+const Page: NextPage = async ({}) => {
+  const queryClient = new QueryClient();
 
-  const columns = getBaseColumnsConfig();
-  const config: UseTableConfig<CargoType> = {
-    row: {
-      setRowData(info) {},
-      className: "cursor-pointer",
-    },
-  };
+  await queryClient.prefetchQuery({
+    queryKey: ["cargos"],
+    queryFn: async () => await getCargos(),
+  });
 
   return (
-    <div>
-      <div>
-        <div>
-          <span>Номер рейса: {id}</span>
-        </div>
-        <UTable
-          data={mockData}
-          columns={columns}
-          name="Cargo Table"
-          config={config}
-        />
-      </div>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <WorkflowPage />
+    </HydrationBoundary>
+
   );
 };
 
