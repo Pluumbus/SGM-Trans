@@ -1,6 +1,10 @@
+import { Cargo } from "@/app/workflow/trip/[id]/types";
 import { useToast } from "@/components/ui/use-toast";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
+  Calendar,
   Checkbox,
   DateInput,
   Divider,
@@ -10,34 +14,31 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  useDisclosure,
 } from "@nextui-org/react";
 import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
-import { addCargo } from "../WeekCard/requests";
-import { CargoType } from "../types";
-import { Cities, DriversWithCars } from "@/lib/references";
+import { addCargo } from "../requests";
+import { CargoType } from "../../types";
 
 export const CargoModal = ({
   isOpenCargo,
   onOpenChangeCargo,
-  trip_id,
 }: {
-  trip_id: string;
   isOpenCargo: boolean;
   onOpenChangeCargo: () => void;
 }) => {
   const { toast } = useToast();
-  const { register, handleSubmit, control, setValue } = useForm<CargoType>();
+  const { register, handleSubmit, control } = useForm<CargoType>();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: async (data: CargoType) => await addCargo(data),
     onSuccess: () => {
       toast({
         title: "Успех",
         description: "Вы успешно добавили груз",
       });
-      onOpenChangeCargo();
     },
     onError: () => {
       toast({
@@ -47,7 +48,7 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
-    mutate({ ...data, trip_id: trip_id || "1" });
+    mutate(data);
   };
 
   return (
@@ -59,34 +60,11 @@ export const CargoModal = ({
           <ModalBody>
             <div className="grid grid-cols-2 gap-2 w-full">
               <Input {...register("receipt_address")} label="Адрес получения" />
-              <Controller
-                control={control}
-                name="unloading_city"
-                render={({ field }) => (
-                  <Cities
-                    selectedKey={field.value}
-                    onSelectionChange={(e) => {
-                      setValue("unloading_city", e.toString());
-                    }}
-                  />
-                )}
-              />
-
+              <Input {...register("unloading_city")} label="Город разгрузки" />
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
               <Input {...register("quantity")} label="Количество" />
-              <Controller
-                control={control}
-                name="driver"
-                render={({ field }) => (
-                  <DriversWithCars
-                    selectedKey={field.value}
-                    onSelectionChange={(e) => {
-                      setValue("driver", e.toString());
-                    }}
-                  />
-                )}
-              />
+              <Input {...register("driver")} label="Водитель" />
               <Input {...register("amount")} label="Сумма" />
               <Controller
                 control={control}
@@ -139,12 +117,7 @@ export const CargoModal = ({
             >
               Отмена
             </Button>
-            <Button
-              variant="flat"
-              color="success"
-              type="submit"
-              isLoading={isPending}
-            >
+            <Button variant="flat" color="success" type="submit">
               Добавить груз
             </Button>
           </ModalFooter>
