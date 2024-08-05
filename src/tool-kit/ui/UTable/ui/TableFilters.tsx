@@ -8,13 +8,13 @@ export const TableFilters = ({ headers }: any) => {
           <Input
             key={header.column.id}
             variant="underlined"
-            label={`Отсортировать по ${header.column.id}`}
+            label={`Отсортировать по ${header.column.columnDef.header.toString().toLowerCase()}`}
             value={(header.column.getFilterValue() ?? "") as string}
             onChange={(e) => {
               header.column.setFilterValue(e.target.value);
             }}
           />
-        ) : null,
+        ) : null
       )}
     </>
   );

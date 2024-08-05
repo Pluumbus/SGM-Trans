@@ -12,6 +12,9 @@ import {
 } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import React from "react";
+import { useMutation } from "@tanstack/react-query";
+import supabase from "@/utils/supabase/client";
+import { useToast } from "@/components/ui/use-toast";
 
 export const TripModal = ({
   onOpenChangeCargo,
@@ -21,6 +24,28 @@ export const TripModal = ({
   const { isOpen: isOpenTrip, onOpenChange: onOpenChangeTrip } =
     useDisclosure();
   const {} = useForm();
+
+  const { toast } = useToast();
+
+  const { mutate: addWeek } = useMutation({
+    mutationFn: async () => {
+      await supabase.from(`weeks`).insert({});
+    },
+    onSuccess: () => {
+      toast({
+        title: "Успех",
+        description: "Вы успешно создали неделю",
+      });
+      onOpenChangeTrip();
+    },
+    onError: () => {
+      toast({
+        title: "Произошла ошибка",
+        description: "Попробуйте позже",
+      });
+      onOpenChangeTrip();
+    },
+  });
   return (
     <div>
       <div className="w-full flex justify-end">
@@ -147,11 +172,20 @@ export const TripModal = ({
               variant="flat"
               color="success"
               onClick={() => {
+                addWeek();
+              }}
+            >
+              Создать только неделю
+            </Button>
+            <Button
+              variant="solid"
+              color="success"
+              onClick={() => {
                 onOpenChangeTrip();
                 onOpenChangeCargo();
               }}
             >
-              Далее
+              Создать путь
             </Button>
           </ModalFooter>
         </ModalContent>

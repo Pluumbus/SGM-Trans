@@ -1,6 +1,16 @@
-"use client";
-import React from "react";
 
-export default function Home() {
-  return <div className=" flex flex-col gap-2"></div>;
-}
+"use client";
+import { NextPage } from "next";
+
+
+interface Props {}
+
+const Page: NextPage<Props> = ({}) => {
+  return (
+    <div className=" flex flex-col gap-2">
+      <span>Домашнаяя страница</span>
+    </div>
+  );
+};
+
+export default Page;

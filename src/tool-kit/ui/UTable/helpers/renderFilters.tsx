@@ -10,6 +10,7 @@ export const Filters = ({ tInstance }: any) => {
         <TableFilter
           key={header.id}
           headerId={header.id}
+          header={header}
           tInstance={tInstance}
         />
       ));

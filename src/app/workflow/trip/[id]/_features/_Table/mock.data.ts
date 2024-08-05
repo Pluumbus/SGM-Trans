@@ -1,9 +1,17 @@
-import { Cargo } from "../types";
+import { CargoType } from "@/app/workflow/_feature/types";
 
-const mockData: Cargo[] = [
+// Helper function to format dates
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+const mockData: CargoType[] = [
   {
-    id: BigInt(1),
-    created_at: new Date("2024-06-21T10:30:00Z"),
+    id: 1,
+    created_at: formatDate(new Date("2024-06-21T10:30:00Z")),
     receipt_address: "ул. Ленина, д. 1, Москва",
     unloading_city: "Москва",
     weight: "1000 кг",
@@ -20,15 +28,15 @@ const mockData: Cargo[] = [
     transportation_manager: "Петр Петров",
     is_documents: true,
     status: "В пути",
-    arrival_date: new Date("2024-06-25T14:00:00"),
+    arrival_date: formatDate(new Date("2024-06-25T14:00:00Z")),
     sgm_manager: "Сергей Сергеев",
     payment: "Оплачено",
     loading_scheme: "Стандарт",
     user_id: "user123",
   },
   {
-    id: BigInt(2),
-    created_at: new Date("2024-06-20T09:15:00Z"),
+    id: 2,
+    created_at: formatDate(new Date("2024-06-20T09:15:00Z")),
     receipt_address: "пр. Мира, д. 2, Санкт-Петербург",
     unloading_city: "Санкт-Петербург",
     weight: "1500 кг",
@@ -45,15 +53,15 @@ const mockData: Cargo[] = [
     transportation_manager: "Мария Иванова",
     is_documents: false,
     status: "Доставлено",
-    arrival_date: new Date("2024-06-24T08:00:00"),
+    arrival_date: formatDate(new Date("2024-06-24T08:00:00Z")),
     sgm_manager: "Ольга Сидорова",
     payment: "Не оплачено",
     loading_scheme: "Индивидуальная",
     user_id: "user456",
   },
   {
-    id: BigInt(3),
-    created_at: new Date("2024-06-19T12:45:00Z"),
+    id: 3,
+    created_at: formatDate(new Date("2024-06-19T12:45:00Z")),
     receipt_address: "ул. Пушкина, д. 3, Казань",
     unloading_city: "Казань",
     weight: "1200 кг",
@@ -70,15 +78,15 @@ const mockData: Cargo[] = [
     transportation_manager: "Андрей Кузнецов",
     is_documents: true,
     status: "В пути",
-    arrival_date: new Date("2024-06-23T16:00:00"),
+    arrival_date: formatDate(new Date("2024-06-23T16:00:00Z")),
     sgm_manager: "Дмитрий Ковалев",
     payment: "Оплачено",
     loading_scheme: "Стандарт",
     user_id: "user789",
   },
   {
-    id: BigInt(4),
-    created_at: new Date("2024-06-18T14:30:00Z"),
+    id: 4,
+    created_at: formatDate(new Date("2024-06-18T14:30:00Z")),
     receipt_address: "ул. Чехова, д. 4, Новосибирск",
     unloading_city: "Новосибирск",
     weight: "900 кг",
@@ -95,15 +103,15 @@ const mockData: Cargo[] = [
     transportation_manager: "Елена Захарова",
     is_documents: false,
     status: "В пути",
-    arrival_date: new Date("2024-06-22T10:00:00"),
+    arrival_date: formatDate(new Date("2024-06-22T10:00:00Z")),
     sgm_manager: "Юрий Жуков",
     payment: "Не оплачено",
     loading_scheme: "Индивидуальная",
     user_id: "user321",
   },
   {
-    id: BigInt(5),
-    created_at: new Date("2024-06-17T11:00:00Z"),
+    id: 5,
+    created_at: formatDate(new Date("2024-06-17T11:00:00Z")),
     receipt_address: "ул. Гоголя, д. 5, Екатеринбург",
     unloading_city: "Екатеринбург",
     weight: "1100 кг",
@@ -120,7 +128,7 @@ const mockData: Cargo[] = [
     transportation_manager: "Виктория Петрова",
     is_documents: true,
     status: "В пути",
-    arrival_date: new Date("2024-06-21T12:00:00"),
+    arrival_date: formatDate(new Date("2024-06-21T12:00:00Z")),
     sgm_manager: "Григорий Орлов",
     payment: "Оплачено",
     loading_scheme: "Стандарт",

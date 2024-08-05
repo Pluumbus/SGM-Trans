@@ -25,7 +25,7 @@ import { Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import React from "react";
 import { BiSend } from "react-icons/bi";
-import { setUserData } from "../../../components/roles/setUserRole";
+import { setUserData } from "../../../components/roles/setUserData";
 import { useToast } from "@/components/ui/use-toast";
 
 export const columns: ColumnDef<UsersList>[] = [

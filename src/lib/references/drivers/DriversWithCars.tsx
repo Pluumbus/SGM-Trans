@@ -3,10 +3,15 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getDriversWithCars } from "./api";
-import { Autocomplete, AutocompleteItem, Spinner } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  AutocompleteProps,
+  Spinner,
+} from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 
-export const DriversWithCars = () => {
+export const DriversWithCars = (autocompleteProps: AutocompleteProps) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getDrivers"],
@@ -19,7 +24,7 @@ export const DriversWithCars = () => {
   }
   return (
     <div className="max-w-80">
-      <Autocomplete label="Выберите водителя">
+      <Autocomplete label="Выберите водителя" {...autocompleteProps}>
         {data?.data?.map((e, i) => (
           <AutocompleteItem
             key={i}

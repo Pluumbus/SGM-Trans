@@ -4,17 +4,19 @@ import { getBaseTripColumnsConfig } from "./TripTable.config";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
 import { useRouter } from "next/navigation";
+import { CargoType } from "../types";
 
 export type TripType = {
   trip_number: string;
   week_id: string;
   weight: string;
   volume: string;
+  payment: string;
   quantity: string;
   amount: string;
 };
 
-export const TripCard = () => {
+export const TripCard = ({ trips }: { trips: TripType[] }) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const router = useRouter();
 
@@ -27,14 +29,43 @@ export const TripCard = () => {
     },
   };
 
-  const mMockData = useMemo(() => {
-    return mockData;
-  }, []);
+  const extractCargos = (
+    trips
+  ): Array<{
+    cargos: CargoType[];
+    trip_number: string;
+  }> => {
+    return trips.map((e) => {
+      return {
+        cargos: e.cargos,
+        trip_number: e.id,
+      };
+    });
+  };
+
+  const getSummaryFromCargos = (data: {
+    cargos: CargoType[];
+    trip_number: string;
+  }) => {
+    return {
+      trip_number: data.trip_number,
+      ...data.cargos.reduce(
+        (acc, curr) => {
+          acc.volume += curr.volume;
+          acc.amount += curr.amount;
+          acc.payment += curr.payment;
+          acc.quantity += curr.quantity;
+          return acc;
+        },
+        { volume: "", amount: "", payment: "", quantity: "" }
+      ),
+    };
+  };
 
   return (
     <div>
       <UTable
-        data={mMockData}
+        data={extractCargos(trips).map((e) => getSummaryFromCargos(e))}
         columns={columns}
         name="Cargo Table"
         config={config}
@@ -42,27 +73,3 @@ export const TripCard = () => {
     </div>
   );
 };
-
-const mockData: Array<TripType> = [
-  {
-    trip_number: "1",
-    amount: "1800000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "80 кг",
-  },
-  {
-    trip_number: "2",
-    amount: "8900000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "70 кг",
-  },
-  {
-    trip_number: "3",
-    amount: "2900000 тг",
-    quantity: "70 шт",
-    volume: "180 кубов",
-    weight: "80 кг",
-  },
-];
