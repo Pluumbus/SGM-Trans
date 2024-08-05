@@ -16,6 +16,7 @@ import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { addCargo } from "../WeekCard/requests";
 import { CargoType } from "../types";
+import { Cities, DriversWithCars } from "@/lib/references";
 
 export const CargoModal = ({
   isOpenCargo,
@@ -27,15 +28,16 @@ export const CargoModal = ({
   onOpenChangeCargo: () => void;
 }) => {
   const { toast } = useToast();
-  const { register, handleSubmit, control } = useForm<CargoType>();
+  const { register, handleSubmit, control, setValue } = useForm<CargoType>();
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: async (data: CargoType) => await addCargo(data),
     onSuccess: () => {
       toast({
         title: "Успех",
         description: "Вы успешно добавили груз",
       });
+      onOpenChangeCargo();
     },
     onError: () => {
       toast({
@@ -45,7 +47,7 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
-    mutate({ ...data, trip_id });
+    mutate({ ...data, trip_id: trip_id || "1" });
   };
 
   return (
@@ -57,11 +59,34 @@ export const CargoModal = ({
           <ModalBody>
             <div className="grid grid-cols-2 gap-2 w-full">
               <Input {...register("receipt_address")} label="Адрес получения" />
-              <Input {...register("unloading_city")} label="Город разгрузки" />
+              <Controller
+                control={control}
+                name="unloading_city"
+                render={({ field }) => (
+                  <Cities
+                    selectedKey={field.value}
+                    onSelectionChange={(e) => {
+                      setValue("unloading_city", e.toString());
+                    }}
+                  />
+                )}
+              />
+
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
               <Input {...register("quantity")} label="Количество" />
-              <Input {...register("driver")} label="Водитель" />
+              <Controller
+                control={control}
+                name="driver"
+                render={({ field }) => (
+                  <DriversWithCars
+                    selectedKey={field.value}
+                    onSelectionChange={(e) => {
+                      setValue("driver", e.toString());
+                    }}
+                  />
+                )}
+              />
               <Input {...register("amount")} label="Сумма" />
               <Controller
                 control={control}
@@ -114,7 +139,12 @@ export const CargoModal = ({
             >
               Отмена
             </Button>
-            <Button variant="flat" color="success" type="submit">
+            <Button
+              variant="flat"
+              color="success"
+              type="submit"
+              isLoading={isPending}
+            >
               Добавить груз
             </Button>
           </ModalFooter>

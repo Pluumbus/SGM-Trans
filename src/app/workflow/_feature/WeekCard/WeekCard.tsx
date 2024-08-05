@@ -4,27 +4,20 @@ import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 import { AddWeek } from "./AddWeek";
 import { useQuery } from "@tanstack/react-query";
-import { getWeeks } from "../../trip/_api";
+import { getJustWeeks, getWeeks } from "../../trip/_api";
 import { useState, useEffect } from "react";
-import { TripType } from "../TripCard/TripCard";
 
 export const WeekCard = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["trips"],
     queryFn: async () => await getWeeks(),
   });
+  const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
+    queryKey: ["weeks"],
+    queryFn: async () => await getJustWeeks(),
+  });
 
   const [groupedWeeks, setGroupedWeeks] = useState([]);
-
-  useEffect(() => {
-    if (data) {
-      setGroupedWeeks(getFilteredWeeks(data));
-    }
-  }, [data]);
-
-  if (isLoading) {
-    return <Spinner />;
-  }
 
   const getFilteredWeeks = (data) => {
     const weekMap = {};
@@ -53,10 +46,22 @@ export const WeekCard = () => {
     return Object.values(weekMap);
   };
 
+  useEffect(() => {
+    if (data) {
+      setGroupedWeeks(getFilteredWeeks(data));
+    }
+  }, [data]);
+
+  if (isLoading || isLoadingWeeks) {
+    return <Spinner />;
+  }
+
+  const groupedWeekIds = groupedWeeks.map((week) => week.id);
+
   return (
     <div>
       <AddWeek />
-      {/* <pre>{JSON.stringify(data, null, 2)}</pre>
+      {/* <pre>{JSON.stringify(, null, 2)}</pre>
       <Divider />
       <pre>{JSON.stringify(groupedWeeks, null, 2)}</pre> */}
 
@@ -72,6 +77,17 @@ export const WeekCard = () => {
               <TripCard trips={week.trips} />
             </AccordionItem>
           ))}
+          {dataWeeks
+            .filter((week) => !groupedWeekIds.includes(week.id))
+            .map((week, i) => (
+              <AccordionItem
+                key={i + 1}
+                aria-label={`Accordion ${i + 1}`}
+                title={`Week ${week.id}`}
+              >
+                Неделя пустая
+              </AccordionItem>
+            ))}
         </Accordion>
       </div>
     </div>

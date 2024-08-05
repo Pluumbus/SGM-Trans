@@ -3,10 +3,15 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getCities } from "./api";
-import { Autocomplete, AutocompleteItem, Spinner } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  AutocompleteProps,
+  Spinner,
+} from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 
-export const Cities = () => {
+export const Cities = (autocompleteProps: AutocompleteProps) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getCities"],
@@ -20,7 +25,7 @@ export const Cities = () => {
 
   return (
     <div className="max-w-80">
-      <Autocomplete label="Выберите город">
+      <Autocomplete label="Выберите город" {...autocompleteProps}>
         {data?.data?.map((e, i) => (
           <AutocompleteItem key={i} value={e.name} textValue={`${e.name}`}>
             {e.name}

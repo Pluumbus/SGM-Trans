@@ -7,10 +7,12 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { Input } from "@nextui-org/react";
 
 export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
-  const [date, setDate] = useState<string>(info.getValue().toString());
+  const [date, setDate] = useState<string>(
+    new Date(info.getValue()?.toString()).toLocaleDateString()
+  );
   return (
     <div className="min-w-fit max-h-fit">
-      <Input value={date} />
+      <Input value={date} variant="underlined" />
     </div>
   );
 };

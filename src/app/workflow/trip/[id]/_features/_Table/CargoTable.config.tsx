@@ -4,6 +4,7 @@ import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { EditField } from "./EditField/EditField";
+import { DriversWithCars } from "@/lib/references";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -74,9 +75,15 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "driver",
       header: "Водитель",
-      size: 20,
+      size: 80,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <div className="min-w-60">
+          <DriversWithCars
+            className="w-full"
+            selectedKey={info.getValue()}
+            variant="underlined"
+          />
+        </div>
       ),
       filter: false,
     },
@@ -175,7 +182,9 @@ export const getBaseColumnsConfig = () => {
       header: "Дата прибытия",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Date"} />
+        <div className="min-w-40">
+          <EditField info={info} type={"Date"} />
+        </div>
       ),
       filter: false,
     },
@@ -210,9 +219,9 @@ export const getBaseColumnsConfig = () => {
       accessorKey: "user_id",
       header: "ID пользователя",
       size: 15,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
-      ),
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        return <span>{info.getValue()?.toString()}</span>;
+      },
       filter: false,
     },
   ];

@@ -29,3 +29,14 @@ export const getWeeks = async (): Promise<
 
   return data as (CargoType & { trips: (TripType & { weeks: WeekType })[] })[];
 };
+
+export const getJustWeeks = async () => {
+  const server = getSupabaseServer();
+  const { data, error } = await (await server).from(`weeks`).select("*");
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as WeekType[];
+};
