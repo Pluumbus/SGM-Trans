@@ -1,41 +1,109 @@
 "use client";
-import { Accordion, AccordionItem } from "@nextui-org/react";
+import { Accordion, AccordionItem, Divider, Spinner } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 import { AddWeek } from "./AddWeek";
+import { useQuery } from "@tanstack/react-query";
+import { getJustWeeks, getWeeks } from "../../trip/_api";
+import { useState, useEffect } from "react";
 
 export const WeekCard = () => {
-  const tmp = Array.from({ length: 10 }, (_, i) => i);
+  const { data, isLoading } = useQuery({
+    queryKey: ["trips"],
+    queryFn: async () => await getWeeks(),
+  });
+  const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
+    queryKey: ["weeks"],
+    queryFn: async () => await getJustWeeks(),
+  });
+
+  const [groupedWeeks, setGroupedWeeks] = useState([]);
+
+  const getFilteredWeeks = (data) => {
+    const weekMap = {};
+
+    data.forEach((cargo) => {
+      const week = cargo.trips.weeks;
+      if (!weekMap[week.id]) {
+        weekMap[week.id] = { ...week, trips: [] };
+      }
+      const tripWithCargo = { ...cargo.trips, cargos: [cargo] };
+      weekMap[week.id].trips.push(tripWithCargo);
+    });
+
+    // Combine cargos belonging to the same trip
+    Object.values(weekMap).forEach((week: any) => {
+      const tripMap = {};
+      week.trips.forEach((trip: any) => {
+        if (!tripMap[trip.id]) {
+          tripMap[trip.id] = { ...trip, cargos: [] };
+        }
+        tripMap[trip.id].cargos.push(...trip.cargos);
+      });
+      week.trips = Object.values(tripMap);
+    });
+
+    return Object.values(weekMap);
+  };
+
+  useEffect(() => {
+    if (data) {
+      setGroupedWeeks(getFilteredWeeks(data));
+    }
+  }, [data]);
+
+  if (isLoading || isLoadingWeeks) {
+    return <Spinner />;
+  }
+
+  const groupedWeekIds = groupedWeeks.map((week) => week.id);
 
   return (
     <div>
       <AddWeek />
+      {/* <pre>{JSON.stringify(, null, 2)}</pre>
+      <Divider />
+      <pre>{JSON.stringify(groupedWeeks, null, 2)}</pre> */}
+
       <div className="flex gap-4 w-full min-h-44">
         <Accordion selectionMode="multiple">
-          {tmp.map((e) => (
+          {groupedWeeks.map((week, i) => (
             <AccordionItem
-              key={e}
-              aria-label={`Accordion ${e}`}
-              title={`№ ${e + 1}`}
-              subtitle={<Subtitle />}
+              key={i}
+              aria-label={`Accordion ${i}`}
+              title={`Week ${week.id}`}
+              subtitle={<SummaryOfTrip week={week} />}
             >
-              <TripCard />
+              <TripCard trips={week.trips} />
             </AccordionItem>
           ))}
+          {dataWeeks
+            .filter((week) => !groupedWeekIds.includes(week.id))
+            .map((week, i) => (
+              <AccordionItem
+                key={i + 1}
+                aria-label={`Accordion ${i + 1}`}
+                title={`Week ${week.id}`}
+              >
+                Неделя пустая
+              </AccordionItem>
+            ))}
         </Accordion>
       </div>
     </div>
   );
 };
 
-const Subtitle = () => {
+const SummaryOfTrip = ({ week }) => {
   const { user } = useUser();
   return (
-    <div className=" flex gap-2">
-      <span>20 рейсов</span>
-      <span>218 грузов</span>
-      <span>{"25.06.2024"}</span>
-      <span>{"13:59"}</span>
+    <div className="flex gap-2">
+      <span>рейсов: {week.trips.length}</span>
+      <span>
+        грузов: {week.trips.reduce((acc, trip) => acc + trip.cargos.length, 0)}
+      </span>
+      <span>{new Date(week.created_at).toLocaleDateString()}</span>
+      <span>{new Date(week.created_at).toLocaleTimeString()}</span>
       <span>{user?.username || ""}</span>
     </div>
   );

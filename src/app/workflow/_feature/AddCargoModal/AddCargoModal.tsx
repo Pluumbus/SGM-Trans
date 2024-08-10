@@ -1,0 +1,155 @@
+import { useToast } from "@/components/ui/use-toast";
+import {
+  Button,
+  Checkbox,
+  DateInput,
+  Divider,
+  Input,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+} from "@nextui-org/react";
+import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { addCargo } from "../WeekCard/requests";
+import { CargoType } from "../types";
+import { Cities, DriversWithCars } from "@/lib/references";
+
+export const CargoModal = ({
+  isOpenCargo,
+  onOpenChangeCargo,
+  trip_id,
+}: {
+  trip_id: string;
+  isOpenCargo: boolean;
+  onOpenChangeCargo: () => void;
+}) => {
+  const { toast } = useToast();
+  const { register, handleSubmit, control, setValue } = useForm<CargoType>();
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: async (data: CargoType) => await addCargo(data),
+    onSuccess: () => {
+      toast({
+        title: "Успех",
+        description: "Вы успешно добавили груз",
+      });
+      onOpenChangeCargo();
+    },
+    onError: () => {
+      toast({
+        title: "Ошибка",
+        description: "Не получилось добавить груз",
+      });
+    },
+  });
+  const onSubmit = (data: CargoType) => {
+    mutate({ ...data, trip_id: trip_id || "1" });
+  };
+
+  return (
+    <Modal isOpen={isOpenCargo} onOpenChange={onOpenChangeCargo} size="2xl">
+      <ModalContent>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <ModalHeader>Добавить груз</ModalHeader>
+          <Divider />
+          <ModalBody>
+            <div className="grid grid-cols-2 gap-2 w-full">
+              <Input {...register("receipt_address")} label="Адрес получения" />
+              <Controller
+                control={control}
+                name="unloading_city"
+                render={({ field }) => (
+                  <Cities
+                    selectedKey={field.value}
+                    onSelectionChange={(e) => {
+                      setValue("unloading_city", e.toString());
+                    }}
+                  />
+                )}
+              />
+
+              <Input {...register("weight")} label="Вес" />
+              <Input {...register("volume")} label="Объем" />
+              <Input {...register("quantity")} label="Количество" />
+              <Controller
+                control={control}
+                name="driver"
+                render={({ field }) => (
+                  <DriversWithCars
+                    selectedKey={field.value}
+                    onSelectionChange={(e) => {
+                      setValue("driver", e.toString());
+                    }}
+                  />
+                )}
+              />
+              <Input {...register("amount")} label="Сумма" />
+              <Controller
+                control={control}
+                name="is_unpalletizing"
+                render={({ field }) => (
+                  <Checkbox {...field} type="checkbox">
+                    Распалечиваем
+                  </Checkbox>
+                )}
+              />
+              <Input {...register("comments")} label="Комментарии" />
+              <Input {...register("client_name")} label="Имя клиента" />
+              <Input {...register("client_bin")} label="БИН клиента" />
+              <Input {...register("cargo_name")} label="Название груза" />
+              <Input {...register("payer")} label="Плательщик" />
+              <Input
+                {...register("transportation_manager")}
+                label="Менеджер по перевозкам"
+              />
+              <Controller
+                control={control}
+                name="is_documents"
+                render={({ field }) => (
+                  <Checkbox {...field} type="checkbox">
+                    Наличие документов
+                  </Checkbox>
+                )}
+              />
+              <Input {...register("status")} label="Статус" />
+              <Controller
+                control={control}
+                name="arrival_date"
+                render={({ field }) => (
+                  <DateInput {...field} label="Дата прибытия" />
+                )}
+              />
+              <Input {...register("sgm_manager")} label="Менеджер SGM" />
+              <Input {...register("payment")} label="Оплата" />
+              <Input {...register("loading_scheme")} label="Схема загрузки" />
+            </div>
+          </ModalBody>
+          <Divider />
+          <ModalFooter>
+            <Button
+              variant="light"
+              color="danger"
+              onClick={() => {
+                onOpenChangeCargo();
+              }}
+            >
+              Отмена
+            </Button>
+            <Button
+              variant="flat"
+              color="success"
+              type="submit"
+              isLoading={isPending}
+            >
+              Добавить груз
+            </Button>
+          </ModalFooter>
+        </form>
+      </ModalContent>
+    </Modal>
+  );
+};
