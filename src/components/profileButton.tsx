@@ -30,7 +30,7 @@ export const GetStartedButton = () => {
         onClick={async () => {
           await setUserData({
             userId: user.id,
-            publicMetadata: { role: "Админ", balance: "0" },
+            publicMetadata: { role: "Админ", balance: 0 },
           });
         }}
       >

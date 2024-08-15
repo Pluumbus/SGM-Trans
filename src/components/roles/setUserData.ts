@@ -9,7 +9,7 @@ export const setUserData = async ({
   userId: string;
   publicMetadata: {
     role: string;
-    balance: string;
+    balance: number;
   };
 }) => {
   await (

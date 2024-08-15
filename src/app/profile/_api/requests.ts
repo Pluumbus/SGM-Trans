@@ -11,7 +11,7 @@ export const getUserList = async () => {
     email: user.emailAddresses[0]?.emailAddress,
     avatar: user.imageUrl,
     role: user.publicMetadata?.role as string | undefined,
-    balance: user.publicMetadata?.balance as string | undefined,
+    balance: user.publicMetadata?.balance as number | undefined,
   })) satisfies UsersList[];
 
   return userList;

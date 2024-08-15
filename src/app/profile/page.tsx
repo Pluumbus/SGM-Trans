@@ -10,6 +10,7 @@ import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
 import RenderPrintButton from "@/components/pdfGen";
 import { GetStartedButton } from "@/components/profileButton";
+import { Button } from "@nextui-org/react";
 
 export default async function ProfilePage() {
   const queryClient = new QueryClient();
@@ -25,8 +26,10 @@ export default async function ProfilePage() {
           <RenderPrintButton />
         </RoleBasedRedirect>
       </HydrationBoundary>
-      <GetStartedButton />
-      <SignOutButton></SignOutButton>
+      {/* <GetStartedButton /> */}
+      <Button color="danger">
+        <SignOutButton>Выйти</SignOutButton>
+      </Button>
     </div>
   );
 }

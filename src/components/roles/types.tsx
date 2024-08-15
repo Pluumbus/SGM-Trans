@@ -4,7 +4,7 @@ export type UsersList = {
   userName: string;
   avatar: string;
   role: string;
-  balance: string;
+  balance: number;
 };
 
 export const roleNamesList = [

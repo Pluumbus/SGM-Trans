@@ -129,14 +129,14 @@ export const columns: ColumnDef<UsersList>[] = [
                 >
                   <Autocomplete
                     label="Введите роль"
-                    className="max-w-xs w-2/4"
+                    className="max-w-xs w-2/4 max-h-xs h-2/4"
                     onInputChange={onInputChange}
                   >
                     {roleNamesList.map((role: string) => (
                       <AutocompleteItem key={role}>{role}</AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  <div className="max-w-xs ml-10">
+                  <div className="max-w-xs ml-5">
                     <Button type="submit" isIconOnly size="lg" variant="light">
                       <BiSend />
                     </Button>
@@ -149,8 +149,6 @@ export const columns: ColumnDef<UsersList>[] = [
           <Modal
             isOpen={isOpenBalance}
             onOpenChange={() => setIsOpenBalance(false)}
-            isDismissable={false}
-            isKeyboardDismissDisabled={true}
           >
             <ModalContent>
               <ModalBody>
@@ -161,12 +159,14 @@ export const columns: ColumnDef<UsersList>[] = [
                   <Input
                     type="text"
                     placeholder="Введите баланс"
-                    value={balance}
-                    onChange={(e) => setBalance(e.target.value)}
+                    value={balance.toString()}
+                    onChange={(e) => setBalance(Number(e.target.value) || 0)}
                   />
-                  <Button type="submit" isIconOnly>
-                    <BiSend />
-                  </Button>
+                  <div className="max-w-xs ml-5">
+                    <Button type="submit" isIconOnly variant="light">
+                      <BiSend />
+                    </Button>
+                  </div>
                 </form>
               </ModalBody>
             </ModalContent>
