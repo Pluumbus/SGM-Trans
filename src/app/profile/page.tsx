@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
-import RenderButton from "@/components/pdfGen";
+import RenderPrintButton from "@/components/pdfGen";
 import { GetStartedButton } from "@/components/profileButton";
 
 export default async function ProfilePage() {
@@ -22,9 +22,9 @@ export default async function ProfilePage() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RoleBasedRedirect allowedRoles={["Админ"]}>
           <DataTable />
+          <RenderPrintButton />
         </RoleBasedRedirect>
       </HydrationBoundary>
-      <RenderButton />
       <GetStartedButton />
       <SignOutButton></SignOutButton>
     </div>

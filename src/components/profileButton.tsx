@@ -24,7 +24,7 @@ export const ProfileButton = () => {
 
 export const GetStartedButton = () => {
   const { user } = useUser();
-  if (user?.id == "user_2i8cYkkLo7GwE4MXxT5WyEryL9k") {
+  if (user?.id == "user_2khBoQQ98Q1AjVdMHsNMB4VUwDn") {
     return (
       <Button
         onClick={async () => {

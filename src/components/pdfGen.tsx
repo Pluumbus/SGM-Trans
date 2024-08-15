@@ -4,7 +4,7 @@ import Handlebars from "handlebars";
 import { bodyHtmlTemp, stylesTemp } from "./templates/act";
 // import template from "./templates/act";
 
-const RenderButton: React.FC = () => {
+const RenderPrintButton: React.FC = () => {
   const handlePrintClick = () => {
     const compiledTemplate = Handlebars.compile(bodyHtmlTemp);
     const data = {
@@ -51,4 +51,4 @@ const RenderButton: React.FC = () => {
   );
 };
 
-export default RenderButton;
+export default RenderPrintButton;
