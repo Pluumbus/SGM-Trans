@@ -1,3 +1,4 @@
+"use client";
 import { SignUp } from "@clerk/nextjs";
 import { NextPage } from "next";
 import React from "react";
@@ -11,7 +12,7 @@ const Page: NextPage<Props> = ({}) => {
     </div>
   );
 };
-export async function generateStaticParams() {
-  return [{}];
-}
+// export async function generateStaticParams() {
+//   return [{}];
+// }
 export default Page;
