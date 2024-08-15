@@ -1,9 +1,10 @@
 "use client";
 
 import { useUser } from "@clerk/nextjs";
-import { Avatar } from "@nextui-org/react";
+import { Avatar, Button } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
+import { setUserData } from "./roles/setUserData";
 
 export const ProfileButton = () => {
   const { user } = useUser();
@@ -19,4 +20,22 @@ export const ProfileButton = () => {
       </Link>
     </>
   );
+};
+
+export const GetStartedButton = () => {
+  const { user } = useUser();
+  if (user?.id == "user_2i8cYkkLo7GwE4MXxT5WyEryL9k") {
+    return (
+      <Button
+        onClick={async () => {
+          await setUserData({
+            userId: user.id,
+            publicMetadata: { role: "Админ", balance: "0" },
+          });
+        }}
+      >
+        Start
+      </Button>
+    );
+  }
 };
