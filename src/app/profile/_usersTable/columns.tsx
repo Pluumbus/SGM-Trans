@@ -159,7 +159,7 @@ export const columns: ColumnDef<UsersList>[] = [
                   <Input
                     type="text"
                     placeholder="Введите баланс"
-                    value={balance.toString()}
+                    value={String(balance)}
                     onChange={(e) => setBalance(Number(e.target.value) || 0)}
                   />
                   <div className="max-w-xs ml-5">
