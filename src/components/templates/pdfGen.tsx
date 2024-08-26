@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Handlebars from "handlebars";
-import { bodyHtmlTemp, stylesTemp } from "./templates/act";
+import { bodyHtmlTemp, stylesTemp } from "./act";
 // import template from "./templates/act";
 
 const RenderPrintButton: React.FC = () => {

@@ -18,7 +18,6 @@ const RoleBasedRedirect: React.FC<{
         if (allowedRoles.includes(userRole)) {
           setHasAccess(true);
         }
-        console.log(hasAccess);
       } catch (error) {
         console.error("Error fetching user role:", error);
       }

@@ -47,7 +47,11 @@ export function DataTable() {
     },
   });
   if (isLoading) {
-    return <Spinner />;
+    return (
+      <div className="flex justify-center mt-60">
+        <Spinner />
+      </div>
+    );
   }
 
   return (
@@ -60,6 +64,14 @@ export function DataTable() {
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
           className="max-w-sm"
+        />
+        <Input
+          placeholder="Поиск по роли"
+          value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("role")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm ml-5"
         />
       </div>
       <div className="rounded-md border">

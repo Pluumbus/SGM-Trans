@@ -6,32 +6,36 @@ import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/components/profileButton";
 import React from "react";
+import RoleBasedRedirect from "./roles/RoleBasedRedirect";
 
 const Navbar = () => {
   return (
     <header className="text-gray-600 body-font bg-white shadow">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between">
-        <div className="">
-          <Link href={"/"}>
-            <Image src={logo} alt="" width={156} height={120} />
-          </Link>
-        </div>
+        <Link href={"/"}>
+          <Image src={logo} alt="" width={156} height={120} />
+        </Link>
         <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
-          <Link href="/workflow/kz">
-            <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Таблица КЗ
-            </div>
+          <Link
+            href="/workflow/kz"
+            className="mr-5 cursor-pointer hover:text-gray-900"
+          >
+            Таблица Казахстан
           </Link>
-          <Link href="/workflow/ru">
-            <div className="mr-5 cursor-pointer hover:text-gray-900">
-              Таблица МСК
-            </div>
+          <Link
+            href="/workflow/ru"
+            className="mr-5 cursor-pointer hover:text-gray-900"
+          >
+            Таблица Москва
           </Link>
-          {/* <Link href="/">
-            <div className="mr-5 cursor-pointer hover:text-gray-900">
+          <RoleBasedRedirect allowedRoles={["Админ"]}>
+            <Link
+              href="/statistics"
+              className="mr-5 cursor-pointer hover:text-gray-900"
+            >
               Статистика
-            </div>
-          </Link> */}
+            </Link>
+          </RoleBasedRedirect>
         </nav>
         <SignedOut>
           <SignInButton>Войти</SignInButton>

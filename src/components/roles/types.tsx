@@ -5,12 +5,14 @@ export type UsersList = {
   avatar: string;
   role: string;
   balance: number;
+  time: number;
 };
 
 export const roleNamesList = [
   "Админ",
   "Логист",
   "Логист Москва",
+  "Логист Дистант",
   "Супер Логист",
   "Зав.Склада",
   "Зав.Склада Москва",

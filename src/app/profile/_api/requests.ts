@@ -12,6 +12,7 @@ export const getUserList = async () => {
     avatar: user.imageUrl,
     role: user.publicMetadata?.role as string | undefined,
     balance: user.publicMetadata?.balance as number | undefined,
+    time: user.publicMetadata?.time as number | undefined
   })) satisfies UsersList[];
 
   return userList;

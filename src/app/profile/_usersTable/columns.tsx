@@ -27,6 +27,7 @@ import React from "react";
 import { BiSend } from "react-icons/bi";
 import { setUserData } from "../../../components/roles/setUserData";
 import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@clerk/nextjs";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -52,6 +53,40 @@ export const columns: ColumnDef<UsersList>[] = [
   {
     accessorKey: "balance",
     header: "Баланс",
+  },
+  {
+    accessorKey: "time",
+    header: "Время",
+    cell: ({ row }) => {
+      const { user } = useUser();
+      const seconds = row.original.time;
+      const metaPrevTime = user.publicMetadata.prevTime as number | undefined;
+      const prevTime = metaPrevTime == undefined ? 0 : metaPrevTime;
+      if (
+        row.original.role == "Логист Дистант" ||
+        row.original.role == "Админ"
+      ) {
+        if (row.original.time == undefined || null) {
+          return "";
+        }
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+
+        const prevHours = Math.floor(prevTime / 3600);
+        const prevMinutes = Math.floor((prevTime % 3600) / 60);
+
+        return (
+          <div>
+            <p>
+              {hours}ч {minutes}м
+            </p>
+            <p className="text-gray-500 text-xs">
+              {prevHours}ч {prevMinutes}м
+            </p>
+          </div>
+        );
+      }
+    },
   },
   {
     accessorKey: "actions",

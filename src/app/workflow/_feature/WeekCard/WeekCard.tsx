@@ -53,7 +53,11 @@ export const WeekCard = () => {
   }, [data]);
 
   if (isLoading || isLoadingWeeks) {
-    return <Spinner />;
+    return (
+      <div className="flex justify-center mt-60">
+        <Spinner />
+      </div>
+    );
   }
 
   const groupedWeekIds = groupedWeeks.map((week) => week.id);

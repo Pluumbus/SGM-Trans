@@ -12,6 +12,8 @@ import { Button, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
+import { Timer } from "@/components/timeRecord/timeRecord";
+import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 
 const Page: NextPage = () => {
   const { id } = useParams() as { id: string };
@@ -53,14 +55,31 @@ const Page: NextPage = () => {
   });
 
   const { isOpen, onOpenChange } = useDisclosure();
-
+  const [showTimer, setShowTimer] = useState(false);
+  const handleToggleTimer = () => {
+    setShowTimer((prevShowTimer) => !prevShowTimer);
+  };
+  const handleStopTimer = () => {
+    setShowTimer(false);
+  };
   return (
     <div>
-      <div className="flex flex-col gap-2">
-        <span>Номер рейса: {id}</span>
-        <div>
-          <Button onClick={onOpenChange}>Добавить груз</Button>
+      <div className="flex justify-between">
+        <div className="flex flex-col gap-2">
+          <span>Номер рейса: {id}</span>
+          <div>
+            <Button onClick={onOpenChange}>Добавить груз</Button>
+          </div>
         </div>
+        <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
+          {showTimer ? (
+            <Timer onStop={handleStopTimer} />
+          ) : (
+            <Button color="primary" onClick={handleToggleTimer}>
+              Начать работу
+            </Button>
+          )}
+        </RoleBasedRedirect>
       </div>
       <UTable
         data={cargos}
