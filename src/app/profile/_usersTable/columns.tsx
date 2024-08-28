@@ -107,6 +107,8 @@ export const columns: ColumnDef<UsersList>[] = [
             publicMetadata: {
               balance,
               role,
+              time: row.original.time != 0 ? row.original.time : 0,
+              prevTime: row.original.prevTime != 0 ? row.original.prevTime : 0,
             },
           }),
         onSuccess() {

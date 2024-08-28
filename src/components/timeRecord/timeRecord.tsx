@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { setUserDataWithTime } from "../roles/setUserData";
+import { setUserData } from "../roles/setUserData";
 import { useUser } from "@clerk/nextjs";
 import { Button, Card, CardBody } from "@nextui-org/react";
 import { toast } from "../ui/use-toast";
@@ -11,19 +11,17 @@ export const Timer = ({ onStop }) => {
 
   let oldSec = isLoaded && (user.publicMetadata.time as number);
   const [seconds, setSeconds] = useState(oldSec);
-  const [prevSeconds] = useState(seconds);
 
   const { mutate: setTimeMutation } = useMutation({
     mutationKey: ["SetTimeForUser"],
     mutationFn: async (newSec: number) => {
-      console.log(prevSeconds, newSec);
-      await setUserDataWithTime({
+      await setUserData({
         userId: user.id,
         publicMetadata: {
           role: user.publicMetadata.role as string,
           balance: user.publicMetadata.balance as number,
           time: newSec,
-          prevTime: prevSeconds,
+          prevTime: seconds,
         },
       });
     },

@@ -6,6 +6,7 @@ export type UsersList = {
   role: string;
   balance: number;
   time: number;
+  prevTime: number;
 };
 
 export const roleNamesList = [
