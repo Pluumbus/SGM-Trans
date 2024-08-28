@@ -61,7 +61,7 @@ export const Timer = ({ onStop }) => {
         activityTimeout = setTimeout(() => {
           setIsActive(false);
           toast({
-            title: `Пазуа`,
+            title: `Пауза`,
             description: `Ваш таймер был остановлен из-за бездействия`,
           });
         }, 300000);

@@ -57,7 +57,7 @@ section.cargo-info table th, section.cargo-info table td {
     padding: 8px;
     text-align: left;
 }
-`
+`;
 //  `<style>
 //         body {
 //             font-family: Arial, sans-serif;
@@ -102,8 +102,7 @@ section.cargo-info table th, section.cargo-info table td {
 //             border-bottom: 1px solid #000;
 //         }
 //     </style>`;
-export const bodyHtmlTemp =
-` <div class="container">
+export const bodyHtmlTemp = ` <div class="container">
         <header>
             <div class="company-info">
                 <p>ТОО «SGM - Trans»</p>
@@ -142,7 +141,7 @@ export const bodyHtmlTemp =
             </table>
             <p>Cклад №2</p>
         </section>
-    </div>`
+    </div>`;
 // `<div class="container">
 //   <div class="header">
 //     <p>ТОО «SGM - Trans»</p>

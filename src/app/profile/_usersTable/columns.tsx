@@ -58,10 +58,8 @@ export const columns: ColumnDef<UsersList>[] = [
     accessorKey: "time",
     header: "Время",
     cell: ({ row }) => {
-      const { user } = useUser();
       const seconds = row.original.time;
-      const metaPrevTime = user.publicMetadata.prevTime as number | undefined;
-      const prevTime = metaPrevTime == undefined ? 0 : metaPrevTime;
+      const prevTime = row.original.prevTime;
       if (
         row.original.role == "Логист Дистант" ||
         row.original.role == "Админ"
@@ -100,15 +98,16 @@ export const columns: ColumnDef<UsersList>[] = [
       const { toast } = useToast();
 
       const { mutate: setRoleMutation } = useMutation({
-        mutationKey: ["setRole"],
+        mutationKey: ["SetUserData"],
         mutationFn: async () =>
           await setUserData({
             userId,
             publicMetadata: {
               balance,
               role,
-              time: row.original.time != 0 ? row.original.time : 0,
-              prevTime: row.original.prevTime != 0 ? row.original.prevTime : 0,
+              time: row.original.time != null ? row.original.time : 0,
+              prevTime:
+                row.original.prevTime != null ? row.original.prevTime : 0,
             },
           }),
         onSuccess() {

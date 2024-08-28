@@ -14,6 +14,7 @@ import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
 import { Timer } from "@/components/timeRecord/timeRecord";
 import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
+import { useUser } from "@clerk/nextjs";
 
 const Page: NextPage = () => {
   const { id } = useParams() as { id: string };
@@ -56,6 +57,7 @@ const Page: NextPage = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
   const [showTimer, setShowTimer] = useState(false);
+  const { user, isLoaded } = useUser();
   const handleToggleTimer = () => {
     setShowTimer((prevShowTimer) => !prevShowTimer);
   };
@@ -76,7 +78,9 @@ const Page: NextPage = () => {
             <Timer onStop={handleStopTimer} />
           ) : (
             <Button color="primary" onClick={handleToggleTimer}>
-              Начать работу
+              {isLoaded && (user!.publicMetadata?.time as number) != 0
+                ? "Продолжить работу"
+                : "Начать работу"}
             </Button>
           )}
         </RoleBasedRedirect>

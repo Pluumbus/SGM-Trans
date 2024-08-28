@@ -30,7 +30,7 @@ export const TripCard = ({ trips }: { trips: TripType[] }) => {
   };
 
   const extractCargos = (
-    trips
+    trips,
   ): Array<{
     cargos: CargoType[];
     trip_number: string;
@@ -57,7 +57,7 @@ export const TripCard = ({ trips }: { trips: TripType[] }) => {
           acc.quantity += curr.quantity;
           return acc;
         },
-        { volume: "", amount: "", payment: "", quantity: "" }
+        { volume: "", amount: "", payment: "", quantity: "" },
       ),
     };
   };

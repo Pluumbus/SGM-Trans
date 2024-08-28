@@ -42,7 +42,7 @@ export const WorkflowPage = () => {
         },
         (payload) => {
           setCargos((prev) => [...prev, payload.new as CargoType]);
-        }
+        },
       )
       .subscribe();
 
