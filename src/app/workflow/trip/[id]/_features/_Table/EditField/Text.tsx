@@ -7,6 +7,13 @@ import { editCargo } from "./api";
 
 export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
+
+  useEffect(() => {
+    if (info) {
+      setState(info.getValue()?.toString() || "");
+    }
+  }, [info]);
+
   const [debouncedValue, setDebouncedValue] = useState<string>(state);
 
   const { mutate } = useMutation({

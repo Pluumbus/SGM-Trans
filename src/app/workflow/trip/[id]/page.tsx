@@ -32,6 +32,7 @@ const Page: NextPage = () => {
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
+  const [cargosTempState, setCargosTempState] = useState([]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -56,12 +57,13 @@ const Page: NextPage = () => {
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            const indx = cargos.findIndex((e) => e.id === payload.old.id);
-            setCargos((prev) => [
-              ...prev.slice(0, indx),
-              payload.new as CargoType,
-              ...prev.slice(indx + 1),
-            ]);
+            const res = cargos.map((e) => {
+              if (e.id === payload.old.id) {
+                return payload.new;
+              }
+              return e;
+            }) as CargoType[];
+            setCargos(res);
           }
         }
       )
@@ -92,6 +94,7 @@ const Page: NextPage = () => {
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {id}</span>
+
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
           </div>
@@ -108,6 +111,7 @@ const Page: NextPage = () => {
           )}
         </RoleBasedRedirect>
       </div>
+
       <UTable
         data={cargos}
         columns={columns}
