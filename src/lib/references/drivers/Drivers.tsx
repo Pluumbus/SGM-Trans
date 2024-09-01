@@ -20,7 +20,11 @@ export const Drivers = (props: AutocompleteProps) => {
   });
 
   if (isLoading || !data?.data) {
-    return <Spinner />;
+    return (
+      <div className="flex justify-center mt-60">
+        <Spinner />
+      </div>
+    );
   }
 
   return (

@@ -1,8 +1,10 @@
 "use client";
 import React from "react";
 import Handlebars from "handlebars";
-import { bodyHtmlTemp, stylesTemp } from "./templates/act";
-// import template from "./templates/act";
+import { bodyHtmlTemp, stylesTemp } from "./act";
+import { Button } from "@nextui-org/react";
+import logo from "../../app/_imgs/logo.png";
+import Image from "next/image";
 
 const RenderPrintButton: React.FC = () => {
   const handlePrintClick = () => {
@@ -13,6 +15,8 @@ const RenderPrintButton: React.FC = () => {
       placeCount: "5",
       transportCost: "10000 KZT",
       recipientName: "Иван Иванов",
+      date: "09.09.2024",
+      logo: "../../app/_imgs/logo.png",
     };
     const renderedHtml = compiledTemplate(data);
 
@@ -40,13 +44,8 @@ const RenderPrintButton: React.FC = () => {
 
   return (
     <div>
-      <button onClick={handlePrintClick}>Печать</button>
-      {/* <button onClick={handleRenderClick}>Предпросмотр талона</button>
-      {html && (
-        <div>
-          <div id="printable" dangerouslySetInnerHTML={{ __html: html }} />
-        </div>
-      )} */}
+      <Button onClick={handlePrintClick}>Печать</Button>
+      {/* <Image src={logo} alt="" width={156} height={120} /> */}
     </div>
   );
 };

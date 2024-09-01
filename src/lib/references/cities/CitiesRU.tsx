@@ -15,7 +15,11 @@ export const CitiesRU = () => {
   });
 
   if (isLoading || !data?.data) {
-    return <Spinner />;
+    return (
+      <div className="flex justify-center mt-60">
+        <Spinner />
+      </div>
+    );
   }
 
   return (

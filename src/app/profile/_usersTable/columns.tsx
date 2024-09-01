@@ -27,6 +27,7 @@ import React from "react";
 import { BiSend } from "react-icons/bi";
 import { setUserData } from "../../../components/roles/setUserData";
 import { useToast } from "@/components/ui/use-toast";
+import { useUser } from "@clerk/nextjs";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -54,6 +55,35 @@ export const columns: ColumnDef<UsersList>[] = [
     header: "Баланс",
   },
   {
+    accessorKey: "time",
+    header: "Время",
+    cell: ({ row }) => {
+      const seconds = row.original.time;
+      const prevTime = row.original.prevTime;
+      if (row.original.role == "Логист Дистант") {
+        if (row.original.time == undefined || null) {
+          return "";
+        }
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+
+        const prevHours = Math.floor(prevTime / 3600);
+        const prevMinutes = Math.floor((prevTime % 3600) / 60);
+
+        return (
+          <div>
+            <p>
+              {hours}ч {minutes}м
+            </p>
+            <p className="text-gray-500 text-xs">
+              {prevHours}ч {prevMinutes}м
+            </p>
+          </div>
+        );
+      }
+    },
+  },
+  {
     accessorKey: "actions",
     header: "Действия",
     cell: ({ row }) => {
@@ -65,13 +95,16 @@ export const columns: ColumnDef<UsersList>[] = [
       const { toast } = useToast();
 
       const { mutate: setRoleMutation } = useMutation({
-        mutationKey: ["setRole"],
+        mutationKey: ["SetUserData"],
         mutationFn: async () =>
           await setUserData({
             userId,
             publicMetadata: {
               balance,
               role,
+              time: row.original.time != null ? row.original.time : 0,
+              prevTime:
+                row.original.prevTime != null ? row.original.prevTime : 0,
             },
           }),
         onSuccess() {
