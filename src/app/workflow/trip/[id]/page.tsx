@@ -8,7 +8,7 @@ import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { useQuery } from "@tanstack/react-query";
 import { getCargos } from "../_api";
-import { Button, useDisclosure } from "@nextui-org/react";
+import { Button, Spinner, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
@@ -23,16 +23,24 @@ const Page: NextPage = () => {
     },
   };
 
-  const { data } = useQuery<any, CargoType[]>({
+  const { data, isLoading } = useQuery<any, CargoType[]>({
     queryKey: ["cargos"],
-    queryFn: async () => await getCargos(),
+    queryFn: async () => await getCargos(id),
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
 
   useEffect(() => {
+    if (!isLoading) {
+      console.log("Cargos: ", data);
+
+      setCargos(data);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
     const cn = supabase
-      .channel(`workflow/trip/${id}`)
+      .channel(`workflow-trip${id}`)
       .on(
         "postgres_changes",
         {
@@ -42,7 +50,9 @@ const Page: NextPage = () => {
           filter: `trip_id=eq.${id}`,
         },
         (payload) => {
-          setCargos((prev) => [...prev, payload.new as CargoType]);
+          if (payload.eventType !== "UPDATE") {
+            setCargos((prev) => [...prev, payload.new as CargoType]);
+          }
         }
       )
       .subscribe();
@@ -53,6 +63,10 @@ const Page: NextPage = () => {
   });
 
   const { isOpen, onOpenChange } = useDisclosure();
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div>
@@ -71,53 +85,10 @@ const Page: NextPage = () => {
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}
-        trip_id={id}
+        trip_id={Number(id)}
       />
     </div>
   );
 };
 
 export default Page;
-
-// "use client";
-// import { NextPage } from "next";
-// import { UTable } from "@/tool-kit/ui";
-// import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
-// import { useParams } from "next/navigation";
-// import { useMemo } from "react";
-// import { CargoType } from "../../_feature/types";
-// import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
-// import mockData from "./_features/_Table/mock.data";
-// import { WorkflowPage } from "./_features/Page";
-
-// const Page: NextPage = ({}) => {
-//   const columns = useMemo(() => getBaseColumnsConfig(), []);
-//   const config: UseTableConfig<CargoType> = {
-//     row: {
-//       setRowData(info) {},
-//       className: "cursor-pointer",
-//     },
-//   };
-
-//   const mMockData = useMemo(() => {
-//     return mockData;
-//   }, []);
-//   const { id } = useParams();
-
-//   return (
-//     <div>
-//       {/* <div>
-//         <span>Номер рейса: {id}</span>
-//       </div>
-//       <UTable
-//         data={mMockData}
-//         columns={columns}
-//         name="Cargo Table"
-//         config={config}
-//       /> */}
-//       <WorkflowPage/>
-//     </div>
-//   );
-// };
-
-// export default Page;

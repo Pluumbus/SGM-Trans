@@ -1,8 +1,9 @@
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { Checkbox } from "@nextui-org/react";
 import { CargoType } from "@/app/workflow/_feature/types";
-import { useParams } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { editCargo } from "./api";
 
 export const CheckboxField = ({
   info,
@@ -10,7 +11,37 @@ export const CheckboxField = ({
   info: Cell<CargoType, ReactNode>;
 }) => {
   const [state, setState] = useState<boolean>(info.getValue() as boolean);
-  const { id } = useParams() as { id: string };
+  const [debouncedValue, setDebouncedValue] = useState<boolean>(state);
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      await editCargo(
+        info.column.columnDef.accessorKey as string,
+        debouncedValue,
+        info.row.original.id
+      );
+    },
+
+    onError: (error) => {
+      console.error("Failed to update cargo:", error);
+    },
+  });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(state);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [state]);
+
+  useEffect(() => {
+    if (debouncedValue !== (info.getValue() as boolean)) {
+      mutate();
+    }
+  }, [debouncedValue]);
 
   return (
     <div className="min-w-fit max-h-fit">

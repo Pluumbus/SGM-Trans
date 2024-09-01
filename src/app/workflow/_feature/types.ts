@@ -1,6 +1,6 @@
 export type CargoType = {
   id: number;
-  trip_id: string;
+  trip_id: number;
   created_at: Date;
   receipt_address: string;
   unloading_city: string;

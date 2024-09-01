@@ -27,7 +27,7 @@ export const Cities = (autocompleteProps: AutocompleteProps) => {
     <div className="max-w-80">
       <Autocomplete label="Выберите город" {...autocompleteProps}>
         {data?.data?.map((e, i) => (
-          <AutocompleteItem key={i} value={e.name} textValue={`${e.name}`}>
+          <AutocompleteItem key={e.name} value={e.name} textValue={`${e.name}`}>
             {e.name}
           </AutocompleteItem>
         )) || <Spinner />}
