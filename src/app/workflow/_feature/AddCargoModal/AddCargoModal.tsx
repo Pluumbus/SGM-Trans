@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   DateInput,
+  DatePicker,
   Divider,
   Input,
   Modal,
@@ -17,13 +18,14 @@ import { useMutation } from "@tanstack/react-query";
 import { addCargo } from "../WeekCard/requests";
 import { CargoType } from "../types";
 import { Cities, DriversWithCars } from "@/lib/references";
+import { parseDate } from "@internationalized/date";
 
 export const CargoModal = ({
   isOpenCargo,
   onOpenChangeCargo,
   trip_id,
 }: {
-  trip_id: string;
+  trip_id: number;
   isOpenCargo: boolean;
   onOpenChangeCargo: () => void;
 }) => {
@@ -47,7 +49,13 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
-    mutate({ ...data, trip_id: trip_id || "1" });
+    mutate({
+      ...data,
+      trip_id: trip_id,
+      arrival_date:
+        `${data.arrival_date.year}-${data.arrival_date.month}-${data.arrival_date.day}` ||
+        1,
+    });
   };
 
   return (
@@ -75,18 +83,7 @@ export const CargoModal = ({
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
               <Input {...register("quantity")} label="Количество" />
-              <Controller
-                control={control}
-                name="driver"
-                render={({ field }) => (
-                  <DriversWithCars
-                    selectedKey={field.value}
-                    onSelectionChange={(e) => {
-                      setValue("driver", e.toString());
-                    }}
-                  />
-                )}
-              />
+
               <Input {...register("amount")} label="Сумма" />
               <Controller
                 control={control}
@@ -120,7 +117,13 @@ export const CargoModal = ({
                 control={control}
                 name="arrival_date"
                 render={({ field }) => (
-                  <DateInput {...field} label="Дата прибытия" />
+                  <DatePicker
+                    value={field.value}
+                    onChange={(e) => {
+                      field.onChange(e);
+                    }}
+                    label="Дата прибытия"
+                  />
                 )}
               />
               <Input {...register("sgm_manager")} label="Менеджер SGM" />

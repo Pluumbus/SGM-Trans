@@ -2,9 +2,12 @@
 import { CargoType } from "@/app/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { EditField } from "./EditField/EditField";
 import { DriversWithCars } from "@/lib/references";
+import { getUserById } from "../../../_api";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@nextui-org/react";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -72,21 +75,7 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-    {
-      accessorKey: "driver",
-      header: "Водитель",
-      size: 80,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <div className="min-w-60">
-          <DriversWithCars
-            className="w-full"
-            selectedKey={info.getValue()}
-            variant="underlined"
-          />
-        </div>
-      ),
-      filter: false,
-    },
+
     {
       accessorKey: "amount",
       header: "Сумма",
@@ -189,7 +178,7 @@ export const getBaseColumnsConfig = () => {
       filter: false,
     },
     {
-      accessorKey: "sgm_manager",
+      accessorKey: "user_id",
       header: "Менеджер SGM",
       size: 25,
       cell: (info: Cell<CargoType, ReactNode>) => {
@@ -222,15 +211,6 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Text"} />
       ),
-      filter: false,
-    },
-    {
-      accessorKey: "user_id",
-      header: "ID пользователя",
-      size: 15,
-      cell: (info: Cell<CargoType, ReactNode>) => {
-        return <span>{info.getValue()?.toString()}</span>;
-      },
       filter: false,
     },
   ];

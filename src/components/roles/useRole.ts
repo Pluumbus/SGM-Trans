@@ -1,9 +1,9 @@
 import { useUser } from "@clerk/nextjs";
 
 export function useRole() {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
 
-  if (!user) return null;
+  if (isLoaded && !user) return "Пользователь";
 
-  return user.publicMetadata?.role || "Пользователь";
+  return  isLoaded && user.publicMetadata?.role || "Пользователь";
 }
