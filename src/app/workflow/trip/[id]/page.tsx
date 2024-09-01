@@ -55,6 +55,13 @@ const Page: NextPage = () => {
         (payload) => {
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
+          } else {
+            const indx = cargos.findIndex((e) => e.id === payload.old.id);
+            setCargos((prev) => [
+              ...prev.slice(0, indx),
+              payload.new as CargoType,
+              ...prev.slice(indx + 1),
+            ]);
           }
         }
       )
