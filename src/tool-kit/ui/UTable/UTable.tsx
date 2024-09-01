@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { UseTableColumnsSchema, UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 
@@ -23,6 +23,16 @@ export const UTable = <T,>({
   name = "some table",
   config,
 }: UseTableProps<T>): ReactNode => {
+  const [mdata, setMData] = useState(data);
+
+  useEffect(() => {
+    if (data) {
+      console.log("New data hello: ", data);
+
+      setMData(data);
+    }
+  }, [data]);
+
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {
       e.filterFn = "includesString";
@@ -32,7 +42,7 @@ export const UTable = <T,>({
     return normalCols;
   }, [columns]);
   const { rowsPerPage } = useRowsPerPage();
-  const mData = useMemo(() => data, [data]);
+
   const mConfig = useMemo(() => config, [config]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -45,7 +55,7 @@ export const UTable = <T,>({
   });
 
   const tInstance = useReactTable<T>({
-    data: mData,
+    data: mdata,
     columns: mColumns as ColumnDef<T, any>[],
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),

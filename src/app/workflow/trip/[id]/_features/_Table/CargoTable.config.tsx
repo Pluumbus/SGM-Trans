@@ -189,7 +189,9 @@ export const getBaseColumnsConfig = () => {
         if (isLoading) {
           return <Spinner />;
         }
-        return <span>{`${data.firstName} ${data.lastName}`}</span>;
+        return (
+          <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+        );
       },
       filter: false,
     },
