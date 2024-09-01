@@ -1,4 +1,4 @@
-import logo from "../../app/_imgs/logo.png";
+
 
 export const stylesTemp = `body {
     font-family: Arial, sans-serif;
@@ -57,63 +57,23 @@ section.cargo-info table th, section.cargo-info table td {
     padding: 8px;
     text-align: left;
 }
-`;
-//  `<style>
-//         body {
-//             font-family: Arial, sans-serif;
-//             line-height: 1.6;
-//         }
-//         .container {
-//             width: 80%;
-//             margin: 0 auto;
-//             padding: 20px;
-//             border: 1px solid #000;
-//         }
-//         .header, .footer {
-//             text-align: center;
-//         }
-//         .header p, .footer p {
-//             margin: 5px 0;
-//         }
-//         .content {
-//             margin-top: 20px;
-//         }
-//         .content table {
-//             width: 100%;
-//             border-collapse: collapse;
-//         }
-//         .content th, .content td {
-//             border: 1px solid #000;
-//             padding: 8px;
-//             text-align: left;
-//         }
-//         .content th {
-//             background-color: #f2f2f2;
-//         }
-//         .signature {
-//             margin-top: 20px;
-//         }
-//         .signature div {
-//             margin-bottom: 20px;
-//         }
-//         .signature span {
-//             display: inline-block;
-//             width: 200px;
-//             border-bottom: 1px solid #000;
-//         }
-//     </style>`;
-export const bodyHtmlTemp = ` <div class="container">
+.act-bottom {
+display:flex;
+justify-content: space-between;
+}
+`
+
+export const bodyHtmlTemp =
+` <div class="container">
         <header>
             <div class="company-info">
-                <p>ТОО «SGM - Trans»</p>
+                <b>ТОО «SGM - Trans»</b>
                 <p>г. Нур-Султан, ул. Пушкина, 39</p>
                 <p>тел.: 8 (7172) 48-43-41</p>
-                <p>e-mail: admin@sgm-trans.com</p>
                 <p><a href="http://www.sgm-trans.com/">www.sgm-trans.com</a></p>
-            </div>
-            <div>
-            ${logo}
-            <img src="${logo}"/>
+
+                <img src="{{logo}}">
+
             </div>
         </header>
 
@@ -136,12 +96,15 @@ export const bodyHtmlTemp = ` <div class="container">
                     <td>{{ placeCount }}</td>
                     <td>{{ transportCost }}</td>
                     <td>{{ recipientName }}</td>
-                    <td>Подпись</td>
+                    <td></td>
                 </tr>
             </table>
-            <p>Cклад №2</p>
+            <div class="act-bottom">
+            <b>Дата: {{ date }}</b>
+            <b>Cклад №2</b>
+            </div>
         </section>
-    </div>`;
+    </div>`
 // `<div class="container">
 //   <div class="header">
 //     <p>ТОО «SGM - Trans»</p>

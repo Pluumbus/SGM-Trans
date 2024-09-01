@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-query";
 import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
-import RenderPrintButton from "@/components/templates/pdfGen";
+import RenderPrintButton from "@/components/templates/actGen";
 import { Button } from "@nextui-org/react";
 
 export default async function ProfilePage() {
@@ -28,7 +28,7 @@ export default async function ProfilePage() {
         </RoleBasedRedirect>
       </HydrationBoundary>
       <Button color="danger">
-        <SignOutButton>Выйти</SignOutButton>
+        <SignOutButton>Выход</SignOutButton>
       </Button>
     </div>
   );
