@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 "use client";
 
@@ -18,13 +19,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@nextui-org/react";
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Checkbox,
+} from "@nextui-org/react";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Input, Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserList } from "../_api/requests";
 import { columns } from "./columns";
+import { roleNamesList, UsersList } from "@/components/roles/types";
 
 export function DataTable() {
   const { data, isLoading } = useQuery({
@@ -63,16 +70,29 @@ export function DataTable() {
           onChange={(event) =>
             table.getColumn("email")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-xs w-2/4 max-h-1 mt-10"
         />
-        <Input
-          placeholder="Поиск по роли"
+        <Autocomplete
+          label="Поиск по роли"
+          className="max-w-xs w-2/4 max-h-1 ml-5 mb-9"
           value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("role")?.setFilterValue(event.target.value)
+          onInputChange={(event) =>
+            table.getColumn("role")?.setFilterValue(event)
           }
-          className="max-w-sm ml-5"
-        />
+        >
+          {roleNamesList.map((role: string) => (
+            <AutocompleteItem key={role}>{role}</AutocompleteItem>
+          ))}
+        </Autocomplete>
+        {/* <Checkbox
+          className="ml-5"
+          onValueChange={() =>
+            table.getColumn("role")?.
+            .setFilterValue("Логист Дистант")
+          }
+        /> */}
+
+        {/* <p>Только с ролью</p> */}
       </div>
       <div className="rounded-md border">
         <Table>

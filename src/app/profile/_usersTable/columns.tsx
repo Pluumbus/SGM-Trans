@@ -60,10 +60,7 @@ export const columns: ColumnDef<UsersList>[] = [
     cell: ({ row }) => {
       const seconds = row.original.time;
       const prevTime = row.original.prevTime;
-      if (
-        row.original.role == "Логист Дистант" ||
-        row.original.role == "Админ"
-      ) {
+      if (row.original.role == "Логист Дистант") {
         if (row.original.time == undefined || null) {
           return "";
         }
