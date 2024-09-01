@@ -1,4 +1,3 @@
-import { Cargo } from "@/app/workflow/trip/[id]/types";
 import { useToast } from "@/components/ui/use-toast";
 import {
   Autocomplete,
@@ -7,6 +6,7 @@ import {
   Calendar,
   Checkbox,
   DateInput,
+  DatePicker,
   Divider,
   Input,
   Modal,
@@ -48,7 +48,7 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
-    mutate(data);
+    mutate({ ...data, arrival_date: data.arrival_date.toString() });
   };
 
   return (
@@ -64,7 +64,7 @@ export const CargoModal = ({
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
               <Input {...register("quantity")} label="Количество" />
-              <Input {...register("driver")} label="Водитель" />
+
               <Input {...register("amount")} label="Сумма" />
               <Controller
                 control={control}
@@ -98,7 +98,13 @@ export const CargoModal = ({
                 control={control}
                 name="arrival_date"
                 render={({ field }) => (
-                  <DateInput {...field} label="Дата прибытия" />
+                  <DatePicker
+                    value={field.value}
+                    onChange={(value) => {
+                      field.onChange(value);
+                    }}
+                    label="Дата прибытия"
+                  />
                 )}
               />
               <Input {...register("sgm_manager")} label="Менеджер SGM" />

@@ -1,73 +1,100 @@
 "use client";
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { getBaseTripColumnsConfig } from "./TripTable.config";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
 import { useRouter } from "next/navigation";
 import { CargoType } from "../types";
+import { useQuery } from "@tanstack/react-query";
+import { getCargosByTripId, getTripsByWeekId } from "../../trip/_api";
+import { Spinner } from "@nextui-org/react";
+import supabase from "@/utils/supabase/client";
 
 export type TripType = {
-  trip_number: string;
+  id: number;
   week_id: string;
-  weight: string;
-  volume: string;
-  payment: string;
-  quantity: string;
-  amount: string;
+  driver: string;
+  city_from: string;
+  city_to: string;
 };
 
-export const TripCard = ({ trips }: { trips: TripType[] }) => {
+export const TripCard = ({ weekId }: { weekId: number }) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const router = useRouter();
 
-  const config: UseTableConfig<TripType> = {
+  const { data: tripsData, isLoading } = useQuery({
+    queryKey: [`trips/${weekId}`],
+    queryFn: async () => await getTripsByWeekId(weekId),
+  });
+
+  const [trips, setTrips] = useState([]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      setTrips(tripsData);
+    }
+  }, [isLoading]);
+
+  const config: UseTableConfig<CargoType & { trips: TripType }> = {
     row: {
       setRowData(info) {
-        router.push(`/workflow/trip/${info.original.trip_number}`);
+        router.push(`/workflow/trip/${info.original.id}`);
       },
       className: "cursor-pointer",
     },
   };
 
-  const extractCargos = (
-    trips,
-  ): Array<{
-    cargos: CargoType[];
-    trip_number: string;
-  }> => {
-    return trips.map((e) => {
-      return {
-        cargos: e.cargos,
-        trip_number: e.id,
-      };
-    });
-  };
-
-  const getSummaryFromCargos = (data: {
-    cargos: CargoType[];
-    trip_number: string;
-  }) => {
+  const getSummaryFromCargos = (cargos: CargoType[]) => {
     return {
-      trip_number: data.trip_number,
-      ...data.cargos.reduce(
+      ...cargos.reduce(
         (acc, curr) => {
-          acc.volume += curr.volume;
-          acc.amount += curr.amount;
-          acc.payment += curr.payment;
-          acc.quantity += curr.quantity;
+          acc.id = curr.trip_id;
+          acc.volume += Number(curr.volume) || 0;
+          acc.amount += Number(curr.amount) || 0;
+          acc.payment += Number(curr.payment) || 0;
+          acc.quantity += Number(curr.quantity) || 0;
           return acc;
         },
-        { volume: "", amount: "", payment: "", quantity: "" },
+        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 }
       ),
     };
   };
 
+  useEffect(() => {
+    const cn = supabase
+      .channel("view-trips")
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "trips" },
+        (payload) => {
+          setTrips((prev) => [...prev, payload.new]);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
+
+  const getCargosFromTripIdAndSummarize = async (trip_id) => {
+    const data = await getCargosByTripId(trip_id);
+    return getSummaryFromCargos(data);
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   return (
     <div>
       <UTable
-        data={extractCargos(trips).map((e) => getSummaryFromCargos(e))}
+        data={trips.map((e, i) => ({
+          ...e,
+          number: i + 1,
+        }))}
         columns={columns}
-        name="Cargo Table"
+        name={`Cargo Table ${weekId}`}
         config={config}
       />
     </div>

@@ -33,9 +33,9 @@ export const DriversWithCars = (autocompleteProps: AutocompleteProps) => {
           <AutocompleteItem
             key={i}
             value={e.cars.car}
-            textValue={`${e.name} | ${e.cars.car} | ${e.cars.state_number}`}
+            textValue={`${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`}
           >
-            {e.name} | {e.cars.car} | {e.cars.state_number}
+            {e.name} | {e.cars?.car} | {e.cars?.state_number}
           </AutocompleteItem>
         )) || <Spinner />}
       </Autocomplete>
