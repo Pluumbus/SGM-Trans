@@ -192,9 +192,18 @@ export const getBaseColumnsConfig = () => {
       accessorKey: "sgm_manager",
       header: "Менеджер SGM",
       size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        const { data, isLoading } = useQuery({
+          queryKey: ["get user"],
+          queryFn: async () => await getUserById(info.getValue().toString()),
+        });
+        if (isLoading) {
+          return <Spinner />;
+        }
+        return (
+          <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+        );
+      },
       filter: false,
     },
     {
