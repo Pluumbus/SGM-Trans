@@ -61,6 +61,11 @@ export function DataTable() {
     );
   }
 
+  const handleCheckBox = () => {
+    const [checkRole, setCheckRole] = useState(false);
+
+    table.getColumn("role")?.setFilterValue(roleNamesList);
+  };
   return (
     <div>
       <div className="flex items-center py-4">
@@ -84,15 +89,9 @@ export function DataTable() {
             <AutocompleteItem key={role}>{role}</AutocompleteItem>
           ))}
         </Autocomplete>
-        {/* <Checkbox
-          className="ml-5"
-          onValueChange={() =>
-            table.getColumn("role")?.
-            .setFilterValue("Логист Дистант")
-          }
-        /> */}
+        <Checkbox className="ml-5" onClick={handleCheckBox} />
 
-        {/* <p>Только с ролью</p> */}
+        <p>Только с ролью</p>
       </div>
       <div className="rounded-md border">
         <Table>

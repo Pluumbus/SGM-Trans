@@ -18,6 +18,7 @@ import {
   ModalBody,
   Autocomplete,
   AutocompleteItem,
+  Checkbox,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { roleNamesList, UsersList } from "../../../components/roles/types";
@@ -48,7 +49,17 @@ export const columns: ColumnDef<UsersList>[] = [
   },
   {
     accessorKey: "role",
-    header: "Роль",
+    header: () => {
+      const [isSelected, setIsSelected] = useState(true);
+      return (
+        <>
+          <div className="flex">
+            <p>Роль</p>
+            <Checkbox isSelected={isSelected} size="sm" className="ml-1" />
+          </div>
+        </>
+      );
+    },
   },
   {
     accessorKey: "balance",
@@ -128,7 +139,6 @@ export const columns: ColumnDef<UsersList>[] = [
       const onInputChange = (value) => {
         setRole(value);
       };
-
       return (
         <>
           <DropdownMenu>
