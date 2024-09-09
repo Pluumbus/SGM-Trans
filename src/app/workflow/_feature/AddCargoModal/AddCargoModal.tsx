@@ -101,7 +101,7 @@ export const CargoModal = ({
               <Input {...register("payer")} label="Плательщик" />
               <Input
                 {...register("transportation_manager")}
-                label="Менеджер по перевозкам"
+                label="Плательщик (Менеджер ведущий перевозку)"
               />
               <Controller
                 control={control}
@@ -112,7 +112,8 @@ export const CargoModal = ({
                   </Checkbox>
                 )}
               />
-              <Input {...register("status")} label="Статус" />
+              <Input {...register("status")} label="Дата принятия груза" />
+              {/* TODO: сделать Date picker */}
               <Controller
                 control={control}
                 name="arrival_date"
@@ -122,11 +123,11 @@ export const CargoModal = ({
                     onChange={(e) => {
                       field.onChange(e);
                     }}
-                    label="Дата прибытия"
+                    label="Планируемая дата доставки"
                   />
                 )}
               />
-              <Input {...register("sgm_manager")} label="Менеджер SGM" />
+
               <Input {...register("payment")} label="Оплата" />
               <Input {...register("loading_scheme")} label="Схема загрузки" />
             </div>
