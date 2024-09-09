@@ -17,15 +17,13 @@ export const Composite = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [refState, setRefState] = useState<string>(info.getValue()?.key || "");
 
   useEffect(() => {
-    if (info) {
-      console.log(`Info before: ${JSON.stringify(info.getValue(), null, 2)}`);
-
+    if (info.getValue()?.value !== inputState) {
       setInputState(info.getValue()?.value);
-      setRefState(info.getValue()?.key);
-
-      console.log(`Info after: ${JSON.stringify(info.getValue(), null, 2)}`);
     }
-  }, [info]);
+    if (info.getValue()?.key !== refState) {
+      setRefState(info.getValue()?.key);
+    }
+  }, [info.getValue()]);
 
   const [debouncedValue, setDebouncedValue] = useState<State>({
     value: inputState,

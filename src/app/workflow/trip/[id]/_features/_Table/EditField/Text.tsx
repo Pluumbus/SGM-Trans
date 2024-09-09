@@ -9,10 +9,10 @@ export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
 
   useEffect(() => {
-    if (info) {
+    if (info.getValue() !== state) {
       setState(info.getValue()?.toString() || "");
     }
-  }, [info]);
+  }, [info.getValue()]);
 
   const [debouncedValue, setDebouncedValue] = useState<string>(state);
 
