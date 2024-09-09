@@ -38,10 +38,10 @@ const Page: NextPage = () => {
     queryFn: async () => await getTripsByWeekId(weekId),
   });
   console.log(tripsData);
+  console.log(data);
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
-  console.log(trips);
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
       console.log("Cargos: ", data);
