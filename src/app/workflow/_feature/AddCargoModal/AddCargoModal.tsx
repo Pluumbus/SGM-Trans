@@ -84,7 +84,7 @@ export const CargoModal = ({
               <Input {...register("volume")} label="Объем" />
               <Input {...register("quantity")} label="Количество" />
 
-              <Input {...register("amount")} label="Сумма" />
+              <Input {...register("amount")} label="Сумма тг." />
               <Controller
                 control={control}
                 name="is_unpalletizing"

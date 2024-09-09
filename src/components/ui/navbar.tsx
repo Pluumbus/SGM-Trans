@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import logo from "../app/_imgs/logo.png";
+import logo from "../../app/_imgs/logo.png";
 import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { ProfileButton } from "@/components/profileButton";
+import { ProfileButton } from "@/components/ui/profileButton";
 import React from "react";
-import RoleBasedRedirect from "./roles/RoleBasedRedirect";
-import { useRole } from "./roles/useRole";
+import RoleBasedRedirect from "../roles/RoleBasedRedirect";
+import { useRole } from "../roles/useRole";
 
 const Navbar = () => {
   const userRole = useRole();

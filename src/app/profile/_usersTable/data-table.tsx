@@ -31,7 +31,7 @@ import { Input, Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { getUserList } from "../_api/requests";
 import { columns } from "./columns";
-import { roleNamesList, UsersList } from "@/components/roles/types";
+import { roleNamesList, UsersList } from "@/lib/references/roles/types";
 
 export function DataTable() {
   const { data, isLoading } = useQuery({

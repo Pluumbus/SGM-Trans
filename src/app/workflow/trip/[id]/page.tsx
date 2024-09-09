@@ -7,8 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { useQuery } from "@tanstack/react-query";
-import { getCargos } from "../_api";
-import { Button, Spinner, useDisclosure } from "@nextui-org/react";
+import { getCargos, getTripsByWeekId } from "../_api";
+import { Button, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
@@ -32,7 +32,6 @@ const Page: NextPage = () => {
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
-  const [cargosTempState, setCargosTempState] = useState([]);
 
   useEffect(() => {
     if (!isLoading) {
@@ -89,6 +88,11 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
+  const { data: trips, isLoading: tripsLoading } = useQuery({
+    queryKey: ["trips"],
+    queryFn: async () => await getTripsByWeekId(id),
+  });
+  const tempArr = ["Рейс 1", "Рейс 2", "Рейс 3"];
   return (
     <div>
       <div className="flex justify-between">
@@ -98,6 +102,15 @@ const Page: NextPage = () => {
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
           </div>
+        </div>
+        <div>
+          <Tabs aria-label="Options">
+            {tempArr.map((t) => (
+              <Tab key={t} title={t}>
+                {t}
+              </Tab>
+            ))}
+          </Tabs>
         </div>
         <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
           {showTimer ? (

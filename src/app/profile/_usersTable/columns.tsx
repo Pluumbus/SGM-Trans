@@ -21,7 +21,7 @@ import {
   Checkbox,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { roleNamesList, UsersList } from "../../../components/roles/types";
+import { UsersList } from "../../../lib/references/roles/types";
 import { Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import React from "react";
@@ -29,6 +29,7 @@ import { BiSend } from "react-icons/bi";
 import { setUserData } from "../../../components/roles/setUserData";
 import { useToast } from "@/components/ui/use-toast";
 import { useUser } from "@clerk/nextjs";
+import { roleNamesList } from "@/lib/references/roles/roles";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -49,17 +50,7 @@ export const columns: ColumnDef<UsersList>[] = [
   },
   {
     accessorKey: "role",
-    header: () => {
-      const [isSelected, setIsSelected] = useState(true);
-      return (
-        <>
-          <div className="flex">
-            <p>Роль</p>
-            <Checkbox isSelected={isSelected} size="sm" className="ml-1" />
-          </div>
-        </>
-      );
-    },
+    header: "Роль",
   },
   {
     accessorKey: "balance",
