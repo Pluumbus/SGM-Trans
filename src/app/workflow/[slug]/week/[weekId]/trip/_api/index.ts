@@ -1,9 +1,9 @@
 "use server";
 
 import getSupabaseServer from "@/utils/supabase/server";
-import { CargoType, WeekType } from "../../_feature/types";
-import { TripType } from "../../_feature/TripCard/TripCard";
 import { clerkClient } from "@clerk/nextjs/server";
+import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
+import { CargoType, WeekType } from "@/app/workflow/_feature/types";
 
 export const getUserById = async (userId: string) => {
   const user = await clerkClient.users.getUser(userId);
@@ -44,7 +44,7 @@ export const getCargosByTripId = async (
   return data as CargoType[];
 };
 
-export const getTripsByWeekId = async (weekId: number): Promise<TripType[]> => {
+export const getTripsByWeekId = async (weekId: string): Promise<TripType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("trips")

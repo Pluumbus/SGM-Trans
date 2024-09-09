@@ -16,7 +16,11 @@ import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getJustWeeks, getTripsByWeekId, getWeeks } from "../../trip/_api";
+import {
+  getJustWeeks,
+  getTripsByWeekId,
+  getWeeks,
+} from "../../[slug]/week/[weekId]/trip/_api";
 import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
 import { AddWeek } from "./Modals/AddWeek";

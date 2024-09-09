@@ -3,10 +3,13 @@ import { useEffect, useMemo, useState } from "react";
 import { getBaseTripColumnsConfig } from "./TripTable.config";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { CargoType } from "../types";
 import { useQuery } from "@tanstack/react-query";
-import { getCargosByTripId, getTripsByWeekId } from "../../trip/_api";
+import {
+  getCargosByTripId,
+  getTripsByWeekId,
+} from "../../[slug]/week/[weekId]/trip/_api";
 import { Spinner } from "@nextui-org/react";
 import supabase from "@/utils/supabase/client";
 
@@ -20,6 +23,7 @@ export type TripType = {
 
 export const TripCard = ({ weekId }: { weekId: number }) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
+  const pathname = usePathname();
   const router = useRouter();
 
   const { data: tripsData, isLoading } = useQuery({
@@ -38,7 +42,7 @@ export const TripCard = ({ weekId }: { weekId: number }) => {
   const config: UseTableConfig<CargoType & { trips: TripType }> = {
     row: {
       setRowData(info) {
-        router.push(`/workflow/trip/${info.original.id}`);
+        router.push(`${pathname}/week/${weekId}/trip/${info.original.id}`);
       },
       className: "cursor-pointer",
     },
