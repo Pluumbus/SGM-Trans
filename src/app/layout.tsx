@@ -21,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="ru">
         <body
           className={`${inter.className} min-h-screen bg-background font-sans antialiased`}
         >

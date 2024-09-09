@@ -15,6 +15,7 @@ import { NextPage } from "next";
 import { Timer } from "@/components/timeRecord/timeRecord";
 import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import { useUser } from "@clerk/nextjs";
+import { BarGraph } from "./_features/Statistics/BarGraph";
 
 const Page: NextPage = () => {
   const { id } = useParams() as { id: string };
@@ -88,17 +89,13 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
-  const { data: trips, isLoading: tripsLoading } = useQuery({
-    queryKey: ["trips"],
-    queryFn: async () => await getTripsByWeekId(id),
-  });
   const tempArr = ["Рейс 1", "Рейс 2", "Рейс 3"];
   return (
     <div>
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {id}</span>
-
+          <BarGraph />
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
           </div>

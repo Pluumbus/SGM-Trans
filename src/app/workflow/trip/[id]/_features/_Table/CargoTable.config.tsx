@@ -4,7 +4,6 @@ import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
 import { ReactNode, useState } from "react";
 import { EditField } from "./EditField/EditField";
-import { DriversWithCars } from "@/lib/references";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@nextui-org/react";
@@ -71,7 +70,9 @@ export const getBaseColumnsConfig = () => {
       header: "Количество",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <div className="flex gap-2">
+          <EditField info={info} type={"Composite"} />
+        </div>
       ),
       filter: false,
     },
