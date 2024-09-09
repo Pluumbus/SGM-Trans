@@ -78,7 +78,7 @@ export const getBaseColumnsConfig = () => {
 
     {
       accessorKey: "amount",
-      header: "Сумма",
+      header: "Сумма тг.",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Text"} />
