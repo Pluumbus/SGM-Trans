@@ -24,6 +24,7 @@ export type UseTableProps<T> = {
   name: string;
   data: T[];
   columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>;
+  isPagiantion?: boolean;
   config?: UseTableConfig<T>;
 };
 

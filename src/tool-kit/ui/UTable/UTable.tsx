@@ -22,6 +22,7 @@ export const UTable = <T,>({
   columns = [],
   name = "some table",
   config,
+  isPagiantion = true,
 }: UseTableProps<T>): ReactNode => {
   const [mdata, setMData] = useState(data);
 
@@ -51,7 +52,7 @@ export const UTable = <T,>({
 
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,
-    pageSize: Number(rowsPerPage),
+    pageSize: isPagiantion ? Number(rowsPerPage) : 9999999,
   });
 
   const tInstance = useReactTable<T>({
@@ -80,7 +81,9 @@ export const UTable = <T,>({
         <TableHeader>{renderColumns(tInstance)}</TableHeader>
         <TableBody>{renderRows(tInstance, mConfig!.row)}</TableBody>
       </Table>
-      <UPagination tInstance={tInstance} />
+      {isPagiantion && (
+        <UPagination tInstance={tInstance} isPagiantion={isPagiantion} />
+      )}
     </div>
   );
 };

@@ -9,14 +9,15 @@ import { MdKeyboardDoubleArrowLeft } from "react-icons/md";
 
 interface UPaginationProps<T> {
   tInstance: Table<T>;
+  isPagiantion: boolean;
 }
 
-export const UPagination = <T,>({ tInstance }: UPaginationProps<T>) => {
+export const UPagination = <T,>({
+  tInstance,
+  isPagiantion,
+}: UPaginationProps<T>) => {
   const handlePageChange = (e: any) => {
     if (Number(e.target.value) > tInstance.getPageCount()) {
-      console.log("tInstance.getPageCount()", tInstance.getPageCount());
-      console.log("e.target.value", e.target.value);
-
       const page = e.target.value ? Number(tInstance.getPageCount()) - 1 : 0;
       tInstance.setPageIndex(page);
     } else {
