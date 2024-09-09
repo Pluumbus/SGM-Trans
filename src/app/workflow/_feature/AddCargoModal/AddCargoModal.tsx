@@ -1,5 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   Checkbox,
   DateInput,
@@ -82,7 +84,38 @@ export const CargoModal = ({
 
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
-              <Input {...register("quantity")} label="Количество" />
+              <Controller
+                control={control}
+                name="quantity"
+                render={({ field }) => (
+                  <div className="flex gap-2 ">
+                    <Input
+                      value={field.value?.value}
+                      label="Количество"
+                      onChange={(e) => {
+                        setValue("quantity.value", e.target.value);
+                        console.log(field);
+                      }}
+                    />
+                    <Autocomplete
+                      selectedKey={field.value?.key}
+                      label="Коробки / палеты"
+                      defaultSelectedKey={"Коробки"}
+                      onSelectionChange={(e) => {
+                        setValue("quantity.key", e);
+                        console.log(field.value);
+                      }}
+                    >
+                      <AutocompleteItem key={"Палеты"} textValue="Палеты">
+                        Палеты
+                      </AutocompleteItem>
+                      <AutocompleteItem key={"Коробки"} textValue="Коробки">
+                        Коробки
+                      </AutocompleteItem>
+                    </Autocomplete>
+                  </div>
+                )}
+              />
 
               <Input {...register("amount")} label="Сумма тг." />
               <Controller
@@ -101,7 +134,7 @@ export const CargoModal = ({
               <Input {...register("payer")} label="Плательщик" />
               <Input
                 {...register("transportation_manager")}
-                label="Менеджер по перевозкам"
+                label="Плательщик (Менеджер ведущий перевозку)"
               />
               <Controller
                 control={control}
@@ -112,7 +145,8 @@ export const CargoModal = ({
                   </Checkbox>
                 )}
               />
-              <Input {...register("status")} label="Статус" />
+              <Input {...register("status")} label="Дата принятия груза" />
+              {/* TODO: сделать Date picker */}
               <Controller
                 control={control}
                 name="arrival_date"
@@ -122,11 +156,11 @@ export const CargoModal = ({
                     onChange={(e) => {
                       field.onChange(e);
                     }}
-                    label="Дата прибытия"
+                    label="Планируемая дата доставки"
                   />
                 )}
               />
-              <Input {...register("sgm_manager")} label="Менеджер SGM" />
+
               <Input {...register("payment")} label="Оплата" />
               <Input {...register("loading_scheme")} label="Схема загрузки" />
             </div>

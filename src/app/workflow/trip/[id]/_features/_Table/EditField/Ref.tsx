@@ -1,11 +1,11 @@
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useState, useEffect } from "react";
-import { Textarea } from "@nextui-org/react";
+import { ReactNode, useState, useEffect, Key } from "react";
+import { Autocomplete, AutocompleteItem, Textarea } from "@nextui-org/react";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { useMutation } from "@tanstack/react-query";
 import { editCargo } from "./api";
 
-export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
+export const Lib = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
 
   useEffect(() => {
@@ -44,13 +44,21 @@ export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   return (
     <div className="max-h-fit min-w-20">
-      <Textarea
-        aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
+      <Autocomplete
         variant="underlined"
         className="min-w-20"
-        value={state}
-        onChange={(e) => setState(e.target.value)}
-      />
+        selectedKey={state}
+        onSelectionChange={(e) => {
+          setState(e);
+        }}
+      >
+        <AutocompleteItem key={"Палеты"} textValue="Палеты">
+          Палеты
+        </AutocompleteItem>
+        <AutocompleteItem key={"Коробки"} textValue="Коробки">
+          Коробки
+        </AutocompleteItem>
+      </Autocomplete>
     </div>
   );
 };

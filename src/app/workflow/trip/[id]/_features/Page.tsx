@@ -11,6 +11,7 @@ import { getCargos } from "../../_api";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
+import { BarGraph } from "./Statistics/BarGraph";
 
 export const WorkflowPage = () => {
   const { id } = useParams() as { id: string };
@@ -42,7 +43,7 @@ export const WorkflowPage = () => {
         },
         (payload) => {
           setCargos((prev) => [...prev, payload.new as CargoType]);
-        },
+        }
       )
       .subscribe();
 
@@ -57,6 +58,7 @@ export const WorkflowPage = () => {
     <div>
       <div className="flex flex-col gap-2">
         <span>Номер рейса: {id}</span>
+
         <div>
           <Button onClick={onOpenChange}>Добавить груз</Button>
         </div>
