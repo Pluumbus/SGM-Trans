@@ -1,5 +1,7 @@
 import { useToast } from "@/components/ui/use-toast";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   Checkbox,
   DateInput,
@@ -82,7 +84,38 @@ export const CargoModal = ({
 
               <Input {...register("weight")} label="Вес" />
               <Input {...register("volume")} label="Объем" />
-              <Input {...register("quantity")} label="Количество" />
+              <Controller
+                control={control}
+                name="quantity"
+                render={({ field }) => (
+                  <div className="flex gap-2 ">
+                    <Input
+                      value={field.value?.value}
+                      label="Количество"
+                      onChange={(e) => {
+                        setValue("quantity.value", e.target.value);
+                        console.log(field);
+                      }}
+                    />
+                    <Autocomplete
+                      selectedKey={field.value?.key}
+                      label="Коробки / палеты"
+                      defaultSelectedKey={"Коробки"}
+                      onSelectionChange={(e) => {
+                        setValue("quantity.key", e);
+                        console.log(field.value);
+                      }}
+                    >
+                      <AutocompleteItem key={"Палеты"} textValue="Палеты">
+                        Палеты
+                      </AutocompleteItem>
+                      <AutocompleteItem key={"Коробки"} textValue="Коробки">
+                        Коробки
+                      </AutocompleteItem>
+                    </Autocomplete>
+                  </div>
+                )}
+              />
 
               <Input {...register("amount")} label="Сумма тг." />
               <Controller

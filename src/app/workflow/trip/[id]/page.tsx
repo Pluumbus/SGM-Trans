@@ -89,10 +89,6 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
-  const { data: trips, isLoading: tripsLoading } = useQuery({
-    queryKey: ["trips"],
-    queryFn: async () => await getTripsByWeekId(id),
-  });
   const tempArr = ["Рейс 1", "Рейс 2", "Рейс 3"];
   return (
     <div>

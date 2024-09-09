@@ -6,7 +6,10 @@ export type CargoType = {
   unloading_city: string;
   weight: string;
   volume: string;
-  quantity: string;
+  quantity: {
+    value: string;
+    key: string;
+  };
   driver: string;
   amount: string;
   is_unpalletizing: boolean;

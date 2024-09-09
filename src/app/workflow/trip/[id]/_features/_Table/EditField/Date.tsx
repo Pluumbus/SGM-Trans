@@ -47,7 +47,12 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   return (
     <div className="min-w-fit max-h-fit">
-      <DatePicker value={date} onChange={setDate} variant="bordered" />
+      <DatePicker
+        value={date}
+        onChange={setDate}
+        variant="bordered"
+        aria-label={`date ${info.column.columnDef.accessorKey.toString()}`}
+      />
     </div>
   );
 };
