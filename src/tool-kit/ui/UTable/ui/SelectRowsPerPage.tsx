@@ -13,6 +13,7 @@ export const SelectRowsPerPage = ({ tInstance }: any) => {
       <span>Выберите колличество строк на странице: </span>
       <Autocomplete
         className="w-48"
+        aria-label="select rows per page"
         selectedKey={rowsPerPage}
         onSelectionChange={(e: any) => {
           handleRowsChange(e);

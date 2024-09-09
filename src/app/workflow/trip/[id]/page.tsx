@@ -95,7 +95,7 @@ const Page: NextPage = () => {
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {id}</span>
-          <BarGraph />
+
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
           </div>
@@ -125,9 +125,14 @@ const Page: NextPage = () => {
       <UTable
         data={cargos}
         columns={columns}
+        isPagiantion={false}
         name="Cargo Table"
         config={config}
       />
+
+      <div className="mb-8"></div>
+      <BarGraph cargos={cargos} />
+      <div className="mb-8"></div>
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}

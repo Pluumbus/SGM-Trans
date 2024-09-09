@@ -19,14 +19,11 @@ export const Composite = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   useEffect(() => {
     if (info.getValue()?.value !== inputState) {
       setInputState(info.getValue()?.value);
-      console.log("Меняем Value");
     }
     if (info.getValue()?.key !== refState) {
-      console.log("Меняем Key");
-
       setRefState(info.getValue()?.key);
     }
-  }, [info]);
+  }, [info.getValue()]);
 
   const [debouncedValue, setDebouncedValue] = useState<State>({
     value: inputState,
