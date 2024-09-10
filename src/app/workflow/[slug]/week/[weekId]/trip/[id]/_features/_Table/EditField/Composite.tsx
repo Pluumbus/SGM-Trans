@@ -18,12 +18,8 @@ export const Composite = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   useEffect(() => {
     if (info) {
-      console.log(`Info before: ${JSON.stringify(info.getValue(), null, 2)}`);
-
       setInputState(info.getValue()?.value);
       setRefState(info.getValue()?.key);
-
-      console.log(`Info after: ${JSON.stringify(info.getValue(), null, 2)}`);
     }
   }, [info]);
 

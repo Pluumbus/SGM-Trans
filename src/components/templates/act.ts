@@ -1,5 +1,3 @@
-
-
 export const stylesTemp = `body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -61,10 +59,9 @@ section.cargo-info table th, section.cargo-info table td {
 display:flex;
 justify-content: space-between;
 }
-`
+`;
 
-export const bodyHtmlTemp =
-` <div class="container">
+export const bodyHtmlTemp = ` <div class="container">
         <header>
             <div class="company-info">
                 <b>ТОО «SGM - Trans»</b>
@@ -104,7 +101,7 @@ export const bodyHtmlTemp =
             <b>Cклад №2</b>
             </div>
         </section>
-    </div>`
+    </div>`;
 // `<div class="container">
 //   <div class="header">
 //     <p>ТОО «SGM - Trans»</p>

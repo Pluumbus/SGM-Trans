@@ -28,8 +28,6 @@ export const UTable = <T,>({
 
   useEffect(() => {
     if (data) {
-      console.log("New data hello: ", data);
-
       setMData(data);
     }
   }, [data]);

@@ -16,19 +16,13 @@ import { TripCard } from "../TripCard";
 import { useUser } from "@clerk/nextjs";
 
 import { useMutation, useQuery } from "@tanstack/react-query";
-import {
-  getJustWeeks,
-  getTripsByWeekId,
-  getWeeks,
-} from "../../[slug]/week/[weekId]/trip/_api";
 import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
 import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
-import { Controller, useForm } from "react-hook-form";
-import { TripType } from "../TripCard/TripCard";
 import { Cities, Drivers } from "@/lib/references";
+import { getJustWeeks } from "../../[slug]/week/[weekId]/trip/_api";
 
 export const WeekCard = () => {
   const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
@@ -46,7 +40,7 @@ export const WeekCard = () => {
         { event: "*", schema: "public", table: "weeks" },
         (payload) => {
           setWeeks((prev) => [...prev, payload.new as WeekType]);
-        }
+        },
       )
       .subscribe();
 
@@ -78,7 +72,7 @@ export const WeekCard = () => {
               // subtitle={<SummaryOfTrip week={week} />}
             >
               <CreateTripInsideWeek week={week} />
-              <TripCard weekId={week.id} />
+              <TripCard weekId={week.id.toString()} />
             </AccordionItem>
           ))}
         </Accordion>

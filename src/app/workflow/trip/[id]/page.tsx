@@ -65,7 +65,7 @@ const Page: NextPage = () => {
             }) as CargoType[];
             setCargos(res);
           }
-        }
+        },
       )
       .subscribe();
 

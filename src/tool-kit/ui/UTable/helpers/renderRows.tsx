@@ -4,7 +4,7 @@ import { RowConfigProps } from "../types";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>
+  config: RowConfigProps<T>,
 ) => {
   return tInstance.getRowModel().rows.map((row) => (
     <TableRow className={config?.className} key={row.id}>

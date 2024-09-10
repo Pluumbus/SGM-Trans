@@ -12,7 +12,7 @@ type State = {
 
 export const Composite = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [inputState, setInputState] = useState<string>(
-    info.getValue()?.value || ""
+    info.getValue()?.value || "",
   );
   const [refState, setRefState] = useState<string>(info.getValue()?.key || "");
 
@@ -35,7 +35,7 @@ export const Composite = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       await editCargo(
         info.column.columnDef.accessorKey,
         debouncedValue,
-        info.row.original.id
+        info.row.original.id,
       );
     },
   });

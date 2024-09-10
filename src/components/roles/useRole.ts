@@ -5,5 +5,5 @@ export function useRole() {
 
   if (isLoaded && !user) return "Пользователь";
 
-  return  isLoaded && user.publicMetadata?.role || "Пользователь";
+  return (isLoaded && user.publicMetadata?.role) || "Пользователь";
 }

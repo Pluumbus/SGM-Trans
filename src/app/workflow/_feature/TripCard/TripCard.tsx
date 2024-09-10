@@ -6,12 +6,13 @@ import { UTable } from "@/tool-kit/ui";
 import { usePathname, useRouter } from "next/navigation";
 import { CargoType } from "../types";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getCargosByTripId,
-  getTripsByWeekId,
-} from "../../[slug]/week/[weekId]/trip/_api";
+
 import { Spinner } from "@nextui-org/react";
 import supabase from "@/utils/supabase/client";
+import {
+  getTripsByWeekId,
+  getCargosByTripId,
+} from "../../[slug]/week/[weekId]/trip/_api";
 
 export type TripType = {
   id: number;
@@ -21,7 +22,7 @@ export type TripType = {
   city_to: string;
 };
 
-export const TripCard = ({ weekId }: { weekId: number }) => {
+export const TripCard = ({ weekId }: { weekId: string }) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const pathname = usePathname();
   const router = useRouter();
@@ -52,14 +53,14 @@ export const TripCard = ({ weekId }: { weekId: number }) => {
     return {
       ...cargos.reduce(
         (acc, curr) => {
-          acc.id = curr.trip_id;
+          acc.id = curr.trip_id.toString();
           acc.volume += Number(curr.volume) || 0;
           acc.amount += Number(curr.amount) || 0;
           acc.payment += Number(curr.payment) || 0;
           acc.quantity += Number(curr.quantity) || 0;
           return acc;
         },
-        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 }
+        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 },
       ),
     };
   };
@@ -72,7 +73,7 @@ export const TripCard = ({ weekId }: { weekId: number }) => {
         { event: "*", schema: "public", table: "trips" },
         (payload) => {
           setTrips((prev) => [...prev, payload.new]);
-        }
+        },
       )
       .subscribe();
 

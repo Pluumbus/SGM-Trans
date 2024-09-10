@@ -96,7 +96,7 @@ export const Timer = ({ onStop }) => {
     displaySeconds,
     "секунда",
     "секунды",
-    "секунд"
+    "секунд",
   );
 
   const handleRefreshTimer = () => {
