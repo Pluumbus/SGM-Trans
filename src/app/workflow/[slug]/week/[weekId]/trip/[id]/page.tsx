@@ -10,6 +10,8 @@ import { useQuery } from "@tanstack/react-query";
 import { getCargos, getTripsByWeekId } from "../_api";
 import {
   Button,
+  Card,
+  CardBody,
   Link,
   Spinner,
   Tab,
@@ -26,7 +28,11 @@ import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { useRouter } from "next/navigation";
 
 const Page: NextPage = () => {
-  const { weekId, id } = useParams() as { weekId: string; id: string };
+  const { weekId, id, slug } = useParams() as {
+    weekId: string;
+    id: string;
+    slug: string;
+  };
   const columns = useMemo(() => getBaseColumnsConfig(), []);
   const config: UseTableConfig<CargoType> = {
     row: {
@@ -35,22 +41,16 @@ const Page: NextPage = () => {
     },
   };
   const [selectedTabId, setSelectedTabId] = useState(id);
-  const router = useRouter();
 
-  const { data, isLoading, refetch, isRefetching } = useQuery<any, CargoType[]>(
-    {
-      queryKey: ["cargos"],
-      queryFn: async () => await getCargos(selectedTabId),
-    }
-  );
+  const { data, isLoading, refetch } = useQuery<any, CargoType[]>({
+    queryKey: ["cargos"],
+    queryFn: async () => await getCargos(selectedTabId),
+  });
 
   const { data: tripsData, isLoading: tripsLoading } = useQuery<TripType[]>({
     queryKey: ["trips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
-  console.log(selectedTabId);
-  console.log(tripsData);
-  console.log(data);
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
@@ -62,7 +62,12 @@ const Page: NextPage = () => {
       setTrips(tripsData);
     }
   }, [isLoading, tripsLoading]);
-
+  useEffect(() => {
+    handleToggleTimer();
+    // return () => {
+    //   window.removeEventListener("mousemove", handleUserActivity);
+    // };
+  }, []);
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${selectedTabId}`)
@@ -98,7 +103,7 @@ const Page: NextPage = () => {
   const { isOpen, onOpenChange } = useDisclosure();
 
   const [showTimer, setShowTimer] = useState(false);
-  const { user, isLoaded } = useUser();
+
   const handleToggleTimer = () => {
     setShowTimer((prevShowTimer) => !prevShowTimer);
   };
@@ -110,53 +115,53 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
-  const currentTrip = trips.find((item) => item.id === Number(selectedTabId));
-
-  const handleTabChange = (key) => {
-    setSelectedTabId(key);
-    router.push(`/workflow/kz/week/${weekId}/trip/${key}`);
-    refetch();
-  };
+  // const handleTabChange = (key) => {
+  //   setSelectedTabId(key);
+  //   router.push(`/workflow/kz/week/${weekId}/trip/${key}`);
+  //   refetch();
+  // };
   return (
     <div>
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {selectedTabId}</span>
-          <span className="max-w-20">Водитель: {currentTrip?.driver}</span>
+          <span className="max-w-20">
+            Водитель:
+            {trips.find((item) => item.id === Number(selectedTabId))?.driver}
+          </span>
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
           </div>
         </div>
         <div className="flex flex-col">
-          <span className="flex justify-center">Все рейсы</span>
-          {/* <Tabs
-            aria-label="Options"
-            defaultSelectedKey={selectedTabId}
-            onSelectionChange={handleTabChange}
-          > */}
-          {trips.map((trip) => (
-            <Link
-              key={trip.id}
-              // href={`/workflow/kz/week/${weekId}/trip/${trip.id}`}
-            >
-              {/* {cargos.map((cargo) => (
-                  <span key={cargo.id}>{cargo.sgm_manager}</span>
-                ))} */}
-              {trip.id}
-            </Link>
-          ))}
-          {/* </Tabs> */}
+          <Card>
+            <CardBody>
+              <span className="flex justify-center">Все рейсы</span>
+              <div className="flex ">
+                {trips.map((trip) => (
+                  <Link
+                    className="ml-1"
+                    key={trip.id}
+                    href={`/workflow/${slug}/week/${weekId}/trip/${trip.id}`}
+                  >
+                    <Button variant="faded" size="sm">
+                      <b>{trip.id}</b>
+                    </Button>
+                  </Link>
+                ))}
+              </div>
+            </CardBody>
+          </Card>
         </div>
         <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
-          {showTimer ? (
-            <Timer onStop={handleStopTimer} />
-          ) : (
-            <Button color="primary" onClick={handleToggleTimer}>
-              {isLoaded && (user!.publicMetadata?.time as number) != 0
-                ? "Продолжить работу"
-                : "Начать работу"}
-            </Button>
-          )}
+          <Timer onStop={handleStopTimer} />
+          {/* ) : (
+               <Button color="primary" onClick={handleToggleTimer}>
+                 {isLoaded && (user!.publicMetadata?.time as number) != 0
+                   ? "Продолжить работу"
+                   : "Начать работу"}
+               </Button>
+             ) */}
         </RoleBasedRedirect>
       </div>
       <UTable

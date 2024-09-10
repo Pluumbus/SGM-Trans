@@ -67,7 +67,6 @@ export const Timer = ({ onStop }) => {
         }, 300000);
       }
     };
-
     window.addEventListener("mousemove", handleUserActivity);
     window.addEventListener("keydown", handleUserActivity);
 
@@ -96,10 +95,14 @@ export const Timer = ({ onStop }) => {
     displaySeconds,
     "секунда",
     "секунды",
-    "секунд",
+    "секунд"
   );
 
   const handleRefreshTimer = () => {
+    toast({
+      title: `Конец`,
+      description: `Рабочий день закончен`,
+    });
     setIsActive(false);
     onStop();
     setTimeMutation(0);
@@ -113,13 +116,16 @@ export const Timer = ({ onStop }) => {
             {hours} {hoursLabel}, {minutes} {minutesLabel}, {displaySeconds}{" "}
             {secondsLabel}
           </p>
-          <Button
-            color={isActive ? "danger" : "success"}
-            onClick={() => setIsActive((prev) => !prev)}
-          >
-            {isActive ? "Остановить" : "Запустить"}
-          </Button>
-          <Button className="mt-2" onClick={handleRefreshTimer}>
+          {!isActive && (
+            <Button
+              color="success"
+              onClick={() => setIsActive((prev) => !prev)}
+            >
+              Запустить
+            </Button>
+          )}
+
+          <Button color="danger" className="mt-2" onClick={handleRefreshTimer}>
             Закончить работу
           </Button>
         </CardBody>
