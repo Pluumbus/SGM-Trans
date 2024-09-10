@@ -23,9 +23,7 @@ import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
 import { Timer } from "@/components/timeRecord/timeRecord";
 import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
-import { useUser } from "@clerk/nextjs";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { useRouter } from "next/navigation";
 
 const Page: NextPage = () => {
   const { weekId, id, slug } = useParams() as {
@@ -62,12 +60,7 @@ const Page: NextPage = () => {
       setTrips(tripsData);
     }
   }, [isLoading, tripsLoading]);
-  useEffect(() => {
-    handleToggleTimer();
-    // return () => {
-    //   window.removeEventListener("mousemove", handleUserActivity);
-    // };
-  }, []);
+
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${selectedTabId}`)
@@ -102,32 +95,20 @@ const Page: NextPage = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  const [showTimer, setShowTimer] = useState(false);
-
-  const handleToggleTimer = () => {
-    setShowTimer((prevShowTimer) => !prevShowTimer);
-  };
-  const handleStopTimer = () => {
-    setShowTimer(false);
-  };
-
   if (isLoading) {
     return <Spinner />;
   }
 
-  // const handleTabChange = (key) => {
-  //   setSelectedTabId(key);
-  //   router.push(`/workflow/kz/week/${weekId}/trip/${key}`);
-  //   refetch();
-  // };
   return (
     <div>
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {selectedTabId}</span>
-          <span className="max-w-20">
+          <span className="max-w-24">
             Водитель:
-            {trips.find((item) => item.id === Number(selectedTabId))?.driver}
+            <b>
+              {trips.find((item) => item.id === Number(selectedTabId))?.driver}
+            </b>
           </span>
           <div>
             <Button onClick={onOpenChange}>Добавить груз</Button>
@@ -154,14 +135,7 @@ const Page: NextPage = () => {
           </Card>
         </div>
         <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
-          <Timer onStop={handleStopTimer} />
-          {/* ) : (
-               <Button color="primary" onClick={handleToggleTimer}>
-                 {isLoaded && (user!.publicMetadata?.time as number) != 0
-                   ? "Продолжить работу"
-                   : "Начать работу"}
-               </Button>
-             ) */}
+          <Timer />
         </RoleBasedRedirect>
       </div>
       <UTable

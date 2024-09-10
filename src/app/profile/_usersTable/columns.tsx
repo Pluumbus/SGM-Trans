@@ -18,7 +18,6 @@ import {
   ModalBody,
   Autocomplete,
   AutocompleteItem,
-  Checkbox,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { UsersList } from "../../../lib/references/roles/types";
@@ -28,7 +27,6 @@ import React from "react";
 import { BiSend } from "react-icons/bi";
 import { setUserData } from "../../../components/roles/setUserData";
 import { useToast } from "@/components/ui/use-toast";
-import { useUser } from "@clerk/nextjs";
 import { roleNamesList } from "@/lib/references/roles/roles";
 
 export const columns: ColumnDef<UsersList>[] = [

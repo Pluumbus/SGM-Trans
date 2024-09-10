@@ -6,7 +6,7 @@ import { useUser } from "@clerk/nextjs";
 import { Button, Card, CardBody } from "@nextui-org/react";
 import { toast } from "../ui/use-toast";
 
-export const Timer = ({ onStop }) => {
+export const Timer = ({}) => {
   const { user, isLoaded } = useUser();
 
   let oldSec = isLoaded && (user.publicMetadata.time as number);
@@ -28,6 +28,7 @@ export const Timer = ({ onStop }) => {
   });
 
   const [isActive, setIsActive] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -59,6 +60,7 @@ export const Timer = ({ onStop }) => {
       if (isActive) {
         clearTimeout(activityTimeout);
         activityTimeout = setTimeout(() => {
+          setIsPaused(true);
           setIsActive(false);
           toast({
             title: `Пауза`,
@@ -104,7 +106,6 @@ export const Timer = ({ onStop }) => {
       description: `Рабочий день закончен`,
     });
     setIsActive(false);
-    onStop();
     setTimeMutation(0);
   };
 
@@ -116,18 +117,26 @@ export const Timer = ({ onStop }) => {
             {hours} {hoursLabel}, {minutes} {minutesLabel}, {displaySeconds}{" "}
             {secondsLabel}
           </p>
-          {!isActive && (
+          {isPaused && (
             <Button
               color="success"
-              onClick={() => setIsActive((prev) => !prev)}
+              onClick={() => {
+                setIsActive((prev) => !prev);
+                setIsPaused(false);
+              }}
             >
               Запустить
             </Button>
           )}
-
-          <Button color="danger" className="mt-2" onClick={handleRefreshTimer}>
-            Закончить работу
-          </Button>
+          {isActive && (
+            <Button
+              color="danger"
+              className="mt-2"
+              onClick={handleRefreshTimer}
+            >
+              Закончить работу
+            </Button>
+          )}
         </CardBody>
       </Card>
     </div>

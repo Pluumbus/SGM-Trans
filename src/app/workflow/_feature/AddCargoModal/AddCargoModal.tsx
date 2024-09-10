@@ -20,7 +20,6 @@ import { useMutation } from "@tanstack/react-query";
 import { addCargo } from "../WeekCard/requests";
 import { CargoType } from "../types";
 import { Cities, DriversWithCars } from "@/lib/references";
-import { parseDate } from "@internationalized/date";
 
 export const CargoModal = ({
   isOpenCargo,
