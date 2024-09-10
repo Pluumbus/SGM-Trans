@@ -102,18 +102,30 @@ const Page: NextPage = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <div className="flex flex-col gap-2">
-          <span>Номер рейса: {selectedTabId}</span>
-          <span className="max-w-12">
-            Водитель:
-            <b>
-              {trips.find((item) => item.id === Number(selectedTabId))?.driver}
-            </b>
-          </span>
-          <div>
-            <Button onClick={onOpenChange}>Добавить груз</Button>
-          </div>
-        </div>
+        <Card className="bg-gray-200 w-72">
+          <CardBody>
+            <div className="flex flex-col gap-2">
+              <span>
+                Номер рейса: <b>{selectedTabId}</b>
+              </span>
+              <span>
+                Водитель:
+                <b>
+                  {" "}
+                  {
+                    trips.find((item) => item.id === Number(selectedTabId))
+                      ?.driver
+                  }
+                </b>
+              </span>
+              <div>
+                <Button color="success" onClick={onOpenChange}>
+                  Добавить груз
+                </Button>
+              </div>
+            </div>
+          </CardBody>
+        </Card>
         <div className="flex flex-col">
           <Card className=" bg-gray-200">
             <CardBody>
