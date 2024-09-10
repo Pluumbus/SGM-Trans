@@ -23,7 +23,8 @@ export type UseTableConfig<T> = {
 export type UseTableProps<T> = {
   name: string;
   data: T[];
-  columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>;
+  // columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>; #TODO: CHECK ???
+  columns: Array<UseTableColumnsSchema<T> >;
   isPagiantion?: boolean;
   config?: UseTableConfig<T>;
 };

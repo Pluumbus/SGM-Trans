@@ -104,7 +104,7 @@ const Page: NextPage = () => {
       <div className="flex justify-between">
         <div className="flex flex-col gap-2">
           <span>Номер рейса: {selectedTabId}</span>
-          <span className="max-w-24">
+          <span className="max-w-12">
             Водитель:
             <b>
               {trips.find((item) => item.id === Number(selectedTabId))?.driver}
@@ -115,17 +115,18 @@ const Page: NextPage = () => {
           </div>
         </div>
         <div className="flex flex-col">
-          <Card>
+          <Card className=" bg-gray-200">
             <CardBody>
-              <span className="flex justify-center">Все рейсы</span>
+              <span className="flex justify-center">Рейсы недели</span>
               <div className="flex ">
                 {trips.map((trip) => (
                   <Link
-                    className="ml-1"
+                    className="ml-1 "
+                    color="primary"
                     key={trip.id}
                     href={`/workflow/${slug}/week/${weekId}/trip/${trip.id}`}
                   >
-                    <Button variant="faded" size="sm">
+                    <Button color="warning" size="sm">
                       <b>{trip.id}</b>
                     </Button>
                   </Link>

@@ -5,8 +5,8 @@ interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
   return (
-    <div className=" flex flex-col gap-2">
-      <span>Домашняя страница</span>
+    <div className=" flex justify-center">
+      <b>Добро пожаловать на SGM-Trans</b>
     </div>
   );
 };
