@@ -48,8 +48,7 @@ SGM-Trans Logistics Platform — это веб-приложение для уп�
 4. Создайте файл `.env.local` в корне проекта и добавьте необходимые переменные окружения:
 
     ```bash
-    # Пример:
-    DATABASE_URL=postgresql://user:password@localhost:5432/sgmtrans
+    # Пример
     NEXT_PUBLIC_API_KEY=your_api_key
     CLERK_FRONTEND_API=your_clerk_frontend_api
     ```
