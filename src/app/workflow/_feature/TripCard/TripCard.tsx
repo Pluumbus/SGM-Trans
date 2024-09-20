@@ -12,7 +12,7 @@ import supabase from "@/utils/supabase/client";
 import {
   getTripsByWeekId,
   getCargosByTripId,
-} from "../../[slug]/week/[weekId]/trip/_api";
+} from "../../[slug]/week/[weekId]/trip/_api/index";
 
 export type TripType = {
   id: number;
@@ -60,7 +60,7 @@ export const TripCard = ({ weekId }: { weekId: string }) => {
           acc.quantity += Number(curr.quantity) || 0;
           return acc;
         },
-        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 },
+        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 }
       ),
     };
   };
@@ -73,7 +73,7 @@ export const TripCard = ({ weekId }: { weekId: string }) => {
         { event: "*", schema: "public", table: "trips" },
         (payload) => {
           setTrips((prev) => [...prev, payload.new]);
-        },
+        }
       )
       .subscribe();
 

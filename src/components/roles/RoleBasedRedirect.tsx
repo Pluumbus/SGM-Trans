@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
-const RoleBasedRedirect: React.FC<{
+const RoleBasedWrapper: React.FC<{
   allowedRoles: string[];
   children: React.ReactNode;
 }> = ({ allowedRoles, children }) => {
@@ -31,4 +31,4 @@ const RoleBasedRedirect: React.FC<{
   return <>{children}</>;
 };
 
-export default RoleBasedRedirect;
+export default RoleBasedWrapper;

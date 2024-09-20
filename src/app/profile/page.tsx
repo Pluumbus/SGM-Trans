@@ -1,5 +1,4 @@
 import { DataTable } from "./_usersTable/data-table";
-import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import React from "react";
 import {
   dehydrate,
@@ -10,6 +9,7 @@ import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
 import RenderPrintButton from "@/components/templates/actGen";
 import { Button } from "@nextui-org/react";
+import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 
 export default async function ProfilePage() {
   const queryClient = new QueryClient();
@@ -21,11 +21,11 @@ export default async function ProfilePage() {
   return (
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
-        <RoleBasedRedirect allowedRoles={["Админ"]}>
+        <RoleBasedWrapper allowedRoles={["Админ"]}>
           <DataTable />
           {/* Print button for test only */}
           <RenderPrintButton />
-        </RoleBasedRedirect>
+        </RoleBasedWrapper>
       </HydrationBoundary>
       <Button color="danger">
         <SignOutButton>Выход</SignOutButton>

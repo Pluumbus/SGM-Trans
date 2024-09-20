@@ -2,12 +2,12 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { useQuery } from "@tanstack/react-query";
-import { getCargos, getTripsByWeekId } from "../_api";
+import { getCargos, getCargosByTripId, getTripsByWeekId } from "../_api";
 import {
   Button,
   Card,
@@ -22,9 +22,9 @@ import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
 import { Timer } from "@/components/timeRecord/timeRecord";
-import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { BarGraph } from "./_features/Statistics/BarGraph";
+import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 
 const Page: NextPage = () => {
   const { weekId, id, slug } = useParams() as {
@@ -32,6 +32,7 @@ const Page: NextPage = () => {
     id: string;
     slug: string;
   };
+  const router = useRouter();
   const columns = useMemo(() => getBaseColumnsConfig(), []);
   const config: UseTableConfig<CargoType> = {
     row: {
@@ -41,18 +42,25 @@ const Page: NextPage = () => {
   };
   const [selectedTabId, setSelectedTabId] = useState(id);
 
-  const { data, isLoading, refetch } = useQuery<any, CargoType[]>({
-    queryKey: ["cargos"],
-    queryFn: async () => await getCargos(selectedTabId),
-  });
-
-  const { data: tripsData, isLoading: tripsLoading } = useQuery<TripType[]>({
+  const {
+    data: tripsData,
+    isLoading: tripsLoading,
+    isFetched: tripsFetched,
+  } = useQuery<TripType[]>({
     queryKey: ["trips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
-  const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
+
+  const { data, isLoading } = useQuery<any, CargoType[]>({
+    enabled: tripsFetched,
+    queryKey: ["cargos"],
+    queryFn: async () => await getCargos(selectedTabId),
+  });
+
+  const [cargos, setCargos] = useState<CargoType[]>(data || []);
+
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
       console.log("Cargos: ", data);
@@ -100,6 +108,11 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
+  const handleSelectTab = (key) => {
+    // router.push(`/workflow/${slug}/week/${weekId}/trip/${selectedTabId}`);
+    setSelectedTabId(key);
+  };
+
   return (
     <div>
       <div className="flex justify-between">
@@ -127,7 +140,17 @@ const Page: NextPage = () => {
           </CardBody>
         </Card>
         <div className="flex flex-col">
-          <Card className=" bg-gray-200">
+          <span className="flex justify-center">Рейсы недели</span>
+          <Tabs
+            aria-label="Trips"
+            defaultSelectedKey={selectedTabId}
+            onSelectionChange={handleSelectTab}
+          >
+            {trips.map((trip) => (
+              <Tab key={trip.id} title={trip.id}></Tab>
+            ))}
+          </Tabs>
+          {/* <Card className="bg-gray-200">
             <CardBody>
               <span className="flex justify-center">Рейсы недели</span>
               <div className="flex ">
@@ -145,11 +168,11 @@ const Page: NextPage = () => {
                 ))}
               </div>
             </CardBody>
-          </Card>
+          </Card> */}
         </div>
-        <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
+        <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
           <Timer />
-        </RoleBasedRedirect>
+        </RoleBasedWrapper>
       </div>
       <UTable
         data={cargos}
