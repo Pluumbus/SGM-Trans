@@ -184,14 +184,16 @@ export const getBaseColumnsConfig = () => {
       size: 25,
       cell: (info: Cell<CargoType, ReactNode>) => {
         const { data, isLoading } = useQuery({
-          queryKey: ["get user"],
+          queryKey: [`get user ${info.getValue().toString()}`],
           queryFn: async () => await getUserById(info.getValue().toString()),
         });
         if (isLoading) {
           return <Spinner />;
         }
         return (
-          <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+          <div>
+            <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+          </div>
         );
       },
       filter: false,

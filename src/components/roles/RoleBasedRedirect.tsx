@@ -25,7 +25,7 @@ const RoleBasedRedirect: React.FC<{
     checkUserRole();
   }, [allowedRoles, user]);
   if (!hasAccess) {
-    return <></>;
+    return <>У вас нет доступа к этому разделу сайта</>;
   }
 
   return <>{children}</>;

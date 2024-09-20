@@ -24,6 +24,7 @@ import { NextPage } from "next";
 import { Timer } from "@/components/timeRecord/timeRecord";
 import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
+import { BarGraph } from "./_features/Statistics/BarGraph";
 
 const Page: NextPage = () => {
   const { weekId, id, slug } = useParams() as {
@@ -111,7 +112,6 @@ const Page: NextPage = () => {
               <span>
                 Водитель:
                 <b>
-                  {" "}
                   {
                     trips.find((item) => item.id === Number(selectedTabId))
                       ?.driver
@@ -157,6 +157,9 @@ const Page: NextPage = () => {
         name="Cargo Table"
         config={config}
       />
+      <div className="mb-8"></div>
+      <BarGraph cargos={cargos} />
+      <div className="mb-8"></div>
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}

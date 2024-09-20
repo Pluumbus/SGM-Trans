@@ -1,95 +1,289 @@
 "use client";
 
-import { Card, CardBody, CardFooter, CardHeader } from "@nextui-org/react";
-import { TrendingUp } from "lucide-react";
-import { Bar, BarChart, XAxis, YAxis } from "recharts";
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Spinner,
+  Tab,
+  Tabs,
+  Tooltip,
+} from "@nextui-org/react";
+import { TrendingUp } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { getUserById } from "../../../_api";
+
+import { motion } from "framer-motion";
 
 export const description = "A mixed bar chart";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
+export function Chart({ cargos }) {
+  const [chartData, setChartData] = useState([]);
+  const [leadingManager, setLeadingManager] = useState<number | string>("");
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
-} satisfies ChartConfig;
+  const { mutateAsync, isPending } = useMutation({
+    mutationKey: ["get usersss"],
+    mutationFn: async (user_id: string) => await getUserById(user_id),
+  });
 
-export function Chart() {
+  const groupCargosByUser = async (data) => {
+    const grouped = {};
+
+    for (const cargo of data) {
+      if (!grouped[cargo.user_id]) {
+        const user = await mutateAsync(cargo.user_id);
+        const fullName = `${user.firstName} ${user.lastName}`;
+        grouped[cargo.user_id] = { fullName, count: 1 };
+      } else {
+        grouped[cargo.user_id].count += 1;
+      }
+    }
+
+    return grouped;
+  };
+
+  const calculatePercentages = (groupedData) => {
+    const users = Object.keys(groupedData);
+    const counts = users.map((user) => groupedData[user].count);
+    const maxCount = Math.max(...counts);
+    setLeadingManager(maxCount);
+
+    return users.map((user) => ({
+      user: groupedData[user].fullName,
+      count: groupedData[user].count,
+      percentageOfAll: Math.round(
+        (groupedData[user].count / cargos.length) * 100
+      ),
+      percentage: Math.round((groupedData[user].count / maxCount) * 100),
+    }));
+  };
+
+  const [colors, setColors] = useState(
+    getRandomRainbowColors(chartData?.length)
+  );
+
+  useEffect(() => {
+    const fetch = async () => {
+      const data = await groupCargosByUser(cargos);
+      if (data) {
+        const dataToSet = calculatePercentages(data);
+        setChartData(dataToSet);
+        setColors(getRandomRainbowColors(dataToSet?.length));
+      }
+    };
+    fetch();
+  }, [cargos]);
+
   return (
     <Card>
       <CardHeader>
-        <span>Bar Chart - Mixed</span>
-        <span>January - June 2024</span>
+        <span>Статистика по Грузам</span>
       </CardHeader>
       <CardBody>
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={chartData}
-            layout="vertical"
-            margin={{
-              left: 0,
-            }}
-          >
-            <YAxis
-              dataKey="browser"
-              type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) =>
-                chartConfig[value as keyof typeof chartConfig]?.label
-              }
-            />
-            <XAxis dataKey="visitors" type="number" hide />
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Bar dataKey="visitors" layout="vertical" radius={5} />
-          </BarChart>
-        </ChartContainer>
+        {isPending ? (
+          <Spinner />
+        ) : (
+          <Tabs aria-label="Tabs radius">
+            <Tab key="1" title="Первый вариант">
+              <CustomBar
+                data={chartData}
+                cargoCount={cargos.length}
+                colors={colors}
+              />
+            </Tab>
+            <Tab key="2" title="Второй вариант">
+              <CustomSingleBar
+                data={chartData}
+                cargoCount={cargos.length}
+                colors={colors}
+              />
+            </Tab>
+          </Tabs>
+        )}
       </CardBody>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
+          Лидирует
+          <span>
+            {chartData?.find((e) => e.count === leadingManager)?.user}
+          </span>
+          <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
+          Показано общее количество грузов, добавленных каждым менеджером.
         </div>
       </CardFooter>
     </Card>
   );
 }
+
+const CustomBar = ({
+  data,
+  cargoCount,
+  colors,
+}: {
+  data: {
+    user: string;
+    count: number;
+    percentageOfAll: number;
+    percentage: number;
+  }[];
+  cargoCount: number;
+  colors: any[];
+}) => {
+  const [state, setState] = useState(data);
+  useEffect(() => {
+    if (data) {
+      setState(data);
+    }
+  }, [data]);
+
+  return (
+    <Card className="flex flex-col gap-2 w-full">
+      <CardHeader>
+        <span>Всего грузов: {cargoCount}</span>
+      </CardHeader>
+      <CardBody className="flex flex-col gap-2">
+        {state.map((e, i) => (
+          <div>
+            <div className="flex w-full">
+              <span className="w-[10%]">{e.user}</span>
+              <div className="w-[80%]">
+                <motion.div
+                  initial={{ width: "0%" }}
+                  animate={{ width: `${e.percentageOfAll}%` }}
+                  transition={{
+                    duration: 1,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    backgroundColor: colors[i],
+                  }}
+                  className="min-h-full rounded-[0.25rem]"
+                />
+              </div>
+              <span className="w-[10%]">{e.count}</span>
+            </div>
+          </div>
+        ))}
+      </CardBody>
+    </Card>
+  );
+};
+
+const CustomSingleBar = ({
+  data,
+  cargoCount,
+  colors,
+}: {
+  data: {
+    user: string;
+    count: number;
+    percentageOfAll: number;
+    percentage: number;
+  }[];
+  cargoCount: number;
+  colors: any[];
+}) => {
+  const [state, setState] = useState(data);
+  useEffect(() => {
+    if (data) {
+      setState(data);
+    }
+  }, [data]);
+
+  return (
+    <Card className="flex flex-col gap-2 w-full">
+      <CardHeader>
+        <span>Всего грузов: {cargoCount}</span>
+      </CardHeader>
+      <CardBody className="flex h-full w-full">
+        <div className="min-h-[3rem] w-full flex gap-1">
+          {state.map((e, i) => (
+            <Tooltip
+              content={
+                <div>
+                  {e.user}: {e.count} {spellRussianWord(e.count, "груз")}
+                </div>
+              }
+            >
+              <motion.div
+                initial={{
+                  width: `${i == 0 ? 0 : state[i - 1].percentageOfAll}%`,
+                  height: "100%",
+                }}
+                animate={{ width: `${e.percentageOfAll}%` }}
+                transition={{
+                  duration: 0.75,
+                  ease: "easeInOut",
+                }}
+                style={{
+                  backgroundColor: colors[i],
+                }}
+                className="min-h-[3rem] h-full rounded-[0.75rem]"
+              />
+            </Tooltip>
+          ))}
+        </div>
+      </CardBody>
+    </Card>
+  );
+};
+
+export const spellRussianWord = (i, e) => {
+  switch (i) {
+    case 1:
+      return `${e}`;
+    case 2:
+    case 3:
+    case 4:
+      return `${e}а`;
+    default:
+      return `${e}ов`;
+  }
+};
+
+const getRandomRainbowColors = (count) => {
+  const baseColors = [
+    { hue: 0, name: "red" },
+    { hue: 30, name: "orange" },
+    { hue: 60, name: "yellow" },
+    { hue: 120, name: "green" },
+    { hue: 240, name: "blue" },
+    { hue: 275, name: "indigo" },
+    { hue: 300, name: "violet" },
+  ];
+
+  const randomColorInRange = (hue) => {
+    const lightness = Math.floor(Math.random() * 100 + 200);
+    return `hsl(${hue}, 100%, ${lightness % 100}%)`;
+  };
+
+  const hslToHex = (h, s, l) => {
+    l /= 100;
+    const a = (s * Math.min(l, 1 - l)) / 100;
+    const f = (n) => {
+      const k = (n + h / 30) % 12;
+      const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+      return Math.round(255 * color)
+        .toString(16)
+        .padStart(2, "0");
+    };
+    return `#${f(0)}${f(8)}${f(4)}`;
+  };
+
+  let colors = [];
+
+  for (let i = 0; i < count; i++) {
+    const baseColor = baseColors[i % baseColors.length];
+    const hslColor = randomColorInRange(baseColor.hue);
+    const [h, s, l] = hslColor.match(/\d+/g).map(Number);
+    const hexColor = hslToHex(h, s, l);
+    colors.push(hexColor);
+  }
+
+  return colors;
+};
