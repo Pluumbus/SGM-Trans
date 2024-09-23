@@ -20,10 +20,10 @@ import {
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
-import { Timer } from "@/components/timeRecord/timeRecord";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { BarGraph } from "./_features/Statistics/BarGraph";
 import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
+import { Timer } from "@/components/Timer/Timer";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams() as {
