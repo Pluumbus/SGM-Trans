@@ -2,17 +2,16 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { useQuery } from "@tanstack/react-query";
-import { getCargos, getCargosByTripId, getTripsByWeekId } from "../_api";
+import { getCargos, getTripsByWeekId } from "../_api";
 import {
   Button,
   Card,
   CardBody,
-  Link,
   Spinner,
   Tab,
   Tabs,
@@ -27,12 +26,10 @@ import { BarGraph } from "./_features/Statistics/BarGraph";
 import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 
 const Page: NextPage = () => {
-  const { weekId, id, slug } = useParams() as {
+  const { weekId, id } = useParams() as {
     weekId: string;
     id: string;
-    slug: string;
   };
-  const router = useRouter();
   const columns = useMemo(() => getBaseColumnsConfig(), []);
   const config: UseTableConfig<CargoType> = {
     row: {
@@ -42,20 +39,14 @@ const Page: NextPage = () => {
   };
   const [selectedTabId, setSelectedTabId] = useState(id);
 
-  const {
-    data: tripsData,
-    isLoading: tripsLoading,
-    isFetched: tripsFetched,
-  } = useQuery<TripType[]>({
+  const { data: tripsData, isLoading: tripsLoading } = useQuery<TripType[]>({
     queryKey: ["trips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
-
-  const { data, isLoading } = useQuery<any, CargoType[]>({
-    enabled: tripsFetched,
-    queryKey: ["cargos"],
+  const { data, isLoading, isFetched, refetch } = useQuery<any, CargoType[]>({
+    queryKey: [`cargos/trip/${selectedTabId}`],
     queryFn: async () => await getCargos(selectedTabId),
   });
 
@@ -63,12 +54,11 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
-      console.log("Cargos: ", data);
-
       setCargos(data);
       setTrips(tripsData);
+      console.log("Cargos: ", data);
     }
-  }, [isLoading, tripsLoading]);
+  }, [isLoading, tripsLoading, selectedTabId]);
 
   useEffect(() => {
     const cn = supabase
@@ -104,13 +94,13 @@ const Page: NextPage = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
 
   const handleSelectTab = (key) => {
-    // router.push(`/workflow/${slug}/week/${weekId}/trip/${selectedTabId}`);
     setSelectedTabId(key);
+    refetch();
   };
 
   return (
@@ -139,18 +129,39 @@ const Page: NextPage = () => {
             </div>
           </CardBody>
         </Card>
-        <div className="flex flex-col">
-          <span className="flex justify-center">Рейсы недели</span>
-          <Tabs
-            aria-label="Trips"
-            defaultSelectedKey={selectedTabId}
-            onSelectionChange={handleSelectTab}
-          >
-            {trips.map((trip) => (
-              <Tab key={trip.id} title={trip.id}></Tab>
-            ))}
-          </Tabs>
-          {/* <Card className="bg-gray-200">
+        <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
+          <Timer />
+        </RoleBasedWrapper>
+      </div>
+      <div className="flex flex-col ">
+        <span className="flex justify-center">Рейсы недели</span>
+        <Tabs
+          className="flex justify-center"
+          aria-label="Trips"
+          defaultSelectedKey={selectedTabId}
+          onSelectionChange={handleSelectTab}
+        >
+          {trips.map((trip) => (
+            <Tab key={trip.id} title={trip.id}>
+              {!isLoading && isFetched ? (
+                <>
+                  <UTable
+                    data={cargos}
+                    columns={columns}
+                    name="Cargo Table"
+                    config={config}
+                  />
+                  <div className="mb-8"></div>
+                  <BarGraph cargos={cargos} />
+                  <div className="mb-8"></div>
+                </>
+              ) : (
+                <Spinner />
+              )}
+            </Tab>
+          ))}
+        </Tabs>
+        {/* <Card className="bg-gray-200">
             <CardBody>
               <span className="flex justify-center">Рейсы недели</span>
               <div className="flex ">
@@ -169,20 +180,18 @@ const Page: NextPage = () => {
               </div>
             </CardBody>
           </Card> */}
-        </div>
-        <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
-          <Timer />
-        </RoleBasedWrapper>
       </div>
-      <UTable
+
+      {/* </div> */}
+      {/* <UTable
         data={cargos}
         columns={columns}
         name="Cargo Table"
         config={config}
-      />
-      <div className="mb-8"></div>
+      /> */}
+      {/* <div className="mb-8"></div>
       <BarGraph cargos={cargos} />
-      <div className="mb-8"></div>
+      <div className="mb-8"></div> */}
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}

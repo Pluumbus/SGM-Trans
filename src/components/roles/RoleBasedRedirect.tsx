@@ -25,7 +25,7 @@ const RoleBasedWrapper: React.FC<{
     checkUserRole();
   }, [allowedRoles, user]);
   if (!hasAccess) {
-    return <>У вас нет доступа к этому разделу сайта</>;
+    return <></>;
   }
 
   return <>{children}</>;
