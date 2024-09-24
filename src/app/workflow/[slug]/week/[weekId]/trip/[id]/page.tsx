@@ -55,8 +55,6 @@ const Page: NextPage = () => {
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
-      console.log("Cargos: ", data);
-
       setCargos(data);
       setTrips(tripsData);
     }

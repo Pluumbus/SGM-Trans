@@ -22,7 +22,7 @@ export const description = "A mixed bar chart";
 
 export function Chart({ cargos }) {
   const [chartData, setChartData] = useState([]);
-  const [leadingManager, setLeadingManager] = useState<number | string>("");
+  const [leadingManager, setLeadingManager] = useState([]);
 
   const { mutateAsync, isPending } = useMutation({
     mutationKey: ["get usersss"],
@@ -49,7 +49,6 @@ export function Chart({ cargos }) {
     const users = Object.keys(groupedData);
     const counts = users.map((user) => groupedData[user].count);
     const maxCount = Math.max(...counts);
-    setLeadingManager(maxCount);
 
     return users.map((user) => ({
       user: groupedData[user].fullName,
@@ -57,6 +56,7 @@ export function Chart({ cargos }) {
       percentageOfAll: Math.round(
         (groupedData[user].count / cargos.length) * 100
       ),
+      maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
     }));
   };
@@ -70,6 +70,13 @@ export function Chart({ cargos }) {
       const data = await groupCargosByUser(cargos);
       if (data) {
         const dataToSet = calculatePercentages(data);
+        const arr = dataToSet.map((e) => {
+          if (e.count == e.maxCount) {
+            return e.user;
+          }
+        });
+
+        setLeadingManager(arr);
         setChartData(dataToSet);
         setColors(getRandomRainbowColors(dataToSet?.length));
       }
@@ -107,9 +114,7 @@ export function Chart({ cargos }) {
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Лидирует
-          <span>
-            {chartData?.find((e) => e.count === leadingManager)?.user}
-          </span>
+          <span>{leadingManager?.map((e) => <span>{e}</span>)}</span>
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
