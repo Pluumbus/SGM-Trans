@@ -6,8 +6,8 @@ import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/components/ui/profileButton";
 import React from "react";
-import RoleBasedRedirect from "../roles/RoleBasedRedirect";
 import { useRole } from "../roles/useRole";
+import RoleBasedWrapper from "../roles/RoleBasedRedirect";
 
 const Navbar = () => {
   const userRole = useRole();
@@ -31,14 +31,14 @@ const Navbar = () => {
             >
               Таблица Москва
             </Link>
-            <RoleBasedRedirect allowedRoles={["Админ"]}>
+            <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
                 href="/statistics"
                 className="mr-5 cursor-pointer hover:text-gray-900"
               >
                 Статистика
               </Link>
-            </RoleBasedRedirect>
+            </RoleBasedWrapper>
           </nav>
         )}
 

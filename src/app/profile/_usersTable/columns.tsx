@@ -9,10 +9,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import {
   Avatar,
   Modal,
+  Tooltip,
   Button,
   ModalContent,
   ModalBody,
@@ -48,7 +49,23 @@ export const columns: ColumnDef<UsersList>[] = [
   },
   {
     accessorKey: "role",
-    header: "Роль",
+    header: ({ column }) => {
+      return (
+        <Tooltip content="Фильтр ролей">
+          <Button
+            variant="light"
+            className=""
+            onClick={() => {
+              column.toggleSorting(column.getIsSorted() === "asc");
+            }}
+          >
+            <h1>Роль</h1>
+            <ArrowUpDown className="ml-2 h-4 w-4" />
+          </Button>
+        </Tooltip>
+      );
+    },
+    cell: ({ row }) => <div>{row.getValue("role")}</div>,
   },
   {
     accessorKey: "balance",

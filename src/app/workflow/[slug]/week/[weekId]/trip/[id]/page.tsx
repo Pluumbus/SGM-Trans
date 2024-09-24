@@ -12,7 +12,6 @@ import {
   Button,
   Card,
   CardBody,
-  Link,
   Spinner,
   Tab,
   Tabs,
@@ -21,16 +20,15 @@ import {
 import { CargoModal } from "@/app/workflow/_feature";
 import supabase from "@/utils/supabase/client";
 import { NextPage } from "next";
-import { Timer } from "@/components/timeRecord/timeRecord";
-import RoleBasedRedirect from "@/components/roles/RoleBasedRedirect";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { BarGraph } from "./_features/Statistics/BarGraph";
+import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
+import { Timer } from "@/components/Timer/Timer";
 
 const Page: NextPage = () => {
-  const { weekId, id, slug } = useParams() as {
+  const { weekId, id } = useParams() as {
     weekId: string;
     id: string;
-    slug: string;
   };
   const columns = useMemo(() => getBaseColumnsConfig(), []);
   const config: UseTableConfig<CargoType> = {
@@ -41,24 +39,26 @@ const Page: NextPage = () => {
   };
   const [selectedTabId, setSelectedTabId] = useState(id);
 
-  const { data, isLoading, refetch } = useQuery<any, CargoType[]>({
-    queryKey: ["cargos"],
-    queryFn: async () => await getCargos(selectedTabId),
-  });
-
   const { data: tripsData, isLoading: tripsLoading } = useQuery<TripType[]>({
     queryKey: ["trips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
-  const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [trips, setTrips] = useState<TripType[]>(tripsData || []);
+  const { data, isLoading, isFetched, refetch } = useQuery<any, CargoType[]>({
+    queryKey: [`cargos/trip/${selectedTabId}`],
+    queryFn: async () => await getCargos(selectedTabId),
+  });
+
+  const [cargos, setCargos] = useState<CargoType[]>(data || []);
+
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
       setCargos(data);
       setTrips(tripsData);
+      console.log("Cargos: ", data);
     }
-  }, [isLoading, tripsLoading]);
+  }, [isLoading, tripsLoading, selectedTabId]);
 
   useEffect(() => {
     const cn = supabase
@@ -94,9 +94,14 @@ const Page: NextPage = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
+
+  const handleSelectTab = (key) => {
+    setSelectedTabId(key);
+    refetch();
+  };
 
   return (
     <div>
@@ -124,8 +129,39 @@ const Page: NextPage = () => {
             </div>
           </CardBody>
         </Card>
-        <div className="flex flex-col">
-          <Card className=" bg-gray-200">
+        <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
+          <Timer />
+        </RoleBasedWrapper>
+      </div>
+      <div className="flex flex-col ">
+        <span className="flex justify-center">Рейсы недели</span>
+        <Tabs
+          className="flex justify-center"
+          aria-label="Trips"
+          defaultSelectedKey={selectedTabId}
+          onSelectionChange={handleSelectTab}
+        >
+          {trips.map((trip) => (
+            <Tab key={trip.id} title={trip.id}>
+              {!isLoading && isFetched ? (
+                <>
+                  <UTable
+                    data={cargos}
+                    columns={columns}
+                    name="Cargo Table"
+                    config={config}
+                  />
+                  <div className="mb-8"></div>
+                  <BarGraph cargos={cargos} />
+                  <div className="mb-8"></div>
+                </>
+              ) : (
+                <Spinner />
+              )}
+            </Tab>
+          ))}
+        </Tabs>
+        {/* <Card className="bg-gray-200">
             <CardBody>
               <span className="flex justify-center">Рейсы недели</span>
               <div className="flex ">
@@ -143,21 +179,19 @@ const Page: NextPage = () => {
                 ))}
               </div>
             </CardBody>
-          </Card>
-        </div>
-        <RoleBasedRedirect allowedRoles={["Админ", "Логист Дистант"]}>
-          <Timer />
-        </RoleBasedRedirect>
+          </Card> */}
       </div>
-      <UTable
+
+      {/* </div> */}
+      {/* <UTable
         data={cargos}
         columns={columns}
         name="Cargo Table"
         config={config}
-      />
-      <div className="mb-8"></div>
+      /> */}
+      {/* <div className="mb-8"></div>
       <BarGraph cargos={cargos} />
-      <div className="mb-8"></div>
+      <div className="mb-8"></div> */}
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}

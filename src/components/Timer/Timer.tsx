@@ -10,7 +10,11 @@ export const Timer = ({}) => {
   const { user, isLoaded } = useUser();
 
   let oldSec = isLoaded && (user.publicMetadata.time as number);
-  const [seconds, setSeconds] = useState(oldSec);
+
+  const [seconds, setSeconds] = useState(() => {
+    if (oldSec % 60 === 0) return Number(localStorage.getItem("seconds"));
+    return oldSec;
+  });
 
   const { mutate: setTimeMutation } = useMutation({
     mutationKey: ["SetTimeForUser"],
@@ -48,6 +52,7 @@ export const Timer = ({}) => {
   }, [isActive]);
 
   useEffect(() => {
+    localStorage.setItem("seconds", seconds.toString());
     if (seconds > 0 && seconds % 60 === 0) {
       setTimeMutation(seconds);
     }
@@ -102,8 +107,7 @@ export const Timer = ({}) => {
 
   const handleRefreshTimer = () => {
     toast({
-      title: `Конец`,
-      description: `Рабочий день закончен`,
+      title: `Рабочий день закончен`,
     });
     setIsActive(false);
     setTimeMutation(0);

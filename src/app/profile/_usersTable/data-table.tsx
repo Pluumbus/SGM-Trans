@@ -8,6 +8,8 @@ import {
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
+  getSortedRowModel,
+  SortingState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -42,6 +44,8 @@ export function DataTable() {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
@@ -49,7 +53,10 @@ export function DataTable() {
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
+    onSortingChange: setSorting,
+    getSortedRowModel: getSortedRowModel(),
     state: {
+      sorting,
       columnFilters,
     },
   });
@@ -61,11 +68,9 @@ export function DataTable() {
     );
   }
 
-  const handleCheckBox = () => {
-    const [checkRole, setCheckRole] = useState(false);
-
-    table.getColumn("role")?.setFilterValue(roleNamesList);
-  };
+  // const handleCheckBox = () => {
+  //   table.getColumn("role")?.;
+  // };
   return (
     <div>
       <div className="flex items-center py-4">
@@ -89,9 +94,9 @@ export function DataTable() {
             <AutocompleteItem key={role}>{role}</AutocompleteItem>
           ))}
         </Autocomplete>
-        <Checkbox className="ml-5" onClick={handleCheckBox} />
+        {/* <Checkbox className="ml-5" onClick={handleCheckBox} />
 
-        <p>Только с ролью</p>
+        <p>Только с ролью</p> */}
       </div>
       <div className="rounded-md border">
         <Table>

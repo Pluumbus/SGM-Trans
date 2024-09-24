@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 
-const RoleBasedRedirect: React.FC<{
+const RoleBasedWrapper: React.FC<{
   allowedRoles: string[];
   children: React.ReactNode;
 }> = ({ allowedRoles, children }) => {
@@ -25,10 +25,10 @@ const RoleBasedRedirect: React.FC<{
     checkUserRole();
   }, [allowedRoles, user]);
   if (!hasAccess) {
-    return <>У вас нет доступа к этому разделу сайта</>;
+    return <></>;
   }
 
   return <>{children}</>;
 };
 
-export default RoleBasedRedirect;
+export default RoleBasedWrapper;
