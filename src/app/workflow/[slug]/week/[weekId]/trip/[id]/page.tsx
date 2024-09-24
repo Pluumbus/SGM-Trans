@@ -121,6 +121,7 @@ const Page: NextPage = () => {
                   }
                 </b>
               </span>
+              <span>Статус : {}</span>
               <div>
                 <Button color="success" onClick={onOpenChange}>
                   Добавить груз
@@ -161,37 +162,8 @@ const Page: NextPage = () => {
             </Tab>
           ))}
         </Tabs>
-        {/* <Card className="bg-gray-200">
-            <CardBody>
-              <span className="flex justify-center">Рейсы недели</span>
-              <div className="flex ">
-                {trips.map((trip) => (
-                  <Link
-                    className="ml-1 "
-                    color="primary"
-                    key={trip.id}
-                    href={`/workflow/${slug}/week/${weekId}/trip/${trip.id}`}
-                  >
-                    <Button color="warning" size="sm">
-                      <b>{trip.id}</b>
-                    </Button>
-                  </Link>
-                ))}
-              </div>
-            </CardBody>
-          </Card> */}
       </div>
 
-      {/* </div> */}
-      {/* <UTable
-        data={cargos}
-        columns={columns}
-        name="Cargo Table"
-        config={config}
-      /> */}
-      {/* <div className="mb-8"></div>
-      <BarGraph cargos={cargos} />
-      <div className="mb-8"></div> */}
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}

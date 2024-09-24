@@ -11,6 +11,7 @@ import {
   getSortedRowModel,
   SortingState,
   useReactTable,
+  VisibilityState,
 } from "@tanstack/react-table";
 
 import {
@@ -21,30 +22,37 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
-  Checkbox,
-} from "@nextui-org/react";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import React, { useState } from "react";
-import { Input, Spinner } from "@nextui-org/react";
+import { RangeCalendar } from "@nextui-org/react";
+import React, { useEffect } from "react";
+import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { getUserList } from "../_api/requests";
 import { columns } from "./columns";
-import { roleNamesList } from "@/lib/references/roles/roles";
+import { getStatsUserList } from "../api";
+import {
+  today,
+  getLocalTimeZone,
+  isWeekend,
+  DateField,
+  CalendarDate,
+  DateValue,
+} from "@internationalized/date";
 
 export function DataTable() {
   const { data, isLoading } = useQuery({
-    queryKey: ["Get users for admin panel"],
-    queryFn: async () => await getUserList(),
+    queryKey: ["Get users for general statistics"],
+    queryFn: async () => await getStatsUserList(),
+  });
+
+  const [dateVal, setDateVal] = React.useState({
+    start: today(getLocalTimeZone()),
+    end: today(getLocalTimeZone()),
   });
 
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
 
   const table = useReactTable({
     data,
@@ -53,13 +61,33 @@ export function DataTable() {
     getPaginationRowModel: getPaginationRowModel(),
     onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
     state: {
-      sorting,
       columnFilters,
+      columnVisibility,
     },
   });
+  const handleSetTimeRangeFilter = () => {
+    const startDate = new Date(
+      dateVal.start.year,
+      dateVal.start.month - 1,
+      dateVal.start.day
+    ).toLocaleDateString();
+
+    const endDate = new Date(
+      dateVal.end.year,
+      dateVal.end.month - 1,
+      dateVal.end.day
+    ).toLocaleDateString();
+
+    table.getColumn("created_at").setFilterValue([startDate, endDate]);
+  };
+
+  useEffect(() => {
+    handleSetTimeRangeFilter();
+  }, [dateVal]);
+
   if (isLoading) {
     return (
       <div className="flex justify-center mt-60">
@@ -69,30 +97,8 @@ export function DataTable() {
   }
 
   return (
-    <div>
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Поиск по почте"
-          value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("email")?.setFilterValue(event.target.value)
-          }
-          className="max-w-xs w-2/4 max-h-1 mt-10"
-        />
-        <Autocomplete
-          label="Поиск по роли"
-          className="max-w-xs w-2/4 max-h-1 ml-5 mb-9"
-          value={(table.getColumn("role")?.getFilterValue() as string) ?? ""}
-          onInputChange={(event) =>
-            table.getColumn("role")?.setFilterValue(event)
-          }
-        >
-          {roleNamesList.map((role: string) => (
-            <AutocompleteItem key={role}>{role}</AutocompleteItem>
-          ))}
-        </Autocomplete>
-      </div>
-      <div className="rounded-md border">
+    <div className="flex">
+      <div className="rounded-md border w-5/6">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -141,7 +147,7 @@ export function DataTable() {
             )}
           </TableBody>
         </Table>
-        <div className="flex items-center justify-between space-x-2 py-1">
+        {/* <div className="flex items-center justify-between space-x-2 py-1">
           <div>
             <Button
               variant="light"
@@ -162,7 +168,16 @@ export function DataTable() {
               <ArrowRightIcon />
             </Button>
           </div>
-        </div>
+        </div> */}
+      </div>
+      <div className="ml-8 sticky">
+        <RangeCalendar
+          aria-label="Date (Uncontrolled)"
+          color="foreground"
+          value={dateVal}
+          onChange={setDateVal}
+          maxValue={today(getLocalTimeZone())}
+        />
       </div>
     </div>
   );
