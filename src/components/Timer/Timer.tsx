@@ -12,10 +12,7 @@ export const Timer = ({}) => {
   let oldSec = isLoaded && (user.publicMetadata.time as number);
 
   const [seconds, setSeconds] = useState(() => {
-    if (oldSec % 60 === 0) {
-      const savedSeconds = localStorage.getItem("seconds");
-      return Number(savedSeconds);
-    }
+    if (oldSec % 60 === 0) return Number(localStorage.getItem("seconds"));
     return oldSec;
   });
 
@@ -56,7 +53,6 @@ export const Timer = ({}) => {
 
   useEffect(() => {
     localStorage.setItem("seconds", seconds.toString());
-    console.log(localStorage.getItem("seconds"));
     if (seconds > 0 && seconds % 60 === 0) {
       setTimeMutation(seconds);
     }
