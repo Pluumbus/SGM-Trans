@@ -24,13 +24,16 @@ import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { BarGraph } from "./_features/Statistics/BarGraph";
 import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 import { Timer } from "@/components/Timer/Timer";
+import { UpdateTripNumber } from "./_features/UpdateTripNumber";
+import { create } from "zustand";
+import { useSelectionStore } from "./_features/store";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams() as {
     weekId: string;
     id: string;
   };
-  const columns = useMemo(() => getBaseColumnsConfig(), []);
+
   const config: UseTableConfig<CargoType> = {
     row: {
       setRowData(info) {},
@@ -52,13 +55,22 @@ const Page: NextPage = () => {
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
 
+  const { rowSelected, setRowSelected } = useSelectionStore();
+
   useEffect(() => {
     if (!isLoading && !tripsLoading) {
       setCargos(data);
+      const res = data.map((e) => ({
+        number: e.id,
+        isSelected: false,
+      }));
+
+      setRowSelected(res);
       setTrips(tripsData);
-      console.log("Cargos: ", data);
     }
   }, [isLoading, tripsLoading, selectedTabId]);
+
+  const columns = useMemo(() => getBaseColumnsConfig(), []);
 
   useEffect(() => {
     const cn = supabase
@@ -147,10 +159,20 @@ const Page: NextPage = () => {
                 <>
                   <UTable
                     data={cargos}
+                    isPagiantion={false}
                     columns={columns}
                     name="Cargo Table"
                     config={config}
                   />
+
+                  {rowSelected?.some((e) => e.isSelected) && (
+                    <UpdateTripNumber
+                      cargos={cargos}
+                      trips={trips}
+                      selectedRows={rowSelected}
+                    />
+                  )}
+
                   <div className="mb-8"></div>
                   <BarGraph cargos={cargos} />
                   <div className="mb-8"></div>
@@ -161,37 +183,7 @@ const Page: NextPage = () => {
             </Tab>
           ))}
         </Tabs>
-        {/* <Card className="bg-gray-200">
-            <CardBody>
-              <span className="flex justify-center">Рейсы недели</span>
-              <div className="flex ">
-                {trips.map((trip) => (
-                  <Link
-                    className="ml-1 "
-                    color="primary"
-                    key={trip.id}
-                    href={`/workflow/${slug}/week/${weekId}/trip/${trip.id}`}
-                  >
-                    <Button color="warning" size="sm">
-                      <b>{trip.id}</b>
-                    </Button>
-                  </Link>
-                ))}
-              </div>
-            </CardBody>
-          </Card> */}
       </div>
-
-      {/* </div> */}
-      {/* <UTable
-        data={cargos}
-        columns={columns}
-        name="Cargo Table"
-        config={config}
-      /> */}
-      {/* <div className="mb-8"></div>
-      <BarGraph cargos={cargos} />
-      <div className="mb-8"></div> */}
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}
