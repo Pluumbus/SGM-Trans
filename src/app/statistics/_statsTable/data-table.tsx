@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable prettier/prettier */
 "use client";
 
@@ -9,7 +8,6 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  SortingState,
   useReactTable,
   VisibilityState,
 } from "@tanstack/react-table";
@@ -28,21 +26,19 @@ import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
 import { getStatsUserList } from "../api";
-import {
-  today,
-  getLocalTimeZone,
-  isWeekend,
-  DateField,
-  CalendarDate,
-  DateValue,
-} from "@internationalized/date";
+import { today, getLocalTimeZone } from "@internationalized/date";
+import { isWithinInterval, parseISO } from "date-fns";
+import { StatsUserList } from "@/lib/references/stats/types";
 
 export function DataTable() {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetched } = useQuery({
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
 
+  const [filteredData, setFilteredData] = React.useState<StatsUserList[]>(
+    isFetched && data
+  );
   const [dateVal, setDateVal] = React.useState({
     start: today(getLocalTimeZone()),
     end: today(getLocalTimeZone()),
@@ -55,7 +51,7 @@ export function DataTable() {
     React.useState<VisibilityState>({});
 
   const table = useReactTable({
-    data,
+    data: filteredData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -73,15 +69,36 @@ export function DataTable() {
       dateVal.start.year,
       dateVal.start.month - 1,
       dateVal.start.day
-    ).toLocaleDateString();
+    ).toISOString();
 
     const endDate = new Date(
       dateVal.end.year,
       dateVal.end.month - 1,
       dateVal.end.day
-    ).toLocaleDateString();
+    ).toISOString();
+    if (isFetched) {
+      let bidSumArr = [];
 
-    table.getColumn("created_at").setFilterValue([startDate, endDate]);
+      const sumAmountsForDateRange = (user: StatsUserList) => {
+        return user.created_at.reduce((total, date, index) => {
+          if (isWithinInterval(date, { start: startDate, end: endDate })) {
+            bidSumArr.push(user.amount[index]);
+            return total + user.amount[index];
+          }
+
+          return total;
+        }, 0);
+      };
+      const filtered = data
+        .map((user) => {
+          const totalAmountInRange = sumAmountsForDateRange(user);
+          const bidSum = bidSumArr.length;
+          return { ...user, totalAmountInRange, bidSum };
+        })
+        .filter((user) => user.totalAmountInRange > 0);
+
+      setFilteredData(filtered);
+    }
   };
 
   useEffect(() => {

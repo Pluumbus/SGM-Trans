@@ -29,15 +29,12 @@ export const getStatsUserList = async () => {
     if (userMap.has(user_id)) {
       const existingUser = userMap.get(user_id);
 
-      if (existingUser!.amount) existingUser!.amount.push(amount);
+      if (existingUser!.amount) existingUser!.amount.push(Number(amount));
       else existingUser!.amount = [amount];
 
       if (existingUser!.created_at)
-        existingUser!.created_at.push(
-          new Date(created_at).toLocaleDateString(),
-        );
-      else
-        existingUser!.created_at = [new Date(created_at).toLocaleDateString()];
+        existingUser!.created_at.push(new Date(created_at).toISOString());
+      else existingUser!.created_at = [new Date(created_at).toISOString()];
     }
   });
 

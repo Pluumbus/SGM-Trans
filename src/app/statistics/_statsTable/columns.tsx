@@ -17,15 +17,16 @@ export const columns: ColumnDef<StatsUserList>[] = [
     },
   },
   {
-    accessorKey: "amount",
+    accessorKey: "totalAmountInRange",
     header: "Сумма тг. за промежуток",
-    cell: ({ row }) => {
-      let salesSum = 0;
-      row.original.amount.forEach((sale) => {
-        salesSum += Number(sale);
-      });
-      return salesSum;
-    },
+    // cell: (info) => info.getValue() || 0,
+    // cell: ({ row }) => {
+    //   let salesSum = 0;
+    //   row.original.amount.forEach((sale) => {
+    //     salesSum += Number(sale);
+    //   });
+    //   return salesSum;
+    // },
   },
   {
     accessorKey: "bidSum",
@@ -42,26 +43,21 @@ export const columns: ColumnDef<StatsUserList>[] = [
   {
     accessorKey: "created_at",
     header: "Дата",
-    filterFn: (row, a, filterValue) => {
-      const dates = row.original.created_at;
-      const [startDate, endDate] = filterValue;
-      // console.log(startDate, endDate);
-      // console.log(dates);
+    // filterFn: (row, a, filterValue) => {
+    //   const dates = row.original.created_at;
+    //   const [startDate, endDate] = filterValue;
+    //   // console.log(startDate, endDate);
+    //   // console.log(dates);
 
-      if (!Array.isArray(dates) || dates.length === 0) return false;
-      const filteredDates = dates.map((date) => {
-        return date >= startDate && date <= endDate;
-      });
-      console.log(filteredDates);
-      // return dates.every((dateStr) => {
-      //   console.log(`Illarion ${dateStr}`);
-      //   const date = new Date(dateStr);
-      //   return date >= new Date(startDate) && date <= new Date(endDate);
-      // });
-    },
-    // cell: ({ row, column }) => {
-    //   //  column.toggleVisibility(false);
-    //   return <>{row.original.created_at as Date[]}</>;
+    //   return dates.some((dateStr) => {
+    //     console.log(`Illarion ${dateStr}`);
+    //     const date = new Date(dateStr);
+    //     return date >= new Date(startDate) && date <= new Date(endDate);
+    //   });
     // },
+    cell: ({ column }) => {
+      column.toggleVisibility(false);
+      // return <>{row.original.created_at as Date[]}</>;
+    },
   },
 ];
