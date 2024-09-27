@@ -94,14 +94,14 @@ export function Chart({ cargos }) {
           <Spinner />
         ) : (
           <Tabs aria-label="Tabs radius">
-            <Tab key="1" title="Первый вариант">
+            <Tab key="Stat1" title="Первый вариант">
               <CustomBar
                 data={chartData}
                 cargoCount={cargos.length}
                 colors={colors}
               />
             </Tab>
-            <Tab key="2" title="Второй вариант">
+            <Tab key="Stat2" title="Второй вариант">
               <CustomSingleBar
                 data={chartData}
                 cargoCount={cargos.length}
@@ -153,7 +153,7 @@ const CustomBar = ({
       </CardHeader>
       <CardBody className="flex flex-col gap-2">
         {state.map((e, i) => (
-          <div>
+          <div key={`cargo-statistics-${i}`}>
             <div className="flex w-full">
               <span className="w-[10%]">{e.user}</span>
               <div className="w-[80%]">

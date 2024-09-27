@@ -91,20 +91,19 @@ export const UpdateTripNumber = ({
               </ModalHeader>
               <ModalBody>
                 <Autocomplete
-                  label="Выберите водителя"
+                  label="Выберите рейс"
                   selectedKey={selectedTrip}
                   onSelectionChange={(e) => {
                     setSelectedTrip(e);
-                    console.log(selectedTrip);
                   }}
                 >
                   {trips.map((e) => (
                     <AutocompleteItem
                       key={e.id}
-                      textValue={e.driver}
+                      textValue={`${e.driver} | ${e.id}`}
                       value={e.id}
                     >
-                      {e.driver}
+                      {`${e.driver} | ${e.id} рейс`}
                     </AutocompleteItem>
                   ))}
                 </Autocomplete>
