@@ -39,13 +39,10 @@ export function DataTable() {
   const [filteredData, setFilteredData] = React.useState<StatsUserList[]>(
     isFetched && data
   );
-  const getStartOfMonth = () => {
-    const now = new Date();
-    const startOfMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-01`;
-    return parseDate(startOfMonth);
-  };
   const [dateVal, setDateVal] = React.useState({
-    start: getStartOfMonth(),
+    start: parseDate(
+      `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
+    ),
     end: today(getLocalTimeZone()),
   });
 
@@ -108,7 +105,6 @@ export function DataTable() {
 
   useEffect(() => {
     if (isFetched) {
-      console.log(data);
       setFilteredData(data);
     }
     handleSetTimeRangeFilter();

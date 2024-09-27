@@ -26,7 +26,7 @@ export const columns: ColumnDef<StatsUserList>[] = [
   },
   {
     accessorKey: "amount",
-    header: "Общая сумма в тг.",
+    header: "Общая сумма тг.",
     cell: ({ row }) => {
       let salesSum = 0;
       row.original.amount.forEach((sale) => {
@@ -50,13 +50,6 @@ export const columns: ColumnDef<StatsUserList>[] = [
   {
     accessorKey: "created_at",
     header: "Дата",
-    cell: ({ column }) => {
-      column.toggleVisibility(false);
-    },
-  },
-  {
-    accessorKey: "userName",
-    header: "Имя",
     cell: ({ column }) => {
       column.toggleVisibility(false);
     },
