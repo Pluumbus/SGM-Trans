@@ -19,18 +19,25 @@ export const columns: ColumnDef<StatsUserList>[] = [
   {
     accessorKey: "totalAmountInRange",
     header: "Сумма тг. за промежуток",
-    // cell: (info) => info.getValue() || 0,
-    // cell: ({ row }) => {
-    //   let salesSum = 0;
-    //   row.original.amount.forEach((sale) => {
-    //     salesSum += Number(sale);
-    //   });
-    //   return salesSum;
-    // },
+  },
+  {
+    accessorKey: "totalBidsInRange",
+    header: "Сумма заявок за промежуток",
+  },
+  {
+    accessorKey: "amount",
+    header: "Общая сумма в тг.",
+    cell: ({ row }) => {
+      let salesSum = 0;
+      row.original.amount.forEach((sale) => {
+        salesSum += Number(sale);
+      });
+      return salesSum;
+    },
   },
   {
     accessorKey: "bidSum",
-    header: "Сумма заявок за промежуток",
+    header: "Общая сумма заявок",
   },
   {
     accessorKey: "role",
@@ -43,21 +50,15 @@ export const columns: ColumnDef<StatsUserList>[] = [
   {
     accessorKey: "created_at",
     header: "Дата",
-    // filterFn: (row, a, filterValue) => {
-    //   const dates = row.original.created_at;
-    //   const [startDate, endDate] = filterValue;
-    //   // console.log(startDate, endDate);
-    //   // console.log(dates);
-
-    //   return dates.some((dateStr) => {
-    //     console.log(`Illarion ${dateStr}`);
-    //     const date = new Date(dateStr);
-    //     return date >= new Date(startDate) && date <= new Date(endDate);
-    //   });
-    // },
     cell: ({ column }) => {
       column.toggleVisibility(false);
-      // return <>{row.original.created_at as Date[]}</>;
+    },
+  },
+  {
+    accessorKey: "userName",
+    header: "Имя",
+    cell: ({ column }) => {
+      column.toggleVisibility(false);
     },
   },
 ];
