@@ -20,6 +20,7 @@ export type TripType = {
   driver: string;
   city_from: string;
   city_to: string;
+  status: string;
 };
 
 export const TripCard = ({ weekId }: { weekId: string }) => {

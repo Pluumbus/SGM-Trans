@@ -5,8 +5,4 @@ export type StatsUserList = {
   avatar: string;
   role: string;
   created_at: Date[];
-  //   bidSum: number;
-  //   salesSum: number;
-  //   weekBidSum: number;
-  //   weekSalesSum: number;
 };

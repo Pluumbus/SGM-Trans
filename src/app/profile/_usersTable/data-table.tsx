@@ -141,7 +141,7 @@ export function DataTable() {
             )}
           </TableBody>
         </Table>
-        <div className="flex items-center justify-between space-x-2 py-1">
+        <div className="flex items-center justify-between space-x-2 py-1 ">
           <div>
             <Button
               variant="light"
