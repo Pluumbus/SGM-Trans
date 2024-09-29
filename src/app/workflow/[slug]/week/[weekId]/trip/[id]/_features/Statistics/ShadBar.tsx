@@ -12,7 +12,7 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { TrendingUp } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 
@@ -21,12 +21,14 @@ import { motion } from "framer-motion";
 export const description = "A mixed bar chart";
 
 export function Chart({ cargos }) {
+  const mCargos = useMemo(() => cargos, [cargos]);
   const [chartData, setChartData] = useState([]);
   const [leadingManager, setLeadingManager] = useState([]);
 
   const { mutateAsync, isPending } = useMutation({
-    mutationKey: ["get usersss"],
+    mutationKey: ["get users"],
     mutationFn: async (user_id: string) => await getUserById(user_id),
+    retryDelay: 5000,
   });
 
   const groupCargosByUser = async (data) => {
@@ -34,9 +36,13 @@ export function Chart({ cargos }) {
 
     for (const cargo of data) {
       if (!grouped[cargo.user_id]) {
-        const user = await mutateAsync(cargo.user_id);
-        const fullName = `${user.firstName} ${user.lastName}`;
-        grouped[cargo.user_id] = { fullName, count: 1 };
+        try {
+          const user = await mutateAsync(cargo.user_id);
+          const fullName = `${user.firstName} ${user.lastName}`;
+          grouped[cargo.user_id] = { fullName, count: 1 };
+        } catch (error) {
+          throw error;
+        }
       } else {
         grouped[cargo.user_id].count += 1;
       }
@@ -54,7 +60,7 @@ export function Chart({ cargos }) {
       user: groupedData[user].fullName,
       count: groupedData[user].count,
       percentageOfAll: Math.round(
-        (groupedData[user].count / cargos.length) * 100
+        (groupedData[user].count / mCargos.length) * 100
       ),
       maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
@@ -67,7 +73,7 @@ export function Chart({ cargos }) {
 
   useEffect(() => {
     const fetch = async () => {
-      const data = await groupCargosByUser(cargos);
+      const data = await groupCargosByUser(mCargos);
       if (data) {
         const dataToSet = calculatePercentages(data);
         const arr = dataToSet.map((e) => {
@@ -81,8 +87,10 @@ export function Chart({ cargos }) {
         setColors(getRandomRainbowColors(dataToSet?.length));
       }
     };
-    fetch();
-  }, [cargos]);
+    if (mCargos) {
+      fetch();
+    }
+  }, [mCargos]);
 
   return (
     <Card>

@@ -1,29 +1,43 @@
+import { AllCitiesType, PriceType, QuantityType } from "@/lib/references";
+
 export type CargoType = {
   id: number;
   trip_id: number;
   created_at: Date;
   receipt_address: string;
-  unloading_city: string;
+
+  unloading_point: {
+    city: AllCitiesType;
+    withDelivery: boolean;
+    deliveryAddress: string;
+  };
   weight: string;
   volume: string;
   quantity: {
     value: string;
-    key: string;
+    type: QuantityType;
   };
-  driver: string;
-  amount: string;
+
+  driver: {
+    id: string;
+    value: string;
+  };
+  amount: {
+    value: string;
+    type: PriceType;
+  };
+
   is_unpalletizing: boolean;
   comments: string;
-  client_name: string;
+
   client_bin: string;
   cargo_name: string;
-  payer: string;
   transportation_manager: string;
   is_documents: boolean;
-  status: string;
-  arrival_date: string;
-  sgm_manager: string;
-  payment: string;
+  status: {
+    factDate?: string;
+    estimatedDate: string;
+  };
   loading_scheme: string;
   user_id: string;
 };

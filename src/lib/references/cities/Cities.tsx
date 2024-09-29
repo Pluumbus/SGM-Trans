@@ -9,7 +9,9 @@ import {
 } from "@nextui-org/react";
 import { allCities } from "./citiesDictionary";
 
-export const Cities = (autocompleteProps: AutocompleteProps) => {
+export const Cities = (
+  autocompleteProps: Omit<AutocompleteProps, "children">
+) => {
   return (
     <div className="max-w-80">
       <Autocomplete label="Выберите город" {...autocompleteProps}>

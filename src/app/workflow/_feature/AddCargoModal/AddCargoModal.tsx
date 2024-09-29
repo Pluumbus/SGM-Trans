@@ -4,7 +4,6 @@ import {
   AutocompleteItem,
   Button,
   Checkbox,
-  DateInput,
   DatePicker,
   Divider,
   Input,
@@ -13,13 +12,20 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  Textarea,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { addCargo } from "../WeekCard/requests";
 import { CargoType } from "../types";
-import { Cities, DriversWithCars } from "@/lib/references";
+import {
+  Cities,
+  DriversWithCars,
+  PRICE_TYPE,
+  QUANTITY_TYPE,
+  QuantityType,
+} from "@/lib/references";
 
 export const CargoModal = ({
   isOpenCargo,
@@ -31,7 +37,13 @@ export const CargoModal = ({
   onOpenChangeCargo: () => void;
 }) => {
   const { toast } = useToast();
-  const { register, handleSubmit, control, setValue } = useForm<CargoType>();
+  const { register, handleSubmit, control, setValue, watch } =
+    useForm<CargoType>();
+
+  const [withDelivery, driverID] = watch([
+    "unloading_point.withDelivery",
+    "driver.id",
+  ]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (data: CargoType) => await addCargo(data),
@@ -53,9 +65,11 @@ export const CargoModal = ({
     mutate({
       ...data,
       trip_id: trip_id,
-      arrival_date:
-        `${data.arrival_date.year}-${data.arrival_date.month}-${data.arrival_date.day}` ||
-        1,
+      status: {
+        estimatedDate:
+          `${data.status.estimatedDate.year}-${data.status.estimatedDate.month}-${data.status.estimatedDate.day}` ||
+          `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+      },
     });
   };
 
@@ -65,58 +79,168 @@ export const CargoModal = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <ModalHeader>Добавить груз</ModalHeader>
           <Divider />
-          <ModalBody>
+          <ModalBody className="transition-all">
             <div className="grid grid-cols-2 gap-2 w-full">
-              <Input {...register("receipt_address")} label="Адрес получения" />
-              <Controller
-                control={control}
-                name="unloading_city"
-                render={({ field }) => (
-                  <Cities
-                    selectedKey={field.value}
-                    onSelectionChange={(e) => {
-                      setValue("unloading_city", e.toString());
-                    }}
-                  />
-                )}
+              <Textarea
+                {...register("receipt_address")}
+                label="Адрес получения груза"
+              />
+              <Textarea
+                {...register("client_bin")}
+                label={`Клиент\n\n(получатель груза)\n\nБИН`}
               />
 
-              <Input {...register("weight")} label="Вес" />
-              <Input {...register("volume")} label="Объем м.куб." />
+              {withDelivery ? (
+                <div className="flex items-start">
+                  <div className="flex gap-2 items-center">
+                    <Controller
+                      control={control}
+                      name="unloading_point.city"
+                      render={({ field }) => (
+                        <Cities
+                          selectedKey={field.value}
+                          onSelectionChange={(e) => {
+                            setValue("unloading_point.city", e.toString());
+                          }}
+                        />
+                      )}
+                    />
+
+                    <Controller
+                      control={control}
+                      name="unloading_point.withDelivery"
+                      render={({ field }) => (
+                        <Checkbox {...field} isSelected={withDelivery}>
+                          С&nbsp;доставкой
+                        </Checkbox>
+                      )}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <>
+                  <Controller
+                    control={control}
+                    name="unloading_point.city"
+                    render={({ field }) => (
+                      <Cities
+                        selectedKey={field.value}
+                        onSelectionChange={(e) => {
+                          setValue("unloading_point.city", e.toString());
+                        }}
+                      />
+                    )}
+                  />
+
+                  <Controller
+                    control={control}
+                    name="unloading_point.withDelivery"
+                    render={({ field }) => (
+                      <Checkbox {...field} isSelected={withDelivery}>
+                        С&nbsp;доставкой
+                      </Checkbox>
+                    )}
+                  />
+                </>
+              )}
+
+              {withDelivery && (
+                <Textarea
+                  {...register("unloading_point.deliveryAddress")}
+                  label={`Адрес доставки`}
+                />
+              )}
+
+              <div className="flex gap-2">
+                <Input {...register("weight")} label="Вес" />
+                <Input {...register("volume")} label="Объем" />
+              </div>
+
+
               <Controller
                 control={control}
                 name="quantity"
                 render={({ field }) => (
                   <div className="flex gap-2 ">
                     <Input
-                      value={field.value?.value}
                       label="Количество"
+                      value={field.value?.value}
                       onChange={(e) => {
                         setValue("quantity.value", e.target.value);
-                        console.log(field);
                       }}
                     />
                     <Autocomplete
-                      selectedKey={field.value?.key}
                       label="Коробки / палеты"
-                      defaultSelectedKey={"Коробки"}
+                      selectedKey={field.value?.type}
                       onSelectionChange={(e) => {
-                        setValue("quantity.key", e);
-                        console.log(field.value);
+                        setValue("quantity.type", e as QuantityType);
                       }}
                     >
-                      <AutocompleteItem key={"Палеты"} textValue="Палеты">
-                        Палеты
-                      </AutocompleteItem>
-                      <AutocompleteItem key={"Коробки"} textValue="Коробки">
-                        Коробки
-                      </AutocompleteItem>
+                      {QUANTITY_TYPE.map((e) => (
+                        <AutocompleteItem key={e} textValue={e}>
+                          {e}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                  </div>
+                )}
+              />
+              <div className="col-span-2">
+                <Controller
+                  control={control}
+                  name="driver"
+                  render={({ field }) => (
+                    <div className="flex gap-2">
+                      <DriversWithCars
+                        selectedKey={field.value?.id}
+                        label="Выберите водителя"
+                        onSelectionChange={(e) => {
+                          setValue("driver.id", e);
+                        }}
+                      />
+                      {driverID == "24" && (
+                        <Input
+                          value={field.value?.value}
+                          label="Сумма оплаты наемнику"
+                          onChange={(e) => {
+                            setValue("driver.value", e.target.value);
+                          }}
+                        />
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
+              <Controller
+                control={control}
+                name="amount"
+                render={({ field }) => (
+                  <div className="flex gap-2 ">
+                    <Input
+                      label="Сумма оплаты (тг.)"
+                      value={field.value?.value}
+                      onChange={(e) => {
+                        setValue("amount.value", e.target.value);
+                      }}
+                    />
+                    <Autocomplete
+                      selectedKey={field.value?.type}
+                      label="Способ оплаты"
+                      onSelectionChange={(e) => {
+                        setValue("amount.type", e);
+                      }}
+                    >
+                      {PRICE_TYPE.map((e) => (
+                        <AutocompleteItem key={e} textValue={e}>
+                          {e}
+                        </AutocompleteItem>
+                      ))}
                     </Autocomplete>
                   </div>
                 )}
               />
 
-              <Input {...register("amount")} label="Сумма тг." />
+              <Input {...register("cargo_name")} label="Название груза" />
               <Controller
                 control={control}
                 name="is_unpalletizing"
@@ -125,15 +249,6 @@ export const CargoModal = ({
                     Распалечиваем
                   </Checkbox>
                 )}
-              />
-              <Input {...register("comments")} label="Комментарии" />
-              <Input {...register("client_name")} label="Имя клиента" />
-              <Input {...register("client_bin")} label="БИН клиента" />
-              <Input {...register("cargo_name")} label="Название груза" />
-              <Input {...register("payer")} label="Плательщик" />
-              <Input
-                {...register("transportation_manager")}
-                label="Плательщик (Менеджер ведущий перевозку)"
               />
               <Controller
                 control={control}
@@ -144,24 +259,36 @@ export const CargoModal = ({
                   </Checkbox>
                 )}
               />
-              <Input {...register("status")} label="Дата принятия груза" />
-              {/* TODO: сделать Date picker */}
+
+              <div className="col-span-2 flex gap-2 justify-between">
+                <Textarea
+                  {...register("comments")}
+                  label="Комментарии"
+                  className="w-1/3"
+                />
+
+                <Textarea
+                  {...register("transportation_manager")}
+                  label="Плательщик (Менеджер ведущий перевозку)"
+                  className="w-2/3"
+                />
+              </div>
+
               <Controller
                 control={control}
-                name="arrival_date"
+                name="status.estimatedDate"
                 render={({ field }) => (
                   <DatePicker
                     value={field.value}
                     onChange={(e) => {
                       field.onChange(e);
                     }}
-                    label="Планируемая дата доставки"
+                    label="Дата поступления на склад"
                   />
                 )}
               />
 
-              <Input {...register("payment")} label="Оплата" />
-              <Input {...register("loading_scheme")} label="Схема загрузки" />
+              <Input {...register("loading_scheme")} label="Схема погрузки" />
             </div>
           </ModalBody>
           <Divider />

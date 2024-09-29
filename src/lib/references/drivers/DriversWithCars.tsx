@@ -11,34 +11,38 @@ import {
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 
-export const DriversWithCars = (autocompleteProps: AutocompleteProps) => {
-  const { isLoaded, isSignedIn } = useUser();
+export const DriversWithCars = (
+  autocompleteProps: Omit<AutocompleteProps, "children">
+) => {
+  const { isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getDrivers"],
     queryFn: getDriversWithCars,
     enabled: !!isSignedIn,
   });
 
-  if (isLoading || !data?.data) {
-    return (
-      <div className="flex justify-center mt-60">
-        <Spinner />
-      </div>
-    );
-  }
   return (
-    <div className="max-w-80">
-      <Autocomplete label="Выберите водителя" {...autocompleteProps}>
-        {data?.data?.map((e, i) => (
+    <Autocomplete
+      label="Выберите водителя"
+      isLoading={isLoading || !data?.data}
+      {...autocompleteProps}
+    >
+      {data &&
+        data?.data?.map((e, i) => (
           <AutocompleteItem
-            key={i}
-            value={e.cars.car}
-            textValue={`${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`}
+            key={e.id}
+            value={e.id}
+            textValue={
+              e.name != "Наемник"
+                ? `${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`
+                : `${e.name}`
+            }
           >
-            {e.name} | {e.cars?.car} | {e.cars?.state_number}
+            {e.name != "Наемник"
+              ? `${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`
+              : `${e.name}`}
           </AutocompleteItem>
-        )) || <Spinner />}
-      </Autocomplete>
-    </div>
+        ))}
+    </Autocomplete>
   );
 };

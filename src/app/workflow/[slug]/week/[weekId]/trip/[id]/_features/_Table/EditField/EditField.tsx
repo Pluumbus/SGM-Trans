@@ -5,14 +5,21 @@ import { CheckboxField } from "./Checkbox";
 import { Text } from "./Text";
 import { DateField } from "./Date";
 import { Lib } from "./Ref";
-import { Composite } from "./Composite";
+import { Composite } from "./CompositeFields";
 
 export const EditField = ({
   info,
   type,
+  compositeType,
 }: {
   info: Cell<CargoType, ReactNode>;
   type: "Date" | "Text" | "Checkbox" | "Ref" | "Composite";
+  compositeType?:
+    | "unloading_point"
+    | "quantity"
+    | "driver"
+    | "amount"
+    | "status";
 }) => {
   switch (type) {
     case "Checkbox":
@@ -24,7 +31,7 @@ export const EditField = ({
     case "Ref":
       return <Lib info={info} />;
     case "Composite":
-      return <Composite info={info} />;
+      return <Composite info={info} type={compositeType} />;
     default:
       return <Text info={info} />;
   }

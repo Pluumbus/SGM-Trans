@@ -20,7 +20,9 @@ export function useLocalStorage<T>({
   initialData,
   identifier,
 }: useLocalStorageProps<T>) {
-  const [data, setData] = useState<T>(initialData);
+  const [data, setData] = useState<T>(
+    (window.localStorage.getItem(identifier) as T) || initialData
+  );
 
   useEffect(() => {
     const item = window.localStorage.getItem(identifier);
@@ -30,7 +32,10 @@ export function useLocalStorage<T>({
   }, [identifier]);
 
   useEffect(() => {
-    window.localStorage.setItem(identifier, JSON.stringify(data));
+    window.localStorage.setItem(
+      identifier,
+      typeof data != "string" ? JSON.stringify(data) : data
+    );
   }, [data, identifier]);
 
   const setToLocalStorage = (newData: T) => {

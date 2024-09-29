@@ -16,15 +16,18 @@ import { useSelectionStore } from "../store";
 import supabase from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
+import { useUser } from "@clerk/nextjs";
 
 export const TripTab = ({
   currentTrip,
   trips,
   columns,
+  isOnlyMycargos,
 }: {
   currentTrip: TripType;
   trips: TripType[];
   columns: UseTableColumnsSchema<CargoType>[];
+  isOnlyMycargos: boolean;
 }) => {
   const { data, isLoading } = useQuery({
     queryKey: [`cargo-${currentTrip.id}`],
@@ -42,16 +45,21 @@ export const TripTab = ({
     },
   };
 
+  const { user } = useUser();
+
+  const filterBy = () =>
+    isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+
   useEffect(() => {
     if (data) {
-      setCargos(data);
+      setCargos(filterBy());
       const res = data.map((e) => ({
         number: e.id,
         isSelected: false,
       }));
       setRowSelected(res);
     }
-  }, [data]);
+  }, [data, isOnlyMycargos]);
 
   useEffect(() => {
     const cn = supabase
@@ -116,7 +124,7 @@ export const TripTab = ({
       )}
 
       <div className="mb-8"></div>
-      <BarGraph cargos={cargos} />
+      <BarGraph cargos={cargos} currentTrip={currentTrip.id} />
       <div className="mb-8"></div>
     </>
   );

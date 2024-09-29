@@ -1,8 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+
+import { ReactNode, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import { getTripsByWeekId } from "../_api";
 import {
   Autocomplete,
@@ -10,9 +12,7 @@ import {
   Button,
   Card,
   CardBody,
-  DatePicker,
-  DateValue,
-  Input,
+  Checkbox,
   Spinner,
   Tab,
   Tabs,
@@ -25,10 +25,14 @@ import { Timer } from "@/components/Timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
+
+import { useLocalStorage } from "@/tool-kit/hooks";
+
 import { checkRole, useRole } from "@/components/roles/useRole";
 import React from "react";
 import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
+
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -37,6 +41,11 @@ const Page: NextPage = () => {
   }>();
 
   const [selectedTabId, setSelectedTabId] = useState(id);
+
+  const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
+    identifier: "show-only-my-cargos",
+    initialData: false,
+  });
 
   const { data: tripsData, isLoading } = useQuery<TripType[]>({
     queryKey: ["getTrips"],
@@ -72,7 +81,18 @@ const Page: NextPage = () => {
         </RoleBasedWrapper>
       </div>
       <div className="flex flex-col ">
-        <span className="flex justify-center">Рейсы недели</span>
+        <div className="flex flex-col justify-center items-center mb-2">
+          <span className="text-2xl">Рейсы недели №{weekId}</span>
+          <Checkbox
+            isSelected={isOnlyMycargos}
+            onChange={() => {
+              setToLocalStorage(!isOnlyMycargos);
+            }}
+          >
+            Отобразить только грузы над которыми работаю я
+          </Checkbox>
+        </div>
+
         <Tabs
           className="flex justify-center"
           aria-label="Trips"
@@ -81,7 +101,12 @@ const Page: NextPage = () => {
         >
           {tripsData.map((trip) => (
             <Tab title={trip.id.toString()} key={trip.id}>
-              <TripTab currentTrip={trip} trips={tripsData} columns={columns} />
+              <TripTab
+                currentTrip={trip}
+                trips={tripsData}
+                columns={columns}
+                isOnlyMycargos={isOnlyMycargos}
+              />
             </Tab>
           ))}
         </Tabs>

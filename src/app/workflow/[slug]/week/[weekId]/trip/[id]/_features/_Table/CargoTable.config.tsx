@@ -63,7 +63,7 @@ export const getBaseColumnsConfig = () => {
       size: 10,
       filter: false,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{info.getValue().toString()}</span>
+        <span>{info?.getValue()?.toString()}</span>
       ),
     },
 
@@ -81,17 +81,20 @@ export const getBaseColumnsConfig = () => {
       header: "Адрес получения",
       size: 30,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        // <span>{info.getValue()?.toString()}</span>
         <EditField info={info} type={"Text"} />
       ),
       filter: false,
     },
     {
-      accessorKey: "unloading_city",
+      accessorKey: "unloading_point",
       header: "Город разгрузки",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="unloading_point"
+        />
       ),
       filter: false,
     },
@@ -119,7 +122,7 @@ export const getBaseColumnsConfig = () => {
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <div className="flex gap-2">
-          <EditField info={info} type={"Composite"} />
+          <EditField info={info} type={"Composite"} compositeType="quantity" />
         </div>
       ),
       filter: false,
@@ -130,7 +133,7 @@ export const getBaseColumnsConfig = () => {
       header: "Сумма тг.",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Composite"} compositeType="amount" />
       ),
       filter: false,
     },
@@ -152,15 +155,7 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-    {
-      accessorKey: "client_name",
-      header: "Имя клиента",
-      size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
-      filter: false,
-    },
+
     {
       accessorKey: "client_bin",
       header: "БИН клиента",
@@ -174,15 +169,6 @@ export const getBaseColumnsConfig = () => {
       accessorKey: "cargo_name",
       header: "Название груза",
       size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
-      filter: false,
-    },
-    {
-      accessorKey: "payer",
-      header: "Плательщик",
-      size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Text"} />
       ),
@@ -211,21 +197,11 @@ export const getBaseColumnsConfig = () => {
       header: "Статус",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Composite"} compositeType="status" />
       ),
       filter: false,
     },
-    {
-      accessorKey: "arrival_date",
-      header: "Дата прибытия",
-      size: 20,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <div className="min-w-40">
-          <EditField info={info} type={"Date"} />
-        </div>
-      ),
-      filter: false,
-    },
+
     {
       accessorKey: "user_id",
       header: "Менеджер SGM",
@@ -244,24 +220,6 @@ export const getBaseColumnsConfig = () => {
           </div>
         );
       },
-      filter: false,
-    },
-    {
-      accessorKey: "payment",
-      header: "Оплата",
-      size: 20,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
-      filter: false,
-    },
-    {
-      accessorKey: "loading_scheme",
-      header: "Схема загрузки",
-      size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
       filter: false,
     },
   ];
