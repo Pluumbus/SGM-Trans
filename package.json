@@ -22,6 +22,7 @@
     "autoprefixer": "^10.4.19",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "framer-motion": "^11.2.10",
     "handlebars": "^4.7.8",
     "lucide-react": "^0.437.0",
