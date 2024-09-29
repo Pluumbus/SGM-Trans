@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getTripsByWeekId } from "../_api";
 import {
   Autocomplete,
@@ -10,6 +10,8 @@ import {
   Button,
   Card,
   CardBody,
+  DatePicker,
+  DateValue,
   Input,
   Spinner,
   Tab,
@@ -24,6 +26,9 @@ import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 import { checkRole, useRole } from "@/components/roles/useRole";
+import React from "react";
+import { toast } from "@/components/ui/use-toast";
+import { updateTripStatus } from "../_api/requests";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -99,31 +104,66 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  const [statusVal, setStatusVal] = useState("");
-  const accessCheck = checkRole(["Логист Дистант", "Админ"]);
+  const currentTripData = tripsData.find(
+    (item) => item.id === Number(selectedTabId)
+  );
+
+  const [statusVal, setStatusVal] = useState<string | undefined>(
+    currentTripData?.status
+  );
+  const { mutate: setStatusMutation } = useMutation({
+    mutationKey: ["SetTripStatus"],
+    mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
+    onSuccess() {
+      toast({
+        title: "Статус рейса успешно обновлён",
+      });
+    },
+  });
+  const accessCheck = checkRole(["Супер Логист", "Админ"]);
+  const handleDateChange = (date: DateValue | null) => {
+    const dateStr = new Date(
+      date.year,
+      date.month - 1,
+      date.day
+    ).toLocaleDateString();
+    setStatusVal(dateStr);
+    setStatusMutation();
+  };
+
   return (
-    <div className="flex flex-col gap-2 ">
-      <span>
-        Номер рейса: <b>{selectedTabId}</b>
-      </span>
-      <span>
-        Водитель:{" "}
-        <b>
-          {tripsData.find((item) => item.id === Number(selectedTabId))?.driver}
-        </b>
-      </span>
-      <span className="flex">
-        Статус:
+    <div className="flex flex-col gap-2">
+      <div className="flex justify-between">
+        <span>Номер рейса:</span>
+        <b>{selectedTabId}</b>
+      </div>
+      <div className="flex justify-between">
+        <span>Водитель: </span>
+        <b className="items-end">{currentTripData?.driver}</b>
+      </div>
+
+      <div className="flex justify-between">
+        Статус:{" "}
         {accessCheck ? (
-          <Autocomplete variant="underlined" onInputChange={setStatusVal}>
-            {tripStatusType.map((stat: string) => (
-              <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-            ))}
-          </Autocomplete>
+          statusVal === "Выбрать дату" ? (
+            <DatePicker aria-label="Выбрать дату" onChange={handleDateChange} />
+          ) : (
+            <Autocomplete
+              variant="underlined"
+              onInputChange={setStatusVal}
+              inputValue={statusVal}
+            >
+              {["Выбрать дату", "В пути", "Машина закрыта"].map(
+                (stat: string) => (
+                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
+                )
+              )}
+            </Autocomplete>
+          )
         ) : (
-          <>{statusVal}</>
+          <b>{statusVal}</b>
         )}
-      </span>
+      </div>
 
       <div>
         <Button color="success" onClick={onOpenChange}>
@@ -133,17 +173,5 @@ const TripInfoCard = ({
     </div>
   );
 };
-
-const tripStatusType = [
-  "Загрузка в ПН",
-  "Загрузка в ВТ",
-  "Загрузка в СР",
-  "Загрузка в ЧТ",
-  "Загрузка в ПТ",
-  "Загрузка в СБ",
-  "Загрузка в ВС",
-  "В пути",
-  "Машина закрыта", //???
-];
 
 export default Page;
