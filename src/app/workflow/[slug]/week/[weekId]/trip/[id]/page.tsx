@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 
 import { ReactNode, useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
 import {
@@ -13,6 +13,8 @@ import {
   Card,
   CardBody,
   Checkbox,
+  DatePicker,
+  DateValue,
   Spinner,
   Tab,
   Tabs,
@@ -32,7 +34,6 @@ import { checkRole, useRole } from "@/components/roles/useRole";
 import React from "react";
 import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
-
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
