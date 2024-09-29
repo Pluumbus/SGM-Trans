@@ -5,7 +5,7 @@ import {
   FilterFn,
   Row,
 } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { Dispatch, ReactNode, SetStateAction } from "react";
 
 export type DataType<T> = Record<string, T>;
 
@@ -24,15 +24,16 @@ export type UseTableProps<T> = {
   name: string;
   data: T[];
   // columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>; #TODO: CHECK ???
-  columns: Array<UseTableColumnsSchema<T> >;
+  columns: Array<UseTableColumnsSchema<T>>;
   isPagiantion?: boolean;
+
   config?: UseTableConfig<T>;
 };
 
 export type UseTableColumnsSchema<T> = {
   accessorKey: string;
   accessorFn?: AccessorFn<T, any>;
-  header: string;
+  header: ReactNode | (() => JSX.Element);
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;
   filter: boolean;

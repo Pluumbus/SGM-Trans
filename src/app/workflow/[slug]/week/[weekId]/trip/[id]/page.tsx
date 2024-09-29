@@ -1,13 +1,9 @@
 "use client";
 
-import { UTable } from "@/tool-kit/ui";
-import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
-import { CargoType } from "@/app/workflow/_feature/types";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getCargos, getTripsByWeekId } from "../_api";
+import { getTripsByWeekId } from "../_api";
 import {
   Button,
   Card,
@@ -18,116 +14,48 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
-import supabase from "@/utils/supabase/client";
-import { NextPage } from "next";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { BarGraph } from "./_features/Statistics/BarGraph";
 import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 import { Timer } from "@/components/Timer/Timer";
+import { TripTab } from "./_features/TripTab";
+import { NextPage } from "next";
+import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 
 const Page: NextPage = () => {
-  const { weekId, id } = useParams() as {
+  const { weekId, id } = useParams<{
     weekId: string;
     id: string;
-  };
-  const columns = useMemo(() => getBaseColumnsConfig(), []);
-  const config: UseTableConfig<CargoType> = {
-    row: {
-      setRowData(info) {},
-      className: "cursor-pointer",
-    },
-  };
+  }>();
+
   const [selectedTabId, setSelectedTabId] = useState(id);
 
-  const { data: tripsData, isLoading: tripsLoading } = useQuery<TripType[]>({
-    queryKey: ["trips"],
+  const { data: tripsData, isLoading } = useQuery<TripType[]>({
+    queryKey: ["getTrips"],
     queryFn: async () => await getTripsByWeekId(weekId),
-  });
-
-  const [trips, setTrips] = useState<TripType[]>(tripsData || []);
-  const { data, isLoading, isFetched, refetch } = useQuery<any, CargoType[]>({
-    queryKey: [`cargos/trip/${selectedTabId}`],
-    queryFn: async () => await getCargos(selectedTabId),
-  });
-
-  const [cargos, setCargos] = useState<CargoType[]>(data || []);
-
-  useEffect(() => {
-    if (!isLoading && !tripsLoading) {
-      setCargos(data);
-      setTrips(tripsData);
-      console.log("Cargos: ", data);
-    }
-  }, [isLoading, tripsLoading, selectedTabId]);
-
-  useEffect(() => {
-    const cn = supabase
-      .channel(`workflow-trip${selectedTabId}`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "cargos",
-          filter: `trip_selectedTabId=eq.${selectedTabId}`,
-        },
-        (payload) => {
-          if (payload.eventType !== "UPDATE") {
-            setCargos((prev) => [...prev, payload.new as CargoType]);
-          } else {
-            const res = cargos.map((e) => {
-              if (e.id === payload.old.selectedTabId) {
-                return payload.new;
-              }
-              return e;
-            }) as CargoType[];
-            setCargos(res);
-          }
-        }
-      )
-      .subscribe();
-
-    return () => {
-      cn.unsubscribe();
-    };
   });
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
+  const columns = useMemo(() => getBaseColumnsConfig(), []);
 
   const handleSelectTab = (key) => {
     setSelectedTabId(key);
-    refetch();
   };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <div>
       <div className="flex justify-between">
         <Card className="bg-gray-200 w-72">
           <CardBody>
-            <div className="flex flex-col gap-2">
-              <span>
-                Номер рейса: <b>{selectedTabId}</b>
-              </span>
-              <span>
-                Водитель:
-                <b>
-                  {
-                    trips.find((item) => item.id === Number(selectedTabId))
-                      ?.driver
-                  }
-                </b>
-              </span>
-              <span>Статус : {}</span>
-              <div>
-                <Button color="success" onClick={onOpenChange}>
-                  Добавить груз
-                </Button>
-              </div>
-            </div>
+            <TripInfoCard
+              onOpenChange={onOpenChange}
+              selectedTabId={selectedTabId}
+              tripsData={tripsData}
+            />
           </CardBody>
         </Card>
         <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
@@ -140,35 +68,49 @@ const Page: NextPage = () => {
           className="flex justify-center"
           aria-label="Trips"
           defaultSelectedKey={selectedTabId}
-          onSelectionChange={handleSelectTab}
+          onSelectionChange={(key) => handleSelectTab(key)}
         >
-          {trips.map((trip) => (
-            <Tab key={trip.id} title={trip.id}>
-              {!isLoading && isFetched ? (
-                <>
-                  <UTable
-                    data={cargos}
-                    columns={columns}
-                    name="Cargo Table"
-                    config={config}
-                  />
-                  <div className="mb-8"></div>
-                  <BarGraph cargos={cargos} />
-                  <div className="mb-8"></div>
-                </>
-              ) : (
-                <Spinner />
-              )}
+          {tripsData.map((trip) => (
+            <Tab title={trip.id.toString()} key={trip.id}>
+              <TripTab currentTrip={trip} trips={tripsData} columns={columns} />
             </Tab>
           ))}
         </Tabs>
       </div>
-
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}
         trip_id={Number(selectedTabId)}
       />
+    </div>
+  );
+};
+
+const TripInfoCard = ({
+  selectedTabId,
+  tripsData,
+  onOpenChange,
+}: {
+  selectedTabId: ReactNode;
+  tripsData: TripType[];
+  onOpenChange: () => void;
+}) => {
+  return (
+    <div className="flex flex-col gap-2">
+      <span>
+        Номер рейса: <b>{selectedTabId}</b>
+      </span>
+      <span>
+        Водитель:
+        <b>
+          {tripsData.find((item) => item.id === Number(selectedTabId))?.driver}
+        </b>
+      </span>
+      <div>
+        <Button color="success" onClick={onOpenChange}>
+          Добавить груз
+        </Button>
+      </div>
     </div>
   );
 };

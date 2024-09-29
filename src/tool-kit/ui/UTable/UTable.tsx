@@ -11,7 +11,7 @@ import {
   PaginationState,
   ColumnDef,
 } from "@tanstack/react-table";
-import { UseTableColumnsSchema, UseTableProps } from "./types";
+import { UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
@@ -22,7 +22,7 @@ export const UTable = <T,>({
   columns = [],
   name = "some table",
   config,
-  isPagiantion = true,
+  isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
   const [mdata, setMData] = useState(data);
 
@@ -41,8 +41,6 @@ export const UTable = <T,>({
     return normalCols;
   }, [columns]);
   const { rowsPerPage } = useRowsPerPage();
-
-  const mConfig = useMemo(() => config, [config]);
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -67,6 +65,7 @@ export const UTable = <T,>({
       pagination,
       columnVisibility,
     },
+
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
@@ -75,9 +74,9 @@ export const UTable = <T,>({
   return (
     <div>
       <UTableTopContent tInstance={tInstance} />
-      <Table color="primary" aria-label={name} isStriped isCompact>
+      <Table isStriped aria-label={name} isCompact>
         <TableHeader>{renderColumns(tInstance)}</TableHeader>
-        <TableBody>{renderRows(tInstance, mConfig!.row)}</TableBody>
+        <TableBody>{renderRows(tInstance, config!.row)}</TableBody>
       </Table>
       {isPagiantion && (
         <UPagination tInstance={tInstance} isPagiantion={isPagiantion} />

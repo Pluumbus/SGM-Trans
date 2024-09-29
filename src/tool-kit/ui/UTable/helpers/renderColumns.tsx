@@ -1,5 +1,6 @@
 import { TableColumn } from "@nextui-org/react";
 import { Table, HeaderGroup, SortingState } from "@tanstack/react-table";
+import { ReactNode } from "react";
 import { FaArrowDown, FaArrowUp } from "react-icons/fa";
 
 type TableInstance<T> = Table<T> & {
@@ -31,11 +32,11 @@ export const renderColumns = <T,>(tInstance: TableInstance<T>) => {
           style={{ display: "flex", alignItems: "center" }}
           className="cursor-pointer hover:bg-opacity-20"
         >
-          <span className="">
-            {header.isPlaceholder
-              ? null
-              : header.column.columnDef.header?.toString()}
-          </span>
+          {typeof header.column.columnDef.header === "function" ? (
+            header.column.columnDef.header()
+          ) : (
+            <span>{header.column.columnDef.header}</span>
+          )}
           {isSorted && (
             <span style={{ marginLeft: "4px" }}>
               {isSortedDesc ? (

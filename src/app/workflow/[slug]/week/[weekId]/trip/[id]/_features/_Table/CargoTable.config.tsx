@@ -2,23 +2,71 @@
 import { CargoType } from "@/app/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { EditField } from "./EditField/EditField";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@nextui-org/react";
+import { Checkbox, Spinner } from "@nextui-org/react";
+import { useSelectionStore } from "../store";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
+    {
+      accessorKey: "CheckBox",
+      header: () => {
+        const { rowSelected, setRowSelected } = useSelectionStore();
+        return (
+          <div>
+            <Checkbox
+              isSelected={rowSelected?.every((e) => e.isSelected)}
+              onChange={() => {
+                const updatedSelection = rowSelected?.map((item) => ({
+                  ...item,
+                  isSelected: true,
+                }));
+                console.log("isSelected: header: ", rowSelected);
+
+                setRowSelected(updatedSelection);
+              }}
+            />
+          </div>
+        );
+      },
+      size: 10,
+      filter: false,
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        const { rowSelected, setRowSelected } = useSelectionStore();
+        return (
+          <Checkbox
+            isSelected={
+              rowSelected &&
+              rowSelected.find((e) => e.number == info.row.original.id)
+                ?.isSelected
+            }
+            onChange={() => {
+              const updatedSelection = rowSelected?.map((item, index) => {
+                if (index === info.row.index) {
+                  return { ...item, isSelected: !item.isSelected };
+                }
+                return item;
+              });
+              console.log("isSelected: cell: ", rowSelected);
+              setRowSelected(updatedSelection);
+            }}
+          />
+        );
+      },
+    },
     {
       accessorKey: "id",
       header: "ID",
       size: 10,
       filter: false,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{Number(info.row.id) + 1}</span>
+        <span>{info.getValue().toString()}</span>
       ),
     },
+
     {
       accessorKey: "created_at",
       header: "Дата создания",
@@ -26,7 +74,7 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => (
         <span>{new Date(info?.getValue() as string).toLocaleDateString()}</span>
       ),
-      filter: true,
+      filter: false,
     },
     {
       accessorKey: "receipt_address",
@@ -120,7 +168,7 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Text"} />
       ),
-      filter: false,
+      filter: true,
     },
     {
       accessorKey: "cargo_name",

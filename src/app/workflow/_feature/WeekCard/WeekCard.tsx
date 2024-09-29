@@ -40,7 +40,7 @@ export const WeekCard = () => {
         { event: "*", schema: "public", table: "weeks" },
         (payload) => {
           setWeeks((prev) => [...prev, payload.new as WeekType]);
-        },
+        }
       )
       .subscribe();
 
