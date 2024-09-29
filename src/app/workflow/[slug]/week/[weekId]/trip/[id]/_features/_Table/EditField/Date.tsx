@@ -9,7 +9,7 @@ import { editCargo } from "./api";
 
 export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [date, setDate] = useState<DateValue>(
-    parseDate(formatDate(new Date(info.getValue()?.toString()).toISOString())),
+    parseDate(formatDate(new Date(info.getValue()?.toString()).toISOString()))
   );
   const [debouncedDate, setDebouncedDate] = useState<DateValue>(date);
 
@@ -18,7 +18,7 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       await editCargo(
         info.column.columnDef.accessorKey as string,
         debouncedDate.toString(),
-        info.row.original.id,
+        info.row.original.id
       );
     },
     onError: (error) => {
@@ -57,6 +57,6 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   );
 };
 
-const formatDate = (isoString: string) => {
+export const formatDate = (isoString: string) => {
   return isoString.split("T")[0];
 };

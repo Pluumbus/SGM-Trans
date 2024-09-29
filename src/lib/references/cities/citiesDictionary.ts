@@ -80,3 +80,4 @@ export const allCities = [
   "Байконур",
   "Москва",
 ];
+export type AllCitiesType = (typeof allCities)[number];
