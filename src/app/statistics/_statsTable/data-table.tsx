@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input, RangeCalendar } from "@nextui-org/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
@@ -36,22 +36,19 @@ export function DataTable() {
     queryFn: async () => await getStatsUserList(),
   });
 
-  const [filteredData, setFilteredData] = React.useState<StatsUserList[]>(
+  const [filteredData, setFilteredData] = useState<StatsUserList[]>(
     isFetched && data
   );
-  const [dateVal, setDateVal] = React.useState({
+  const [dateVal, setDateVal] = useState({
     start: parseDate(
       `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
     ),
     end: today(getLocalTimeZone()),
   });
 
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
     data: filteredData,

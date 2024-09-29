@@ -5,9 +5,12 @@ import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getTripsByWeekId } from "../_api";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   Card,
   CardBody,
+  Input,
   Spinner,
   Tab,
   Tabs,
@@ -20,6 +23,7 @@ import { Timer } from "@/components/Timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
+import { checkRole, useRole } from "@/components/roles/useRole";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -95,17 +99,32 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
+  const [statusVal, setStatusVal] = useState("");
+  const accessCheck = checkRole(["Логист Дистант", "Админ"]);
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 ">
       <span>
         Номер рейса: <b>{selectedTabId}</b>
       </span>
       <span>
-        Водитель:
+        Водитель:{" "}
         <b>
           {tripsData.find((item) => item.id === Number(selectedTabId))?.driver}
         </b>
       </span>
+      <span className="flex">
+        Статус:
+        {accessCheck ? (
+          <Autocomplete variant="underlined" onInputChange={setStatusVal}>
+            {tripStatusType.map((stat: string) => (
+              <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
+            ))}
+          </Autocomplete>
+        ) : (
+          <>{statusVal}</>
+        )}
+      </span>
+
       <div>
         <Button color="success" onClick={onOpenChange}>
           Добавить груз
@@ -114,5 +133,17 @@ const TripInfoCard = ({
     </div>
   );
 };
+
+const tripStatusType = [
+  "Загрузка в ПН",
+  "Загрузка в ВТ",
+  "Загрузка в СР",
+  "Загрузка в ЧТ",
+  "Загрузка в ПТ",
+  "Загрузка в СБ",
+  "Загрузка в ВС",
+  "В пути",
+  "Машина закрыта", //???
+];
 
 export default Page;

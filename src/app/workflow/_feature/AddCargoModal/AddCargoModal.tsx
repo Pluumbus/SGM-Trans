@@ -82,7 +82,7 @@ export const CargoModal = ({
               />
 
               <Input {...register("weight")} label="Вес" />
-              <Input {...register("volume")} label="Объем" />
+              <Input {...register("volume")} label="Объем м.куб." />
               <Controller
                 control={control}
                 name="quantity"
