@@ -9,7 +9,7 @@ import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
 import RenderPrintButton from "@/components/templates/actGen";
 import { Button } from "@nextui-org/react";
-import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
+import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 
 export default async function ProfilePage() {
   const queryClient = new QueryClient();

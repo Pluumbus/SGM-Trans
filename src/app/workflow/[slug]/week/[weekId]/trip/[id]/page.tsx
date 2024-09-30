@@ -130,10 +130,14 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  const currentTripData = tripsData.find(
-    (item) => item.id === Number(selectedTabId)
-  );
+  let currentTripData;
+  //TODO:Check currentTripData
 
+  useEffect(() => {
+    currentTripData = tripsData.find(
+      (item) => item.id === Number(selectedTabId)
+    );
+  }, [selectedTabId]);
   const [statusVal, setStatusVal] = useState<string | undefined>(
     currentTripData?.status
   );

@@ -7,7 +7,7 @@ import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/components/ui/profileButton";
 import React from "react";
 import { useRole } from "../roles/useRole";
-import RoleBasedWrapper from "../roles/RoleBasedRedirect";
+import RoleBasedWrapper from "../roles/RoleBasedWrapper";
 
 const Navbar = () => {
   const userRole = useRole();

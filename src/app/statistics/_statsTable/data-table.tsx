@@ -25,17 +25,17 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
-import { getStatsUserList } from "../api";
 import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import { isWithinInterval } from "date-fns";
 import { StatsUserList } from "@/lib/references/stats/types";
+import { getStatsUserList } from "../_api";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
-
+  console.log(data);
   const [filteredData, setFilteredData] = useState<StatsUserList[]>(
     isFetched && data
   );
@@ -81,8 +81,8 @@ export function DataTable() {
       const sumAmountsForDateRange = (user: StatsUserList) => {
         return user.created_at.reduce((total, date, index) => {
           if (isWithinInterval(date, { start: startDate, end: endDate })) {
-            bidSumArr.push(user.amount[index]);
-            return total + user.amount[index];
+            bidSumArr.push(user.value[index]);
+            return total + user.value[index];
           }
 
           return total;
@@ -92,7 +92,7 @@ export function DataTable() {
         .map((user) => {
           const totalAmountInRange = sumAmountsForDateRange(user);
           const totalBidsInRange = bidSumArr.length;
-          const bidSum = user.amount.length;
+          const bidSum = user.value.length;
           return { ...user, totalAmountInRange, totalBidsInRange, bidSum };
         })
         .filter((user) => user.totalAmountInRange > 0);
