@@ -18,3 +18,14 @@ export const checkRole =  (allowedRoles: string[]) => {
 
   return allowedRoles.includes(userRole);
 };
+
+export const roleNamesList = [
+  "Админ",
+  "Логист",
+  "Логист Москва",
+  "Логист Дистант",
+  "Супер Логист",
+  "Зав.Склада",
+  "Зав.Склада Москва",
+  "Кассир",
+];

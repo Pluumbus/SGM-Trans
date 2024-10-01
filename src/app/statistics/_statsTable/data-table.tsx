@@ -35,7 +35,6 @@ export function DataTable() {
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
-  console.log(data);
   const [filteredData, setFilteredData] = useState<StatsUserList[]>(
     isFetched && data
   );
@@ -68,9 +67,8 @@ export function DataTable() {
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,
-      dateVal.start.day + 1
+      dateVal.start.day
     ).toISOString();
-
     const endDate = new Date(
       dateVal.end.year,
       dateVal.end.month - 1,
@@ -82,7 +80,7 @@ export function DataTable() {
         return user.created_at.reduce((total, date, index) => {
           if (isWithinInterval(date, { start: startDate, end: endDate })) {
             bidSumArr.push(user.value[index]);
-            return total + user.value[index];
+            return total + Number(user.value[index]);
           }
 
           return total;
@@ -117,14 +115,6 @@ export function DataTable() {
 
   return (
     <div>
-      {/* <Input
-        placeholder="Поиск по имени"
-        value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("userName")?.setFilterValue(event.target.value)
-        }
-        className="max-w-xs w-2/4 max-h-1 mt-10"
-      /> */}
       <div className="flex mt-5">
         <div className="rounded-md border w-5/6 h-2/4">
           <Table>

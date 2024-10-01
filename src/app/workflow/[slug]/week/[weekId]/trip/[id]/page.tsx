@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
@@ -22,7 +22,6 @@ import {
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
 import { Timer } from "@/components/Timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
@@ -34,6 +33,7 @@ import { checkRole, useRole } from "@/components/roles/useRole";
 import React from "react";
 import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
+import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -83,14 +83,14 @@ const Page: NextPage = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
-          <span className="text-2xl">Рейсы недели №{weekId}</span>
+          <span className="text-xl">Рейсы недели №{weekId}</span>
           <Checkbox
             isSelected={isOnlyMycargos}
             onChange={() => {
               setToLocalStorage(!isOnlyMycargos);
             }}
           >
-            Отобразить только грузы над которыми работаю я
+            Показать только мои грузы
           </Checkbox>
         </div>
 
@@ -130,17 +130,12 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  let currentTripData;
-  //TODO:Check currentTripData
+  // add Realtime for tripData
+  const [currentTripData, setCurrentTripData] = useState<TripType>();
+  const [statusVal, setStatusVal] = useState<string | undefined>();
 
-  useEffect(() => {
-    currentTripData = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
-    );
-  }, [selectedTabId]);
-  const [statusVal, setStatusVal] = useState<string | undefined>(
-    currentTripData?.status
-  );
+  const accessCheck = checkRole(["Супер Логист", "Админ"]);
+
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
@@ -150,17 +145,28 @@ const TripInfoCard = ({
       });
     },
   });
-  const accessCheck = checkRole(["Супер Логист", "Админ"]);
-  const handleDateChange = (date: DateValue | null) => {
+
+  const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
       date.year,
       date.month - 1,
       date.day
     ).toLocaleDateString();
     setStatusVal(dateStr);
-    setStatusMutation();
   };
 
+  useEffect(() => {
+    setCurrentTripData(
+      tripsData.find((item) => item.id === Number(selectedTabId))
+    );
+    setStatusVal(
+      tripsData.find((item) => item.id === Number(selectedTabId))?.status
+    );
+  }, [selectedTabId]);
+
+  useEffect(() => {
+    if (statusVal !== "Выбрать дату") setStatusMutation();
+  }, [statusVal]);
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between">
@@ -176,14 +182,17 @@ const TripInfoCard = ({
         Статус:{" "}
         {accessCheck ? (
           statusVal === "Выбрать дату" ? (
-            <DatePicker aria-label="Выбрать дату" onChange={handleDateChange} />
+            <DatePicker
+              aria-label="Выбрать дату"
+              onChange={handleSetDateChange}
+            />
           ) : (
             <Autocomplete
               variant="underlined"
               onInputChange={setStatusVal}
               inputValue={statusVal}
             >
-              {["Выбрать дату", "В пути", "Машина закрыта"].map(
+              {["Выбрать дату", "В пути", "Машина заполнена"].map(
                 (stat: string) => (
                   <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
                 )

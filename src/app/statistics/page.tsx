@@ -7,6 +7,9 @@ interface Props {}
 const Page: NextPage<Props> = ({}) => {
   return (
     <div>
+      <div className="flex justify-center text-xl">
+        Статистика работы сотрудников
+      </div>
       <DataTable />
     </div>
   );

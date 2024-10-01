@@ -20,3 +20,14 @@ export const setUserData = async ({
     publicMetadata: { role, balance, time, prevTime },
   });
 };
+
+export type UsersList = {
+  id: string;
+  email: string;
+  userName: string;
+  avatar: string;
+  role: string;
+  balance: number;
+  time: number;
+  prevTime: number;
+};
