@@ -8,7 +8,7 @@ export function useRole() {
   return (isLoaded && user.publicMetadata?.role) || "Пользователь";
 }
 
-export const checkRole =  (allowedRoles: string[]) => {
+export const checkRole = (allowedRoles: string[]) => {
   const { user, isLoaded } = useUser();
 
   if (isLoaded && !user) {

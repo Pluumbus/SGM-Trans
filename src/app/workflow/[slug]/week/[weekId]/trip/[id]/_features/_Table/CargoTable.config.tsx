@@ -24,8 +24,6 @@ export const getBaseColumnsConfig = () => {
                   ...item,
                   isSelected: true,
                 }));
-                console.log("isSelected: header: ", rowSelected);
-
                 setRowSelected(updatedSelection);
               }}
             />
