@@ -7,6 +7,9 @@ type useLocalStorageProps<T> = {
 };
 
 declare global {
+  interface window {
+    localStorage: Storage;
+  }
   interface Window {
     Clerk: {
       session?: {
