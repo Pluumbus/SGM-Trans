@@ -35,6 +35,7 @@ import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
+import { WeekType } from "@/app/workflow/_feature/types";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -49,7 +50,9 @@ const Page: NextPage = () => {
     initialData: false,
   });
 
-  const { data: tripsData, isLoading } = useQuery<TripType[]>({
+  const { data: tripsData, isLoading } = useQuery<
+    (TripType & { weeks: WeekType })[]
+  >({
     queryKey: ["getTrips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
@@ -84,7 +87,9 @@ const Page: NextPage = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
-          <span className="text-xl">Рейсы недели №{weekId}</span>
+          <span className="text-xl">
+            Рейсы недели №{tripsData[0]?.weeks?.week_number}
+          </span>
           <Checkbox
             isSelected={isOnlyMycargos}
             onChange={() => {

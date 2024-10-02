@@ -44,18 +44,20 @@ export const getCargosByTripId = async (
   return data as CargoType[];
 };
 
-export const getTripsByWeekId = async (weekId: string): Promise<TripType[]> => {
+export const getTripsByWeekId = async (
+  weekId: string
+): Promise<(TripType & { weeks: WeekType })[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("trips")
-    .select("*")
+    .select("*, weeks(*)")
     .eq("week_id", weekId);
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data as TripType[];
+  return data as (TripType & { weeks: WeekType })[];
 };
 
 export const getWeeks = async (): Promise<
