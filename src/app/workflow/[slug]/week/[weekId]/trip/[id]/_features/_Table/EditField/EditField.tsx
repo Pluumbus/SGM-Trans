@@ -19,8 +19,7 @@ export const EditField = ({
     | "quantity"
     | "driver"
     | "amount"
-    | "status"
-    | "is_act_ready";
+    | "status";
 }) => {
   switch (type) {
     case "Checkbox":
