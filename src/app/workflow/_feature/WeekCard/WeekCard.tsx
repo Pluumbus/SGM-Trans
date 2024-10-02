@@ -29,7 +29,7 @@ export const WeekCard = () => {
     queryFn: async () => await getWeeks(),
   });
 
-  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType })[]>([]);
+  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>([]);
 
   useEffect(() => {
     const cn = supabase
@@ -40,7 +40,7 @@ export const WeekCard = () => {
         (payload) => {
           setWeeks((prev) => [
             ...prev,
-            payload.new as WeekType & { trips: TripType },
+            payload.new as WeekType & { trips: TripType[] },
           ]);
         }
       )
@@ -53,8 +53,6 @@ export const WeekCard = () => {
 
   useEffect(() => {
     if (dataWeeks) {
-      console.log("dataWeeks", dataWeeks);
-
       setWeeks(dataWeeks);
     }
   }, [dataWeeks]);
@@ -68,11 +66,11 @@ export const WeekCard = () => {
       <AddWeek />
       <div className="flex gap-4 w-full min-h-44">
         <Accordion selectionMode="multiple">
-          {weeks.map((week, i) => (
+          {weeks.toReversed().map((week, i) => (
             <AccordionItem
               key={i + 1}
               aria-label={`Accordion ${i}`}
-              title={`Неделя ${i + 1}`}
+              title={`Неделя ${week.week_number}`}
               subtitle={<SummaryOfTrip week={week} />}
             >
               <CreateTripInsideWeek week={week} />
@@ -201,15 +199,18 @@ const CreateTripInsideWeek = ({ week }) => {
   );
 };
 
-const SummaryOfTrip = ({ week }) => {
+const SummaryOfTrip = ({
+  week,
+}: {
+  week: WeekType & { trips: TripType[] };
+}) => {
   return (
-    <div className="flex gap-2">
-      <span>рейсов: {week.trips.length}</span>
+    <div className="flex gap-2 items-center">
       <span>
-        грузов: {week.trips.reduce((acc, trip) => acc + trip.cargos.length, 0)}
+        {week?.week_dates?.start_date} - {week?.week_dates?.end_date}
       </span>
-      <span>{new Date(week.created_at).toLocaleDateString()}</span>
-      <span>{new Date(week.created_at).toLocaleTimeString()}</span>
+      <Divider orientation="vertical" className="!min-h-4 !w-[1px]" />
+      <span>Рейсов: {week?.trips?.length || 0}</span>
     </div>
   );
 };

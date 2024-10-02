@@ -52,4 +52,9 @@ export type WeekType = {
   id: number;
   created_at: Date;
   user_id: string;
+  week_number: number;
+  week_dates: {
+    end_date: string;
+    start_date: string;
+  };
 };
