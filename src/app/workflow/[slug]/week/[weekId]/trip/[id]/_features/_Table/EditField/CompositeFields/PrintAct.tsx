@@ -50,8 +50,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           <Checkbox
             isSelected={values?.value}
             onValueChange={(e) => {
-              setValues((prev) => ({
-                ...prev,
+              setValues(() => ({
                 value: e,
                 user_id: isLoaded && user.id,
               }));
@@ -75,6 +74,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               isChecked={isChecked}
               setIsChecked={setIsChecked}
               setValues={setValues}
+              values={values}
             />
           </Checkbox>
         )}
@@ -95,6 +95,7 @@ const GlobalActModal = ({
   isChecked,
   setIsChecked,
   setValues,
+  values,
 }: {
   isOpen: boolean;
   onOpenChange: () => void;
@@ -107,6 +108,10 @@ const GlobalActModal = ({
       user_id: string;
     }>
   >;
+  values: {
+    value: boolean;
+    user_id: string;
+  };
 }) => {
   const { user, isLoaded } = useUser();
   const { mutate: setBalanceMutation } = useMutation({
@@ -155,10 +160,9 @@ const GlobalActModal = ({
                     color="success"
                     onPress={() => {
                       onClose();
-                      setValues((prev) => ({
-                        ...prev,
+                      setValues(() => ({
                         value: true,
-                        user_id: isLoaded && user.id,
+                        user_id: values?.user_id,
                       }));
                       setBalanceMutation(
                         (user.publicMetadata.balance as number) - cargoPrice
