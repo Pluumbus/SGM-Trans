@@ -1,4 +1,5 @@
 import { Input } from "@nextui-org/react";
+import React from "react";
 
 export const TableFilters = ({ headers }: any) => {
   return (
@@ -14,7 +15,7 @@ export const TableFilters = ({ headers }: any) => {
               header.column.setFilterValue(e.target.value);
             }}
           />
-        ) : null,
+        ) : null
       )}
     </>
   );

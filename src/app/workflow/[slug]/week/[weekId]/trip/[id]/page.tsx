@@ -25,7 +25,6 @@ import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { Timer } from "@/components/timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
-import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 
 import { useLocalStorage } from "@/tool-kit/hooks";
 
@@ -36,6 +35,7 @@ import { updateTripStatus } from "../_api/requests";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
+import supabase from "@/utils/supabase/client";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -184,6 +184,28 @@ const TripInfoCard = ({
       setStatusMutation();
     }
   }, [statusVal, ignoreMutation, setStatusMutation]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`trip${selectedTabId}-status`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "trips",
+        },
+        (payload) => {
+          console.log((payload.new as TripType).status);
+          setStatusVal((payload.new as TripType).status);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  });
 
   return (
     <div className="flex flex-col gap-2">
