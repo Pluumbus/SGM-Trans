@@ -3,22 +3,19 @@ import React from "react";
 import Handlebars from "handlebars";
 import { bodyHtmlTemp, stylesTemp } from "./act";
 import { Button } from "@nextui-org/react";
-import logo from "../../app/_imgs/logo.png";
-import Image from "next/image";
 
-const RenderPrintButton: React.FC = () => {
+export type ActType = {
+  client_bin: string;
+  cargo_name: string;
+  quantity: string;
+  amount: string;
+  date: string;
+};
+
+export const PrintButton = ({ actData }: { actData: ActType }) => {
   const handlePrintClick = () => {
     const compiledTemplate = Handlebars.compile(bodyHtmlTemp);
-    const data = {
-      companyName: "Компания Иванов",
-      cargoName: "Пример груза",
-      placeCount: "5",
-      transportCost: "10000 KZT",
-      recipientName: "Иван Иванов",
-      date: "09.09.2024",
-      logo: "../../app/_imgs/logo.png",
-    };
-    const renderedHtml = compiledTemplate(data);
+    const renderedHtml = compiledTemplate(actData);
 
     const printWindow = window.open("", "", "width=800,height=600");
     if (printWindow) {
@@ -44,10 +41,10 @@ const RenderPrintButton: React.FC = () => {
 
   return (
     <div>
-      <Button onClick={handlePrintClick}>Печать</Button>
+      <Button color="success" onClick={handlePrintClick}>
+        Печать
+      </Button>
       {/* <Image src={logo} alt="" width={156} height={120} /> */}
     </div>
   );
 };
-
-export default RenderPrintButton;

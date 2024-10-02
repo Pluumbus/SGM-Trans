@@ -35,7 +35,6 @@ export const TripTab = ({
     queryFn: async () => await getCargos(currentTrip.id.toString()),
     enabled: !!currentTrip,
   });
-
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
 
   const { rowSelected, setRowSelected } = useSelectionStore();

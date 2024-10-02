@@ -222,6 +222,19 @@ export const getBaseColumnsConfig = () => {
       },
       filter: false,
     },
+    {
+      accessorKey: "is_act_ready",
+      header: "Выдача талона",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="is_act_ready"
+        />
+      ),
+      filter: false,
+    },
   ];
 
   return columnsConfig;

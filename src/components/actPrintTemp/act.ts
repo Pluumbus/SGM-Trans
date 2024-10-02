@@ -88,11 +88,11 @@ export const bodyHtmlTemp = ` <div class="container">
                     <th>Подпись получателя</th>
                 </tr>
                 <tr>
-                    <td>{{ companyName}} </td>
-                    <td>{{ cargoName }}</td>
-                    <td>{{ placeCount }}</td>
-                    <td>{{ transportCost }}</td>
-                    <td>{{ recipientName }}</td>
+                    <td>{{ client_bin}} </td>
+                    <td>{{ cargo_name }}</td>
+                    <td>{{ quantity }}</td>
+                    <td>{{ amount }}</td>
+                   
                     <td></td>
                 </tr>
             </table>
@@ -102,6 +102,9 @@ export const bodyHtmlTemp = ` <div class="container">
             </div>
         </section>
     </div>`;
+
+//<td>{{ recipientName }}</td>
+
 // `<div class="container">
 //   <div class="header">
 //     <p>ТОО «SGM - Trans»</p>

@@ -1,26 +1,3 @@
-"use server";
-
-import getClerkClient from "@/utils/clerk/clerk";
-
-export const setUserData = async ({
-  userId,
-  publicMetadata: { role, balance, time, prevTime },
-}: {
-  userId: string;
-  publicMetadata: {
-    role: string;
-    balance: number;
-    time: number;
-    prevTime: number;
-  };
-}) => {
-  await (
-    await getClerkClient()
-  ).users.updateUser(userId, {
-    publicMetadata: { role, balance, time, prevTime },
-  });
-};
-
 export type UsersList = {
   id: string;
   email: string;
@@ -30,4 +7,13 @@ export type UsersList = {
   balance: number;
   time: number;
   prevTime: number;
+};
+export type ClerkUser = {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  avatar: string;
+  role: string;
+  balance: number;
 };

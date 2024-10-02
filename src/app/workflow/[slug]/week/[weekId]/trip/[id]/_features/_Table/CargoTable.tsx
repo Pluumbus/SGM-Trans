@@ -10,11 +10,12 @@ const tableCols = [
   "driver",
   "amount",
   "is_unpalletizing",
+  "is_act_ready",
 ];
 
 export const getCargoTableCfg = () => {
   const fmCols = getBaseColumnsConfig().filter((column) =>
-    tableCols.includes(column.accessorKey),
+    tableCols.includes(column.accessorKey)
   );
   return fmCols;
 };

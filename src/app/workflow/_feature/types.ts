@@ -1,3 +1,4 @@
+import { ActType } from "@/components/actPrintTemp/actGen";
 import { AllCitiesType, PriceType, QuantityType } from "@/lib/references";
 
 export type CargoType = {
@@ -40,6 +41,11 @@ export type CargoType = {
   };
   loading_scheme: string;
   user_id: string;
+  // is_act_ready: {
+  //   value: boolean;
+  //   actData: ActType;
+  // };
+  is_act_ready: boolean;
 };
 
 export type WeekType = {

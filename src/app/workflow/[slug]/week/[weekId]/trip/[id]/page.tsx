@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
@@ -22,18 +22,19 @@ import {
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { Timer } from "@/components/Timer/Timer";
+import { Timer } from "@/components/timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
 import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 
 import { useLocalStorage } from "@/tool-kit/hooks";
 
-import { checkRole, useRole } from "@/components/roles/useRole";
+import { checkRole } from "@/components/roles/useRole";
 import React from "react";
 import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -55,7 +56,7 @@ const Page: NextPage = () => {
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  const columns = useMemo(() => getBaseColumnsConfig(), []);
+  const columns = useMemo(() => useRoleBasedSchema(), []);
 
   const handleSelectTab = (key) => {
     setSelectedTabId(key);
@@ -133,6 +134,7 @@ const TripInfoCard = ({
   // add Realtime for tripData
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
+  const [ignoreMutation, setIgnoreMutation] = useState(true);
 
   const accessCheck = checkRole(["Супер Логист", "Админ"]);
 
@@ -153,20 +155,31 @@ const TripInfoCard = ({
       date.day
     ).toLocaleDateString();
     setStatusVal(dateStr);
+    setIgnoreMutation(false);
+  };
+
+  const handleSetStatus = (val: string) => {
+    setStatusVal(val);
+    setIgnoreMutation(false);
   };
 
   useEffect(() => {
-    setCurrentTripData(
-      tripsData.find((item) => item.id === Number(selectedTabId))
+    const currentTrip = tripsData.find(
+      (item) => item.id === Number(selectedTabId)
     );
-    setStatusVal(
-      tripsData.find((item) => item.id === Number(selectedTabId))?.status
-    );
-  }, [selectedTabId]);
+    setCurrentTripData(currentTrip);
+    setStatusVal(currentTrip?.status);
+    setIgnoreMutation(true);
+  }, [selectedTabId, tripsData]);
 
   useEffect(() => {
-    if (statusVal !== "Выбрать дату") setStatusMutation();
-  }, [statusVal]);
+    if (ignoreMutation) return;
+
+    if (statusVal && statusVal !== "Выбрать дату") {
+      setStatusMutation();
+    }
+  }, [statusVal, ignoreMutation, setStatusMutation]);
+
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between">
@@ -188,8 +201,9 @@ const TripInfoCard = ({
             />
           ) : (
             <Autocomplete
+              aria-label="AutoStatus"
               variant="underlined"
-              onInputChange={setStatusVal}
+              onInputChange={handleSetStatus}
               inputValue={statusVal}
             >
               {["Выбрать дату", "В пути", "Машина заполнена"].map(
