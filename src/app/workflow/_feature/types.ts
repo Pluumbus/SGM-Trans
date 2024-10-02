@@ -41,11 +41,11 @@ export type CargoType = {
   };
   loading_scheme: string;
   user_id: string;
-  // is_act_ready: {
-  //   value: boolean;
-  //   actData: ActType;
-  // };
-  is_act_ready: boolean;
+  is_act_ready: {
+    value: boolean;
+    user_id: string;
+  };
+  // is_act_ready: boolean;
 };
 
 export type WeekType = {
