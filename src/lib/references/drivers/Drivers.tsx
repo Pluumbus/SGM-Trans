@@ -11,7 +11,7 @@ import {
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 
-export const Drivers = (props: AutocompleteProps) => {
+export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getDrivers"],

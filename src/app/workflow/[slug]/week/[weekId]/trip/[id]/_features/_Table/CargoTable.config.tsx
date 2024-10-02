@@ -127,7 +127,15 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-
+    {
+      accessorKey: "driver",
+      header: "Водитель",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField info={info} type={"Composite"} compositeType="driver" />
+      ),
+      filter: false,
+    },
     {
       accessorKey: "amount",
       header: "Сумма тг.",
@@ -146,6 +154,7 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
+
     {
       accessorKey: "comments",
       header: "Комментарии",

@@ -13,8 +13,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
-import { useUser } from "@clerk/nextjs";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
@@ -22,15 +20,16 @@ import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
-import { getJustWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { getJustWeeks, getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { TripType } from "../TripCard/TripCard";
 
 export const WeekCard = () => {
   const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
     queryKey: ["weeks"],
-    queryFn: async () => await getJustWeeks(),
+    queryFn: async () => await getWeeks(),
   });
 
-  const [weeks, setWeeks] = useState<WeekType[]>([]);
+  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType })[]>([]);
 
   useEffect(() => {
     const cn = supabase
@@ -39,7 +38,10 @@ export const WeekCard = () => {
         "postgres_changes",
         { event: "*", schema: "public", table: "weeks" },
         (payload) => {
-          setWeeks((prev) => [...prev, payload.new as WeekType]);
+          setWeeks((prev) => [
+            ...prev,
+            payload.new as WeekType & { trips: TripType },
+          ]);
         }
       )
       .subscribe();
@@ -51,6 +53,8 @@ export const WeekCard = () => {
 
   useEffect(() => {
     if (dataWeeks) {
+      console.log("dataWeeks", dataWeeks);
+
       setWeeks(dataWeeks);
     }
   }, [dataWeeks]);
@@ -69,7 +73,7 @@ export const WeekCard = () => {
               key={i + 1}
               aria-label={`Accordion ${i}`}
               title={`Неделя ${i + 1}`}
-              // subtitle={<SummaryOfTrip week={week} />}
+              subtitle={<SummaryOfTrip week={week} />}
             >
               <CreateTripInsideWeek week={week} />
               <TripCard weekId={week.id.toString()} />

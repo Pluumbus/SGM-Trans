@@ -16,9 +16,11 @@ type Type = CargoType["status"];
 export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
   const [estDate, setEstDate] = useState<DateValue>(
-    parseDate(
-      formatDate(new Date(values.estimatedDate.toString()).toISOString())
-    ) || today(getLocalTimeZone())
+    values?.estimatedDate
+      ? parseDate(
+          formatDate(new Date(values?.estimatedDate?.toString())?.toISOString())
+        )
+      : today(getLocalTimeZone()).add({ days: 7 })
   );
   const [factDate, setFactDate] = useState<DateValue>(
     values?.factDate
