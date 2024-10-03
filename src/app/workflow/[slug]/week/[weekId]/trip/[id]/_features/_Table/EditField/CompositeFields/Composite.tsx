@@ -6,13 +6,20 @@ import { UnloadingPoint } from "./UnloadingPoint";
 import { Quantity } from "./Quantity";
 import { Driver } from "./Driver";
 import { Status } from "./Status";
+import { PrintAct } from "./PrintAct";
 
 export const Composite = ({
   info,
   type,
 }: {
   info: Cell<CargoType, ReactNode>;
-  type: "unloading_point" | "quantity" | "driver" | "amount" | "status";
+  type:
+    | "unloading_point"
+    | "quantity"
+    | "driver"
+    | "amount"
+    | "status"
+    | "is_act_ready";
 }) => {
   switch (type) {
     case "amount":
@@ -25,6 +32,8 @@ export const Composite = ({
       return <Driver info={info} />;
     case "status":
       return <Status info={info} />;
+    case "is_act_ready":
+      return <PrintAct info={info} />;
     default:
       return <Amount info={info} />;
   }
