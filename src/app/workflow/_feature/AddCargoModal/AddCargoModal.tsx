@@ -62,13 +62,21 @@ export const CargoModal = ({
     },
   });
   const onSubmit = (data: CargoType) => {
+    const unlPoint = data.unloading_point?.city
+      ? data.unloading_point
+      : {
+          city: "",
+          withDelivery: false,
+          deliveryAddress: "",
+        };
     mutate({
       ...data,
       trip_id: trip_id,
+      unloading_point: unlPoint,
       status: {
-        estimatedDate:
-          `${data.status.estimatedDate.year}-${data.status.estimatedDate.month}-${data.status.estimatedDate.day}` ||
-          `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+        estimatedDate: data.status.estimatedDate?.year
+          ? `${data.status.estimatedDate.year}-${data.status.estimatedDate.month}-${data.status.estimatedDate.day}`
+          : `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
       },
     });
   };
@@ -155,7 +163,6 @@ export const CargoModal = ({
                 <Input {...register("weight")} label="Вес" />
                 <Input {...register("volume")} label="Объем" />
               </div>
-
 
               <Controller
                 control={control}
