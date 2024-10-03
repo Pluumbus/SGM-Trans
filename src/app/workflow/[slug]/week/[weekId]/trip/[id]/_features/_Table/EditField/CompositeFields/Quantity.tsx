@@ -14,7 +14,7 @@ export const Quantity = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Textarea
         variant="underlined"
         aria-label="Quantity textarea"
-        value={values.value}
+        value={values?.value}
         onChange={(e) => {
           setValues((prev) => ({
             ...prev,
@@ -25,7 +25,7 @@ export const Quantity = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Autocomplete
         variant="underlined"
         aria-label="Quantity Autocomplete"
-        selectedKey={values.type}
+        selectedKey={values?.type}
         onSelectionChange={(e) => {
           setValues((prev) => ({
             ...prev,

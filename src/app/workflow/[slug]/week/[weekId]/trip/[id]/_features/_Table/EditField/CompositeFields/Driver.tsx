@@ -14,7 +14,7 @@ export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <DriversWithCars
         variant="underlined"
         aria-label="Driver Cities"
-        selectedKey={values.id}
+        selectedKey={values?.id}
         onSelectionChange={(e) => {
           setValues((prev) => ({
             ...prev,
@@ -22,12 +22,12 @@ export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           }));
         }}
       />
-      {values.id == "24" && (
+      {values?.id == "24" && (
         <Textarea
           variant="underlined"
           aria-label="Driver Textarea"
           label="Сумма оплаты наемнику"
-          value={values.value}
+          value={values?.value}
           onChange={(e) => {
             setValues((prev) => ({
               ...prev,

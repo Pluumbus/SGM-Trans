@@ -19,7 +19,7 @@ export const Amount = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Textarea
         variant="underlined"
         aria-label="Amount Textarea"
-        value={values.value}
+        value={values?.value}
         onChange={(e) => {
           setValues((prev) => ({
             ...prev,
@@ -30,7 +30,7 @@ export const Amount = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Autocomplete
         aria-label="Amount Autocomplete"
         variant="underlined"
-        selectedKey={values.type}
+        selectedKey={values?.type}
         onSelectionChange={(e) => {
           setValues((prev) => ({
             ...prev,
