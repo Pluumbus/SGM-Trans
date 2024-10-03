@@ -22,7 +22,6 @@ import {
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { Timer } from "@/components/timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
 
@@ -36,6 +35,7 @@ import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
+import { Timer } from "@/components/Timer/Timer";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
