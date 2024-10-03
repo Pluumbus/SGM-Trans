@@ -30,18 +30,13 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [isChecked, setIsChecked] = useState(values?.value || false);
   const actVal = info.row.original.is_act_ready?.value || false;
   const { data, isFetched } = useQuery({
-    queryKey: ["getUserByIdForAct"],
+    queryKey: [`getUserForAct-${values?.user_id}`],
     queryFn: async () => await getUserById(values?.user_id),
     enabled: !!values.user_id,
   });
   const actSign = isFetched && actVal ? data.firstName : "Одобрить";
-  const actData: ActType = {
-    client_bin: info.row.original.client_bin,
-    cargo_name: info.row.original.cargo_name,
-    quantity: info.row.original.quantity.value,
-    amount: info.row.original.amount.value,
-    date: new Date().toLocaleDateString(),
-  };
+  console.log("data", data, values.user_id);
+
   const { user, isLoaded } = useUser();
   return (
     <div className="flex flex-col gap-2 w-[8rem]">
@@ -61,6 +56,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         ) : (
           <Checkbox
             isSelected={isChecked}
+            isDisabled={isChecked}
             onValueChange={() => {
               setIsChecked(true);
               onOpen();
@@ -71,7 +67,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               isOpen={isOpen}
               onOpenChange={onOpenChange}
               cargoPrice={Number(info.row.original.amount.value)}
-              isChecked={isChecked}
               setIsChecked={setIsChecked}
               setValues={setValues}
               values={values}
@@ -80,7 +75,15 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         )}
         {actVal && (
           <div>
-            <PrintButton actData={actData} />
+            <PrintButton
+              actData={{
+                client_bin: info.row.original.client_bin,
+                cargo_name: info.row.original.cargo_name,
+                quantity: info.row.original.quantity.value,
+                amount: info.row.original.amount.value,
+                date: new Date().toLocaleDateString(),
+              }}
+            />
           </div>
         )}
       </div>
@@ -92,7 +95,6 @@ const GlobalActModal = ({
   isOpen,
   onOpenChange,
   cargoPrice,
-  isChecked,
   setIsChecked,
   setValues,
   values,
@@ -100,7 +102,6 @@ const GlobalActModal = ({
   isOpen: boolean;
   onOpenChange: () => void;
   cargoPrice: number;
-  isChecked: boolean;
   setIsChecked: (value: React.SetStateAction<boolean>) => void;
   setValues: React.Dispatch<
     React.SetStateAction<{
@@ -128,56 +129,62 @@ const GlobalActModal = ({
       });
     },
   });
+  const res = (user.publicMetadata.balance as number) - cargoPrice;
   return (
     <div>
-      {isChecked && (
-        <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-          <ModalContent>
-            {(onClose) => (
-              <>
-                <ModalHeader className="flex flex-col gap-1 ">
-                  Одобрение груза
-                </ModalHeader>
-                <ModalBody>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1 ">
+                Одобрение груза
+              </ModalHeader>
+              <ModalBody>
+                {res < 0 || res > (user.publicMetadata.balance as number) ? (
+                  <p>Недостаточно баланса</p>
+                ) : (
                   <p>
                     При соглашении у вас спишется стоимость груза с баланса в
                     размере <b>{`${cargoPrice}`}</b> и появится возможность
                     распечатать Акт приема-выдачи
                   </p>
-                </ModalBody>
-                <ModalFooter>
-                  <Button
-                    color="danger"
-                    variant="light"
-                    onPress={() => {
-                      setIsChecked(false);
-                      onClose();
-                    }}
-                  >
-                    Нет
-                  </Button>
+                )}
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="light"
+                  onPress={() => {
+                    setIsChecked(false);
+                    onClose();
+                  }}
+                >
+                  Закрыть
+                </Button>
+                {res < 0 || res > (user.publicMetadata.balance as number) ? (
+                  <></>
+                ) : (
                   <Button
                     color="success"
                     onPress={() => {
                       onClose();
                       setValues(() => ({
                         value: true,
-                        user_id: values?.user_id,
+                        user_id: isLoaded && user.id,
                       }));
-                      setBalanceMutation(
-                        (user.publicMetadata.balance as number) - cargoPrice
-                      );
+
+                      setBalanceMutation(res);
                       toast({ title: `Печать талона на груз одобрена` });
                     }}
                   >
                     Да
                   </Button>
-                </ModalFooter>
-              </>
-            )}
-          </ModalContent>
-        </Modal>
-      )}
+                )}
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
