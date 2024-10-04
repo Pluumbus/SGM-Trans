@@ -67,7 +67,7 @@ export function DataTable() {
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,
-      dateVal.start.day
+      dateVal.start.day - 1
     ).toISOString();
     const endDate = new Date(
       dateVal.end.year,
@@ -89,7 +89,7 @@ export function DataTable() {
       const filtered = data
         .map((user) => {
           const totalAmountInRange = sumAmountsForDateRange(user);
-          const totalBidsInRange = bidSumArr.length;
+          const totalBidsInRange = bidSumArr.length - 1;
           const bidSum = user.value.length;
           return { ...user, totalAmountInRange, totalBidsInRange, bidSum };
         })

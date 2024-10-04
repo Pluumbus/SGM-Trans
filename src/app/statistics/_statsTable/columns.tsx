@@ -47,8 +47,4 @@ export const columns: ColumnDef<StatsUserList>[] = [
       column.toggleVisibility(false);
     },
   },
-  // {
-  //   accessorKey: "created_at",
-  //   header: "Дата",
-  // },
 ];
