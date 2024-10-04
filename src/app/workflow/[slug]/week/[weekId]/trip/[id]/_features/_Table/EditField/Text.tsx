@@ -5,7 +5,13 @@ import { CargoType } from "@/app/workflow/_feature/types";
 import { useMutation } from "@tanstack/react-query";
 import { editCargo } from "./api";
 
-export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
+export const Text = ({
+  info,
+  cl,
+}: {
+  info: Cell<CargoType, ReactNode>;
+  cl?: string;
+}) => {
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
 
   useEffect(() => {
@@ -21,7 +27,7 @@ export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       await editCargo(
         info.column.columnDef.accessorKey,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
   });
@@ -43,7 +49,7 @@ export const Text = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   }, [debouncedValue]);
 
   return (
-    <div className="max-h-fit min-w-20">
+    <div className={`max-h-fit min-w-20 h-full flex items-end ${cl}`}>
       <Textarea
         aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
         variant="underlined"

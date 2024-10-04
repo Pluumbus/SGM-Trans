@@ -83,7 +83,7 @@ export const getBaseColumnsConfig = () => {
       header: "Адрес получения",
       size: 30,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Text"} cl="min-w-[10rem]" />
       ),
       filter: false,
     },
@@ -238,7 +238,11 @@ export const getBaseColumnsConfig = () => {
       header: "Выдача талона",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Composite"} compositeType="is_act_ready" />
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="is_act_ready"
+        />
       ),
       // cell: (info: Cell<CargoType, ReactNode>) => {
       //   const actVal = info.row.original.is_act_ready;

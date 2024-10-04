@@ -18,7 +18,7 @@ export const CheckboxField = ({
       await editCargo(
         info.column.columnDef.accessorKey as string,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
 
@@ -44,7 +44,7 @@ export const CheckboxField = ({
   }, [debouncedValue]);
 
   return (
-    <div className="min-w-fit max-h-fit">
+    <div className="min-w-fit max-h-fit flex justify-center items-center">
       <Checkbox
         aria-label={`checkbox ${info.column.id} ${info.row.original.id}`}
         isSelected={state}
