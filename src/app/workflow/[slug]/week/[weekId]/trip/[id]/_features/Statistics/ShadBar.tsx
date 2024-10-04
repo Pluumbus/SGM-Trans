@@ -121,7 +121,7 @@ export function Chart({ cargos }) {
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Лидирует
-          <span>{leadingManager?.map((e) => <span>{e}</span>)}</span>
+          <span>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</span>
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">

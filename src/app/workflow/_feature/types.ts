@@ -45,7 +45,6 @@ export type CargoType = {
     value: boolean;
     user_id: string;
   };
-  // is_act_ready: boolean;
 };
 
 export type WeekType = {

@@ -18,6 +18,7 @@ import {
   Spinner,
   Tab,
   Tabs,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
@@ -37,6 +38,8 @@ import { WeekType } from "@/app/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
 import { Timer } from "@/components/Timer/Timer";
 
+//DONT DELETE COMMENTS
+
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
     weekId: string;
@@ -45,6 +48,16 @@ const Page: NextPage = () => {
 
   const [selectedTabId, setSelectedTabId] = useState(id);
 
+  // const [tabTitles, setTabTitles] = useState<{ [key: string]: string[] }>({});
+  // const handleCargosUpdate = (tripId: string, cities: string[]) => {
+  //   console.log("tabTitles", tabTitles, "OtherData", tripId, cities);
+  //   const uniqueData = Array.from(new Set(cities));
+
+  //   setTabTitles((prevTitles) => ({
+  //     ...prevTitles,
+  //     [tripId]: uniqueData,
+  //   }));
+  // };
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
@@ -107,12 +120,40 @@ const Page: NextPage = () => {
           onSelectionChange={(key) => handleSelectTab(key)}
         >
           {tripsData.map((trip) => (
-            <Tab title={trip.id.toString()} key={trip.id}>
+            <Tab
+              title={
+                <>
+                  <Tooltip
+                    content={
+                      <div className="px-1 py-2">
+                        <div className="text-small font-bold">
+                          {trip.status}
+                        </div>
+                        <div className="text-tiny">{trip.city_to}</div>
+                      </div>
+                    }
+                  >
+                    {trip.id.toString()}
+                  </Tooltip>
+                  {/* <Tooltip
+                    content={tabTitles[trip.id]?.join(
+                      " " + trip.status.slice(0, 5)
+                    )}
+                  >
+                    {trip.id.toString()}
+                  </Tooltip> */}
+                </>
+              }
+              key={trip.id}
+            >
               <TripTab
                 currentTrip={trip}
                 trips={tripsData}
                 columns={columns}
                 isOnlyMycargos={isOnlyMycargos}
+                // onCargosUpdate={(cities) =>
+                //   handleCargosUpdate(trip?.id.toString(), cities)
+                // }
               />
             </Tab>
           ))}
@@ -136,12 +177,9 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  // add Realtime for tripData
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
   const [ignoreMutation, setIgnoreMutation] = useState(true);
-
-  const accessCheck = checkRole(["Супер Логист", "Админ"]);
 
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
@@ -220,29 +258,28 @@ const TripInfoCard = ({
 
       <div className="flex justify-between">
         Статус:{" "}
-        {accessCheck ? (
-          statusVal === "Выбрать дату" ? (
-            <DatePicker
-              aria-label="Выбрать дату"
-              onChange={handleSetDateChange}
-            />
-          ) : (
-            <Autocomplete
-              aria-label="AutoStatus"
-              variant="underlined"
-              onInputChange={handleSetStatus}
-              inputValue={statusVal}
-            >
-              {["Выбрать дату", "В пути", "Машина заполнена"].map(
-                (stat: string) => (
-                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-                )
-              )}
-            </Autocomplete>
-          )
+        {statusVal === "Выбрать дату" ? (
+          <DatePicker
+            aria-label="Выбрать дату"
+            onChange={handleSetDateChange}
+          />
         ) : (
-          <b>{statusVal}</b>
+          <Autocomplete
+            aria-label="AutoStatus"
+            variant="underlined"
+            onInputChange={handleSetStatus}
+            inputValue={statusVal}
+          >
+            {["Выбрать дату", "В пути", "Машина заполнена"].map(
+              (stat: string) => (
+                <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
+              )
+            )}
+          </Autocomplete>
         )}
+        {/* ) : (
+          <b>{statusVal}</b>
+        )} */}
       </div>
 
       <div>

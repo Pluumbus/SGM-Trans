@@ -35,7 +35,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     enabled: !!values.user_id,
   });
   const actSign = isFetched && actVal ? data.firstName : "Одобрить";
-  console.log("data", data, values.user_id);
+  // console.log("data", data, values.user_id);
 
   const { user, isLoaded } = useUser();
   return (
