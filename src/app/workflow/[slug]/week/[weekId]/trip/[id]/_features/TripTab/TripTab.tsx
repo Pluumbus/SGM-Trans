@@ -18,7 +18,7 @@ import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
-
+//DONT DELETE COMMENTS
 export const TripTab = ({
   currentTrip,
   trips,
