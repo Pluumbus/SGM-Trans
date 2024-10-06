@@ -7,7 +7,7 @@ import {
   AutocompleteProps,
   Spinner,
 } from "@nextui-org/react";
-import { allCities } from "./citiesDictionary";
+import { allCities } from "./citiesRef";
 
 export const Cities = (
   autocompleteProps: Omit<AutocompleteProps, "children">

@@ -2,7 +2,7 @@
 
 import { useParams } from "next/navigation";
 
-import { ReactNode, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
@@ -18,22 +18,27 @@ import {
   Spinner,
   Tab,
   Tabs,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import RoleBasedWrapper from "@/components/roles/RoleBasedRedirect";
-import { Timer } from "@/components/Timer/Timer";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
-import { getBaseColumnsConfig } from "./_features/_Table/CargoTable.config";
 
 import { useLocalStorage } from "@/tool-kit/hooks";
 
-import { checkRole, useRole } from "@/components/roles/useRole";
+import { checkRole } from "@/components/roles/useRole";
 import React from "react";
 import { toast } from "@/components/ui/use-toast";
 import { updateTripStatus } from "../_api/requests";
+import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
+import { WeekType } from "@/app/workflow/_feature/types";
+import supabase from "@/utils/supabase/client";
+import { Timer } from "@/components/Timer/Timer";
+
+//DONT DELETE COMMENTS
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -43,19 +48,31 @@ const Page: NextPage = () => {
 
   const [selectedTabId, setSelectedTabId] = useState(id);
 
+  // const [tabTitles, setTabTitles] = useState<{ [key: string]: string[] }>({});
+  // const handleCargosUpdate = (tripId: string, cities: string[]) => {
+  //   console.log("tabTitles", tabTitles, "OtherData", tripId, cities);
+  //   const uniqueData = Array.from(new Set(cities));
+
+  //   setTabTitles((prevTitles) => ({
+  //     ...prevTitles,
+  //     [tripId]: uniqueData,
+  //   }));
+  // };
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
   });
 
-  const { data: tripsData, isLoading } = useQuery<TripType[]>({
+  const { data: tripsData, isLoading } = useQuery<
+    (TripType & { weeks: WeekType })[]
+  >({
     queryKey: ["getTrips"],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
   const { isOpen, onOpenChange } = useDisclosure();
 
-  const columns = useMemo(() => getBaseColumnsConfig(), []);
+  const columns = useMemo(() => useRoleBasedSchema(), []);
 
   const handleSelectTab = (key) => {
     setSelectedTabId(key);
@@ -83,14 +100,16 @@ const Page: NextPage = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
-          <span className="text-2xl">Рейсы недели №{weekId}</span>
+          <span className="text-xl">
+            Рейсы недели №{tripsData[0]?.weeks?.week_number}
+          </span>
           <Checkbox
             isSelected={isOnlyMycargos}
             onChange={() => {
               setToLocalStorage(!isOnlyMycargos);
             }}
           >
-            Отобразить только грузы над которыми работаю я
+            Показать только мои грузы
           </Checkbox>
         </div>
 
@@ -101,12 +120,40 @@ const Page: NextPage = () => {
           onSelectionChange={(key) => handleSelectTab(key)}
         >
           {tripsData.map((trip) => (
-            <Tab title={trip.id.toString()} key={trip.id}>
+            <Tab
+              title={
+                <>
+                  <Tooltip
+                    content={
+                      <div className="px-1 py-2">
+                        <div className="text-small font-bold">
+                          {trip.status}
+                        </div>
+                        <div className="text-tiny">{trip.city_to}</div>
+                      </div>
+                    }
+                  >
+                    {trip.id.toString()}
+                  </Tooltip>
+                  {/* <Tooltip
+                    content={tabTitles[trip.id]?.join(
+                      " " + trip.status.slice(0, 5)
+                    )}
+                  >
+                    {trip.id.toString()}
+                  </Tooltip> */}
+                </>
+              }
+              key={trip.id}
+            >
               <TripTab
                 currentTrip={trip}
                 trips={tripsData}
                 columns={columns}
                 isOnlyMycargos={isOnlyMycargos}
+                // onCargosUpdate={(cities) =>
+                //   handleCargosUpdate(trip?.id.toString(), cities)
+                // }
               />
             </Tab>
           ))}
@@ -130,13 +177,10 @@ const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  const currentTripData = tripsData.find(
-    (item) => item.id === Number(selectedTabId)
-  );
+  const [currentTripData, setCurrentTripData] = useState<TripType>();
+  const [statusVal, setStatusVal] = useState<string | undefined>();
+  const [ignoreMutation, setIgnoreMutation] = useState(true);
 
-  const [statusVal, setStatusVal] = useState<string | undefined>(
-    currentTripData?.status
-  );
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
@@ -146,16 +190,60 @@ const TripInfoCard = ({
       });
     },
   });
-  const accessCheck = checkRole(["Супер Логист", "Админ"]);
-  const handleDateChange = (date: DateValue | null) => {
+
+  const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
       date.year,
       date.month - 1,
       date.day
     ).toLocaleDateString();
     setStatusVal(dateStr);
-    setStatusMutation();
+    setIgnoreMutation(false);
   };
+
+  const handleSetStatus = (val: string) => {
+    setStatusVal(val);
+    setIgnoreMutation(false);
+  };
+
+  useEffect(() => {
+    const currentTrip = tripsData.find(
+      (item) => item.id === Number(selectedTabId)
+    );
+    setCurrentTripData(currentTrip);
+    setStatusVal(currentTrip?.status);
+    setIgnoreMutation(true);
+  }, [selectedTabId, tripsData]);
+
+  useEffect(() => {
+    if (ignoreMutation) return;
+
+    if (statusVal && statusVal !== "Выбрать дату") {
+      setStatusMutation();
+    }
+  }, [statusVal, ignoreMutation, setStatusMutation]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`trip${selectedTabId}-status`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "trips",
+        },
+        (payload) => {
+          console.log((payload.new as TripType).status);
+          setStatusVal((payload.new as TripType).status);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  });
 
   return (
     <div className="flex flex-col gap-2">
@@ -170,25 +258,28 @@ const TripInfoCard = ({
 
       <div className="flex justify-between">
         Статус:{" "}
-        {accessCheck ? (
-          statusVal === "Выбрать дату" ? (
-            <DatePicker aria-label="Выбрать дату" onChange={handleDateChange} />
-          ) : (
-            <Autocomplete
-              variant="underlined"
-              onInputChange={setStatusVal}
-              inputValue={statusVal}
-            >
-              {["Выбрать дату", "В пути", "Машина закрыта"].map(
-                (stat: string) => (
-                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-                )
-              )}
-            </Autocomplete>
-          )
+        {statusVal === "Выбрать дату" ? (
+          <DatePicker
+            aria-label="Выбрать дату"
+            onChange={handleSetDateChange}
+          />
         ) : (
-          <b>{statusVal}</b>
+          <Autocomplete
+            aria-label="AutoStatus"
+            variant="underlined"
+            onInputChange={handleSetStatus}
+            inputValue={statusVal}
+          >
+            {["Выбрать дату", "В пути", "Машина заполнена"].map(
+              (stat: string) => (
+                <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
+              )
+            )}
+          </Autocomplete>
         )}
+        {/* ) : (
+          <b>{statusVal}</b>
+        )} */}
       </div>
 
       <div>

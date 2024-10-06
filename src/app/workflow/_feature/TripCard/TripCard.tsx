@@ -57,11 +57,10 @@ export const TripCard = ({ weekId }: { weekId: string }) => {
           acc.id = curr.trip_id.toString();
           acc.volume += Number(curr.volume) || 0;
           acc.amount += Number(curr.amount) || 0;
-          acc.payment += Number(curr.payment) || 0;
           acc.quantity += Number(curr.quantity) || 0;
           return acc;
         },
-        { id: "", volume: 0, amount: 0, payment: 0, quantity: 0 }
+        { id: "", volume: 0, amount: 0, quantity: 0 }
       ),
     };
   };

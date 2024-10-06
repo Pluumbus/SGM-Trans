@@ -25,17 +25,16 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
-import { getStatsUserList } from "../api";
 import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import { isWithinInterval } from "date-fns";
 import { StatsUserList } from "@/lib/references/stats/types";
+import { getStatsUserList } from "../_api";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
-
   const [filteredData, setFilteredData] = useState<StatsUserList[]>(
     isFetched && data
   );
@@ -68,9 +67,8 @@ export function DataTable() {
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,
-      dateVal.start.day + 1
+      dateVal.start.day - 1
     ).toISOString();
-
     const endDate = new Date(
       dateVal.end.year,
       dateVal.end.month - 1,
@@ -81,8 +79,8 @@ export function DataTable() {
       const sumAmountsForDateRange = (user: StatsUserList) => {
         return user.created_at.reduce((total, date, index) => {
           if (isWithinInterval(date, { start: startDate, end: endDate })) {
-            bidSumArr.push(user.amount[index]);
-            return total + user.amount[index];
+            bidSumArr.push(user.value[index]);
+            return total + Number(user.value[index]);
           }
 
           return total;
@@ -91,8 +89,8 @@ export function DataTable() {
       const filtered = data
         .map((user) => {
           const totalAmountInRange = sumAmountsForDateRange(user);
-          const totalBidsInRange = bidSumArr.length;
-          const bidSum = user.amount.length;
+          const totalBidsInRange = bidSumArr.length - 1;
+          const bidSum = user.value.length;
           return { ...user, totalAmountInRange, totalBidsInRange, bidSum };
         })
         .filter((user) => user.totalAmountInRange > 0);
@@ -117,14 +115,6 @@ export function DataTable() {
 
   return (
     <div>
-      {/* <Input
-        placeholder="Поиск по имени"
-        value={(table.getColumn("userName")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("userName")?.setFilterValue(event.target.value)
-        }
-        className="max-w-xs w-2/4 max-h-1 mt-10"
-      /> */}
       <div className="flex mt-5">
         <div className="rounded-md border w-5/6 h-2/4">
           <Table>

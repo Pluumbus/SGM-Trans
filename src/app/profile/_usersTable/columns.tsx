@@ -21,14 +21,14 @@ import {
   AutocompleteItem,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { UsersList } from "../../../lib/references/roles/types";
+import { UsersList } from "../../../lib/references/clerkUserType/types";
 import { Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import React from "react";
 import { BiSend } from "react-icons/bi";
-import { setUserData } from "../../../components/roles/setUserData";
+import { setUserData } from "../../../lib/references/clerkUserType/setUserData";
 import { useToast } from "@/components/ui/use-toast";
-import { roleNamesList } from "@/lib/references/roles/roles";
+import { roleNamesList } from "@/components/roles/useRole";
 
 export const columns: ColumnDef<UsersList>[] = [
   {

@@ -11,7 +11,9 @@ export const EditField = ({
   info,
   type,
   compositeType,
+  cl,
 }: {
+  cl?: string;
   info: Cell<CargoType, ReactNode>;
   type: "Date" | "Text" | "Checkbox" | "Ref" | "Composite";
   compositeType?:
@@ -19,13 +21,14 @@ export const EditField = ({
     | "quantity"
     | "driver"
     | "amount"
-    | "status";
+    | "status"
+    | "is_act_ready";
 }) => {
   switch (type) {
     case "Checkbox":
       return <CheckboxField info={info} />;
     case "Text":
-      return <Text info={info} />;
+      return <Text info={info} cl={cl} />;
     case "Date":
       return <DateField info={info} />;
     case "Ref":

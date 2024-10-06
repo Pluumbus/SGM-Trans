@@ -27,7 +27,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/lib/references/cities/citiesDictionary.ts"
+    "src/lib/references/cities/citiesRef.ts"
   ],
   "exclude": ["node_modules"]
 }

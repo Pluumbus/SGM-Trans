@@ -1,4 +1,4 @@
-import { TableCell, TableRow } from "@nextui-org/react";
+import { Divider, TableCell, TableRow } from "@nextui-org/react";
 import { Table, flexRender } from "@tanstack/react-table";
 import { RowConfigProps } from "../types";
 
@@ -11,6 +11,7 @@ export const renderRows = <T,>(
       {row.getVisibleCells().map((cell) => (
         <TableCell
           key={cell.id}
+          className="border-r-1 border-e-gray-200 py-0 h-full"
           onClick={() => {
             if (cell.column.columnDef.accessorKey !== "action") {
               config.setRowData && config.setRowData(row);

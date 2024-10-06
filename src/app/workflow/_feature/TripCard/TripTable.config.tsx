@@ -13,11 +13,11 @@ export const getBaseTripColumnsConfig = () => {
     CargoType & { trips: TripType }
   >[] = [
     {
-      accessorKey: "number",
+      accessorKey: "id",
       header: "Номер рейса",
       size: 20,
       cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => {
-        return <span>{info.getValue()?.toString()}</span>;
+        return <span>{info.row.original.id}</span>;
       },
       filter: true,
     },
@@ -31,7 +31,7 @@ export const getBaseTripColumnsConfig = () => {
       filter: false,
     },
     {
-      accessorKey: "city_to",
+      accessorKey: "city_from",
       header: "Город отправитель",
       size: 20,
       cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
@@ -41,7 +41,7 @@ export const getBaseTripColumnsConfig = () => {
     },
 
     {
-      accessorKey: "city_from",
+      accessorKey: "city_to",
       header: "Город получатель",
       size: 20,
       cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (

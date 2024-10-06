@@ -15,11 +15,11 @@ type Type = CargoType["amount"];
 export const Amount = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
   return (
-    <div className="flex gap-2 w-[20rem]">
+    <div className="flex gap-2 items-end w-[20rem]">
       <Textarea
         variant="underlined"
         aria-label="Amount Textarea"
-        value={values.value}
+        value={values?.value}
         onChange={(e) => {
           setValues((prev) => ({
             ...prev,
@@ -30,7 +30,7 @@ export const Amount = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Autocomplete
         aria-label="Amount Autocomplete"
         variant="underlined"
-        selectedKey={values.type}
+        selectedKey={values?.type}
         onSelectionChange={(e) => {
           setValues((prev) => ({
             ...prev,

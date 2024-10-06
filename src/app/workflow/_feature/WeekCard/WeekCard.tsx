@@ -13,8 +13,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
-import { useUser } from "@clerk/nextjs";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
@@ -22,15 +20,16 @@ import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
-import { getJustWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { getJustWeeks, getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { TripType } from "../TripCard/TripCard";
 
 export const WeekCard = () => {
   const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
     queryKey: ["weeks"],
-    queryFn: async () => await getJustWeeks(),
+    queryFn: async () => await getWeeks(),
   });
 
-  const [weeks, setWeeks] = useState<WeekType[]>([]);
+  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>([]);
 
   useEffect(() => {
     const cn = supabase
@@ -39,7 +38,10 @@ export const WeekCard = () => {
         "postgres_changes",
         { event: "*", schema: "public", table: "weeks" },
         (payload) => {
-          setWeeks((prev) => [...prev, payload.new as WeekType]);
+          setWeeks((prev) => [
+            ...prev,
+            payload.new as WeekType & { trips: TripType[] },
+          ]);
         }
       )
       .subscribe();
@@ -64,12 +66,12 @@ export const WeekCard = () => {
       <AddWeek />
       <div className="flex gap-4 w-full min-h-44">
         <Accordion selectionMode="multiple">
-          {weeks.map((week, i) => (
+          {weeks.toReversed().map((week, i) => (
             <AccordionItem
               key={i + 1}
               aria-label={`Accordion ${i}`}
-              title={`Неделя ${i + 1}`}
-              // subtitle={<SummaryOfTrip week={week} />}
+              title={`Неделя ${week.week_number}`}
+              subtitle={<SummaryOfTrip week={week} />}
             >
               <CreateTripInsideWeek week={week} />
               <TripCard weekId={week.id.toString()} />
@@ -197,15 +199,18 @@ const CreateTripInsideWeek = ({ week }) => {
   );
 };
 
-const SummaryOfTrip = ({ week }) => {
+const SummaryOfTrip = ({
+  week,
+}: {
+  week: WeekType & { trips: TripType[] };
+}) => {
   return (
-    <div className="flex gap-2">
-      <span>рейсов: {week.trips.length}</span>
+    <div className="flex gap-2 items-center">
       <span>
-        грузов: {week.trips.reduce((acc, trip) => acc + trip.cargos.length, 0)}
+        {week?.week_dates?.start_date} - {week?.week_dates?.end_date}
       </span>
-      <span>{new Date(week.created_at).toLocaleDateString()}</span>
-      <span>{new Date(week.created_at).toLocaleTimeString()}</span>
+      <Divider orientation="vertical" className="!min-h-4 !w-[1px]" />
+      <span>Рейсов: {week?.trips?.length || 0}</span>
     </div>
   );
 };

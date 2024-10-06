@@ -11,7 +11,7 @@ export const getStatsUserList = async () => {
     userName: user.fullName || "Имя отсутствует",
     avatar: user.imageUrl,
     role: user.publicMetadata?.role as string | undefined,
-    amount: [],
+    value: [],
     created_at: [],
   }));
   const server = getSupabaseServer();
@@ -29,8 +29,9 @@ export const getStatsUserList = async () => {
     if (userMap.has(user_id)) {
       const existingUser = userMap.get(user_id);
 
-      if (existingUser!.amount) existingUser!.amount.push(Number(amount));
-      else existingUser!.amount = [amount];
+      if (existingUser!.value) {
+        existingUser!.value.push(amount.value);
+      } else existingUser!.value = [amount.value];
 
       if (existingUser!.created_at)
         existingUser!.created_at.push(new Date(created_at).toISOString());
@@ -39,6 +40,5 @@ export const getStatsUserList = async () => {
   });
 
   const fullData = Array.from(userMap.values());
-
   return fullData as StatsUserList[];
 };

@@ -29,7 +29,7 @@ export const columns: ColumnDef<StatsUserList>[] = [
     header: "Общая сумма тг.",
     cell: ({ row }) => {
       let salesSum = 0;
-      row.original.amount.forEach((sale) => {
+      row.original.value.forEach((sale) => {
         salesSum += Number(sale);
       });
       return salesSum;
@@ -44,13 +44,6 @@ export const columns: ColumnDef<StatsUserList>[] = [
     header: "Роль",
     cell: ({ column }) => {
       column.setFilterValue("Логист");
-      column.toggleVisibility(false);
-    },
-  },
-  {
-    accessorKey: "created_at",
-    header: "Дата",
-    cell: ({ column }) => {
       column.toggleVisibility(false);
     },
   },

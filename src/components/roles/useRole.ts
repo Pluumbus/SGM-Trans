@@ -1,11 +1,15 @@
 import { useUser } from "@clerk/nextjs";
 
-export function useRole() {
+export type Role = (typeof roleNamesList)[number] | "Пользователь";
+
+export function useRole(): Role {
   const { user, isLoaded } = useUser();
 
-  if (isLoaded && !user) return "Пользователь";
+  if (!isLoaded || !user) {
+    return "Пользователь";
+  }
 
-  return (isLoaded && user.publicMetadata?.role) || "Пользователь";
+  return (user.publicMetadata?.role as Role) || "Пользователь";
 }
 
 export const checkRole = (allowedRoles: string[]) => {
@@ -18,3 +22,14 @@ export const checkRole = (allowedRoles: string[]) => {
 
   return allowedRoles.includes(userRole);
 };
+
+export const roleNamesList = [
+  "Админ",
+  "Логист",
+  "Логист Москва",
+  "Логист Дистант",
+  "Супер Логист",
+  "Зав.Склада",
+  "Зав.Склада Москва",
+  "Кассир",
+] as const;

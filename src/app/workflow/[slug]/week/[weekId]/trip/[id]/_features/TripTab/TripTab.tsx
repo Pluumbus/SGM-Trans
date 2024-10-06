@@ -17,24 +17,26 @@ import supabase from "@/utils/supabase/client";
 import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
-
+import React from "react";
+//DONT DELETE COMMENTS
 export const TripTab = ({
   currentTrip,
   trips,
   columns,
   isOnlyMycargos,
+  // onCargosUpdate,
 }: {
   currentTrip: TripType;
   trips: TripType[];
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
+  // onCargosUpdate: (cities: string[]) => void;
 }) => {
   const { data, isLoading } = useQuery({
     queryKey: [`cargo-${currentTrip.id}`],
     queryFn: async () => await getCargos(currentTrip.id.toString()),
     enabled: !!currentTrip,
   });
-
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
 
   const { rowSelected, setRowSelected } = useSelectionStore();
@@ -49,6 +51,10 @@ export const TripTab = ({
 
   const filterBy = () =>
     isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+
+  // useEffect(() => {
+  //   onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
+  // }, [data]);
 
   useEffect(() => {
     if (data) {

@@ -2,49 +2,40 @@ import { CargoType } from "@/app/workflow/_feature/types";
 import React, { ReactNode } from "react";
 import { useCompositeStates } from "./helpers";
 import { Cell } from "@tanstack/react-table";
-import { Checkbox, Textarea } from "@nextui-org/react";
-import { Cities } from "@/lib/references";
+import { Textarea } from "@nextui-org/react";
+import { DriversWithCars } from "@/lib/references";
 
-type Type = CargoType["unloading_point"];
+type Type = CargoType["driver"];
 
 export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
   return (
-    <div>
-      <Cities
+    <div className="min-w-[15rem] flex flex-col justify-end h-full">
+      <DriversWithCars
         variant="underlined"
         aria-label="Driver Cities"
-        selectedKey={values.city}
+        selectedKey={values?.id}
         onSelectionChange={(e) => {
           setValues((prev) => ({
             ...prev,
-            city: e.toString(),
+            id: e ? e.toString() : "",
           }));
         }}
       />
-      <Checkbox
-        isSelected={values.withDelivery}
-        onSelect={() => {
-          setValues((prev) => ({
-            ...prev,
-            withDelivery: !prev.withDelivery,
-          }));
-        }}
-      >
-        С доставкой
-      </Checkbox>
-
-      <Textarea
-        variant="underlined"
-        aria-label="Driver Textarea"
-        value={values.deliveryAddress}
-        onChange={(e) => {
-          setValues((prev) => ({
-            ...prev,
-            deliveryAddress: e.target.value,
-          }));
-        }}
-      />
+      {values?.id == "24" && (
+        <Textarea
+          variant="underlined"
+          aria-label="Driver Textarea"
+          label="Сумма оплаты наемнику"
+          value={values?.value}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              value: e.target.value,
+            }));
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -7,6 +7,9 @@ type useLocalStorageProps<T> = {
 };
 
 declare global {
+  interface window {
+    localStorage: Storage;
+  }
   interface Window {
     Clerk: {
       session?: {
@@ -20,14 +23,14 @@ export function useLocalStorage<T>({
   initialData,
   identifier,
 }: useLocalStorageProps<T>) {
-  const [data, setData] = useState<T>(
-    (window.localStorage.getItem(identifier) as T) || initialData
-  );
+  const [data, setData] = useState<T>(initialData);
 
   useEffect(() => {
-    const item = window.localStorage.getItem(identifier);
-    if (item) {
-      setData(JSON.parse(item));
+    if (typeof window !== "undefined") {
+      const item = window.localStorage.getItem(identifier);
+      if (item) {
+        setData(JSON.parse(item));
+      }
     }
   }, [identifier]);
 

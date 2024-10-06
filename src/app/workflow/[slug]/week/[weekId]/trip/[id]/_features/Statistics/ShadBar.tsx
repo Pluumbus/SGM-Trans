@@ -21,7 +21,8 @@ import { motion } from "framer-motion";
 export const description = "A mixed bar chart";
 
 export function Chart({ cargos }) {
-  const mCargos = useMemo(() => cargos, [cargos]);
+  const mCargos = useMemo(() => cargos, [cargos.length]);
+
   const [chartData, setChartData] = useState([]);
   const [leadingManager, setLeadingManager] = useState([]);
 
@@ -73,24 +74,22 @@ export function Chart({ cargos }) {
 
   useEffect(() => {
     const fetch = async () => {
+      if (!mCargos || mCargos.length === 0) return;
       const data = await groupCargosByUser(mCargos);
       if (data) {
         const dataToSet = calculatePercentages(data);
-        const arr = dataToSet.map((e) => {
-          if (e.count == e.maxCount) {
-            return e.user;
-          }
-        });
+        const leadingManagers = dataToSet
+          .filter((e) => e.count === e.maxCount)
+          .map((e) => e.user);
 
-        setLeadingManager(arr);
+        setLeadingManager(leadingManagers);
         setChartData(dataToSet);
-        setColors(getRandomRainbowColors(dataToSet?.length));
+        setColors(getRandomRainbowColors(dataToSet.length));
       }
     };
-    if (mCargos) {
-      fetch();
-    }
-  }, [mCargos]);
+
+    fetch();
+  }, [mCargos.length]);
 
   return (
     <Card>
@@ -122,7 +121,7 @@ export function Chart({ cargos }) {
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Лидирует
-          <span>{leadingManager?.map((e) => <span>{e}</span>)}</span>
+          <span>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</span>
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">

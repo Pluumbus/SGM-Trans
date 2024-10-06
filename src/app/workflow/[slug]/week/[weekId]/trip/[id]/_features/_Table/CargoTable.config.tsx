@@ -8,6 +8,8 @@ import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox, Spinner } from "@nextui-org/react";
 import { useSelectionStore } from "../store";
+import { checkRole } from "@/components/roles/useRole";
+import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -79,7 +81,7 @@ export const getBaseColumnsConfig = () => {
       header: "Адрес получения",
       size: 30,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Text"} cl="min-w-[10rem]" />
       ),
       filter: false,
     },
@@ -125,7 +127,15 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-
+    {
+      accessorKey: "driver",
+      header: "Водитель",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField info={info} type={"Composite"} compositeType="driver" />
+      ),
+      filter: false,
+    },
     {
       accessorKey: "amount",
       header: "Сумма тг.",
@@ -144,6 +154,7 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
+
     {
       accessorKey: "comments",
       header: "Комментарии",
@@ -218,6 +229,39 @@ export const getBaseColumnsConfig = () => {
           </div>
         );
       },
+      filter: false,
+    },
+    {
+      accessorKey: "is_act_ready",
+      header: "Выдача талона",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="is_act_ready"
+        />
+      ),
+      // cell: (info: Cell<CargoType, ReactNode>) => {
+      //   const actVal = info.row.original.is_act_ready;
+      //   const actData: ActType = {
+      //     client_bin: info.row.original.client_bin,
+      //     cargo_name: info.row.original.cargo_name,
+      //     quantity: info.row.original.quantity.value,
+      //     amount: info.row.original.amount.value,
+      //     date: new Date().toLocaleDateString(),
+      //   };
+      //   return (
+      //     <div className="flex flex-col gap-2 w-[8rem]">
+      //       <div className="flex gap-2">
+      //         {checkRole(["Кассир", "Админ"]) && (
+      //           <EditField info={info} type={"Checkbox"} />
+      //         )}
+      //         {actVal && <PrintButton actData={actData} />}
+      //       </div>
+      //     </div>
+      //   );
+      // },
       filter: false,
     },
   ];

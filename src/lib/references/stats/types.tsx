@@ -1,6 +1,6 @@
 export type StatsUserList = {
   user_id: string;
-  amount: number[];
+  value: number[];
   userName: string;
   avatar: string;
   role: string;

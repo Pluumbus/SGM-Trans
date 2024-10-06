@@ -1,5 +1,5 @@
 "use server";
-import { UsersList } from "@/lib/references/roles/types";
+import { UsersList } from "@/lib/references/clerkUserType/types";
 import { User } from "@clerk/nextjs/server";
 import getClerkClient from "@/utils/clerk/clerk";
 
