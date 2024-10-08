@@ -30,8 +30,8 @@ export const getStatsUserList = async () => {
       const existingUser = userMap.get(user_id);
 
       if (existingUser!.value) {
-        existingUser!.value.push(amount.value);
-      } else existingUser!.value = [amount.value];
+        existingUser!.value.push(Number((amount.value as string).replace(/[\s,]/g, '')));
+      } else existingUser!.value = [Number((amount.value as string).replace(/[\s,]/g, ''))];
 
       if (existingUser!.created_at)
         existingUser!.created_at.push(new Date(created_at).toISOString());
