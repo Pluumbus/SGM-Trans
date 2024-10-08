@@ -16,11 +16,12 @@ import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 
-import { motion } from "framer-motion";
+import { color, motion } from "framer-motion";
+import { CargoType } from "@/app/workflow/_feature/types";
 
 export const description = "A mixed bar chart";
 
-export function Chart({ cargos }) {
+export function Chart({ cargos }: { cargos: CargoType[] }) {
   const mCargos = useMemo(() => cargos, [cargos.length]);
 
   const [chartData, setChartData] = useState([]);
@@ -91,6 +92,19 @@ export function Chart({ cargos }) {
     fetch();
   }, [mCargos.length]);
 
+  const totalWeight = mCargos.reduce(
+    (sum, cargo) => sum + parseFloat(cargo.weight),
+    0
+  );
+  const totalVolume = mCargos.reduce(
+    (sum, cargo) => sum + parseFloat(cargo.volume),
+    0
+  );
+  const totalSumm = mCargos.reduce(
+    (sum, cargo) => sum + parseFloat(cargo.amount.value),
+    0
+  );
+  const classColorWeight = `${"text-color"} `;
   return (
     <Card>
       <CardHeader>
@@ -100,22 +114,47 @@ export function Chart({ cargos }) {
         {isPending ? (
           <Spinner />
         ) : (
-          <Tabs aria-label="Tabs radius">
-            <Tab key="Stat1" title="Первый вариант">
-              <CustomBar
-                data={chartData}
-                cargoCount={cargos.length}
-                colors={colors}
-              />
-            </Tab>
-            <Tab key="Stat2" title="Второй вариант">
-              <CustomSingleBar
-                data={chartData}
-                cargoCount={cargos.length}
-                colors={colors}
-              />
-            </Tab>
-          </Tabs>
+          <>
+            <Card className="mb-3">
+              <CardBody>
+                <div className="flex justify-around">
+                  <span>
+                    Общий вес:{" "}
+                    <b
+                      className={`${totalWeight <= 11 ? "text-green-500" : totalWeight <= 19.9 ? "text-yellow-400" : totalWeight >= 20 && "text-red-500"}`}
+                    >
+                      {totalWeight}/22
+                    </b>{" "}
+                    тонн
+                  </span>
+                  <span>
+                    Общий объем:{" "}
+                    <b
+                      className={`${totalVolume <= 47 ? "text-green-500" : totalVolume <= 79 ? "text-yellow-400" : totalVolume >= 80 && "text-red-500"}`}
+                    >
+                      {totalVolume}/92
+                    </b>{" "}
+                    м.куб.
+                  </span>
+                  <span>
+                    Сумма:{" "}
+                    <b
+                      className={`${totalSumm < 2500000 ? "text-red-500" : "text-green-500"}`}
+                    >
+                      {totalSumm}
+                    </b>{" "}
+                    тг
+                  </span>
+                </div>
+              </CardBody>
+            </Card>
+
+            <CustomBar
+              data={chartData}
+              cargoCount={cargos.length}
+              colors={colors}
+            />
+          </>
         )}
       </CardBody>
       <CardFooter className="flex-col items-start gap-2 text-sm">
@@ -186,64 +225,64 @@ const CustomBar = ({
   );
 };
 
-const CustomSingleBar = ({
-  data,
-  cargoCount,
-  colors,
-}: {
-  data: {
-    user: string;
-    count: number;
-    percentageOfAll: number;
-    percentage: number;
-  }[];
-  cargoCount: number;
-  colors: any[];
-}) => {
-  const [state, setState] = useState(data);
-  useEffect(() => {
-    if (data) {
-      setState(data);
-    }
-  }, [data]);
+// const CustomSingleBar = ({
+//   data,
+//   cargoCount,
+//   colors,
+// }: {
+//   data: {
+//     user: string;
+//     count: number;
+//     percentageOfAll: number;
+//     percentage: number;
+//   }[];
+//   cargoCount: number;
+//   colors: any[];
+// }) => {
+//   const [state, setState] = useState(data);
+//   useEffect(() => {
+//     if (data) {
+//       setState(data);
+//     }
+//   }, [data]);
 
-  return (
-    <Card className="flex flex-col gap-2 w-full">
-      <CardHeader>
-        <span>Всего грузов: {cargoCount}</span>
-      </CardHeader>
-      <CardBody className="flex h-full w-full">
-        <div className="min-h-[3rem] w-full flex gap-1">
-          {state.map((e, i) => (
-            <Tooltip
-              content={
-                <div>
-                  {e.user}: {e.count} {spellRussianWord(e.count, "груз")}
-                </div>
-              }
-            >
-              <motion.div
-                initial={{
-                  width: `${i == 0 ? 0 : state[i - 1].percentageOfAll}%`,
-                  height: "100%",
-                }}
-                animate={{ width: `${e.percentageOfAll}%` }}
-                transition={{
-                  duration: 0.75,
-                  ease: "easeInOut",
-                }}
-                style={{
-                  backgroundColor: colors[i],
-                }}
-                className="min-h-[3rem] h-full rounded-[0.75rem]"
-              />
-            </Tooltip>
-          ))}
-        </div>
-      </CardBody>
-    </Card>
-  );
-};
+//   return (
+//     <Card className="flex flex-col gap-2 w-full">
+//       <CardHeader>
+//         <span>Всего грузов: {cargoCount}</span>
+//       </CardHeader>
+//       <CardBody className="flex h-full w-full">
+//         <div className="min-h-[3rem] w-full flex gap-1">
+//           {state.map((e, i) => (
+//             <Tooltip
+//               content={
+//                 <div>
+//                   {e.user}: {e.count} {spellRussianWord(e.count, "груз")}
+//                 </div>
+//               }
+//             >
+//               <motion.div
+//                 initial={{
+//                   width: `${i == 0 ? 0 : state[i - 1].percentageOfAll}%`,
+//                   height: "100%",
+//                 }}
+//                 animate={{ width: `${e.percentageOfAll}%` }}
+//                 transition={{
+//                   duration: 0.75,
+//                   ease: "easeInOut",
+//                 }}
+//                 style={{
+//                   backgroundColor: colors[i],
+//                 }}
+//                 className="min-h-[3rem] h-full rounded-[0.75rem]"
+//               />
+//             </Tooltip>
+//           ))}
+//         </div>
+//       </CardBody>
+//     </Card>
+//   );
+// };
 
 export const spellRussianWord = (i, e) => {
   switch (i) {
