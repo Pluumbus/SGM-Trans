@@ -4,6 +4,7 @@ import getSupabaseServer from "@/utils/supabase/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { CargoType, WeekType } from "@/app/workflow/_feature/types";
+import { WeekTableType } from "../types";
 
 export const getUserById = async (userId: string) => {
   const user = await clerkClient.users.getUser(userId);
@@ -60,13 +61,14 @@ export const getTripsByWeekId = async (
   return data as (TripType & { weeks: WeekType })[];
 };
 
-export const getWeeks = async (): Promise<
-  (WeekType & { trips: TripType[] })[]
-> => {
+export const getWeeks = async (
+  type: WeekTableType = "ru"
+): Promise<(WeekType & { trips: TripType[] })[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("weeks")
-    .select("*, trips(*)");
+    .select("*, trips(*)")
+    .eq("table_type", type);
 
   if (error) {
     throw new Error(error.message);

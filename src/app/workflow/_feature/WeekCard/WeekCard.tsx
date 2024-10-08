@@ -20,28 +20,49 @@ import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
-import { getJustWeeks, getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
 import { TripType } from "../TripCard/TripCard";
+import { useParams } from "next/navigation";
+import { WeekTableType } from "../../[slug]/week/[weekId]/trip/types";
 
 export const WeekCard = () => {
+  const { slug } = useParams();
+
   const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
-    queryKey: ["weeks"],
-    queryFn: async () => await getWeeks(),
+    queryKey: [`weeks-${slug}`],
+    queryFn: async () => await getWeeks(slug as WeekTableType),
   });
 
-  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>([]);
+  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>(
+    dataWeeks || []
+  );
+
+  useEffect(() => {
+    if (dataWeeks) {
+      setWeeks(dataWeeks);
+      console.log("dataWeeks", dataWeeks);
+      console.log("weeks", weeks);
+    }
+  }, [dataWeeks]);
 
   useEffect(() => {
     const cn = supabase
       .channel("view-weeks")
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "weeks" },
+        {
+          event: "*",
+          schema: "public",
+          table: "weeks",
+          filter: `table_type=eq.${slug}`,
+        },
         (payload) => {
           setWeeks((prev) => [
             ...prev,
             payload.new as WeekType & { trips: TripType[] },
           ]);
+          console.log("dataWeeks", dataWeeks);
+          console.log("weeks", weeks);
         }
       )
       .subscribe();
@@ -50,12 +71,6 @@ export const WeekCard = () => {
       cn.unsubscribe();
     };
   }, []);
-
-  useEffect(() => {
-    if (dataWeeks) {
-      setWeeks(dataWeeks);
-    }
-  }, [dataWeeks]);
 
   if (isLoadingWeeks) {
     return <Spinner />;
@@ -85,24 +100,27 @@ export const WeekCard = () => {
 
 const CreateTripInsideWeek = ({ week }) => {
   const { toast } = useToast();
+  const { slug } = useParams();
+  const isMSK = slug == "ru";
   const { isOpen: isOpenTrip, onOpenChange: onOpenChangeTrip } =
     useDisclosure();
+  const initData = {
+    city_from: isMSK ? "Москва" : "",
+    city_to: [""],
+    driver: "",
+  };
 
   const [formState, setFormState] = useState<{
     city_from: any;
-    city_to: any;
+    city_to: string[];
     driver: any;
-  }>({
-    city_from: "",
-    city_to: "",
-    driver: "",
-  });
+  }>(initData);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
       await supabase.from("trips").insert({
         city_from: formState.city_from,
-        city_to: formState.city_to,
+        city_to: formState.city_to.filter((city) => city !== ""),
         driver: formState.driver,
         week_id: week.id,
       });
@@ -113,6 +131,7 @@ const CreateTripInsideWeek = ({ week }) => {
         description: "Вы успешно создали путь",
       });
       onOpenChangeTrip();
+      setFormState(initData);
     },
     onError: () => {
       toast({
@@ -125,6 +144,20 @@ const CreateTripInsideWeek = ({ week }) => {
   const onSubmit = (e) => {
     e.preventDefault();
     mutate();
+  };
+
+  const handleCityToChange = (index, newCity) => {
+    const updatedCityTo = [...formState.city_to];
+    updatedCityTo[index] = newCity;
+
+    if (index === updatedCityTo.length - 1 && newCity !== "") {
+      updatedCityTo.push("");
+    }
+
+    setFormState((prev) => ({
+      ...prev,
+      city_to: updatedCityTo,
+    }));
   };
 
   return (
@@ -142,42 +175,38 @@ const CreateTripInsideWeek = ({ week }) => {
           <form onSubmit={onSubmit}>
             <ModalHeader>Добавить путь</ModalHeader>
             <Divider />
-            <ModalBody>
-              <div className="flex gap-4">
-                <Drivers
-                  selectedKey={formState.driver}
-                  onSelectionChange={(e) => {
-                    console.log(e);
+            <ModalBody className="grid grid-cols-2 gap-2">
+              <Drivers
+                selectedKey={formState.driver}
+                onSelectionChange={(e) => {
+                  console.log(e);
 
-                    setFormState((prev) => ({
-                      ...prev,
-                      driver: e,
-                    }));
-                  }}
-                />
+                  setFormState((prev) => ({
+                    ...prev,
+                    driver: e,
+                  }));
+                }}
+              />
+              <Cities
+                label="Город отправитель"
+                selectedKey={formState.city_from}
+                isReadOnly={isMSK}
+                onSelectionChange={(e) => {
+                  setFormState((prev) => ({
+                    ...prev,
+                    city_from: e,
+                  }));
+                }}
+              />
 
+              {formState.city_to.map((city, index) => (
                 <Cities
-                  label="Город получатель"
-                  selectedKey={formState.city_to}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      city_to: e,
-                    }));
-                  }}
+                  key={index}
+                  label={`Город получатель ${index + 1}`}
+                  selectedKey={city}
+                  onSelectionChange={(e) => handleCityToChange(index, e)}
                 />
-
-                <Cities
-                  label="Город отправитель"
-                  selectedKey={formState.city_from}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      city_from: e,
-                    }));
-                  }}
-                />
-              </div>
+              ))}
             </ModalBody>
             <Divider />
             <ModalFooter>

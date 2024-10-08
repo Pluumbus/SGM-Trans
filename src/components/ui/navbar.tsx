@@ -9,6 +9,7 @@ import React from "react";
 import { useRole } from "../roles/useRole";
 import RoleBasedWrapper from "../roles/RoleBasedWrapper";
 
+// Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
   const userRole = useRole();
   return (
@@ -20,16 +21,16 @@ const Navbar = () => {
         {userRole != "Пользователь" && (
           <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
             <Link
-              href="/workflow/kz"
-              className="mr-5 cursor-pointer hover:text-gray-900"
-            >
-              Таблица Казахстан
-            </Link>
-            <Link
               href="/workflow/ru"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Таблица Москва
+            </Link>
+            <Link
+              href="/workflow/kz"
+              className="mr-5 cursor-pointer hover:text-gray-900"
+            >
+              Таблица Казахстан
             </Link>
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
