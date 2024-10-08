@@ -20,14 +20,7 @@ const GlobalWareHouseManagerSchema = () => {
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
 const CashierSchema = () => {
-  const excl = [
-    "created_at",
-    "weight",
-    "volume",
-    "is_unpalletizing",
-    "comments",
-    "status",
-  ];
+  const excl = [""];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
 export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {

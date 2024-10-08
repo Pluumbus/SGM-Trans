@@ -270,7 +270,7 @@ const TripInfoCard = ({
             onInputChange={handleSetStatus}
             inputValue={statusVal}
           >
-            {["Выбрать дату", "В пути", "Машина заполнена"].map(
+            {["Выбрать дату", "В пути" ].map(
               (stat: string) => (
                 <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
               )

@@ -36,7 +36,7 @@ export function DataTable() {
     queryFn: async () => await getStatsUserList(),
   });
   const [filteredData, setFilteredData] = useState<StatsUserList[]>(
-    isFetched && data
+    []
   );
   const [dateVal, setDateVal] = useState({
     start: parseDate(
@@ -64,6 +64,7 @@ export function DataTable() {
     },
   });
   const handleSetTimeRangeFilter = () => {
+    console.log(filteredData)
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,
@@ -74,37 +75,42 @@ export function DataTable() {
       dateVal.end.month - 1,
       dateVal.end.day + 1
     ).toISOString();
-    if (isFetched) {
-      let bidSumArr = [];
+
       const sumAmountsForDateRange = (user: StatsUserList) => {
-        return user.created_at.reduce((total, date, index) => {
+        let bidSumArr = [];
+        let total = 0;
+      
+        total = user.created_at.reduce((sum, date, index) => {
           if (isWithinInterval(date, { start: startDate, end: endDate })) {
             bidSumArr.push(user.value[index]);
-            return total + Number(user.value[index]);
+            return sum + Number(user.value[index]);
           }
-
-          return total;
+          return sum;
         }, 0);
+      
+        return { total, bidSumArr };
       };
+
       const filtered = data
         .map((user) => {
-          const totalAmountInRange = sumAmountsForDateRange(user);
-          const totalBidsInRange = bidSumArr.length - 1;
+          const { total, bidSumArr } = sumAmountsForDateRange(user); 
+          const totalBidsInRange = bidSumArr.length;
           const bidSum = user.value.length;
-          return { ...user, totalAmountInRange, totalBidsInRange, bidSum };
+          
+          return { ...user, totalAmountInRange: total, totalBidsInRange, bidSum };
         })
-        .filter((user) => user.totalAmountInRange > 0);
+        .filter((user) => 
+        
+          user.totalAmountInRange > 0
+        );
       setFilteredData(filtered);
     }
-  };
 
   useEffect(() => {
-    if (isFetched) {
-      setFilteredData(data);
+    if (isFetched && data) {
+      handleSetTimeRangeFilter();
     }
-    handleSetTimeRangeFilter();
-  }, [dateVal, data]);
-
+  }, [dateVal, data, isFetched]);
   if (isLoading) {
     return (
       <div className="flex justify-center mt-60">
