@@ -30,7 +30,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   const { user } = useUser();
   const { onOpenChange, isOpen } = useDisclosure();
-  const initText = `Одобрить выдачу груза?`;
+  const initText = `Одобрить`;
   const [givingActText, setGivingActText] = useState<string>(initText);
 
   const { mutate, isPending } = useMutation({
@@ -38,7 +38,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     mutationFn: async () => await getUserById(values?.user_id),
     onSuccess: (res) => {
       if (values.value) {
-        setGivingActText(`Одобрил: ${res.firstName} ${res.lastName}`);
+        setGivingActText(`Одобрил: ${res.firstName}`);
       } else {
         setGivingActText(initText);
       }
