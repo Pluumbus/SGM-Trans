@@ -192,32 +192,7 @@ export const CargoModal = ({
                   </div>
                 )}
               />
-              <div className="col-span-2">
-                <Controller
-                  control={control}
-                  name="driver"
-                  render={({ field }) => (
-                    <div className="flex gap-2">
-                      <DriversWithCars
-                        selectedKey={field.value?.id}
-                        label="Выберите водителя"
-                        onSelectionChange={(e) => {
-                          setValue("driver.id", e);
-                        }}
-                      />
-                      {driverID == "24" && (
-                        <Input
-                          value={field.value?.value}
-                          label="Сумма оплаты наемнику"
-                          onChange={(e) => {
-                            setValue("driver.value", e.target.value);
-                          }}
-                        />
-                      )}
-                    </div>
-                  )}
-                />
-              </div>
+
               <Controller
                 control={control}
                 name="amount"

@@ -11,23 +11,22 @@ import {
   Autocomplete,
   AutocompleteItem,
 } from "@nextui-org/react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
+import { getAllCargos } from "../../../_api";
+import { useSelectionStore } from "../store";
+import { COLORS } from "@/lib/colors";
 
 export const UpdateTripNumber = ({
-  cargos,
+  currentTripId,
   trips,
-  selectedRows,
 }: {
-  cargos: CargoType[];
+  currentTripId: number;
   trips: TripType[];
-  selectedRows: {
-    number: number;
-    isSelected: boolean;
-  }[];
 }) => {
+  const { rowSelected: selectedRows, setRowSelected } = useSelectionStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
     {
@@ -35,16 +34,22 @@ export const UpdateTripNumber = ({
       isSelected: boolean;
     }[]
   >([]);
-
+  const [cargos, setCargos] = useState<CargoType[]>();
   const [selectedTrip, setSelectedTrip] = useState();
 
   const { toast } = useToast();
 
+  const { data, isFetched, isLoading } = useQuery({
+    queryKey: ["getAllCargos"],
+    queryFn: async () => await getAllCargos(),
+  });
+
   useEffect(() => {
-    if (selectedRows) {
+    if (selectedRows && data) {
       setSelectedCargos(selectedRows.filter((e) => e.isSelected));
+      setCargos(data);
     }
-  }, [selectedRows]);
+  }, [selectedRows, data]);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -58,6 +63,7 @@ export const UpdateTripNumber = ({
         title: "Успех",
         description: `Вы успешно перенесли груз(ы) в ${selectedTrip} рейс`,
       });
+      setRowSelected([]);
     },
     onError: () => {
       toast({
@@ -66,6 +72,47 @@ export const UpdateTripNumber = ({
       });
     },
   });
+  const sumCargosColorForTrip = (trip: TripType, isText: boolean) => {
+    const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
+    const totalWeight = sorted?.reduce(
+      (sum, cargo) => sum + parseFloat(cargo.weight),
+      0
+    );
+    const totalVolume = sorted?.reduce(
+      (sum, cargo) => sum + parseFloat(cargo.volume),
+      0
+    );
+
+    const weightCalc =
+      totalWeight <= 11
+        ? 1
+        : totalWeight <= 19.9
+          ? 2
+          : totalWeight <= 22
+            ? 3
+            : 10;
+
+    const volumeCalc =
+      totalVolume <= 47
+        ? 1
+        : totalVolume <= 79
+          ? 2
+          : totalVolume <= 92
+            ? 3
+            : 10;
+
+    if (isText) {
+      return weightCalc + volumeCalc > 6 ? <b>ПЕРЕПОЛНЕН</b> : <></>;
+    }
+
+    return weightCalc + volumeCalc <= 2
+      ? `${COLORS.green}`
+      : weightCalc + volumeCalc <= 4
+        ? `${COLORS.yellow}`
+        : weightCalc + volumeCalc <= 6
+          ? `${COLORS.orange}`
+          : `${COLORS.red}`;
+  };
 
   return (
     <div className="mt-4">
@@ -85,8 +132,12 @@ export const UpdateTripNumber = ({
                 <div className="flex gap-2">
                   Перенести грузы:
                   {selectedCargos.map((cargo, index) => (
-                    <span key={index}>{cargo.number}</span>
+                    <span key={index}>
+                      {cargo.number}
+                      {index < selectedCargos.length - 1 ? "," : ""}
+                    </span>
                   ))}
+                  из {currentTripId}
                 </div>
               </ModalHeader>
               <ModalBody>
@@ -97,15 +148,19 @@ export const UpdateTripNumber = ({
                     setSelectedTrip(e);
                   }}
                 >
-                  {trips.map((e) => (
-                    <AutocompleteItem
-                      key={e.id}
-                      textValue={`${e.driver} | ${e.id}`}
-                      value={e.id}
-                    >
-                      {`${e.driver} | ${e.id} рейс`}
-                    </AutocompleteItem>
-                  ))}
+                  {trips
+                    .filter((trip) => trip.id !== currentTripId)
+                    .map((e) => (
+                      <AutocompleteItem
+                        key={e.id}
+                        textValue={`${e.driver} | ${e.id}`}
+                        value={e.id}
+                        className={`${sumCargosColorForTrip(e, false)}`}
+                      >
+                        {`${e.driver} | ${e.id} рейс`}{" "}
+                        {sumCargosColorForTrip(e, true)}
+                      </AutocompleteItem>
+                    ))}
                 </Autocomplete>
               </ModalBody>
               <ModalFooter>

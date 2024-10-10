@@ -13,34 +13,51 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
 import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
-import { getJustWeeks, getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
+import { useParams } from "next/navigation";
+import { WeekTableType } from "../../[slug]/week/[weekId]/trip/types";
+import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
 
 export const WeekCard = () => {
-  const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
-    queryKey: ["weeks"],
-    queryFn: async () => await getWeeks(),
-  });
+  const { slug } = useParams();
 
   const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>([]);
 
+  const { mutate, isPending } = useMutation({
+    mutationKey: [`weeks-${slug}`],
+    mutationFn: async () => await getWeeks(slug as WeekTableType),
+    onSuccess: (data) => {
+      setWeeks(data);
+    },
+  });
+
+  useEffect(() => {
+    mutate();
+  }, []);
+
   useEffect(() => {
     const cn = supabase
-      .channel("view-weeks")
+      .channel(`view-weeks-${slug}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "weeks" },
+        {
+          event: "*",
+          schema: "public",
+          table: "weeks",
+          filter: `table_type=eq.${slug}`,
+        },
         (payload) => {
           setWeeks((prev) => [
             ...prev,
-            payload.new as WeekType & { trips: TripType[] },
+            { ...payload.new, trips: [] } as WeekType & { trips: TripType[] },
           ]);
         }
       )
@@ -51,13 +68,7 @@ export const WeekCard = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (dataWeeks) {
-      setWeeks(dataWeeks);
-    }
-  }, [dataWeeks]);
-
-  if (isLoadingWeeks) {
+  if (isPending) {
     return <Spinner />;
   }
 
@@ -73,8 +84,8 @@ export const WeekCard = () => {
               title={`Неделя ${week.week_number}`}
               subtitle={<SummaryOfTrip week={week} />}
             >
-              <CreateTripInsideWeek week={week} />
-              <TripCard weekId={week.id.toString()} />
+              <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
+              <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
             </AccordionItem>
           ))}
         </Accordion>
@@ -83,28 +94,37 @@ export const WeekCard = () => {
   );
 };
 
-const CreateTripInsideWeek = ({ week }) => {
+export const CreateTripInsideWeek = ({
+  weekId,
+  inTrip = false,
+}: {
+  weekId: string;
+  inTrip?: boolean;
+}) => {
   const { toast } = useToast();
+  const { slug } = useParams();
+  const isMSK = slug == "ru";
   const { isOpen: isOpenTrip, onOpenChange: onOpenChangeTrip } =
     useDisclosure();
+  const initData = {
+    city_from: isMSK ? ["Москва"] : [""],
+    city_to: isMSK ? [""] : ["Москва"],
+    driver: "",
+  };
 
   const [formState, setFormState] = useState<{
     city_from: any;
-    city_to: any;
+    city_to: string[];
     driver: any;
-  }>({
-    city_from: "",
-    city_to: "",
-    driver: "",
-  });
+  }>(initData);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
       await supabase.from("trips").insert({
         city_from: formState.city_from,
-        city_to: formState.city_to,
+        city_to: formState.city_to.filter((city) => city !== ""),
         driver: formState.driver,
-        week_id: week.id,
+        week_id: weekId,
       });
     },
     onSuccess: () => {
@@ -113,6 +133,7 @@ const CreateTripInsideWeek = ({ week }) => {
         description: "Вы успешно создали путь",
       });
       onOpenChangeTrip();
+      setFormState(initData);
     },
     onError: () => {
       toast({
@@ -127,57 +148,91 @@ const CreateTripInsideWeek = ({ week }) => {
     mutate();
   };
 
+  const handleCityToChange = (index, newCity, isCityTo = true) => {
+    const updatedCityTo = isCityTo
+      ? [...formState.city_to]
+      : [...formState.city_from];
+
+    updatedCityTo[index] = newCity;
+
+    if (index === updatedCityTo.length - 1 && newCity !== "") {
+      updatedCityTo.push("");
+    }
+
+    switch (isCityTo) {
+      case true:
+        setFormState((prev) => ({
+          ...prev,
+          city_to: updatedCityTo,
+        }));
+        break;
+      case false:
+        setFormState((prev) => ({
+          ...prev,
+          city_from: updatedCityTo,
+        }));
+      default:
+        break;
+    }
+  };
+
   return (
     <div>
-      <Button
-        onClick={() => {
-          onOpenChangeTrip();
-        }}
-      >
-        Добавить путь
-      </Button>
+      {inTrip ? (
+        <Button className="h-20" variant="light" isIconOnly>
+          <FiPlus
+            size={35}
+            onClick={() => {
+              onOpenChangeTrip();
+            }}
+          />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            onOpenChangeTrip();
+          }}
+        >
+          Добавить путь
+        </Button>
+      )}
 
       <Modal isOpen={isOpenTrip} onOpenChange={onOpenChangeTrip} size="2xl">
         <ModalContent>
           <form onSubmit={onSubmit}>
             <ModalHeader>Добавить путь</ModalHeader>
             <Divider />
-            <ModalBody>
-              <div className="flex gap-4">
-                <Drivers
-                  selectedKey={formState.driver}
-                  onSelectionChange={(e) => {
-                    console.log(e);
+            <ModalBody className="grid grid-cols-2 gap-2">
+              <Drivers
+                selectedKey={formState.driver}
+                onSelectionChange={(e) => {
+                  console.log(e);
 
-                    setFormState((prev) => ({
-                      ...prev,
-                      driver: e,
-                    }));
-                  }}
-                />
-
+                  setFormState((prev) => ({
+                    ...prev,
+                    driver: e,
+                  }));
+                }}
+              />
+              {formState.city_from.map((city, index) => (
                 <Cities
-                  label="Город получатель"
-                  selectedKey={formState.city_to}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      city_to: e,
-                    }));
-                  }}
+                  key={index + 2}
+                  label={`Город отправитель ${index + 1}`}
+                  selectedKey={city}
+                  isReadOnly={isMSK}
+                  onSelectionChange={(e) => handleCityToChange(index, e, false)}
                 />
+              ))}
 
+              {formState.city_to.map((city, index) => (
                 <Cities
-                  label="Город отправитель"
-                  selectedKey={formState.city_from}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      city_from: e,
-                    }));
-                  }}
+                  key={index + 1}
+                  isReadOnly={!isMSK}
+                  label={`Город получатель ${index + 1}`}
+                  selectedKey={city}
+                  onSelectionChange={(e) => handleCityToChange(index, e)}
                 />
-              </div>
+              ))}
             </ModalBody>
             <Divider />
             <ModalFooter>

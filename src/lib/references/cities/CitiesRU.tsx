@@ -2,7 +2,7 @@
 
 import React from "react";
 import { Autocomplete, AutocompleteItem, Spinner } from "@nextui-org/react";
-import { citiesRu } from "./citiesDictionary";
+import { citiesRu } from "./citiesRef";
 
 export const CitiesRU = () => {
   return (

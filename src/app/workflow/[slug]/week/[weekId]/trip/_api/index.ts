@@ -4,6 +4,7 @@ import getSupabaseServer from "@/utils/supabase/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { CargoType, WeekType } from "@/app/workflow/_feature/types";
+import { TripAndWeeksIdType, WeekTableType } from "../types";
 
 export const getUserById = async (userId: string) => {
   const user = await clerkClient.users.getUser(userId);
@@ -20,6 +21,17 @@ export const getCargos = async (trip_id: string): Promise<CargoType[]> => {
     .from("cargos")
     .select("*")
     .eq("trip_id", trip_id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as CargoType[];
+};
+
+export const getAllCargos = async (): Promise<CargoType[]> => {
+  const server = getSupabaseServer();
+  const { data, error } = await (await server).from("cargos").select("*");
 
   if (error) {
     throw new Error(error.message);
@@ -46,7 +58,7 @@ export const getCargosByTripId = async (
 
 export const getTripsByWeekId = async (
   weekId: string
-): Promise<(TripType & { weeks: WeekType })[]> => {
+): Promise<TripAndWeeksIdType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("trips")
@@ -57,16 +69,17 @@ export const getTripsByWeekId = async (
     throw new Error(error.message);
   }
 
-  return data as (TripType & { weeks: WeekType })[];
+  return data as TripAndWeeksIdType[];
 };
 
-export const getWeeks = async (): Promise<
-  (WeekType & { trips: TripType[] })[]
-> => {
+export const getWeeks = async (
+  type: WeekTableType = "ru"
+): Promise<(WeekType & { trips: TripType[] })[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("weeks")
-    .select("*, trips(*)");
+    .select("*, trips(*)")
+    .eq("table_type", type);
 
   if (error) {
     throw new Error(error.message);
@@ -85,3 +98,5 @@ export const getJustWeeks = async () => {
 
   return data as WeekType[];
 };
+
+// export const getTripStatus

@@ -1,6 +1,5 @@
 import { useUser } from "@clerk/nextjs";
 
-
 export type Role = (typeof roleNamesList)[number] | "Пользователь";
 
 export function useRole(): Role {
@@ -13,8 +12,7 @@ export function useRole(): Role {
   return (user.publicMetadata?.role as Role) || "Пользователь";
 }
 
-
-export const checkRole =  (allowedRoles: string[]) => {
+export const useCheckRole = (allowedRoles: string[]) => {
   const { user, isLoaded } = useUser();
 
   if (isLoaded && !user) {
@@ -24,7 +22,6 @@ export const checkRole =  (allowedRoles: string[]) => {
 
   return allowedRoles.includes(userRole);
 };
-
 
 export const roleNamesList = [
   "Админ",

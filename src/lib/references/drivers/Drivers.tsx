@@ -19,22 +19,14 @@ export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
     enabled: !!isSignedIn,
   });
 
-  if (isLoading || !data?.data) {
-    return (
-      <div className="flex justify-center mt-60">
-        <Spinner />
-      </div>
-    );
-  }
-
   return (
     <div className="max-w-80">
-      <Autocomplete label="Выберите водителя" {...props}>
+      <Autocomplete label="Выберите водителя" {...props} isLoading={isLoading}>
         {data?.data?.map((e, i) => (
           <AutocompleteItem key={e.name} value={e.name} textValue={`${e.name}`}>
             {e.name}
           </AutocompleteItem>
-        )) || <Spinner />}
+        ))}
       </Autocomplete>
     </div>
   );

@@ -31,7 +31,7 @@ export const getBaseTripColumnsConfig = () => {
       filter: false,
     },
     {
-      accessorKey: "city_to",
+      accessorKey: "city_from",
       header: "Город отправитель",
       size: 20,
       cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
@@ -41,7 +41,7 @@ export const getBaseTripColumnsConfig = () => {
     },
 
     {
-      accessorKey: "city_from",
+      accessorKey: "city_to",
       header: "Город получатель",
       size: 20,
       cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
@@ -72,8 +72,9 @@ const CreateCargo = ({
   const { isOpen: isOpenCargo, onOpenChange: onOpenChangeCargo } =
     useDisclosure();
   return (
-    <div>
+    <div className="flex items-center w-full h-full py-1">
       <Button
+        variant="ghost"
         onClick={() => {
           onOpenChangeCargo();
         }}

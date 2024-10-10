@@ -18,7 +18,6 @@ import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
-
 export const TripTab = ({
   currentTrip,
   trips,
@@ -52,12 +51,14 @@ export const TripTab = ({
 
   useEffect(() => {
     if (data) {
+      setRowSelected(
+        data.map((e) => ({
+          number: e.id,
+          isSelected: false,
+        }))
+      );
+
       setCargos(filterBy());
-      const res = data.map((e) => ({
-        number: e.id,
-        isSelected: false,
-      }));
-      setRowSelected(res);
     }
   }, [data, isOnlyMycargos]);
 
@@ -116,15 +117,11 @@ export const TripTab = ({
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber
-          cargos={cargos}
-          trips={trips}
-          selectedRows={rowSelected}
-        />
+        <UpdateTripNumber currentTripId={currentTrip.id} trips={trips} />
       )}
 
       <div className="mb-8"></div>
-      <BarGraph cargos={cargos} currentTrip={currentTrip.id} />
+      <BarGraph cargos={cargos} />
       <div className="mb-8"></div>
     </>
   );

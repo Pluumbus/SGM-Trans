@@ -8,7 +8,6 @@ import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox, Spinner } from "@nextui-org/react";
 import { useSelectionStore } from "../store";
-import { checkRole } from "@/components/roles/useRole";
 import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
 
 export const getBaseColumnsConfig = () => {
@@ -26,7 +25,8 @@ export const getBaseColumnsConfig = () => {
                   ...item,
                   isSelected: true,
                 }));
-                console.log("isSelected: header: ", rowSelected);
+
+                console.log("updatedSelection", updatedSelection);
 
                 setRowSelected(updatedSelection);
               }}
@@ -46,18 +46,34 @@ export const getBaseColumnsConfig = () => {
                 ?.isSelected
             }
             onChange={() => {
+              console.log("rowSelected", rowSelected);
+
               const updatedSelection = rowSelected?.map((item, index) => {
                 if (index === info.row.index) {
                   return { ...item, isSelected: !item.isSelected };
                 }
                 return item;
               });
-              console.log("isSelected: cell: ", rowSelected);
+
               setRowSelected(updatedSelection);
             }}
           />
         );
       },
+    },
+    {
+      accessorKey: "is_act_ready",
+      header: "Выдача талона",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="is_act_ready"
+        />
+      ),
+
+      filter: false,
     },
     {
       accessorKey: "id",
@@ -208,7 +224,9 @@ export const getBaseColumnsConfig = () => {
       header: "Статус",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Composite"} compositeType="status" />
+        <div className="py-1">
+          <EditField info={info} type={"Composite"} compositeType="status" />
+        </div>
       ),
       filter: false,
     },
@@ -231,39 +249,6 @@ export const getBaseColumnsConfig = () => {
           </div>
         );
       },
-      filter: false,
-    },
-    {
-      accessorKey: "is_act_ready",
-      header: "Выдача талона",
-      size: 15,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField
-          info={info}
-          type={"Composite"}
-          compositeType="is_act_ready"
-        />
-      ),
-      // cell: (info: Cell<CargoType, ReactNode>) => {
-      //   const actVal = info.row.original.is_act_ready;
-      //   const actData: ActType = {
-      //     client_bin: info.row.original.client_bin,
-      //     cargo_name: info.row.original.cargo_name,
-      //     quantity: info.row.original.quantity.value,
-      //     amount: info.row.original.amount.value,
-      //     date: new Date().toLocaleDateString(),
-      //   };
-      //   return (
-      //     <div className="flex flex-col gap-2 w-[8rem]">
-      //       <div className="flex gap-2">
-      //         {checkRole(["Кассир", "Админ"]) && (
-      //           <EditField info={info} type={"Checkbox"} />
-      //         )}
-      //         {actVal && <PrintButton actData={actData} />}
-      //       </div>
-      //     </div>
-      //   );
-      // },
       filter: false,
     },
   ];
