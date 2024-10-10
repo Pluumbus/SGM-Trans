@@ -62,6 +62,20 @@ export const getBaseColumnsConfig = () => {
       },
     },
     {
+      accessorKey: "is_act_ready",
+      header: "Выдача талона",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="is_act_ready"
+        />
+      ),
+
+      filter: false,
+    },
+    {
       accessorKey: "id",
       header: "ID",
       size: 10,
@@ -237,20 +251,6 @@ export const getBaseColumnsConfig = () => {
       },
       filter: false,
     },
-    // {
-    //   accessorKey: "is_act_ready",
-    //   header: "Выдача талона",
-    //   size: 15,
-    //   cell: (info: Cell<CargoType, ReactNode>) => (
-    //     <EditField
-    //       info={info}
-    //       type={"Composite"}
-    //       compositeType="is_act_ready"
-    //     />
-    //   ),
-
-    //   filter: false,
-    // },
   ];
 
   return columnsConfig;
