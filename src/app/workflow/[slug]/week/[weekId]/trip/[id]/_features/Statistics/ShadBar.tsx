@@ -121,20 +121,26 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                   <span>
                     Общий вес:{" "}
                     <b
-                      className={`${totalWeight <= 11 ? "text-green-500" : totalWeight <= 19.9 ? "text-yellow-400" : totalWeight >= 20 && "text-red-500"}`}
+                      className={`${totalWeight <= 11 ? "text-green-500" : totalWeight <= 19.9 ? "text-yellow-400" : totalWeight <= 22 ? "text-red-500" : "text-rose-900"}`}
                     >
                       {totalWeight}/22
                     </b>{" "}
                     тонн
+                    <div className="text-rose-950 font-bold">
+                      {totalWeight > 22 && "Разгрузите машину"}
+                    </div>
                   </span>
                   <span>
                     Общий объем:{" "}
                     <b
-                      className={`${totalVolume <= 47 ? "text-green-500" : totalVolume <= 79 ? "text-yellow-400" : totalVolume >= 80 && "text-red-500"}`}
+                      className={`${totalVolume <= 47 ? "text-green-500" : totalVolume <= 79 ? "text-yellow-400" : totalVolume <= 92 ? "text-red-500" : "text-red-900"}`}
                     >
                       {totalVolume}/92
                     </b>{" "}
                     м.куб.
+                    <div className="text-rose-950">
+                      {totalVolume > 92 && "Разгрузите машину"}
+                    </div>
                   </span>
                   <span>
                     Сумма:{" "}
