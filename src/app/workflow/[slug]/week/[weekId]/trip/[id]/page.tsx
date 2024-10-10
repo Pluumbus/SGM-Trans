@@ -2,23 +2,17 @@
 
 import { useParams } from "next/navigation";
 
-import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { IoMdSettings } from "react-icons/io";
+import { useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import { getTripsByWeekId } from "../_api";
 import {
-  Autocomplete,
-  AutocompleteItem,
-  Button,
   Card,
   CardBody,
   Checkbox,
-  DatePicker,
-  DateValue,
   Spinner,
   Tab,
   Tabs,
-  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
@@ -28,18 +22,15 @@ import { NextPage } from "next";
 
 import { useLocalStorage } from "@/tool-kit/hooks";
 
-import { checkRole } from "@/components/roles/useRole";
 import React from "react";
-import { toast } from "@/components/ui/use-toast";
-import { updateTripStatus } from "../_api/requests";
+
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
-import supabase from "@/utils/supabase/client";
 import { Timer } from "@/components/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
-
-//DONT DELETE COMMENTS
+import { getDayOfWeek } from "./_helpers";
+import { TripInfoCard } from "./_features/TripInfoCard";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -49,16 +40,6 @@ const Page: NextPage = () => {
 
   const [selectedTabId, setSelectedTabId] = useState(id);
 
-  // const [tabTitles, setTabTitles] = useState<{ [key: string]: string[] }>({});
-  // const handleCargosUpdate = (tripId: string, cities: string[]) => {
-  //   console.log("tabTitles", tabTitles, "OtherData", tripId, cities);
-  //   const uniqueData = Array.from(new Set(cities));
-
-  //   setTabTitles((prevTitles) => ({
-  //     ...prevTitles,
-  //     [tripId]: uniqueData,
-  //   }));
-  // };
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
@@ -82,14 +63,6 @@ const Page: NextPage = () => {
   if (isLoading) {
     return <Spinner />;
   }
-
-  const getDayOfWeek = (dateStr) => {
-    const [day, month, year] = dateStr.split(".").map(Number);
-    const date = new Date(year, month - 1, day);
-    const dayIndex = date.getDay();
-    const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПН", "СБ"];
-    return daysOfWeek[dayIndex];
-  };
 
   return (
     <div>
@@ -157,9 +130,6 @@ const Page: NextPage = () => {
                 trips={tripsData}
                 columns={columns}
                 isOnlyMycargos={isOnlyMycargos}
-                // onCargosUpdate={(cities) =>
-                //   handleCargosUpdate(trip?.id.toString(), cities)
-                // }
               />
             </Tab>
           ))}
@@ -178,143 +148,6 @@ const Page: NextPage = () => {
         onOpenChangeCargo={onOpenChange}
         trip_id={Number(selectedTabId)}
       />
-    </div>
-  );
-};
-
-const TripInfoCard = ({
-  selectedTabId,
-  tripsData,
-  onOpenChange,
-}: {
-  selectedTabId: ReactNode;
-  tripsData: TripType[];
-  onOpenChange: () => void;
-}) => {
-  const [currentTripData, setCurrentTripData] = useState<TripType>();
-  const [statusVal, setStatusVal] = useState<string | undefined>();
-  const [isButtonChange, setIsButtonChange] = useState(false);
-  const [ignoreMutation, setIgnoreMutation] = useState(true);
-
-  const { mutate: setStatusMutation } = useMutation({
-    mutationKey: ["SetTripStatus"],
-    mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
-    onSuccess() {
-      setIsButtonChange(false);
-      toast({
-        title: "Статус рейса успешно обновлён",
-      });
-    },
-  });
-
-  const handleSetDateChange = (date: DateValue | null) => {
-    const dateStr = new Date(
-      date.year,
-      date.month - 1,
-      date.day
-    ).toLocaleDateString();
-    setStatusVal(dateStr);
-    setIgnoreMutation(false);
-  };
-
-  const handleSetStatus = (val: string) => {
-    setStatusVal(val);
-    setIgnoreMutation(false);
-  };
-
-  useEffect(() => {
-    const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
-    );
-    setCurrentTripData(currentTrip);
-    setStatusVal(currentTrip?.status);
-    setIgnoreMutation(true);
-  }, [selectedTabId, tripsData]);
-
-  useEffect(() => {
-    if (ignoreMutation) return;
-
-    if (statusVal && statusVal !== "Выбрать дату") {
-      setStatusMutation();
-    }
-  }, [statusVal, ignoreMutation, setStatusMutation]);
-
-  useEffect(() => {
-    const cn = supabase
-      .channel(`trip${selectedTabId}-status`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "trips",
-        },
-        (payload) => {
-          setStatusVal((payload.new as TripType).status);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      cn.unsubscribe();
-    };
-  });
-
-  return (
-    <div className="flex flex-col gap-2">
-      <div className="flex justify-between">
-        <span>Номер рейса:</span>
-        <b>{selectedTabId}</b>
-      </div>
-      <div className="flex justify-between">
-        <span>Водитель: </span>
-        <b className="items-end">{currentTripData?.driver} </b>
-      </div>
-
-      <div className="flex justify-between">
-        Статус:{" "}
-        {isButtonChange ? (
-          <div>
-            {statusVal === "Выбрать дату" ? (
-              <DatePicker
-                aria-label="Выбрать дату"
-                onChange={handleSetDateChange}
-              />
-            ) : (
-              <Autocomplete
-                aria-label="AutoStatus"
-                variant="underlined"
-                onInputChange={handleSetStatus}
-                inputValue={statusVal}
-              >
-                {["Выбрать дату", "В пути"].map((stat: string) => (
-                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-                ))}
-              </Autocomplete>
-            )}
-          </div>
-        ) : (
-          <>
-            <b className="mr-4">{statusVal}</b>
-            <Button
-              isIconOnly
-              size="sm"
-              color="default"
-              onClick={() => {
-                setIsButtonChange((prev) => !prev);
-              }}
-            >
-              <IoMdSettings />
-            </Button>
-          </>
-        )}
-      </div>
-
-      <div>
-        <Button color="success" onClick={onOpenChange}>
-          Добавить груз
-        </Button>
-      </div>
     </div>
   );
 };

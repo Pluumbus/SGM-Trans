@@ -179,7 +179,7 @@ export const CreateTripInsideWeek = ({
   return (
     <div>
       {inTrip ? (
-        <Button className="h-20" variant="light">
+        <Button className="h-20" variant="light" isIconOnly>
           <FiPlus
             size={35}
             onClick={() => {
@@ -193,7 +193,7 @@ export const CreateTripInsideWeek = ({
             onOpenChangeTrip();
           }}
         >
-          Добавить путь{" "}
+          Добавить путь
         </Button>
       )}
 
@@ -216,6 +216,7 @@ export const CreateTripInsideWeek = ({
               />
               {formState.city_from.map((city, index) => (
                 <Cities
+                  key={index + 2}
                   label={`Город отправитель ${index + 1}`}
                   selectedKey={city}
                   isReadOnly={isMSK}
@@ -225,7 +226,7 @@ export const CreateTripInsideWeek = ({
 
               {formState.city_to.map((city, index) => (
                 <Cities
-                  key={index}
+                  key={index + 1}
                   isReadOnly={!isMSK}
                   label={`Город получатель ${index + 1}`}
                   selectedKey={city}

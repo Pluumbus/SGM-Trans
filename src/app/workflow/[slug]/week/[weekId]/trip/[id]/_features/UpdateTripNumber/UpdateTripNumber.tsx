@@ -16,19 +16,16 @@ import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos } from "../../../_api";
+import { useSelectionStore } from "../store";
 
 export const UpdateTripNumber = ({
   currentTripId,
   trips,
-  selectedRows,
 }: {
   currentTripId: number;
   trips: TripType[];
-  selectedRows: {
-    number: number;
-    isSelected: boolean;
-  }[];
 }) => {
+  const { rowSelected: selectedRows, setRowSelected } = useSelectionStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
     {
@@ -65,6 +62,7 @@ export const UpdateTripNumber = ({
         title: "Успех",
         description: `Вы успешно перенесли груз(ы) в ${selectedTrip} рейс`,
       });
+      setRowSelected([]);
     },
     onError: () => {
       toast({

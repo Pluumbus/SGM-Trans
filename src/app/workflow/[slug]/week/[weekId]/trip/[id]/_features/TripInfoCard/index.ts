@@ -1,0 +1,1 @@
+export { TripInfoCard } from "./TripInfoCard";
