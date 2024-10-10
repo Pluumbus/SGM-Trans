@@ -72,8 +72,9 @@ const CreateCargo = ({
   const { isOpen: isOpenCargo, onOpenChange: onOpenChangeCargo } =
     useDisclosure();
   return (
-    <div>
+    <div className="flex items-center w-full h-full py-1">
       <Button
+        variant="ghost"
         onClick={() => {
           onOpenChangeCargo();
         }}
