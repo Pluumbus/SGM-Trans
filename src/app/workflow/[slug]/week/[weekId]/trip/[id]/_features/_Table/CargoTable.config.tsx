@@ -44,13 +44,15 @@ export const getBaseColumnsConfig = () => {
                 ?.isSelected
             }
             onChange={() => {
+              console.log("rowSelected", rowSelected);
+
               const updatedSelection = rowSelected?.map((item, index) => {
                 if (index === info.row.index) {
                   return { ...item, isSelected: !item.isSelected };
                 }
                 return item;
               });
-              console.log("isSelected: cell: ", rowSelected);
+
               setRowSelected(updatedSelection);
             }}
           />
