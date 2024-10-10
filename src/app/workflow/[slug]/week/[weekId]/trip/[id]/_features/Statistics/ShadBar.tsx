@@ -5,22 +5,16 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Divider,
   Spinner,
-  Tab,
-  Tabs,
-  Tooltip,
 } from "@nextui-org/react";
 import { TrendingUp } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { COLORS } from "@/lib/colors";
-
-export const description = "A mixed bar chart";
 
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   const mCargos = useMemo(() => cargos, [cargos.length]);
@@ -213,23 +207,20 @@ const CustomBar = ({
       <CardBody className="flex flex-col gap-2">
         {state.map((e, i) => (
           <div key={`cargo-statistics-${i}`}>
-            <div className="flex w-full">
-              <span className="w-[10%]">{e.user}</span>
+            <div className="flex justify-between w-full">
+              <span className="w-[10%] text-lg font-semibold">{e.user}</span>
               <div className="w-[80%]">
-                <motion.div
-                  initial={{ width: "0%" }}
-                  animate={{ width: `${e.percentageOfAll}%` }}
-                  transition={{
-                    duration: 1,
-                    ease: "easeInOut",
-                  }}
+                <div
                   style={{
+                    width: `${e.percentageOfAll}%`,
                     backgroundColor: colors[i],
                   }}
                   className="min-h-full rounded-[0.25rem]"
-                />
+                ></div>
               </div>
-              <span className="w-[10%]">{e.count}</span>
+              <span className="w-[10%] flex justify-center text-lg font-semibold">
+                {e.count}
+              </span>
             </div>
           </div>
         ))}

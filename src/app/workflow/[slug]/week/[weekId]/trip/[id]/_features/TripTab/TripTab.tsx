@@ -18,19 +18,17 @@ import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
-//DONT DELETE COMMENTS
+
 export const TripTab = ({
   currentTrip,
   trips,
   columns,
   isOnlyMycargos,
-  // onCargosUpdate,
 }: {
   currentTrip: TripType;
   trips: TripType[];
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
-  // onCargosUpdate: (cities: string[]) => void;
 }) => {
   const { data, isLoading } = useQuery({
     queryKey: [`cargo-${currentTrip.id}`],
@@ -52,18 +50,16 @@ export const TripTab = ({
   const filterBy = () =>
     isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
 
-  // useEffect(() => {
-  //   onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
-  // }, [data]);
-
   useEffect(() => {
     if (data) {
+      setRowSelected(
+        data.map((e) => ({
+          number: e.id,
+          isSelected: false,
+        }))
+      );
+
       setCargos(filterBy());
-      const res = data.map((e) => ({
-        number: e.id,
-        isSelected: false,
-      }));
-      setRowSelected(res);
     }
   }, [data, isOnlyMycargos]);
 
@@ -122,15 +118,11 @@ export const TripTab = ({
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber
-          currentTripId={currentTrip.id}
-          trips={trips}
-          selectedRows={rowSelected}
-        />
+        <UpdateTripNumber currentTripId={currentTrip.id} trips={trips} />
       )}
 
       <div className="mb-8"></div>
-      <BarGraph cargos={cargos} currentTrip={currentTrip.id} />
+      <BarGraph cargos={cargos} />
       <div className="mb-8"></div>
     </>
   );
