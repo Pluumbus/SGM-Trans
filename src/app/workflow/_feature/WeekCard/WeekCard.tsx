@@ -14,41 +14,38 @@ import {
 } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect } from "react";
 import supabase from "@/utils/supabase/client";
 import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";
 import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
 import { getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
-import { TripType } from "../TripCard/TripCard";
 import { useParams } from "next/navigation";
 import { WeekTableType } from "../../[slug]/week/[weekId]/trip/types";
 import { FiPlus } from "react-icons/fi";
+import { TripType } from "../TripCard/TripCard";
 
 export const WeekCard = () => {
   const { slug } = useParams();
 
-  const { data: dataWeeks, isLoading: isLoadingWeeks } = useQuery({
-    queryKey: [`weeks-${slug}`],
-    queryFn: async () => await getWeeks(slug as WeekTableType),
+  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>([]);
+
+  const { mutate, isPending } = useMutation({
+    mutationKey: [`weeks-${slug}`],
+    mutationFn: async () => await getWeeks(slug as WeekTableType),
+    onSuccess: (data) => {
+      setWeeks(data);
+    },
   });
 
-  const [weeks, setWeeks] = useState<(WeekType & { trips: TripType[] })[]>(
-    dataWeeks || []
-  );
-
   useEffect(() => {
-    if (dataWeeks) {
-      setWeeks(dataWeeks);
-      console.log("dataWeeks", dataWeeks);
-      console.log("weeks", weeks);
-    }
-  }, [dataWeeks]);
+    mutate();
+  }, []);
 
   useEffect(() => {
     const cn = supabase
-      .channel("view-weeks")
+      .channel(`view-weeks-${slug}`)
       .on(
         "postgres_changes",
         {
@@ -60,10 +57,8 @@ export const WeekCard = () => {
         (payload) => {
           setWeeks((prev) => [
             ...prev,
-            payload.new as WeekType & { trips: TripType[] },
+            { ...payload.new, trips: [] } as WeekType & { trips: TripType[] },
           ]);
-          console.log("dataWeeks", dataWeeks);
-          console.log("weeks", weeks);
         }
       )
       .subscribe();
@@ -73,7 +68,7 @@ export const WeekCard = () => {
     };
   }, []);
 
-  if (isLoadingWeeks) {
+  if (isPending) {
     return <Spinner />;
   }
 
@@ -89,11 +84,8 @@ export const WeekCard = () => {
               title={`Неделя ${week.week_number}`}
               subtitle={<SummaryOfTrip week={week} />}
             >
-              <CreateTripInsideWeek
-                weekId={week.id.toString()}
-                inTrip={false}
-              />
-              <TripCard weekId={week.id.toString()} />
+              <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
+              <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
             </AccordionItem>
           ))}
         </Accordion>
@@ -104,10 +96,10 @@ export const WeekCard = () => {
 
 export const CreateTripInsideWeek = ({
   weekId,
-  inTrip,
+  inTrip = false,
 }: {
   weekId: string;
-  inTrip: boolean;
+  inTrip?: boolean;
 }) => {
   const { toast } = useToast();
   const { slug } = useParams();
@@ -115,8 +107,8 @@ export const CreateTripInsideWeek = ({
   const { isOpen: isOpenTrip, onOpenChange: onOpenChangeTrip } =
     useDisclosure();
   const initData = {
-    city_from: isMSK ? "Москва" : "",
-    city_to: [""],
+    city_from: isMSK ? ["Москва"] : [""],
+    city_to: isMSK ? [""] : ["Москва"],
     driver: "",
   };
 
@@ -156,18 +148,32 @@ export const CreateTripInsideWeek = ({
     mutate();
   };
 
-  const handleCityToChange = (index, newCity) => {
-    const updatedCityTo = [...formState.city_to];
+  const handleCityToChange = (index, newCity, isCityTo = true) => {
+    const updatedCityTo = isCityTo
+      ? [...formState.city_to]
+      : [...formState.city_from];
+
     updatedCityTo[index] = newCity;
 
     if (index === updatedCityTo.length - 1 && newCity !== "") {
       updatedCityTo.push("");
     }
 
-    setFormState((prev) => ({
-      ...prev,
-      city_to: updatedCityTo,
-    }));
+    switch (isCityTo) {
+      case true:
+        setFormState((prev) => ({
+          ...prev,
+          city_to: updatedCityTo,
+        }));
+        break;
+      case false:
+        setFormState((prev) => ({
+          ...prev,
+          city_from: updatedCityTo,
+        }));
+      default:
+        break;
+    }
   };
 
   return (
@@ -208,21 +214,19 @@ export const CreateTripInsideWeek = ({
                   }));
                 }}
               />
-              <Cities
-                label="Город отправитель"
-                selectedKey={formState.city_from}
-                isReadOnly={isMSK}
-                onSelectionChange={(e) => {
-                  setFormState((prev) => ({
-                    ...prev,
-                    city_from: e,
-                  }));
-                }}
-              />
+              {formState.city_from.map((city, index) => (
+                <Cities
+                  label={`Город отправитель ${index + 1}`}
+                  selectedKey={city}
+                  isReadOnly={isMSK}
+                  onSelectionChange={(e) => handleCityToChange(index, e, false)}
+                />
+              ))}
 
               {formState.city_to.map((city, index) => (
                 <Cities
                   key={index}
+                  isReadOnly={!isMSK}
                   label={`Город получатель ${index + 1}`}
                   selectedKey={city}
                   onSelectionChange={(e) => handleCityToChange(index, e)}

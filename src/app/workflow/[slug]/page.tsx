@@ -13,14 +13,14 @@ const Page: NextPage<Props> = ({}) => {
       {slug === "kz" ? (
         <div>
           <div className="flex w-full justify-center">
-            <span className="text-lg font-semibold">Таблица Казахстан</span>
+            <span className="text-lg font-semibold">Обратка</span>
           </div>
           <WeekCard />
         </div>
       ) : (
         <div>
           <div className="flex w-full justify-center">
-            <span className="text-lg font-semibold">Таблица Москва</span>
+            <span className="text-lg font-semibold">Таблица</span>
           </div>
           <WeekCard />
         </div>

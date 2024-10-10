@@ -31,9 +31,7 @@ export const getCargos = async (trip_id: string): Promise<CargoType[]> => {
 
 export const getAllCargos = async (): Promise<CargoType[]> => {
   const server = getSupabaseServer();
-  const { data, error } = await (await server)
-    .from("cargos")
-    .select("*")
+  const { data, error } = await (await server).from("cargos").select("*");
 
   if (error) {
     throw new Error(error.message);

@@ -49,9 +49,10 @@ export type CargoType = {
 
 export type WeekType = {
   id: number;
-  created_at: Date;
+  created_at: string;
   user_id: string;
   week_number: number;
+  table_type: "kz" | "ru";
   week_dates: {
     end_date: string;
     start_date: string;

@@ -1,10 +1,10 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from "react";
 import { getBaseTripColumnsConfig } from "./TripTable.config";
 import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { UTable } from "@/tool-kit/ui";
-import { usePathname, useRouter } from "next/navigation";
-import { CargoType } from "../types";
+import { useParams, usePathname, useRouter } from "next/navigation";
+import { CargoType, WeekType } from "../types";
 import { useQuery } from "@tanstack/react-query";
 
 import { Spinner } from "@nextui-org/react";
@@ -18,12 +18,18 @@ export type TripType = {
   id: number;
   week_id: string;
   driver: string;
-  city_from: string;
+  city_from: string[];
   city_to: string[];
   status: string;
 };
 
-export const TripCard = ({ weekId }: { weekId: string }) => {
+export const TripCard = ({
+  weekId,
+  setWeeks,
+}: {
+  weekId: string;
+  setWeeks: Dispatch<SetStateAction<(WeekType & { trips: TripType[] })[]>>;
+}) => {
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const pathname = usePathname();
   const router = useRouter();
@@ -35,11 +41,13 @@ export const TripCard = ({ weekId }: { weekId: string }) => {
 
   const [trips, setTrips] = useState([]);
 
+  const { slug } = useParams();
+
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && tripsData.length > trips.length) {
       setTrips(tripsData);
     }
-  }, [isLoading]);
+  }, [isLoading, tripsData]);
 
   const config: UseTableConfig<CargoType & { trips: TripType }> = {
     row: {
@@ -67,12 +75,29 @@ export const TripCard = ({ weekId }: { weekId: string }) => {
 
   useEffect(() => {
     const cn = supabase
-      .channel("view-trips")
+      .channel(`view-trips-${slug}`)
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "trips" },
         (payload) => {
           setTrips((prev) => [...prev, payload.new]);
+          setWeeks((prev) =>
+            prev.map((week) => {
+              if (week.id === payload.new!.week_id) {
+                const newTrip = payload.new as TripType;
+                const updatedTrips = week.trips.some(
+                  (trip) => trip.id === newTrip.id
+                )
+                  ? week.trips.map((trip) =>
+                      trip.id === newTrip.id ? newTrip : trip
+                    )
+                  : [...week.trips, newTrip];
+
+                return { ...week, trips: updatedTrips };
+              }
+              return week;
+            })
+          );
         }
       )
       .subscribe();
