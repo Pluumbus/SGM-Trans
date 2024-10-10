@@ -13,8 +13,8 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { TripCard } from "../TripCard";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useState, useEffect, useLayoutEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 import supabase from "@/utils/supabase/client";
 import { AddWeek } from "./Modals/AddWeek";
 import { useToast } from "@/components/ui/use-toast";

@@ -18,6 +18,7 @@ import { getUserById } from "../../../_api";
 
 import { color, motion } from "framer-motion";
 import { CargoType } from "@/app/workflow/_feature/types";
+import { COLORS } from "@/lib/colors";
 
 export const description = "A mixed bar chart";
 
@@ -121,7 +122,9 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                   <span>
                     Общий вес:{" "}
                     <b
-                      className={`${totalWeight <= 11 ? "text-green-500" : totalWeight <= 19.9 ? "text-yellow-400" : totalWeight <= 22 ? "text-red-500" : "text-rose-900"}`}
+                      style={{
+                        color: `${totalWeight <= 11 ? `${COLORS.green}` : totalWeight <= 19.9 ? `${COLORS.yellow}` : totalWeight <= 22 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                      }}
                     >
                       {totalWeight}/22
                     </b>{" "}
@@ -133,7 +136,9 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                   <span>
                     Общий объем:{" "}
                     <b
-                      className={`${totalVolume <= 47 ? "text-green-500" : totalVolume <= 79 ? "text-yellow-400" : totalVolume <= 92 ? "text-red-500" : "text-red-900"}`}
+                      style={{
+                        color: `${totalVolume <= 47 ? `${COLORS.green}` : totalVolume <= 79 ? `${COLORS.yellow}` : totalVolume <= 92 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                      }}
                     >
                       {totalVolume}/92
                     </b>{" "}
@@ -145,7 +150,9 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                   <span>
                     Сумма:{" "}
                     <b
-                      className={`${totalSumm < 2500000 ? "text-red-500" : "text-green-500"}`}
+                      style={{
+                        color: `${totalSumm < 2500000 ? `${COLORS.red}` : `${COLORS.green}`}`,
+                      }}
                     >
                       {totalSumm}
                     </b>{" "}
