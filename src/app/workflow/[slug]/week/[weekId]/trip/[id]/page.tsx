@@ -2,8 +2,8 @@
 
 import { useParams } from "next/navigation";
 
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
 import {
@@ -30,7 +30,9 @@ import { WeekType } from "@/app/workflow/_feature/types";
 import { Timer } from "@/components/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 import { getDayOfWeek } from "./_helpers";
+import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
+import { TripAndWeeksIdType } from "../types";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -39,18 +41,51 @@ const Page: NextPage = () => {
   }>();
 
   const [selectedTabId, setSelectedTabId] = useState(id);
-
+  const [tripsData, setTripsData] = useState<TripAndWeeksIdType[]>([]);
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
   });
 
-  const { data: tripsData, isLoading } = useQuery<
-    (TripType & { weeks: WeekType })[]
-  >({
-    queryKey: ["getTrips"],
-    queryFn: async () => await getTripsByWeekId(weekId),
+  useEffect(() => {
+    const cn = supabase
+      .channel(`${weekId}-trips`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "trips",
+        },
+        (payload) => {
+          const updatedTrip = payload.new as TripType & { weeks: WeekType };
+
+          setTripsData((prev) => {
+            const updatedTrips = prev.map((trip) =>
+              trip.id === updatedTrip.id ? updatedTrip : trip
+            );
+            return updatedTrips;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
+
+  const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
+    mutationKey: [`trips-${weekId}`],
+    mutationFn: async () => await getTripsByWeekId(weekId),
+    onSuccess: (data) => {
+      setTripsData(data);
+    },
   });
+
+  useEffect(() => {
+    mutate();
+  }, []);
 
   const { isOpen, onOpenChange } = useDisclosure();
 
@@ -60,7 +95,7 @@ const Page: NextPage = () => {
     setSelectedTabId(key);
   };
 
-  if (isLoading) {
+  if (isPending) {
     return <Spinner />;
   }
 

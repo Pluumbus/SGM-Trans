@@ -17,6 +17,7 @@ import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos } from "../../../_api";
 import { useSelectionStore } from "../store";
+import { COLORS } from "@/lib/colors";
 
 export const UpdateTripNumber = ({
   currentTripId,
@@ -105,12 +106,12 @@ export const UpdateTripNumber = ({
     }
 
     return weightCalc + volumeCalc <= 2
-      ? "text-green-500"
+      ? `${COLORS.green}`
       : weightCalc + volumeCalc <= 4
-        ? "text-yellow-400"
+        ? `${COLORS.yellow}`
         : weightCalc + volumeCalc <= 6
-          ? "text-red-500"
-          : "text-rose-900";
+          ? `${COLORS.orange}`
+          : `${COLORS.red}`;
   };
 
   return (

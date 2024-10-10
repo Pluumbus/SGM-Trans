@@ -40,6 +40,14 @@ export const TripInfoCard = ({
     },
   });
 
+  // const { mutate, isPending } = useMutation({
+  //   mutationKey: [`trip-${currentTripData.id}-status`],
+  //   mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
+  //   onSuccess() {
+
+  //   },
+  // });
+
   const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
       date.year,

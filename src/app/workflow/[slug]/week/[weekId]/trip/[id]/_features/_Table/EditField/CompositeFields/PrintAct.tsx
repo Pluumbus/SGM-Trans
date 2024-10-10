@@ -15,7 +15,7 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
-import { checkRole } from "@/components/roles/useRole";
+import { useCheckRole } from "@/components/roles/useRole";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -41,7 +41,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className="flex flex-col gap-2 w-[8rem]">
       <div className="flex flex-col gap-2">
-        {checkRole(["Кассир", "Админ"]) ? (
+        {useCheckRole(["Кассир", "Админ"]) ? (
           <Checkbox
             isSelected={values?.value}
             onValueChange={(e) => {

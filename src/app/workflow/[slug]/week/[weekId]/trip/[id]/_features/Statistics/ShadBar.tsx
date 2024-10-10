@@ -87,19 +87,30 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     fetch();
   }, [mCargos.length]);
 
-  const totalWeight = mCargos.reduce(
-    (sum, cargo) => sum + parseFloat(cargo.weight),
-    0
-  );
-  const totalVolume = mCargos.reduce(
-    (sum, cargo) => sum + parseFloat(cargo.volume),
-    0
-  );
-  const totalSumm = mCargos.reduce(
-    (sum, cargo) => sum + parseFloat(cargo.amount.value),
-    0
-  );
-  const classColorWeight = `${"text-color"} `;
+  const totalWeight =
+    mCargos && mCargos.length > 0
+      ? mCargos.reduce((sum, cargo) => {
+          const value = parseFloat(cargo.weight);
+          return isNaN(value) ? sum : sum + value;
+        }, 0)
+      : 0;
+
+  const totalVolume =
+    mCargos && mCargos.length > 0
+      ? mCargos.reduce((sum, cargo) => {
+          const value = parseFloat(cargo.volume);
+          return isNaN(value) ? sum : sum + value;
+        }, 0)
+      : 0;
+
+  const totalSumm =
+    mCargos && mCargos.length > 0
+      ? mCargos.reduce((sum, cargo) => {
+          const value = parseFloat(cargo.amount.value);
+          return isNaN(value) ? sum : sum + value;
+        }, 0)
+      : 0;
+
   return (
     <Card>
       <CardHeader>
@@ -123,7 +134,12 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                       {totalWeight}/22
                     </b>{" "}
                     тонн
-                    <div className="text-rose-950 font-bold">
+                    <div
+                      style={{
+                        color: `${COLORS.red}`,
+                      }}
+                      className="font-bold"
+                    >
                       {totalWeight > 22 && "Разгрузите машину"}
                     </div>
                   </span>
@@ -137,7 +153,12 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
                       {totalVolume}/92
                     </b>{" "}
                     м.куб.
-                    <div className="text-rose-950">
+                    <div
+                      style={{
+                        color: `${COLORS.red}`,
+                      }}
+                      className="font-bold"
+                    >
                       {totalVolume > 92 && "Разгрузите машину"}
                     </div>
                   </span>
