@@ -123,7 +123,7 @@ export const TripTab = ({
 
       {rowSelected?.some((e) => e.isSelected) && (
         <UpdateTripNumber
-          cargos={cargos}
+          currentTripId={currentTrip.id}
           trips={trips}
           selectedRows={rowSelected}
         />

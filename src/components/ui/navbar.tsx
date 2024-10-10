@@ -24,13 +24,13 @@ const Navbar = () => {
               href="/workflow/ru"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
-              Таблица Москва
+              Таблица 
             </Link>
             <Link
               href="/workflow/kz"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
-              Таблица Казахстан
+             Обратки
             </Link>
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link

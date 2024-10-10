@@ -24,6 +24,7 @@ import { getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
 import { TripType } from "../TripCard/TripCard";
 import { useParams } from "next/navigation";
 import { WeekTableType } from "../../[slug]/week/[weekId]/trip/types";
+import { FiPlus } from "react-icons/fi";
 
 export const WeekCard = () => {
   const { slug } = useParams();
@@ -88,7 +89,10 @@ export const WeekCard = () => {
               title={`Неделя ${week.week_number}`}
               subtitle={<SummaryOfTrip week={week} />}
             >
-              <CreateTripInsideWeek week={week} />
+              <CreateTripInsideWeek
+                weekId={week.id.toString()}
+                inTrip={false}
+              />
               <TripCard weekId={week.id.toString()} />
             </AccordionItem>
           ))}
@@ -98,7 +102,13 @@ export const WeekCard = () => {
   );
 };
 
-const CreateTripInsideWeek = ({ week }) => {
+export const CreateTripInsideWeek = ({
+  weekId,
+  inTrip,
+}: {
+  weekId: string;
+  inTrip: boolean;
+}) => {
   const { toast } = useToast();
   const { slug } = useParams();
   const isMSK = slug == "ru";
@@ -122,7 +132,7 @@ const CreateTripInsideWeek = ({ week }) => {
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
         driver: formState.driver,
-        week_id: week.id,
+        week_id: weekId,
       });
     },
     onSuccess: () => {
@@ -162,13 +172,24 @@ const CreateTripInsideWeek = ({ week }) => {
 
   return (
     <div>
-      <Button
-        onClick={() => {
-          onOpenChangeTrip();
-        }}
-      >
-        Добавить путь
-      </Button>
+      {inTrip ? (
+        <Button className="h-20" variant="light">
+          <FiPlus
+            size={35}
+            onClick={() => {
+              onOpenChangeTrip();
+            }}
+          />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            onOpenChangeTrip();
+          }}
+        >
+          Добавить путь{" "}
+        </Button>
+      )}
 
       <Modal isOpen={isOpenTrip} onOpenChange={onOpenChangeTrip} size="2xl">
         <ModalContent>

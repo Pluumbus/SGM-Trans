@@ -19,7 +19,7 @@ export type TripType = {
   week_id: string;
   driver: string;
   city_from: string;
-  city_to: string;
+  city_to: string[];
   status: string;
 };
 

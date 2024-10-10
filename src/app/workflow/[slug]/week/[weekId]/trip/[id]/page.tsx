@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 
 import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-
+import { IoMdSettings } from "react-icons/io";
 import { getTripsByWeekId } from "../_api";
 import {
   Autocomplete,
@@ -37,6 +37,7 @@ import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
 import { Timer } from "@/components/Timer/Timer";
+import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 
 //DONT DELETE COMMENTS
 
@@ -82,6 +83,14 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
 
+  const getDayOfWeek = (dateStr) => {
+    const [day, month, year] = dateStr.split(".").map(Number);
+    const date = new Date(year, month - 1, day);
+    const dayIndex = date.getDay();
+    const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПН", "СБ"];
+    return daysOfWeek[dayIndex];
+  };
+
   return (
     <div>
       <div className="flex justify-between">
@@ -121,28 +130,25 @@ const Page: NextPage = () => {
         >
           {tripsData.map((trip) => (
             <Tab
+              className="h-20"
               title={
-                <>
-                  <Tooltip
-                    content={
-                      <div className="px-1 py-2">
-                        <div className="text-small font-bold">
-                          {trip.status}
-                        </div>
-                        <div className="text-tiny">{trip.city_to}</div>
-                      </div>
-                    }
-                  >
-                    {trip.id.toString()}
-                  </Tooltip>
-                  {/* <Tooltip
-                    content={tabTitles[trip.id]?.join(
-                      " " + trip.status.slice(0, 5)
-                    )}
-                  >
-                    {trip.id.toString()}
-                  </Tooltip> */}
-                </>
+                <div className="flex flex-col items-center text-sm space-y-1">
+                  <span className="text-gray-500 truncate">
+                    {trip.status !== "В пути"
+                      ? getDayOfWeek(trip.status)
+                      : trip.status}
+                  </span>
+                  <span className="font-bold truncate">{trip.id}</span>
+
+                  <span className="text-gray-500 truncate">
+                    {trip.city_to.map((city, index) => (
+                      <>
+                        {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
+                        {index < trip.city_to.length - 1 ? ", " : "."}
+                      </>
+                    ))}
+                  </span>
+                </div>
               }
               key={trip.id}
             >
@@ -157,6 +163,14 @@ const Page: NextPage = () => {
               />
             </Tab>
           ))}
+          <Tab
+            className="flex items-center justify-center h-20 bg-opacity-0"
+            isDisabled={true}
+          >
+            <span className="text-gray-500 cursor-pointer">
+              <CreateTripInsideWeek weekId={weekId} inTrip={true} />
+            </span>
+          </Tab>
         </Tabs>
       </div>
       <CargoModal
@@ -179,12 +193,14 @@ const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
+  const [isButtonChange, setIsButtonChange] = useState(false);
   const [ignoreMutation, setIgnoreMutation] = useState(true);
 
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
     onSuccess() {
+      setIsButtonChange(false);
       toast({
         title: "Статус рейса успешно обновлён",
       });
@@ -234,7 +250,6 @@ const TripInfoCard = ({
           table: "trips",
         },
         (payload) => {
-          console.log((payload.new as TripType).status);
           setStatusVal((payload.new as TripType).status);
         }
       )
@@ -253,33 +268,46 @@ const TripInfoCard = ({
       </div>
       <div className="flex justify-between">
         <span>Водитель: </span>
-        <b className="items-end">{currentTripData?.driver}</b>
+        <b className="items-end">{currentTripData?.driver} </b>
       </div>
 
       <div className="flex justify-between">
         Статус:{" "}
-        {statusVal === "Выбрать дату" ? (
-          <DatePicker
-            aria-label="Выбрать дату"
-            onChange={handleSetDateChange}
-          />
-        ) : (
-          <Autocomplete
-            aria-label="AutoStatus"
-            variant="underlined"
-            onInputChange={handleSetStatus}
-            inputValue={statusVal}
-          >
-            {["Выбрать дату", "В пути" ].map(
-              (stat: string) => (
-                <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-              )
+        {isButtonChange ? (
+          <div>
+            {statusVal === "Выбрать дату" ? (
+              <DatePicker
+                aria-label="Выбрать дату"
+                onChange={handleSetDateChange}
+              />
+            ) : (
+              <Autocomplete
+                aria-label="AutoStatus"
+                variant="underlined"
+                onInputChange={handleSetStatus}
+                inputValue={statusVal}
+              >
+                {["Выбрать дату", "В пути"].map((stat: string) => (
+                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
+                ))}
+              </Autocomplete>
             )}
-          </Autocomplete>
+          </div>
+        ) : (
+          <>
+            <b className="mr-4">{statusVal}</b>
+            <Button
+              isIconOnly
+              size="sm"
+              color="default"
+              onClick={() => {
+                setIsButtonChange((prev) => !prev);
+              }}
+            >
+              <IoMdSettings />
+            </Button>
+          </>
         )}
-        {/* ) : (
-          <b>{statusVal}</b>
-        )} */}
       </div>
 
       <div>
