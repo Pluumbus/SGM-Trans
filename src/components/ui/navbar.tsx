@@ -8,6 +8,7 @@ import { ProfileButton } from "@/components/ui/profileButton";
 import React from "react";
 import { useRole } from "../roles/useRole";
 import RoleBasedWrapper from "../roles/RoleBasedWrapper";
+import { BiSolidCarMechanic } from "react-icons/bi";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
@@ -36,7 +37,10 @@ const Navbar = () => {
               href="/sgm-mechanic"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
-              Омником (тестовое название)
+              <span className="flex gap-1 items-center">
+                SGM Механик
+                <BiSolidCarMechanic size={20} />
+              </span>
             </Link>
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
