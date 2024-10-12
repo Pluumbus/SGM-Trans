@@ -206,8 +206,6 @@ export const CreateTripInsideWeek = ({
               <Drivers
                 selectedKey={formState.driver}
                 onSelectionChange={(e) => {
-                  console.log(e);
-
                   setFormState((prev) => ({
                     ...prev,
                     driver: e,

@@ -41,11 +41,28 @@ const Page: NextPage = () => {
   }>();
 
   const [selectedTabId, setSelectedTabId] = useState(id);
-  const [tripsData, setTripsData] = useState<TripAndWeeksIdType[]>([]);
+  const [tripsData, setTripsData] = useState<TripType[]>([]);
+  const [week, setWeek] = useState<WeekType>();
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
   });
+
+  const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
+    mutationKey: [`trips-${weekId}`],
+    mutationFn: async () => await getTripsByWeekId(weekId),
+    onSuccess: (data) => {
+      const processedData = data.map(({ weeks, ...main }) => {
+        setWeek(weeks);
+        return main;
+      });
+      setTripsData(processedData);
+    },
+  });
+
+  useEffect(() => {
+    mutate();
+  }, []);
 
   useEffect(() => {
     const cn = supabase
@@ -58,14 +75,17 @@ const Page: NextPage = () => {
           table: "trips",
         },
         (payload) => {
-          const updatedTrip = payload.new as TripType & { weeks: WeekType };
+          const updatedTrip = payload.new as TripType;
 
-          setTripsData((prev) => {
-            const updatedTrips = prev.map((trip) =>
-              trip.id === updatedTrip.id ? updatedTrip : trip
-            );
-            return updatedTrips;
-          });
+          if (payload.eventType == "INSERT")
+            setTripsData((prev) => [...prev, updatedTrip]);
+          else
+            setTripsData((prev) => {
+              const updatedTrips = prev.map((trip) =>
+                trip.id === updatedTrip.id ? updatedTrip : trip
+              );
+              return updatedTrips;
+            });
         }
       )
       .subscribe();
@@ -73,18 +93,6 @@ const Page: NextPage = () => {
     return () => {
       cn.unsubscribe();
     };
-  }, []);
-
-  const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
-    mutationKey: [`trips-${weekId}`],
-    mutationFn: async () => await getTripsByWeekId(weekId),
-    onSuccess: (data) => {
-      setTripsData(data);
-    },
-  });
-
-  useEffect(() => {
-    mutate();
   }, []);
 
   const { isOpen, onOpenChange } = useDisclosure();
@@ -117,9 +125,7 @@ const Page: NextPage = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
-          <span className="text-xl">
-            Рейсы недели №{tripsData[0]?.weeks?.week_number}
-          </span>
+          <span className="text-xl">Рейсы недели №{week?.week_number}</span>
           <Checkbox
             isSelected={isOnlyMycargos}
             onChange={() => {

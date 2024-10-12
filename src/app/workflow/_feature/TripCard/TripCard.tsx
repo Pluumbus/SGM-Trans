@@ -16,6 +16,7 @@ import {
 
 export type TripType = {
   id: number;
+  user_id: string;
   week_id: string;
   driver: string;
   city_from: string[];
