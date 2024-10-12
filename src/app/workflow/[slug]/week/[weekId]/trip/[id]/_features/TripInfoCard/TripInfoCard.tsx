@@ -1,3 +1,4 @@
+"use client";
 import {
   Button,
   DatePicker,
@@ -94,7 +95,7 @@ export const TripInfoCard = ({
           {isLoading ? (
             <Spinner />
           ) : (
-            data?.filter((user) => user.tripId === currentTripData.id)[0]
+            data?.filter((user) => user.tripId === currentTripData?.id)[0]
               ?.fullName.firstName
           )}
         </b>

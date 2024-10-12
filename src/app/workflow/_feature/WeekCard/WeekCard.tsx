@@ -179,14 +179,14 @@ export const CreateTripInsideWeek = ({
   return (
     <div>
       {inTrip ? (
-        <Button className="h-20" variant="light" isIconOnly>
+        <div className="cursor-pointer">
           <FiPlus
-            size={35}
+            size={40}
             onClick={() => {
               onOpenChangeTrip();
             }}
           />
-        </Button>
+        </div>
       ) : (
         <Button
           onClick={() => {

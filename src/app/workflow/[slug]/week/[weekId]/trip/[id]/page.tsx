@@ -33,6 +33,7 @@ import { getDayOfWeek } from "./_helpers";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../types";
+import { FiPlus } from "react-icons/fi";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -47,7 +48,6 @@ const Page: NextPage = () => {
     identifier: "show-only-my-cargos",
     initialData: false,
   });
-
   const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
     mutationKey: [`trips-${weekId}`],
     mutationFn: async () => await getTripsByWeekId(weekId),
@@ -62,6 +62,7 @@ const Page: NextPage = () => {
 
   useEffect(() => {
     mutate();
+    setSelectedTabId(id);
   }, []);
 
   useEffect(() => {
@@ -157,10 +158,10 @@ const Page: NextPage = () => {
 
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
-                      <span key={index}>
+                      <div key={index}>
                         {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
                         {index < trip.city_to.length - 1 ? ", " : "."}
-                      </span>
+                      </div>
                     ))}
                   </span>
                 </div>
@@ -174,13 +175,8 @@ const Page: NextPage = () => {
               />
             </Tab>
           ))}
-          <Tab
-            className="flex items-center justify-center h-20 bg-opacity-0"
-            isDisabled={true}
-          >
-            <span className="text-gray-500 cursor-pointer">
-              <CreateTripInsideWeek weekId={weekId} inTrip={true} />
-            </span>
+          <Tab isDisabled>
+            <CreateTripInsideWeek weekId={weekId} inTrip={true} />
           </Tab>
         </Tabs>
       </div>

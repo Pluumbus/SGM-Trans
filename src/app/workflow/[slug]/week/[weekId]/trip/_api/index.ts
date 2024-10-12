@@ -98,5 +98,3 @@ export const getJustWeeks = async () => {
 
   return data as WeekType[];
 };
-
-// export const getTripStatus

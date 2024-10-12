@@ -1,32 +1,79 @@
+"use client";
 import { CargoType } from "@/app/workflow/_feature/types";
 import { COLORS } from "@/lib/colors";
+import supabase from "@/utils/supabase/client";
 import { Card, CardBody } from "@nextui-org/react";
+import { useEffect, useState } from "react";
 
 export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
+  const [cargos, setCargos] = useState<CargoType[]>(allCargos);
+  const tripId = cargos[0]?.trip_id;
+  useEffect(() => {
+    const cn = supabase
+      .channel(`${tripId}-cargos`)
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: "public",
+          table: "cargos",
+          filter: `trip_id=eq.${tripId}`,
+        },
+        (payload) => {
+          const updatedCargo = payload.new as CargoType;
+          setCargos((prev) => {
+            const updatedTrips = prev.map((cargo) =>
+              cargo.id === updatedCargo.id ? updatedCargo : cargo
+            );
+            return updatedTrips;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
+
   const totalWeight =
-    allCargos && allCargos.length > 0
-      ? allCargos.reduce((sum, cargo) => {
+    cargos && cargos.length > 0
+      ? cargos.reduce((sum, cargo) => {
           const value = parseFloat(cargo.weight);
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
 
   const totalVolume =
-    allCargos && allCargos.length > 0
-      ? allCargos.reduce((sum, cargo) => {
+    cargos && cargos.length > 0
+      ? cargos.reduce((sum, cargo) => {
           const value = parseFloat(cargo.volume);
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
 
   const totalSumm =
-    allCargos && allCargos.length > 0
-      ? allCargos.reduce((sum, cargo) => {
+    cargos && cargos.length > 0
+      ? cargos.reduce((sum, cargo) => {
           const value = parseFloat(cargo.amount.value);
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
 
+  const totalClientsCount =
+    cargos && cargos.length > 0
+      ? cargos.reduce((count, cargo) => {
+          const client = cargo.client_bin;
+          return client && client.trim().length > 0 ? count + 1 : count;
+        }, 0)
+      : 0;
+
+  const totalDocumentsCount =
+    cargos && cargos.length > 0
+      ? cargos.reduce((count, cargo) => {
+          return cargo.is_documents ? count + 1 : count;
+        }, 0)
+      : 0;
   return (
     <div>
       <Card className="mb-3">
@@ -82,9 +129,16 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
               тг
             </span>
           </div>
+          <div className="flex justify-around">
+            <span>
+              Кол-во клиентов: <b>{totalClientsCount}</b>{" "}
+            </span>
+            <span>
+              Кол-во СНТ: <b>{totalDocumentsCount}</b>
+            </span>
+          </div>
         </CardBody>
       </Card>
-      ;
     </div>
   );
 };
