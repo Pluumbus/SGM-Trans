@@ -59,13 +59,13 @@ export const TripInfoCard = ({
   }, [statusVal, ignoreMutation, setStatusMutation]);
 
   const { data, isLoading, isFetched, refetch } = useQuery({
-    queryKey: [`GetResponsibleUserForTrip`],
+    queryKey: [`GetResponsibleUsersNames`],
     queryFn: async () => {
       const namesList = await Promise.all(
         tripsData.map(async (trip) => {
           const fullName = await getUserById(trip.user_id);
-          const user_id = trip.user_id;
-          return { user_id, fullName };
+          const tripId = trip.id;
+          return { tripId, fullName };
         })
       );
       return namesList;
@@ -94,7 +94,7 @@ export const TripInfoCard = ({
           {isLoading ? (
             <Spinner />
           ) : (
-            data?.filter((user) => user.user_id === currentTripData.user_id)[0]
+            data?.filter((user) => user.tripId === currentTripData.id)[0]
               ?.fullName.firstName
           )}
         </b>

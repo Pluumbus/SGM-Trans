@@ -11,10 +11,8 @@ import { TrendingUp } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
-
-import { motion } from "framer-motion";
 import { CargoType } from "@/app/workflow/_feature/types";
-import { COLORS } from "@/lib/colors";
+import { TotalStats } from "./totalStats";
 
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   const mCargos = useMemo(() => cargos, [cargos.length]);
@@ -87,30 +85,6 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     fetch();
   }, [mCargos.length]);
 
-  const totalWeight =
-    mCargos && mCargos.length > 0
-      ? mCargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.weight);
-          return isNaN(value) ? sum : sum + value;
-        }, 0)
-      : 0;
-
-  const totalVolume =
-    mCargos && mCargos.length > 0
-      ? mCargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.volume);
-          return isNaN(value) ? sum : sum + value;
-        }, 0)
-      : 0;
-
-  const totalSumm =
-    mCargos && mCargos.length > 0
-      ? mCargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.amount.value);
-          return isNaN(value) ? sum : sum + value;
-        }, 0)
-      : 0;
-
   return (
     <Card>
       <CardHeader>
@@ -121,62 +95,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           <Spinner />
         ) : (
           <>
-            <Card className="mb-3">
-              <CardBody>
-                <div className="flex justify-around">
-                  <span>
-                    Общий вес:{" "}
-                    <b
-                      style={{
-                        color: `${totalWeight <= 11 ? `${COLORS.green}` : totalWeight <= 19.9 ? `${COLORS.yellow}` : totalWeight <= 22 ? `${COLORS.orange}` : `${COLORS.red}`}`,
-                      }}
-                    >
-                      {totalWeight}/22
-                    </b>{" "}
-                    тонн
-                    <div
-                      style={{
-                        color: `${COLORS.red}`,
-                      }}
-                      className="font-bold"
-                    >
-                      {totalWeight > 22 && "Разгрузите машину"}
-                    </div>
-                  </span>
-                  <span>
-                    Общий объем:{" "}
-                    <b
-                      style={{
-                        color: `${totalVolume <= 47 ? `${COLORS.green}` : totalVolume <= 79 ? `${COLORS.yellow}` : totalVolume <= 92 ? `${COLORS.orange}` : `${COLORS.red}`}`,
-                      }}
-                    >
-                      {totalVolume}/92
-                    </b>{" "}
-                    м.куб.
-                    <div
-                      style={{
-                        color: `${COLORS.red}`,
-                      }}
-                      className="font-bold"
-                    >
-                      {totalVolume > 92 && "Разгрузите машину"}
-                    </div>
-                  </span>
-                  <span>
-                    Сумма:{" "}
-                    <b
-                      style={{
-                        color: `${totalSumm < 2500000 ? `${COLORS.red}` : `${COLORS.green}`}`,
-                      }}
-                    >
-                      {totalSumm}
-                    </b>{" "}
-                    тг
-                  </span>
-                </div>
-              </CardBody>
-            </Card>
-
+            <TotalStats allCargos={mCargos} />
             <CustomBar
               data={chartData}
               cargoCount={cargos.length}

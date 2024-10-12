@@ -144,6 +144,7 @@ const Page: NextPage = () => {
         >
           {tripsData.map((trip) => (
             <Tab
+              key={trip.id}
               className="h-20"
               title={
                 <div className="flex flex-col items-center text-sm space-y-1">
@@ -156,15 +157,14 @@ const Page: NextPage = () => {
 
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
-                      <>
+                      <span key={index}>
                         {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
                         {index < trip.city_to.length - 1 ? ", " : "."}
-                      </>
+                      </span>
                     ))}
                   </span>
                 </div>
               }
-              key={trip.id}
             >
               <TripTab
                 currentTrip={trip}

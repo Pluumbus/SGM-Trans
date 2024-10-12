@@ -142,6 +142,7 @@ export const UpdateTripNumber = ({
               </ModalHeader>
               <ModalBody>
                 <Autocomplete
+                  aria-label="Выберите рейс"
                   label="Выберите рейс"
                   selectedKey={selectedTrip}
                   onSelectionChange={(e) => {
@@ -155,7 +156,7 @@ export const UpdateTripNumber = ({
                         key={e.id}
                         textValue={`${e.driver} | ${e.id}`}
                         value={e.id}
-                        className={`${sumCargosColorForTrip(e, false)}`}
+                        style={{ color: `${sumCargosColorForTrip(e, false)}` }}
                       >
                         {`${e.driver} | ${e.id} рейс`}{" "}
                         {sumCargosColorForTrip(e, true)}
