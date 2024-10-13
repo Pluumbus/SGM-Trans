@@ -53,7 +53,7 @@ export const Text = ({
       <Textarea
         aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
         variant="underlined"
-        className="min-w-20"
+        className="w-full"
         value={state}
         onChange={(e) => setState(e.target.value)}
       />

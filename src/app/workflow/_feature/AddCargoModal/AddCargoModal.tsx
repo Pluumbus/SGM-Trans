@@ -72,12 +72,15 @@ export const CargoModal = ({
     mutate({
       ...data,
       trip_id: trip_id,
-      unloading_point: unlPoint,
-      status: {
-        estimatedDate: data.status.estimatedDate?.year
-          ? `${data.status.estimatedDate.year}-${data.status.estimatedDate.month}-${data.status.estimatedDate.day}`
-          : `${new Date().getFullYear()}-${new Date().getMonth()}-${new Date().getDay()}`,
+      client_bin: {
+        snts: ["KZ-SNT-"],
+        tempText: data.client_bin.tempText || "",
+        xin: "",
       },
+      unloading_point: unlPoint,
+      status: data.status?.year
+        ? `${data.status.year}-${data.status.month}-${data.status.day}`
+        : `${new Date().toISOString().split("T")[0]}`,
     });
   };
 
@@ -94,7 +97,7 @@ export const CargoModal = ({
                 label="Адрес получения груза"
               />
               <Textarea
-                {...register("client_bin")}
+                {...register("client_bin.tempText")}
                 label={`Клиент\n\n(получатель груза)\n\nБИН`}
               />
 
@@ -258,7 +261,7 @@ export const CargoModal = ({
 
               <Controller
                 control={control}
-                name="status.estimatedDate"
+                name="status"
                 render={({ field }) => (
                   <DatePicker
                     value={field.value}

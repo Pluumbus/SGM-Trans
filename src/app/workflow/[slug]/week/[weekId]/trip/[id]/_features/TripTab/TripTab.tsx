@@ -18,6 +18,7 @@ import { Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
+
 export const TripTab = ({
   currentTrip,
   trips,
@@ -76,22 +77,22 @@ export const TripTab = ({
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            const temp = cargos.map((e) => {
-              if (e.id === payload.old.id) {
-                return payload.new;
-              }
-              return e;
-            }) as CargoType[];
+            if (cargos.find((e) => e.id == payload.old.id) == payload.new) {
+              const temp = cargos.map((e) => {
+                if (e.id === payload.old.id) {
+                  return payload.new;
+                }
+                return e;
+              }) as CargoType[];
+              const res = temp.filter((e) => e.trip_id == currentTrip.id);
+              setCargos(res);
+              const rowsToSelect = temp.map((e) => ({
+                number: e.id,
+                isSelected: false,
+              }));
 
-            const res = temp.filter((e) => e.trip_id == currentTrip.id);
-            const rowsToSelect = temp.map((e) => ({
-              number: e.id,
-              isSelected: false,
-            }));
-
-            setRowSelected(rowsToSelect);
-
-            setCargos(res);
+              setRowSelected(rowsToSelect);
+            }
           }
         }
       )

@@ -31,14 +31,15 @@ export type CargoType = {
   is_unpalletizing: boolean;
   comments: string;
 
-  client_bin: string;
+  client_bin: {
+    tempText: string;
+    snts: string[];
+    xin: string;
+  };
   cargo_name: string;
   transportation_manager: string;
   is_documents: boolean;
-  status: {
-    factDate?: string;
-    estimatedDate: string;
-  };
+  status: string;
   loading_scheme: string;
   user_id: string;
   is_act_ready: {
