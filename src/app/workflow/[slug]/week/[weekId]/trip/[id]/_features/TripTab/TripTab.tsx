@@ -77,22 +77,23 @@ export const TripTab = ({
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            if (cargos.find((e) => e.id == payload.old.id) == payload.new) {
-              const temp = cargos.map((e) => {
-                if (e.id === payload.old.id) {
-                  return payload.new;
-                }
-                return e;
-              }) as CargoType[];
-              const res = temp.filter((e) => e.trip_id == currentTrip.id);
-              setCargos(res);
-              const rowsToSelect = temp.map((e) => ({
-                number: e.id,
-                isSelected: false,
-              }));
+            console.log(payload.new);
 
-              setRowSelected(rowsToSelect);
-            }
+            setCargos((prev) => {
+              return prev
+                .map((e) =>
+                  e.id === payload.old.id
+                    ? (payload.new as CargoType)
+                    : (e as CargoType)
+                )
+                .filter((e) => e.trip_id == currentTrip.id);
+            });
+            const rowsToSelect = cargos.map((e) => ({
+              number: e.id,
+              isSelected: false,
+            }));
+
+            setRowSelected(rowsToSelect);
           }
         }
       )
