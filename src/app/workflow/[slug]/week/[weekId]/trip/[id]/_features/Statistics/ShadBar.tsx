@@ -12,7 +12,7 @@ import { useState, useEffect, useMemo } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 import { CargoType } from "@/app/workflow/_feature/types";
-import { TotalStats } from "./totalStats";
+import { TotalStats } from "./TotalStats";
 
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   const mCargos = useMemo(() => cargos, [cargos.length]);

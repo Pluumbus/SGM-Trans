@@ -39,7 +39,7 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
   const totalWeight =
     cargos && cargos.length > 0
       ? cargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.weight);
+          const value = parseFloat(cargo.weight.replace(",", "."));
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
@@ -47,7 +47,7 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
   const totalVolume =
     cargos && cargos.length > 0
       ? cargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.volume);
+          const value = parseFloat(cargo.volume.replace(",", "."));
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
@@ -55,7 +55,7 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
   const totalSumm =
     cargos && cargos.length > 0
       ? cargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.amount.value);
+          const value = parseFloat(cargo.amount.value.replace(/\s+/g, ""));
           return isNaN(value) ? sum : sum + value;
         }, 0)
       : 0;
@@ -76,6 +76,7 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
           return cargo.is_documents ? count + 1 : count;
         }, 0)
       : 0;
+
   return (
     <div>
       <Card className="mb-3">
