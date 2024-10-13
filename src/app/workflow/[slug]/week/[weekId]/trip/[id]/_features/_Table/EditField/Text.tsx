@@ -15,10 +15,10 @@ export const Text = ({
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
 
   useEffect(() => {
-    if (info) {
+    if (info && state != info.getValue()) {
       setState(info.getValue()?.toString() || "");
     }
-  }, [info]);
+  }, [info.getValue()]);
 
   const [debouncedValue, setDebouncedValue] = useState<string>(state);
 

@@ -145,7 +145,17 @@ export const CreateTripInsideWeek = ({
 
   const onSubmit = (e) => {
     e.preventDefault();
-    mutate();
+    if (
+      formState.driver &&
+      formState.city_from[0] != "" &&
+      formState.city_to[0] != ""
+    )
+      mutate();
+    else
+      toast({
+        title: "Ошбика",
+        description: "Заполните все поля",
+      });
   };
 
   const handleCityToChange = (index, newCity, isCityTo = true) => {
@@ -203,15 +213,22 @@ export const CreateTripInsideWeek = ({
             <ModalHeader>Добавить путь</ModalHeader>
             <Divider />
             <ModalBody className="grid grid-cols-2 gap-2">
-              <Drivers
-                selectedKey={formState.driver}
-                onSelectionChange={(e) => {
-                  setFormState((prev) => ({
-                    ...prev,
-                    driver: e,
-                  }));
-                }}
-              />
+              <div className="flex flex-col">
+                <Drivers
+                  selectedKey={formState.driver}
+                  onSelectionChange={(e) => {
+                    setFormState((prev) => ({
+                      ...prev,
+                      driver: e,
+                    }));
+                  }}
+                />
+                {!formState.driver && (
+                  <span className="text-danger-400 text-xs pl-1">
+                    Выберите водителя*
+                  </span>
+                )}
+              </div>
               {formState.city_from.map((city, index) => (
                 <Cities
                   key={index + 2}
