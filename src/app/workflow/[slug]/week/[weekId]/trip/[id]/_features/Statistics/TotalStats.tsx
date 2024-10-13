@@ -64,7 +64,7 @@ export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
     cargos && cargos.length > 0
       ? cargos.reduce((count, cargo) => {
           const client = cargo.client_bin;
-          return client && client.tempText.trim().length > 0
+          return client && client.tempText?.trim().length > 0
             ? count + 1
             : count;
         }, 0)

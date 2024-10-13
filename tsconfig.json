@@ -28,6 +28,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/lib/references/cities/citiesRef.ts"
-  ],
+, "src/lib/references/clerkUserType/SetUserFuncs.ts"  ],
   "exclude": ["node_modules"]
 }

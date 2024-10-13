@@ -21,7 +21,6 @@ import { useUser } from "@clerk/nextjs";
 import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserById } from "../../../../../_api";
-import { setUserData } from "@/lib/references/clerkUserType/setUserData";
 
 type Type = CargoType["is_act_ready"];
 

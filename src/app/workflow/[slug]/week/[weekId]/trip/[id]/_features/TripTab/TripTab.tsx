@@ -24,11 +24,13 @@ export const TripTab = ({
   trips,
   columns,
   isOnlyMycargos,
+  onCargosUpdate,
 }: {
   currentTrip: TripType;
   trips: TripType[];
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
+  onCargosUpdate: (cities: string[]) => void;
 }) => {
   const { data, isLoading } = useQuery({
     queryKey: [`cargo-${currentTrip.id}`],
@@ -62,6 +64,10 @@ export const TripTab = ({
       setCargos(filterBy());
     }
   }, [data, isOnlyMycargos]);
+
+  useEffect(() => {
+    onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
+  }, [data]);
 
   useEffect(() => {
     const cn = supabase

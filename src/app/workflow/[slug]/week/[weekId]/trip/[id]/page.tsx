@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
 import {
@@ -33,7 +33,6 @@ import { getDayOfWeek } from "./_helpers";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../types";
-import { FiPlus } from "react-icons/fi";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -44,6 +43,18 @@ const Page: NextPage = () => {
   const [selectedTabId, setSelectedTabId] = useState(id);
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [week, setWeek] = useState<WeekType>();
+
+  const [tabTittles, setTabTittles] = useState<{ [key: string]: string[] }>({});
+
+  const handleCargosUpdate = (tripId: string, cities: string[]) => {
+    console.log("tabTitles", tabTittles, "OtherData", tripId, cities);
+    const uniqueData = Array.from(new Set(cities));
+    setTabTittles((prevTitles) => ({
+      ...prevTitles,
+      [tripId]: uniqueData,
+    }));
+  };
+
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
@@ -155,7 +166,6 @@ const Page: NextPage = () => {
                       : trip.status}
                   </span>
                   <span className="font-bold truncate">{trip.id}</span>
-
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
                       <div key={index}>
@@ -163,6 +173,15 @@ const Page: NextPage = () => {
                         {index < trip.city_to.length - 1 ? ", " : "."}
                       </div>
                     ))}
+                    {/* {tabTittles[trip.id]?.map((city, index) => (
+                      <div key={index}>
+                        {city?.length <= 5
+                          ? city?.slice(0, 3)
+                          : city?.slice(0, 4)}
+                        {index < trip.city_to.length - 1 ? ", " : ""}
+                      </div>
+                    ))} */}
+                    {tabTittles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
               }
@@ -172,6 +191,9 @@ const Page: NextPage = () => {
                 trips={tripsData}
                 columns={columns}
                 isOnlyMycargos={isOnlyMycargos}
+                onCargosUpdate={(cities) =>
+                  handleCargosUpdate(trip?.id.toString(), cities)
+                }
               />
             </Tab>
           ))}
