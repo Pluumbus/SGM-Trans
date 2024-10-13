@@ -14,10 +14,12 @@ import { toast } from "@/components/ui/use-toast";
 
 import { ReactNode, useEffect, useState } from "react";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { updateTripStatus } from "../../../_api/requests";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IoMdSettings } from "react-icons/io";
 import { getUserById } from "../../../_api";
+import { UsersList } from "@/lib/references/clerkUserType/types";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import { updateTripRespUser, updateTripStatus } from "../../../_api/requests";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -31,6 +33,41 @@ export const TripInfoCard = ({
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
   const [ignoreMutation, setIgnoreMutation] = useState(true);
+
+  const { data: allUsers } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => {
+      const users = await getUserList();
+      const filteredUsrs = users.filter((user) => user.role === "Логист");
+      return filteredUsrs as UsersList[];
+    },
+  });
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: [`GetResponsibleUsersNames`],
+    queryFn: async () => {
+      const namesList = await Promise.all(
+        tripsData.map(async (trip) => {
+          const fullName = await getUserById(trip.user_id);
+          const tripId = trip.id;
+          return { tripId, fullName };
+        })
+      );
+      return namesList;
+    },
+  });
+
+  const { mutate: setTripUserMutation } = useMutation({
+    mutationKey: ["SetTripRespUser"],
+    mutationFn: async (user_id: string) =>
+      await updateTripRespUser(user_id, selectedTabId),
+    onSuccess() {
+      toast({
+        title: "Ответственный рейса успешно обновлён",
+      });
+    },
+  });
+
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
@@ -59,19 +96,6 @@ export const TripInfoCard = ({
     }
   }, [statusVal, ignoreMutation, setStatusMutation]);
 
-  const { data, isLoading, isFetched, refetch } = useQuery({
-    queryKey: [`GetResponsibleUsersNames`],
-    queryFn: async () => {
-      const namesList = await Promise.all(
-        tripsData.map(async (trip) => {
-          const fullName = await getUserById(trip.user_id);
-          const tripId = trip.id;
-          return { tripId, fullName };
-        })
-      );
-      return namesList;
-    },
-  });
   const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
       date.year,
@@ -82,23 +106,32 @@ export const TripInfoCard = ({
     setIgnoreMutation(false);
   };
 
-  const handleSetStatus = (val: string) => {
-    setStatusVal(val);
-    setIgnoreMutation(false);
-  };
+  const respUser = data?.filter(
+    (user) => user.tripId === currentTripData?.id
+  )[0]?.fullName;
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex justify-between">
         <span>Ответственный:</span>
-        <b>
-          {isLoading ? (
-            <Spinner />
-          ) : (
-            data?.filter((user) => user.tripId === currentTripData?.id)[0]
-              ?.fullName.firstName
-          )}
-        </b>
+        <b>{isLoading ? <Spinner /> : respUser?.firstName}</b>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly size="sm" color="default">
+              <IoMdSettings />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Select dropdown">
+            {allUsers?.map((user) => (
+              <DropdownItem
+                key={user.id}
+                onClick={() => setTripUserMutation(user.id)}
+              >
+                {user.userName}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
       </div>
       <div className="flex justify-between">
         <span>Номер рейса:</span>
@@ -130,7 +163,10 @@ export const TripInfoCard = ({
                   {["Выбрать дату", "В пути"].map((stat: string) => (
                     <DropdownItem
                       key={stat}
-                      onClick={() => handleSetStatus(stat)}
+                      onClick={() => {
+                        setStatusVal(stat);
+                        setIgnoreMutation(false);
+                      }}
                     >
                       {stat}
                     </DropdownItem>
