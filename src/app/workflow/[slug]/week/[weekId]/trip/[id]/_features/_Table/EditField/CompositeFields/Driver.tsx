@@ -10,7 +10,7 @@ type Type = CargoType["driver"];
 export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
   return (
-    <div className="min-w-[15rem] flex flex-col justify-end h-full">
+    <div className="min-w-[12rem] flex flex-col justify-end h-full">
       <DriversWithCars
         variant="underlined"
         aria-label="Driver Cities"

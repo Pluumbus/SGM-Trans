@@ -21,6 +21,7 @@ export const EditField = ({
     | "quantity"
     | "driver"
     | "amount"
+    | "client_bin"
     | "status"
     | "is_act_ready";
 }) => {

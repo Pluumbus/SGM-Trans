@@ -62,15 +62,15 @@ export const getBaseColumnsConfig = () => {
       },
     },
 
-    {
-      accessorKey: "id",
-      header: "ID",
-      size: 10,
-      filter: false,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{info?.getValue()?.toString()}</span>
-      ),
-    },
+    // {
+    //   accessorKey: "id",
+    //   header: "ID",
+    //   size: 10,
+    //   filter: false,
+    //   cell: (info: Cell<CargoType, ReactNode>) => (
+    //     <span>{info?.getValue()?.toString()}</span>
+    //   ),
+    // },
 
     {
       accessorKey: "created_at",
@@ -86,7 +86,7 @@ export const getBaseColumnsConfig = () => {
       header: "Адрес получения",
       size: 30,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} cl="min-w-[10rem]" />
+        <EditField info={info} type={"Text"} cl="min-w-[7rem]" />
       ),
       filter: false,
     },
@@ -105,19 +105,28 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "weight",
-      header: "Вес",
+      header: () => (
+        <div className="flex justify-center w-full">
+          <span>Вес</span>
+        </div>
+      ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Text"} cl="!min-w-[2rem]" />
       ),
       filter: false,
     },
     {
       accessorKey: "volume",
-      header: "Объем м.куб.",
+      header: () => (
+        <div className="flex flex-col items-center justify-center w-full">
+          <span>Объем</span>
+          <span>м.куб.</span>
+        </div>
+      ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Text"} cl="!min-w-[3rem]" />
       ),
       filter: false,
     },
@@ -152,7 +161,13 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "is_unpalletizing",
-      header: "Распалетирование",
+      header: () => (
+        <div className="w-[3rem] flex flex-col items-center">
+          <span>Распа</span>
+          <span>летир</span>
+          <span>ование</span>
+        </div>
+      ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Checkbox"} />
@@ -165,7 +180,7 @@ export const getBaseColumnsConfig = () => {
       header: "Комментарии",
       size: 25,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField info={info} type={"Text"} cl={"!min-w-[10rem]"} />
       ),
       filter: false,
     },
@@ -175,7 +190,12 @@ export const getBaseColumnsConfig = () => {
       header: "БИН клиента",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="client_bin"
+          cl="!min-w-[10rem]"
+        />
       ),
       filter: true,
     },
@@ -199,7 +219,12 @@ export const getBaseColumnsConfig = () => {
     },
     {
       accessorKey: "is_documents",
-      header: "Наличие документов",
+      header: () => (
+        <div className="flex flex-col items-center">
+          <span>Наличие</span>
+          <span>документов</span>
+        </div>
+      ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Checkbox"} />
