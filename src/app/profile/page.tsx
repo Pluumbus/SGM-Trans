@@ -5,10 +5,10 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { getUserList } from "./_api/requests";
 import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "@nextui-org/react";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export default async function ProfilePage() {
   const queryClient = new QueryClient();

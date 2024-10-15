@@ -33,6 +33,7 @@ import { getDayOfWeek } from "./_helpers";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../types";
+import { TripInfoMscCard } from "./_features/TripInfoCard/TripMscInfoCard";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -122,15 +123,12 @@ const Page: NextPage = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Card className="bg-gray-200 w-72">
-          <CardBody>
-            <TripInfoCard
-              onOpenChange={onOpenChange}
-              selectedTabId={selectedTabId}
-              tripsData={tripsData}
-            />
-          </CardBody>
-        </Card>
+        <TripInfoCard
+          onOpenChange={onOpenChange}
+          selectedTabId={selectedTabId}
+          tripsData={tripsData}
+        />
+        <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} />
         <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
           <Timer />
         </RoleBasedWrapper>
@@ -160,11 +158,7 @@ const Page: NextPage = () => {
               className="h-20"
               title={
                 <div className="flex flex-col items-center text-sm space-y-1">
-                  <span className="text-gray-500 truncate">
-                    {trip.status !== "В пути"
-                      ? getDayOfWeek(trip.status)
-                      : trip.status}
-                  </span>
+                  <span className="text-gray-500 truncate">{trip.status}</span>
                   <span className="font-bold truncate">{trip.id}</span>
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
@@ -173,14 +167,6 @@ const Page: NextPage = () => {
                         {index < trip.city_to.length - 1 ? ", " : "."}
                       </div>
                     ))}
-                    {/* {tabTittles[trip.id]?.map((city, index) => (
-                      <div key={index}>
-                        {city?.length <= 5
-                          ? city?.slice(0, 3)
-                          : city?.slice(0, 4)}
-                        {index < trip.city_to.length - 1 ? ", " : ""}
-                      </div>
-                    ))} */}
                     {tabTittles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
