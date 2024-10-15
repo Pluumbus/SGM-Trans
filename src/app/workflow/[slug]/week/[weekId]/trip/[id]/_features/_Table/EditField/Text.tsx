@@ -15,10 +15,10 @@ export const Text = ({
   const [state, setState] = useState<string>(info.getValue()?.toString() || "");
 
   useEffect(() => {
-    if (info) {
+    if (info && state != info.getValue()) {
       setState(info.getValue()?.toString() || "");
     }
-  }, [info]);
+  }, [info.getValue()]);
 
   const [debouncedValue, setDebouncedValue] = useState<string>(state);
 
@@ -53,7 +53,7 @@ export const Text = ({
       <Textarea
         aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
         variant="underlined"
-        className="min-w-20"
+        className="w-full"
         value={state}
         onChange={(e) => setState(e.target.value)}
       />

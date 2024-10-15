@@ -31,13 +31,14 @@ import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Input, Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { getUserList } from "../_api/requests";
 import { columns } from "./columns";
 import { roleNamesList } from "@/components/roles/useRole";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export function DataTable() {
   const { data, isLoading } = useQuery({
-    queryKey: ["Get users for admin panel"],
+    // queryKey: ["Get users for admin panel"],
+    queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),
   });
 

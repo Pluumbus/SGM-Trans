@@ -1,19 +1,25 @@
+"use client";
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
   DatePicker,
   DateValue,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Spinner,
 } from "@nextui-org/react";
 
 import { toast } from "@/components/ui/use-toast";
 
-import supabase from "@/utils/supabase/client";
 import { ReactNode, useEffect, useState } from "react";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
-import { updateTripStatus } from "../../../_api/requests";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { IoMdSettings } from "react-icons/io";
+import { getUserById } from "../../../_api";
+import { UsersList } from "@/lib/references/clerkUserType/types";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import { updateTripRespUser, updateTripStatus } from "../../../_api/requests";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -26,19 +32,69 @@ export const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
-  const [isButtonChange, setIsButtonChange] = useState(false);
   const [ignoreMutation, setIgnoreMutation] = useState(true);
+
+  const { data: allUsers } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => {
+      const users = await getUserList();
+      const filteredUsrs = users.filter((user) => user.role === "Логист");
+      return filteredUsrs as UsersList[];
+    },
+  });
+
+  const { data, isLoading, refetch } = useQuery({
+    queryKey: [`GetResponsibleUsersNames`],
+    queryFn: async () => {
+      const namesList = await Promise.all(
+        tripsData.map(async (trip) => {
+          const fullName = await getUserById(trip.user_id);
+          const tripId = trip.id;
+          return { tripId, fullName };
+        })
+      );
+      return namesList;
+    },
+  });
+
+  const { mutate: setTripUserMutation } = useMutation({
+    mutationKey: ["SetTripRespUser"],
+    mutationFn: async (user_id: string) =>
+      await updateTripRespUser(user_id, selectedTabId),
+    onSuccess() {
+      toast({
+        title: "Ответственный рейса успешно обновлён",
+      });
+    },
+  });
 
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["SetTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
     onSuccess() {
-      setIsButtonChange(false);
       toast({
         title: "Статус рейса успешно обновлён",
       });
     },
   });
+
+  useEffect(() => {
+    const currentTrip = tripsData.find(
+      (item) => item.id === Number(selectedTabId)
+    );
+    setCurrentTripData(currentTrip);
+    setStatusVal(currentTrip?.status);
+    setIgnoreMutation(true);
+    refetch();
+  }, [selectedTabId, tripsData]);
+
+  useEffect(() => {
+    if (ignoreMutation) return;
+
+    if (statusVal && statusVal !== "Выбрать дату") {
+      setStatusMutation();
+    }
+  }, [statusVal, ignoreMutation, setStatusMutation]);
 
   const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
@@ -50,51 +106,33 @@ export const TripInfoCard = ({
     setIgnoreMutation(false);
   };
 
-  const handleSetStatus = (val: string) => {
-    setStatusVal(val);
-    setIgnoreMutation(false);
-  };
-
-  useEffect(() => {
-    const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
-    );
-    setCurrentTripData(currentTrip);
-    setStatusVal(currentTrip?.status);
-    setIgnoreMutation(true);
-  }, [selectedTabId, tripsData]);
-
-  useEffect(() => {
-    if (ignoreMutation) return;
-
-    if (statusVal && statusVal !== "Выбрать дату") {
-      setStatusMutation();
-    }
-  }, [statusVal, ignoreMutation, setStatusMutation]);
-
-  useEffect(() => {
-    const cn = supabase
-      .channel(`trip${selectedTabId}-status`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "trips",
-        },
-        (payload) => {
-          setStatusVal((payload.new as TripType).status);
-        }
-      )
-      .subscribe();
-
-    return () => {
-      cn.unsubscribe();
-    };
-  });
+  const respUser = data?.filter(
+    (user) => user.tripId === currentTripData?.id
+  )[0]?.fullName;
 
   return (
     <div className="flex flex-col gap-2">
+      <div className="flex justify-between">
+        <span>Ответственный:</span>
+        <b>{isLoading ? <Spinner /> : respUser?.firstName}</b>
+        <Dropdown>
+          <DropdownTrigger>
+            <Button isIconOnly size="sm" color="default">
+              <IoMdSettings />
+            </Button>
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Select dropdown">
+            {allUsers?.map((user) => (
+              <DropdownItem
+                key={user.id}
+                onClick={() => setTripUserMutation(user.id)}
+              >
+                {user.userName}
+              </DropdownItem>
+            ))}
+          </DropdownMenu>
+        </Dropdown>
+      </div>
       <div className="flex justify-between">
         <span>Номер рейса:</span>
         <b>{selectedTabId}</b>
@@ -105,42 +143,39 @@ export const TripInfoCard = ({
       </div>
 
       <div className="flex justify-between">
-        Статус:{" "}
-        {isButtonChange ? (
-          <div>
-            {statusVal === "Выбрать дату" ? (
-              <DatePicker
-                aria-label="Выбрать дату"
-                onChange={handleSetDateChange}
-              />
-            ) : (
-              <Autocomplete
-                aria-label="AutoStatus"
-                variant="underlined"
-                onInputChange={handleSetStatus}
-                inputValue={statusVal}
-              >
-                {["Выбрать дату", "В пути"].map((stat: string) => (
-                  <AutocompleteItem key={stat}>{stat}</AutocompleteItem>
-                ))}
-              </Autocomplete>
-            )}
-          </div>
-        ) : (
-          <>
-            <b className="mr-4">{statusVal}</b>
-            <Button
-              isIconOnly
-              size="sm"
-              color="default"
-              onClick={() => {
-                setIsButtonChange((prev) => !prev);
-              }}
-            >
-              <IoMdSettings />
-            </Button>
-          </>
-        )}
+        Статус:
+        <>
+          {statusVal === "Выбрать дату" ? (
+            <DatePicker
+              aria-label="Выбрать дату"
+              onChange={handleSetDateChange}
+            />
+          ) : (
+            <>
+              <b>{statusVal}</b>
+              <Dropdown>
+                <DropdownTrigger>
+                  <Button isIconOnly size="sm" color="default">
+                    <IoMdSettings />
+                  </Button>
+                </DropdownTrigger>
+                <DropdownMenu>
+                  {["Выбрать дату", "В пути"].map((stat: string) => (
+                    <DropdownItem
+                      key={stat}
+                      onClick={() => {
+                        setStatusVal(stat);
+                        setIgnoreMutation(false);
+                      }}
+                    >
+                      {stat}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+            </>
+          )}
+        </>
       </div>
 
       <div>

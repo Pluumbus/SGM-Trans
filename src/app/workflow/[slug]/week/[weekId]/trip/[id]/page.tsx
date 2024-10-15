@@ -2,8 +2,8 @@
 
 import { useParams } from "next/navigation";
 
-import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
 import {
@@ -30,7 +30,10 @@ import { WeekType } from "@/app/workflow/_feature/types";
 import { Timer } from "@/components/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 import { getDayOfWeek } from "./_helpers";
+import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
+import { TripAndWeeksIdType } from "../types";
+import { FiPlus } from "react-icons/fi";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -39,18 +42,59 @@ const Page: NextPage = () => {
   }>();
 
   const [selectedTabId, setSelectedTabId] = useState(id);
-
+  const [tripsData, setTripsData] = useState<TripType[]>([]);
+  const [week, setWeek] = useState<WeekType>();
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
   });
-
-  const { data: tripsData, isLoading } = useQuery<
-    (TripType & { weeks: WeekType })[]
-  >({
-    queryKey: ["getTrips"],
-    queryFn: async () => await getTripsByWeekId(weekId),
+  const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
+    mutationKey: [`trips-${weekId}`],
+    mutationFn: async () => await getTripsByWeekId(weekId),
+    onSuccess: (data) => {
+      const processedData = data.map(({ weeks, ...main }) => {
+        setWeek(weeks);
+        return main;
+      });
+      setTripsData(processedData);
+    },
   });
+
+  useEffect(() => {
+    mutate();
+    setSelectedTabId(id);
+  }, []);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`${weekId}-trips`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "trips",
+        },
+        (payload) => {
+          const updatedTrip = payload.new as TripType;
+
+          if (payload.eventType == "INSERT")
+            setTripsData((prev) => [...prev, updatedTrip]);
+          else
+            setTripsData((prev) => {
+              const updatedTrips = prev.map((trip) =>
+                trip.id === updatedTrip.id ? updatedTrip : trip
+              );
+              return updatedTrips;
+            });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
 
   const { isOpen, onOpenChange } = useDisclosure();
 
@@ -60,7 +104,7 @@ const Page: NextPage = () => {
     setSelectedTabId(key);
   };
 
-  if (isLoading) {
+  if (isPending) {
     return <Spinner />;
   }
 
@@ -82,9 +126,7 @@ const Page: NextPage = () => {
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
-          <span className="text-xl">
-            Рейсы недели №{tripsData[0]?.weeks?.week_number}
-          </span>
+          <span className="text-xl">Рейсы недели №{week?.week_number}</span>
           <Checkbox
             isSelected={isOnlyMycargos}
             onChange={() => {
@@ -103,6 +145,7 @@ const Page: NextPage = () => {
         >
           {tripsData.map((trip) => (
             <Tab
+              key={trip.id}
               className="h-20"
               title={
                 <div className="flex flex-col items-center text-sm space-y-1">
@@ -115,15 +158,14 @@ const Page: NextPage = () => {
 
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
-                      <>
+                      <div key={index}>
                         {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
                         {index < trip.city_to.length - 1 ? ", " : "."}
-                      </>
+                      </div>
                     ))}
                   </span>
                 </div>
               }
-              key={trip.id}
             >
               <TripTab
                 currentTrip={trip}
@@ -133,13 +175,8 @@ const Page: NextPage = () => {
               />
             </Tab>
           ))}
-          <Tab
-            className="flex items-center justify-center h-20 bg-opacity-0"
-            isDisabled={true}
-          >
-            <span className="text-gray-500 cursor-pointer">
-              <CreateTripInsideWeek weekId={weekId} inTrip={true} />
-            </span>
+          <Tab isDisabled>
+            <CreateTripInsideWeek weekId={weekId} inTrip={true} />
           </Tab>
         </Tabs>
       </div>

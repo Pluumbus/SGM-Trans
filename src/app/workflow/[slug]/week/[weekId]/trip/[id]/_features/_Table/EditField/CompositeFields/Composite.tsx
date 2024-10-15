@@ -7,6 +7,7 @@ import { Quantity } from "./Quantity";
 import { Driver } from "./Driver";
 import { Status } from "./Status";
 import { PrintAct } from "./PrintAct";
+import { ClientBin } from "./ClientBin";
 
 export const Composite = ({
   info,
@@ -18,6 +19,7 @@ export const Composite = ({
     | "quantity"
     | "driver"
     | "amount"
+    | "client_bin"
     | "status"
     | "is_act_ready";
 }) => {
@@ -34,6 +36,8 @@ export const Composite = ({
       return <Status info={info} />;
     case "is_act_ready":
       return <PrintAct info={info} />;
+    case "client_bin":
+      return <ClientBin info={info} />;
     default:
       return <Amount info={info} />;
   }

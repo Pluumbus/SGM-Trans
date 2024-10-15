@@ -15,8 +15,8 @@ import {
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
-import { PrintButton } from "@/components/actPrintTemp/actGen";
-import { checkRole } from "@/components/roles/useRole";
+import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
+import { useCheckRole } from "@/components/roles/useRole";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -66,12 +66,12 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className="flex flex-col gap-2 w-[8rem]">
       <div className="flex flex-col gap-2">
-        {checkRole(["Кассир", "Админ"]) && !values.value ? (
+        {useCheckRole(["Кассир", "Админ"]) ? (
           <Checkbox
             isSelected={values.value}
             onValueChange={(e) => {
               setValues({
-                user_id: user.id,
+                user_id: user?.id,
                 value: e,
               });
             }}
@@ -134,25 +134,25 @@ const GlobalActModal = ({
     mutationKey: ["SetBalanceForActUser"],
     mutationFn: async (newBal: number) => {
       await setUserData({
-        userId: user.id,
+        userId: user?.id,
         publicMetadata: {
-          role: user.publicMetadata.role as string,
+          role: user?.publicMetadata.role as string,
           balance: newBal,
-          time: user.publicMetadata.time as number,
-          prevTime: user.publicMetadata.prevTime as number,
+          time: user?.publicMetadata.time as number,
+          prevTime: user?.publicMetadata.prevTime as number,
         },
       });
     },
     onSuccess: () => {
       setValues(() => ({
         value: true,
-        user_id: user.id,
+        user_id: user?.id,
       }));
       onOpenChange();
       toast({ title: `Печать талона на груз одобрена` });
     },
   });
-  const res = (user.publicMetadata.balance as number) - cargoPrice;
+  const res = (user?.publicMetadata.balance as number) - cargoPrice;
   return (
     <div>
       <Modal onOpenChange={onOpenChange} isOpen={isOpen} isDismissable={false}>
@@ -162,7 +162,7 @@ const GlobalActModal = ({
               Одобрение груза
             </ModalHeader>
             <ModalBody>
-              {res < 0 || res > (user.publicMetadata.balance as number) ? (
+              {res < 0 || res > (user?.publicMetadata.balance as number) ? (
                 <p>Недостаточно баланса</p>
               ) : (
                 <p>
@@ -183,7 +183,7 @@ const GlobalActModal = ({
               >
                 Закрыть
               </Button>
-              {!(res < 0 || res > (user.publicMetadata.balance as number)) && (
+              {!(res < 0 || res > (user?.publicMetadata.balance as number)) && (
                 <Button
                   isLoading={isPending}
                   color="success"
