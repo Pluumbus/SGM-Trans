@@ -49,7 +49,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     if (values.user_id && values.value) {
       mutate();
     }
-  }, [values.user_id]);
+  }, [values?.user_id]);
 
   useEffect(() => {
     if (!values.value) {
@@ -57,7 +57,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     } else {
       mutate();
     }
-  }, [values.value]);
+  }, [values?.value]);
 
   if (isPending) {
     return <Spinner />;

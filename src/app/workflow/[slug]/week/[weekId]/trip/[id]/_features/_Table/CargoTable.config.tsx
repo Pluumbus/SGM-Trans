@@ -231,17 +231,17 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-    {
-      accessorKey: "status",
-      header: "Статус",
-      size: 20,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <div className="py-1">
-          <EditField info={info} type={"Composite"} compositeType="status" />
-        </div>
-      ),
-      filter: false,
-    },
+    // {
+    //   accessorKey: "status",
+    //   header: "Статус",
+    //   size: 20,
+    //   cell: (info: Cell<CargoType, ReactNode>) => (
+    //     <div className="py-1">
+    //       <EditField info={info} type={"Composite"} compositeType="status" />
+    //     </div>
+    //   ),
+    //   filter: false,
+    // },
 
     {
       accessorKey: "user_id",

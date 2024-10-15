@@ -8,23 +8,29 @@ import {
   ReactNode,
   SetStateAction,
   useEffect,
+  useMemo,
   useState,
 } from "react";
+import { isEqual } from "lodash";
 
 export const useEditCargo = <T>({
   info,
   value,
+  setValues,
 }: {
   info: Cell<CargoType, ReactNode>;
   value: T;
+  setValues: Dispatch<SetStateAction<T>>;
 }) =>
   useMutation({
-    mutationFn: async () => {
+    mutationFn: async () =>
       await editCargo(
         info.column.columnDef!.accessorKey,
         value,
         info.row.original.id
-      );
+      ),
+    onSuccess: (data: CargoType) => {
+      setValues((prev) => data[info.column.columnDef.accessorKey] as T);
     },
   });
 
@@ -47,20 +53,30 @@ export const useDebouncedState = <T>(value: T, delay: number): T => {
 export const useCompositeStates = <T>(
   info: Cell<CargoType, ReactNode>
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
-  const [values, setValues] = useState<T>(info.getValue() as T);
+  const [values, setValues] = useState<T>(() => {
+    const res = info.getValue() as T;
+    delete res[info.column.columnDef!.accessorKey];
+    console.log(res);
+
+    return res;
+  });
 
   const debouncedValue = useDebouncedState(values, 500);
 
   const { mutate } = useEditCargo({
     info,
     value: values,
+    setValues,
   });
 
   useEffect(() => {
+    console.log(isEqual(debouncedValue, info.getValue()));
+    console.log("info.getValue()", info.getValue());
+    console.log("values", debouncedValue);
+
     if (
-      Object.values(debouncedValue).some((e) =>
-        Object.keys(info.getValue()).some((el) => e !== info.getValue()[el])
-      )
+      isEqual(debouncedValue, info.getValue() as T)
+      // isEqualObject(info.getValue() as T, values)
     ) {
       mutate();
     }
