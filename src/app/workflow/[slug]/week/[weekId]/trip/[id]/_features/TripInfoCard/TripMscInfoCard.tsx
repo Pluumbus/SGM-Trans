@@ -83,13 +83,12 @@ export const TripInfoMscCard = ({
   return (
     <Card className="bg-gray-200 w-80 h-24">
       <CardBody>
-        <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className="flex justify-between">
-              Дата выезда:
+        <div className="w-full flex justify-between">
+          <div className="grid grid-cols-2 items-center gap-2">
+            <span className="">Дата выезда:</span>
+            <span>
               {dateVal == dateItmes[0] ? (
                 <DatePicker
-                  className="w-2/3"
                   aria-label="Установить дату выхода"
                   onChange={handleSetDateChange}
                 />
@@ -97,11 +96,10 @@ export const TripInfoMscCard = ({
                 <b>{dateValIn}</b>
               )}
             </span>
-            <span className="flex justify-between">
-              Дата прибытия:
+            <span className="flex justify-between">Дата прибытия:</span>
+            <span>
               {dateVal == dateItmes[1] ? (
                 <DatePicker
-                  className="w-2/3"
                   aria-label="Установить дату прихода"
                   onChange={handleSetDateChange}
                 />
