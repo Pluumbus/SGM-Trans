@@ -6,15 +6,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
-import {
-  Card,
-  CardBody,
-  Checkbox,
-  Spinner,
-  Tab,
-  Tabs,
-  useDisclosure,
-} from "@nextui-org/react";
+import { Checkbox, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { TripTab } from "./_features/TripTab";
@@ -29,7 +21,6 @@ import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
 import { Timer } from "@/components/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
-import { getDayOfWeek } from "./_helpers";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../types";

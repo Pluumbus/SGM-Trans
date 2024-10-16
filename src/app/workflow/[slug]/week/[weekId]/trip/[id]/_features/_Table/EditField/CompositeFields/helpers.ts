@@ -29,9 +29,6 @@ export const useEditCargo = <T>({
         value,
         info.row.original.id
       ),
-    onSuccess: (data: CargoType) => {
-      setValues(data[0][info.column.columnDef.accessorKey] as T);
-    },
   });
 
 export const useDebouncedState = <T>(value: T, delay: number): T => {
@@ -55,7 +52,15 @@ export const useCompositeStates = <T>(
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
 
-  const debouncedValue = useDebouncedState(values, 500);
+  useEffect(() => {
+    if (!isEqual(values, info.getValue())) {
+      console.log("isEqual:", !isEqual(debouncedValue, info.getValue()));
+
+      setValues(info.getValue() as T);
+    }
+  }, [info.getValue()]);
+
+  const debouncedValue = useDebouncedState(values, 200);
 
   const { mutate } = useEditCargo({
     info,
@@ -64,14 +69,7 @@ export const useCompositeStates = <T>(
   });
 
   useEffect(() => {
-    console.log(isEqual(debouncedValue, info.getValue()));
-    console.log("info.getValue()", info.getValue());
-    console.log("values", debouncedValue);
-
-    if (
-      !isEqual(debouncedValue, info.getValue() as T)
-      // isEqualObject(info.getValue() as T, values)
-    ) {
+    if (!isEqual(debouncedValue, info.getValue() as T)) {
       mutate();
     }
   }, [debouncedValue]);
