@@ -13,6 +13,16 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   );
   const [debouncedDate, setDebouncedDate] = useState<DateValue>(date);
 
+  useEffect(() => {
+    if (info && date.toString() != info.getValue()) {
+      setDate(
+        parseDate(
+          formatDate(new Date(info.getValue()?.toString()).toISOString())
+        )
+      );
+    }
+  }, [info.getValue()]);
+
   const { mutate } = useMutation({
     mutationFn: async () => {
       await editCargo(

@@ -37,7 +37,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const addSNT = () => {
     setValues((prev) => ({
       ...prev,
-      snts: [...prev.snts, "KZ-SNT-"],
+      snts: [...prev?.snts, "KZ-SNT-"],
     }));
   };
 
@@ -62,7 +62,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Textarea
         variant="underlined"
         ariz-label="Инфо клиента"
-        value={values.tempText}
+        value={values?.tempText}
         onChange={(e) => {
           setValues((prev) => ({
             ...prev,
@@ -90,7 +90,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           <Divider />
           <ModalBody>
             <Input
-              value={values.xin}
+              value={values?.xin}
               label="БИН/ИИН"
               onChange={(e) => {
                 setValues((prev) => ({
@@ -101,14 +101,14 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             />
             <div className="grid grid-cols-2 gap-4">
               <Textarea
-                value={values.snts[0]}
+                value={values?.snts[0]}
                 label="SNT 1"
                 onChange={(e) => {
                   handleSntChange(e.target.value, 0);
                 }}
                 className="mb-2"
               />
-              {values.snts
+              {values?.snts
                 ?.slice(1)
                 .map((snt, index) => (
                   <Textarea
