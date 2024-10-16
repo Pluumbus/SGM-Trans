@@ -2,14 +2,14 @@ import { useUser } from "@clerk/nextjs";
 
 export type Role = (typeof roleNamesList)[number] | "Пользователь";
 
-export function useRole(): Role {
+export const useRole = (): Role =>  {
   const { user, isLoaded } = useUser();
 
   if (!isLoaded || !user) {
     return "Пользователь";
   }
 
-  return (user.publicMetadata?.role as Role) || "Пользователь";
+  return (user?.publicMetadata.role as Role) || "Пользователь";
 }
 
 export const useCheckRole = (allowedRoles: string[]) => {
@@ -18,7 +18,7 @@ export const useCheckRole = (allowedRoles: string[]) => {
   if (isLoaded && !user) {
     return false;
   }
-  const userRole = user.publicMetadata?.role as string;
+  const userRole = user?.publicMetadata.role as string;
 
   return allowedRoles.includes(userRole);
 };

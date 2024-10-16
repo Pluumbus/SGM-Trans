@@ -26,7 +26,7 @@ import { Input } from "@nextui-org/react";
 import { FormEvent, useState } from "react";
 import React from "react";
 import { BiSend } from "react-icons/bi";
-import { setUserData } from "../../../lib/references/clerkUserType/setUserData";
+import { setUserData } from "../../../lib/references/clerkUserType/SetUserFuncs.ts";
 import { useToast } from "@/components/ui/use-toast";
 import { roleNamesList } from "@/components/roles/useRole";
 

@@ -2,6 +2,7 @@
 
 import getClerkClient from "@/utils/clerk/clerk";
 import { useUser } from "@clerk/nextjs";
+import { clerkClient } from "@clerk/nextjs/server";
 
 export const setUserData = async ({
   userId,
@@ -31,11 +32,10 @@ export const setUserRole = async ({
     role: string;
   };
 }) => {
-  const { user, isLoaded } = useUser();
-  const userData = isLoaded && user;
-  const balance = userData.publicMetadata.balance as number;
-  const time = userData.publicMetadata.time as number;
-  const prevTime = userData.publicMetadata.prevTime as number;
+  const user = await clerkClient.users.getUser(userId);
+  const balance = user.publicMetadata.balance as number
+  const time = user.publicMetadata.time as number
+  const prevTime = user.publicMetadata.prevTime as number
   await (
     await getClerkClient()
   ).users.updateUser(userId, {
@@ -52,11 +52,10 @@ export const setUserBalance = async ({
     balance: number;
   };
 }) => {
-  const { user, isLoaded } = useUser();
-  const userData = isLoaded && user;
-  const role = userData.publicMetadata.role as string;
-  const time = userData.publicMetadata.time as number;
-  const prevTime = userData.publicMetadata.prevTime as number;
+  const user = await clerkClient.users.getUser(userId);
+  const role = user.publicMetadata.role as string
+  const time = user.publicMetadata.time as number
+  const prevTime = user.publicMetadata.prevTime as number
   await (
     await getClerkClient()
   ).users.updateUser(userId, {

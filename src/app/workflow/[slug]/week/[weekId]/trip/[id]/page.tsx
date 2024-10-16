@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 
 import { useEffect, useMemo, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
 import {
@@ -33,7 +33,7 @@ import { getDayOfWeek } from "./_helpers";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../types";
-import { FiPlus } from "react-icons/fi";
+import { TripInfoMscCard } from "./_features/TripInfoCard/TripMscInfoCard";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -44,6 +44,18 @@ const Page: NextPage = () => {
   const [selectedTabId, setSelectedTabId] = useState(id);
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [week, setWeek] = useState<WeekType>();
+
+  const [tabTittles, setTabTittles] = useState<{ [key: string]: string[] }>({});
+
+  const handleCargosUpdate = (tripId: string, cities: string[]) => {
+    console.log("tabTitles", tabTittles, "OtherData", tripId, cities);
+    const uniqueData = Array.from(new Set(cities));
+    setTabTittles((prevTitles) => ({
+      ...prevTitles,
+      [tripId]: uniqueData,
+    }));
+  };
+
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
     initialData: false,
@@ -111,15 +123,12 @@ const Page: NextPage = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Card className="bg-gray-200 w-72">
-          <CardBody>
-            <TripInfoCard
-              onOpenChange={onOpenChange}
-              selectedTabId={selectedTabId}
-              tripsData={tripsData}
-            />
-          </CardBody>
-        </Card>
+        <TripInfoCard
+          onOpenChange={onOpenChange}
+          selectedTabId={selectedTabId}
+          tripsData={tripsData}
+        />
+        <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} />
         <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
           <Timer />
         </RoleBasedWrapper>
@@ -149,13 +158,8 @@ const Page: NextPage = () => {
               className="h-20"
               title={
                 <div className="flex flex-col items-center text-sm space-y-1">
-                  <span className="text-gray-500 truncate">
-                    {trip.status !== "В пути"
-                      ? getDayOfWeek(trip.status)
-                      : trip.status}
-                  </span>
+                  <span className="text-gray-500 truncate">{trip.status}</span>
                   <span className="font-bold truncate">{trip.id}</span>
-
                   <span className="text-gray-500 truncate">
                     {trip.city_to.map((city, index) => (
                       <div key={index}>
@@ -163,6 +167,7 @@ const Page: NextPage = () => {
                         {index < trip.city_to.length - 1 ? ", " : "."}
                       </div>
                     ))}
+                    {tabTittles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
               }
@@ -172,6 +177,9 @@ const Page: NextPage = () => {
                 trips={tripsData}
                 columns={columns}
                 isOnlyMycargos={isOnlyMycargos}
+                onCargosUpdate={(cities) =>
+                  handleCargosUpdate(trip?.id.toString(), cities)
+                }
               />
             </Tab>
           ))}
