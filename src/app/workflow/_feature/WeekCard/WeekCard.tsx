@@ -189,7 +189,7 @@ export const CreateTripInsideWeek = ({
   return (
     <div>
       {inTrip ? (
-        <div className="cursor-pointer">
+        <div className="cursor-pointer pt-5 pb-5 ">
           <FiPlus
             size={40}
             onClick={() => {

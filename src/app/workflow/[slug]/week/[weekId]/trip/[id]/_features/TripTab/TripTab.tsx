@@ -2,7 +2,7 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { CargoType } from "@/app/workflow/_feature/types";
@@ -83,8 +83,6 @@ export const TripTab = ({
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            console.log(payload.new);
-
             setCargos((prev) => {
               return prev
                 .map((e) =>

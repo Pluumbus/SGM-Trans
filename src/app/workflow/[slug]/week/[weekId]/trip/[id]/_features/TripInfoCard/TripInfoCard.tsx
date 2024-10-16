@@ -40,7 +40,7 @@ export const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
-  const accessRole = useCheckRole(["Логист Москва"]);
+  const accessRole = useCheckRole(["Логист Москва", "Админ"]);
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {

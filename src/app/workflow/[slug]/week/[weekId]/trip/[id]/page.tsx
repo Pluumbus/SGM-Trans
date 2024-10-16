@@ -36,16 +36,7 @@ const Page: NextPage = () => {
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [week, setWeek] = useState<WeekType>();
 
-  const [tabTittles, setTabTittles] = useState<{ [key: string]: string[] }>({});
-
-  const handleCargosUpdate = (tripId: string, cities: string[]) => {
-    console.log("tabTitles", tabTittles, "OtherData", tripId, cities);
-    const uniqueData = Array.from(new Set(cities));
-    setTabTittles((prevTitles) => ({
-      ...prevTitles,
-      [tripId]: uniqueData,
-    }));
-  };
+  const [tabTitles, setTabTitles] = useState<{ [key: string]: string[] }>({});
 
   const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
     identifier: "show-only-my-cargos",
@@ -67,6 +58,10 @@ const Page: NextPage = () => {
     mutate();
     setSelectedTabId(id);
   }, []);
+
+  // useEffect(() => {
+  //   mutate();
+  // }, [tabTitles]);
 
   useEffect(() => {
     const cn = supabase
@@ -103,8 +98,35 @@ const Page: NextPage = () => {
 
   const columns = useMemo(() => useRoleBasedSchema(), []);
 
-  const handleSelectTab = (key) => {
-    setSelectedTabId(key);
+  const handleCargosUpdate = (tripId: string, cities: string[]) => {
+    console.log(tabTitles);
+    const uniqueData = Array.from(new Set(cities));
+    // setTabTitles((prevTitles) => ({
+    //   ...prevTitles,
+    //   [tripId]: uniqueData,
+    // }));
+    const newCities =
+      uniqueData.length <= 5 ? uniqueData.slice(0, 3) : uniqueData.slice(0, 4);
+    const newCurrentTripCities = Array.from(
+      new Set(
+        tripsData
+          .filter((trip) => trip.id === Number(selectedTabId))[0]
+          .city_to.concat(newCities)
+      )
+    );
+
+    // const newTripsData = tripsData.map((trip) =>
+    //   trip.id === Number(selectedTabId) ? newCurrentTripCities : trip.city_to
+    // );
+    const newTripsData = tripsData.map((trip) =>
+      trip.id === Number(selectedTabId)
+        ? { ...trip, city_to: newCurrentTripCities }
+        : trip
+    ) as TripType[];
+    // .map((trip) => trip.city_to.concat(uniqueData));
+    // setTabTitles({ [tripId]: uniqueData });
+    setTripsData(newTripsData);
+    console.log(newTripsData, "uniqData", uniqueData);
   };
 
   if (isPending) {
@@ -138,15 +160,15 @@ const Page: NextPage = () => {
         </div>
 
         <Tabs
-          className="flex justify-center"
+          className="flex justify-center "
           aria-label="Trips"
           defaultSelectedKey={selectedTabId}
-          onSelectionChange={(key) => handleSelectTab(key)}
+          onSelectionChange={(key) => setSelectedTabId(key as string)}
         >
           {tripsData.map((trip) => (
             <Tab
               key={trip.id}
-              className="h-20"
+              className="h-auto"
               title={
                 <div className="flex flex-col items-center text-sm space-y-1">
                   <span className="text-gray-500 truncate">{trip.status}</span>
@@ -158,7 +180,7 @@ const Page: NextPage = () => {
                         {index < trip.city_to.length - 1 ? ", " : "."}
                       </div>
                     ))}
-                    {tabTittles[trip.id]?.join(" " + trip.status.slice(0, 5))}
+                    {tabTitles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
               }
