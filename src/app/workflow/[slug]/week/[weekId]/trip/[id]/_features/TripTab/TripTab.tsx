@@ -77,7 +77,7 @@ export const TripTab = ({
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            console.log(payload.new);
+            console.log("UPDATE in realtime:", payload.new);
 
             setCargos((prev) => {
               return prev
@@ -102,7 +102,7 @@ export const TripTab = ({
     return () => {
       cn.unsubscribe();
     };
-  });
+  }, []);
 
   if (isLoading) {
     return <Spinner />;
