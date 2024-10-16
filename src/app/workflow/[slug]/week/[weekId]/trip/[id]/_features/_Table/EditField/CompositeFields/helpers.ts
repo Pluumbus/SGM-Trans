@@ -30,7 +30,7 @@ export const useEditCargo = <T>({
         info.row.original.id
       ),
     onSuccess: (data: CargoType) => {
-      setValues((prev) => data[info.column.columnDef.accessorKey] as T);
+      setValues(data[0][info.column.columnDef.accessorKey] as T);
     },
   });
 
@@ -53,13 +53,7 @@ export const useDebouncedState = <T>(value: T, delay: number): T => {
 export const useCompositeStates = <T>(
   info: Cell<CargoType, ReactNode>
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
-  const [values, setValues] = useState<T>(() => {
-    const res = info.getValue() as T;
-    delete res[info.column.columnDef!.accessorKey];
-    console.log(res);
-
-    return res;
-  });
+  const [values, setValues] = useState<T>(info.getValue() as T);
 
   const debouncedValue = useDebouncedState(values, 500);
 
@@ -75,7 +69,7 @@ export const useCompositeStates = <T>(
     console.log("values", debouncedValue);
 
     if (
-      isEqual(debouncedValue, info.getValue() as T)
+      !isEqual(debouncedValue, info.getValue() as T)
       // isEqualObject(info.getValue() as T, values)
     ) {
       mutate();
