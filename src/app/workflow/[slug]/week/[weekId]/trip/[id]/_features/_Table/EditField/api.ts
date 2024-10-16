@@ -9,8 +9,7 @@ export const editCargo = async (
   const { data, error } = await supabase
     .from("cargos")
     .update({ [column]: value })
-    .eq("id", Number(cargoId))
-    .select();
+    .eq("id", Number(cargoId));
 
   if (error) {
     throw new Error();
