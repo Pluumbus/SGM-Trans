@@ -52,6 +52,14 @@ export const useCompositeStates = <T>(
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
 
+  useEffect(() => {
+    if (!isEqual(values, info.getValue())) {
+      console.log("isEqual:", !isEqual(debouncedValue, info.getValue()));
+
+      setValues(info.getValue() as T);
+    }
+  }, [info.getValue()]);
+
   const debouncedValue = useDebouncedState(values, 500);
 
   const { mutate } = useEditCargo({
@@ -59,12 +67,6 @@ export const useCompositeStates = <T>(
     value: values,
     setValues,
   });
-
-  useEffect(() => {
-    if (!isEqual(values, info.getValue())) {
-      setValues(info.getValue() as T);
-    }
-  }, [isEqual(values, info.getValue())]);
 
   useEffect(() => {
     if (!isEqual(debouncedValue, info.getValue() as T)) {
