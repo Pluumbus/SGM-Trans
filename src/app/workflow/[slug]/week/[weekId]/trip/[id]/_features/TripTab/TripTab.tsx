@@ -83,6 +83,7 @@ export const TripTab = ({
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
+            console.log(`workflow-trip${currentTrip.id}`);
             console.log("UPDATE in realtime:", payload.new);
 
             setCargos((prev) => {
