@@ -58,30 +58,40 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     }
   };
   return (
-    <div className="min-w-[15rem] flex justify-end items-center h-full">
-      <Textarea
-        variant="underlined"
-        ariz-label="Инфо клиента"
-        value={values?.tempText}
-        onChange={(e) => {
-          setValues((prev) => ({
-            ...prev,
-            tempText: e.target.value || "",
-          }));
-        }}
-      />
-      <Button
-        variant="ghost"
-        className="h-full"
-        onClick={() => {
-          onOpenChange();
-        }}
-      >
-        <div className="flex flex-col h-full">
-          <span>Добавить</span>
-          <span>SNT</span>
-        </div>
-      </Button>
+    <>
+      <div className="min-w-[15rem] grid grid-cols-2 h-full gap-y-2">
+        <Textarea
+          variant="underlined"
+          ariz-label="Инфо клиента"
+          value={values?.tempText}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              tempText: e.target.value || "",
+            }));
+          }}
+        />
+        {/* <div className="flex items-end"> */}
+        <Button
+          variant="ghost"
+          className="min-h-[2.7rem]"
+          onClick={() => {
+            onOpenChange();
+          }}
+        >
+          <div className="flex flex-col h-full">
+            <span>Добавить</span>
+            <span>SNT</span>
+          </div>
+        </Button>
+        {/* </div> */}
+
+        {values.snts.map((e) => (
+          <div className="">
+            <span>{e},</span>
+          </div>
+        ))}
+      </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader>
@@ -160,6 +170,6 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </div>
+    </>
   );
 };
