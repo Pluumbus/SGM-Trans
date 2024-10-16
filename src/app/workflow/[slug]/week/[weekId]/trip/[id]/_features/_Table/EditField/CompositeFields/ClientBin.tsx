@@ -1,9 +1,12 @@
 import { CargoType } from "@/app/workflow/_feature/types";
-import React, { ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect } from "react";
 import { useCompositeStates } from "./helpers";
 import { Cell } from "@tanstack/react-table";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
 import {
   Button,
+  Card,
+  CardBody,
   Divider,
   Input,
   Modal,
@@ -11,9 +14,11 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ScrollShadow,
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
+import { useToast } from "@/components/ui/use-toast";
 
 type Type = CargoType["client_bin"];
 
@@ -24,15 +29,15 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   useEffect(() => {
     return () => {
-      if (!isOpen && values.snts.some((e) => e == "")) {
-        const vals = values.snts.filter((e) => e != "");
+      if (!isOpen && values.snts.some((e) => e == "KZ-SNT-")) {
+        const vals = values.snts.filter((e) => e != "KZ-SNT-");
         setValues((prev) => ({
           ...prev,
           snts: vals,
         }));
       }
     };
-  }, [isOpen]);
+  }, [isOpen, values]);
 
   const addSNT = () => {
     setValues((prev) => ({
@@ -50,38 +55,118 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       snts: updatedSnts,
     }));
 
-    if (value.length >= 10 && index === values.snts.length - 1) {
+    if (value.length >= 18 && index === values.snts.length - 1) {
       setValues((prev) => ({
         ...prev,
         snts: [...prev.snts, "KZ-SNT-"],
       }));
     }
   };
+
+  const [copiedText, copyToClipboard] = useCopyToClipboard();
+  const { toast } = useToast();
+
+  const checkEmptySNT = () =>
+    values.snts.every((e) => e.trim() == "KZ-SNT-" || e.trim() == "");
+
+  const copyXIN = () => {
+    copyToClipboard(values.xin);
+    toast({
+      title: "Скопировано в буфер обмена",
+      description: `${values.xin} БИН скопирован`,
+    });
+  };
+  const copySnts = () => {
+    if (!checkEmptySNT()) {
+      copyToClipboard(values.snts.join("\n"));
+      toast({
+        title: "Скопировано в буфер обмена",
+        description: `${values.snts.length} SNT скопировано`,
+      });
+    } else {
+      toast({
+        title: "Ничего не было скопировано",
+        description: `Добавьте SNT чтобы их копировать`,
+      });
+    }
+  };
+
   return (
-    <div className="min-w-[15rem] flex justify-end items-center h-full">
-      <Textarea
-        variant="underlined"
-        ariz-label="Инфо клиента"
-        value={values?.tempText}
-        onChange={(e) => {
-          setValues((prev) => ({
-            ...prev,
-            tempText: e.target.value || "",
-          }));
-        }}
-      />
-      <Button
-        variant="ghost"
-        className="h-full"
+    <div className={`${checkEmptySNT() && "bg-red-100"} px-2`}>
+      <div className={`flex w-full items-end `}>
+        <Textarea
+          variant="underlined"
+          ariz-label="Инфо клиента"
+          className="w-3/4"
+          value={values?.tempText}
+          onChange={(e) => {
+            setValues((prev) => ({
+              ...prev,
+              tempText: e.target.value || "",
+            }));
+          }}
+        />
+        {/* <div className="flex items-end"> */}
+        <Button
+          variant="ghost"
+          className="min-h-[2.7rem] w-1/4"
+          onClick={() => {
+            onOpenChange();
+          }}
+        >
+          <div className="flex flex-col h-full">
+            <span>Добавить</span>
+            <span>SNT</span>
+          </div>
+        </Button>
+      </div>
+      {/* </div> */}
+      <div
         onClick={() => {
-          onOpenChange();
+          copyXIN();
         }}
       >
-        <div className="flex flex-col h-full">
-          <span>Добавить</span>
-          <span>SNT</span>
+        <div className="w-full flex gap-2 items-center p-2">
+          <span className="text-[0.7rem]">БИН / ИИН:</span>
+          <span className="font-semibold">{values.xin}</span>
         </div>
-      </Button>
+        <Divider orientation="horizontal" className="col-span-2" />
+      </div>
+      <ScrollShadow className="w-full h-[150px]" hideScrollBar offset={10}>
+        <div
+          className="min-w-[15rem] grid grid-cols-2 h-full overflow-visible gap-y-2 mt-1 pb-4"
+          onClick={() => {
+            copySnts();
+          }}
+        >
+          {values.snts.map((e, i) => (
+            <>
+              {/* @TODO: В будущем сделать копировать в буфер по клику */}
+              <Card
+                shadow="none"
+                className="w-full !overflow-visible pl-1 bg-transparent"
+              >
+                <CardBody className="w-full h-full p-0 !overflow-visible">
+                  <div className="flex w-full justify-between h-full">
+                    <span className={`w-full ${i % 2 == 0 ? "pr-2" : "pl-2"}`}>
+                      {e}
+                    </span>
+                    {i % 2 == 0 && (
+                      <div className="h-full col-span-1">
+                        <Divider orientation="vertical" />
+                      </div>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              {i % 2 !== 0 && (
+                <Divider orientation="horizontal" className="col-span-2" />
+              )}
+            </>
+          ))}
+        </div>
+      </ScrollShadow>
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader>
