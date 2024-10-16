@@ -37,7 +37,6 @@ import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export function DataTable() {
   const { data, isLoading } = useQuery({
-    // queryKey: ["Get users for admin panel"],
     queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),
   });

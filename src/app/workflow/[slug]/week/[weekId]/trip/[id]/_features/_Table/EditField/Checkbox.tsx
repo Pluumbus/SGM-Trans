@@ -13,6 +13,12 @@ export const CheckboxField = ({
   const [state, setState] = useState<boolean>(info.getValue() as boolean);
   const [debouncedValue, setDebouncedValue] = useState<boolean>(state);
 
+  useEffect(() => {
+    if (info && state != info.getValue()) {
+      setState(info.getValue() as boolean);
+    }
+  }, [info.getValue()]);
+
   const { mutate } = useMutation({
     mutationFn: async () => {
       await editCargo(

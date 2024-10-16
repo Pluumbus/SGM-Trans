@@ -8,23 +8,29 @@ import {
   ReactNode,
   SetStateAction,
   useEffect,
+  useMemo,
   useState,
 } from "react";
+import { isEqual } from "lodash";
 
 export const useEditCargo = <T>({
   info,
   value,
+  setValues,
 }: {
   info: Cell<CargoType, ReactNode>;
   value: T;
+  setValues: Dispatch<SetStateAction<T>>;
 }) =>
   useMutation({
-    mutationFn: async () => {
+    mutationFn: async () =>
       await editCargo(
         info.column.columnDef!.accessorKey,
         value,
         info.row.original.id
-      );
+      ),
+    onSuccess: (data: CargoType) => {
+      setValues(data[0][info.column.columnDef.accessorKey] as T);
     },
   });
 
@@ -54,13 +60,17 @@ export const useCompositeStates = <T>(
   const { mutate } = useEditCargo({
     info,
     value: values,
+    setValues,
   });
 
   useEffect(() => {
+    console.log(isEqual(debouncedValue, info.getValue()));
+    console.log("info.getValue()", info.getValue());
+    console.log("values", debouncedValue);
+
     if (
-      Object.values(debouncedValue).some((e) =>
-        Object.keys(info.getValue()).some((el) => e !== info.getValue()[el])
-      )
+      !isEqual(debouncedValue, info.getValue() as T)
+      // isEqualObject(info.getValue() as T, values)
     ) {
       mutate();
     }
