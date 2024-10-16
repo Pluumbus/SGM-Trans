@@ -135,16 +135,39 @@ export const TripInfoCard = ({
             <span>Статус:</span>
             <b>{statusVal}</b>
             {
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button isIconOnly size="sm" color="default">
-                    <IoMdSettings />
-                  </Button>
-                </DropdownTrigger>
+              <div>
                 {accessRole ? (
-                  <DropdownMenu>
-                    {["Машина закрыта", "В пути", "Прибыл"].map(
-                      (stat: string) => (
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <Button isIconOnly size="sm" color="default">
+                        <IoMdSettings />
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu>
+                      {["Машина закрыта", "В пути", "Прибыл"].map(
+                        (stat: string) => (
+                          <DropdownItem
+                            key={stat}
+                            onClick={() => {
+                              setStatusVal(stat);
+                              setStatusMutation();
+                            }}
+                          >
+                            {stat}
+                          </DropdownItem>
+                        )
+                      )}
+                    </DropdownMenu>
+                  </Dropdown>
+                ) : (
+                  <Dropdown isDisabled={!daysOfWeek.includes(statusVal)}>
+                    <DropdownTrigger>
+                      <Button isIconOnly size="sm" color="default">
+                        <IoMdSettings />
+                      </Button>
+                    </DropdownTrigger>
+                    <DropdownMenu>
+                      {daysOfWeek.map((stat: string) => (
                         <DropdownItem
                           key={stat}
                           onClick={() => {
@@ -154,25 +177,11 @@ export const TripInfoCard = ({
                         >
                           {stat}
                         </DropdownItem>
-                      )
-                    )}
-                  </DropdownMenu>
-                ) : (
-                  <DropdownMenu>
-                    {daysOfWeek.map((stat: string) => (
-                      <DropdownItem
-                        key={stat}
-                        onClick={() => {
-                          setStatusVal(stat);
-                          setStatusMutation();
-                        }}
-                      >
-                        {stat}
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
+                      ))}
+                    </DropdownMenu>
+                  </Dropdown>
                 )}
-              </Dropdown>
+              </div>
             }
           </div>
           <div>
