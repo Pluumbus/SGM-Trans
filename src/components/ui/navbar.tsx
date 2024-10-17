@@ -34,6 +34,12 @@ const Navbar = () => {
               Обратки
             </Link>
             <Link
+              href="/workflow/cashbox"
+              className="mr-5 cursor-pointer hover:text-gray-900"
+            >
+              Касса
+            </Link>
+            <Link
               href="/sgm-mechanic"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >

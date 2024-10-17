@@ -23,21 +23,29 @@ import { useToast } from "@/components/ui/use-toast";
 type Type = CargoType["client_bin"];
 
 export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
+  const SNT = "KZ-SNT-";
   const [values, setValues] = useCompositeStates<Type>(info);
+  const checkEmptySNT = () =>
+    values.snts.every((e) => e.trim() == SNT || e.trim() == "");
 
   const { onOpenChange, isOpen } = useDisclosure();
 
   useEffect(() => {
-    return () => {
-      if (!isOpen && values.snts.some((e) => e == "KZ-SNT-")) {
-        const vals = values.snts.filter((e) => e != "KZ-SNT-");
-        setValues((prev) => ({
+    if (isOpen && !values.snts.every((e) => e.startsWith(SNT))) {
+      console.log("use effect", values.snts);
+      setValues((prev) => {
+        const res = prev.snts.map((e) =>
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
+        );
+        console.log("res", res);
+
+        return {
           ...prev,
-          snts: vals,
-        }));
-      }
-    };
-  }, [isOpen, values]);
+          snts: res,
+        };
+      });
+    }
+  }, [isOpen]);
 
   const addSNT = () => {
     setValues((prev) => ({
@@ -55,7 +63,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       snts: updatedSnts,
     }));
 
-    if (value.length >= 18 && index === values.snts.length - 1) {
+    if (value.length >= 47 && index === values.snts.length - 1) {
       setValues((prev) => ({
         ...prev,
         snts: [...prev.snts, "KZ-SNT-"],
@@ -65,9 +73,6 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   const [copiedText, copyToClipboard] = useCopyToClipboard();
   const { toast } = useToast();
-
-  const checkEmptySNT = () =>
-    values.snts.every((e) => e.trim() == "KZ-SNT-" || e.trim() == "");
 
   const copyXIN = () => {
     copyToClipboard(values.xin);
@@ -92,7 +97,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   };
 
   return (
-    <div className={`${checkEmptySNT() && "bg-red-100"} px-2`}>
+    <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
       <div className={`flex w-full items-end `}>
         <Textarea
           variant="underlined"
@@ -126,46 +131,54 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           copyXIN();
         }}
       >
-        <div className="w-full flex gap-2 items-center p-2">
+        <div className="w-full flex gap-2 items-center p-2 hover:opacity-75">
           <span className="text-[0.7rem]">БИН / ИИН:</span>
           <span className="font-semibold">{values.xin}</span>
         </div>
         <Divider orientation="horizontal" className="col-span-2" />
       </div>
-      <ScrollShadow className="w-full h-[150px]" hideScrollBar offset={10}>
-        <div
-          className="min-w-[15rem] grid grid-cols-2 h-full overflow-visible gap-y-2 mt-1 pb-4"
-          onClick={() => {
-            copySnts();
-          }}
+      {values.snts.length > 0 && values.snts[0] !== SNT && (
+        <ScrollShadow
+          className="w-full max-h-[150px]"
+          hideScrollBar
+          offset={10}
         >
-          {values.snts.map((e, i) => (
-            <>
-              {/* @TODO: В будущем сделать копировать в буфер по клику */}
-              <Card
-                shadow="none"
-                className="w-full !overflow-visible pl-1 bg-transparent"
-              >
-                <CardBody className="w-full h-full p-0 !overflow-visible">
-                  <div className="flex w-full justify-between h-full">
-                    <span className={`w-full ${i % 2 == 0 ? "pr-2" : "pl-2"}`}>
-                      {e}
-                    </span>
-                    {i % 2 == 0 && (
-                      <div className="h-full col-span-1">
-                        <Divider orientation="vertical" />
-                      </div>
-                    )}
-                  </div>
-                </CardBody>
-              </Card>
-              {i % 2 !== 0 && (
-                <Divider orientation="horizontal" className="col-span-2" />
-              )}
-            </>
-          ))}
-        </div>
-      </ScrollShadow>
+          <div
+            className=" grid grid-cols-2 h-full overflow-visible gap-y-2 mt-1 pb-4 hover:opacity-75"
+            onClick={() => {
+              copySnts();
+            }}
+          >
+            {values.snts.map((e, i) => (
+              <>
+                {/* @TODO: В будущем сделать копировать в буфер по клику */}
+                <Card
+                  shadow="none"
+                  className="w-full !overflow-visible pl-1 bg-transparent"
+                >
+                  <CardBody className="w-full h-full p-0 !overflow-visible">
+                    <div className="flex w-full justify-between h-full">
+                      <span
+                        className={`w-full ${i % 2 == 0 ? "pr-2" : "pl-2"}`}
+                      >
+                        {e}
+                      </span>
+                      {i % 2 == 0 && (
+                        <div className="h-full col-span-1">
+                          <Divider orientation="vertical" />
+                        </div>
+                      )}
+                    </div>
+                  </CardBody>
+                </Card>
+                {i % 2 !== 0 && (
+                  <Divider orientation="horizontal" className="col-span-2" />
+                )}
+              </>
+            ))}
+          </div>
+        </ScrollShadow>
+      )}
 
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
