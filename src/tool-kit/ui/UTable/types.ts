@@ -1,3 +1,4 @@
+import { TableProps } from "@nextui-org/react";
 import {
   AccessorFn,
   Cell,
@@ -26,7 +27,7 @@ export type UseTableProps<T> = {
   // columns: Array<UseTableColumnsSchema<T> & ColumnDef<T, any>>; #TODO: CHECK ???
   columns: Array<UseTableColumnsSchema<T>>;
   isPagiantion?: boolean;
-
+  props?: TableProps;
   config?: UseTableConfig<T>;
 };
 
