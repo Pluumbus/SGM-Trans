@@ -37,12 +37,14 @@ export const CargoModal = ({
   onOpenChangeCargo: () => void;
 }) => {
   const { toast } = useToast();
-  const { register, handleSubmit, control, setValue, watch } =
+  const { register, handleSubmit, control, reset, setValue, watch } =
     useForm<CargoType>();
 
-  const [withDelivery, driverID] = watch([
+  const [withDelivery, driverID, amountType, quantityType] = watch([
     "unloading_point.withDelivery",
     "driver.id",
+    "amount.type",
+    "quantity.type",
   ]);
 
   const { mutate, isPending } = useMutation({
@@ -53,6 +55,7 @@ export const CargoModal = ({
         description: "Вы успешно добавили груз",
       });
       onOpenChangeCargo();
+      reset();
     },
     onError: () => {
       toast({
@@ -174,14 +177,15 @@ export const CargoModal = ({
                   <div className="flex gap-2 ">
                     <Input
                       label="Количество"
-                      value={field.value?.value}
-                      onChange={(e) => {
-                        setValue("quantity.value", e.target.value);
-                      }}
+                      // value={field.value?.value}
+                      // onChange={(e) => {
+                      //   setValue("quantity.value", e.target.value);
+                      // }}
+                      {...register("quantity.value")}
                     />
                     <Autocomplete
                       label="Коробки / палеты"
-                      selectedKey={field.value?.type}
+                      selectedKey={quantityType}
                       onSelectionChange={(e) => {
                         setValue("quantity.type", e as QuantityType);
                       }}
@@ -203,14 +207,15 @@ export const CargoModal = ({
                   <div className="flex gap-2 ">
                     <Input
                       label="Сумма оплаты (тг.)"
-                      value={field.value?.value}
-                      onChange={(e) => {
-                        setValue("amount.value", e.target.value);
-                      }}
+                      // value={field.value?.value}
+                      // onChange={(e) => {
+                      //   setValue("amount.value", e.target.value);
+                      // }}
+                      {...register("amount.value")}
                     />
                     <Autocomplete
-                      selectedKey={field.value?.type}
                       label="Способ оплаты"
+                      selectedKey={amountType}
                       onSelectionChange={(e) => {
                         setValue("amount.type", e);
                       }}
