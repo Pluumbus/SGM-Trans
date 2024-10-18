@@ -106,7 +106,7 @@ export const TripTab = ({
     return () => {
       cn.unsubscribe();
     };
-  });
+  }, []);
 
   if (isLoading) {
     return <Spinner />;

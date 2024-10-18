@@ -22,6 +22,7 @@ export const UTable = <T,>({
   columns = [],
   name = "some table",
   config,
+  props,
   isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
   const [mdata, setMData] = useState(data);
@@ -74,7 +75,7 @@ export const UTable = <T,>({
   return (
     <div>
       <UTableTopContent tInstance={tInstance} />
-      <Table isStriped aria-label={name} isCompact>
+      <Table aria-label={name} isCompact={true} isStriped={true} {...props}>
         <TableHeader>{renderColumns(tInstance)}</TableHeader>
         <TableBody>{renderRows(tInstance, config!.row)}</TableBody>
       </Table>
