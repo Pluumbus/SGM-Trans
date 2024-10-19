@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { setUserData } from "../../lib/references/clerkUserType/SetUserFuncs.ts";
 import { useUser } from "@clerk/nextjs";
 import { Button, Card, CardBody } from "@nextui-org/react";
-import { toast } from "../ui/use-toast";
+import { toast } from "@/components/ui/use-toast";
+import { setUserData } from "@/lib/references/clerkUserType/SetUserFuncs";
 
 export const Timer = ({}) => {
   const { user, isLoaded } = useUser();

@@ -27,18 +27,30 @@ const Navbar = () => {
             >
               Таблица
             </Link>
+
             <Link
               href="/workflow/kz"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Обратки
             </Link>
+
+            <RoleBasedWrapper allowedRoles={["Админ", "Кассир"]}>
+              <Link
+                href="/workflow/cashbox"
+                className="mr-5 cursor-pointer hover:text-gray-900"
+              >
+                Касса
+              </Link>
+            </RoleBasedWrapper>
+
             <Link
-              href="/workflow/cashbox"
+              href="/cars"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
-              Касса
+              Машины
             </Link>
+
             <Link
               href="/sgm-mechanic"
               className="mr-5 cursor-pointer hover:text-gray-900"
@@ -48,6 +60,7 @@ const Navbar = () => {
                 <BiSolidCarMechanic size={20} />
               </span>
             </Link>
+
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
                 href="/statistics"

@@ -14,10 +14,14 @@ import {
 import { getCargos } from "../../../_api";
 import { useSelectionStore } from "../store";
 import supabase from "@/utils/supabase/client";
-import { Spinner } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
+import {
+  MngrClientButton,
+  MngrWrhButton,
+} from "@/app/workflow/_feature/ManagerBtns/ManagerBtns";
 
 export const TripTab = ({
   currentTrip,
@@ -125,7 +129,10 @@ export const TripTab = ({
       {rowSelected?.some((e) => e.isSelected) && (
         <UpdateTripNumber currentTripId={currentTrip.id} trips={trips} />
       )}
-
+      <div className="flex justify-between">
+        <MngrClientButton cargos={cargos} />
+        <MngrWrhButton cargos={cargos} />
+      </div>
       <div className="mb-8"></div>
       <BarGraph cargos={cargos} />
       <div className="mb-8"></div>

@@ -19,7 +19,7 @@ import React from "react";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
-import { Timer } from "@/components/Timer/Timer";
+import { Timer } from "@/app/workflow/_feature/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
@@ -58,10 +58,6 @@ const Page: NextPage = () => {
     mutate();
     setSelectedTabId(id);
   }, []);
-
-  // useEffect(() => {
-  //   mutate();
-  // }, [tabTitles]);
 
   useEffect(() => {
     const cn = supabase

@@ -32,4 +32,5 @@ export const roleNamesList = [
   "Зав.Склада",
   "Зав.Склада Москва",
   "Кассир",
+  "Менеджер"
 ] as const;
