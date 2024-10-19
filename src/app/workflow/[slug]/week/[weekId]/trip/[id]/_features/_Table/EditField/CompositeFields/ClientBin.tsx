@@ -155,6 +155,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 <Card
                   shadow="none"
                   className="w-full !overflow-visible pl-1 bg-transparent"
+                  key={e}
                 >
                   <CardBody className="w-full h-full p-0 !overflow-visible">
                     <div className="flex w-full justify-between h-full">
