@@ -52,11 +52,6 @@ jobs:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          NEXT_PUBLIC_CLERK_SIGN_IN_URL: /auth/sign-in
-          NEXT_PUBLIC_CLERK_SIGN_UP_URL: /auth/sign-up
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_IN_URL: /
-          NEXT_PUBLIC_CLERK_AFTER_SIGN_UP_URL: /
-          DEFAULT_LOCALE: ru
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
 
       - name: Install SSH client
