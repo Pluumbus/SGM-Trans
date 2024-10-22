@@ -83,5 +83,3 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
             sudo systemctl restart run-nodejs-service.service
           EOF
-
-#
