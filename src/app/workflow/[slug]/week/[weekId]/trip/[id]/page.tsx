@@ -173,10 +173,13 @@ const Page: NextPage = () => {
                     {trip.city_to.map((city, index) => (
                       <div key={index}>
                         {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
-                        {index < trip.city_to.length - 1 ? ", " : "."}
+                        {city !== ""
+                          ? index < trip.city_to.length - 1
+                            ? ", "
+                            : "."
+                          : ""}
                       </div>
                     ))}
-                    {tabTitles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
               }
