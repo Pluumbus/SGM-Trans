@@ -46,6 +46,7 @@ export type CargoType = {
     value: boolean;
     user_id: string;
   };
+  paid_amount: number;
 };
 
 export type WeekType = {
