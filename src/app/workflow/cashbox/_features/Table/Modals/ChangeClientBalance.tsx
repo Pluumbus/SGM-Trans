@@ -14,6 +14,7 @@ import { changeClientBalance } from "../../api";
 import { Cell } from "@tanstack/react-table";
 import { CashboxType } from "../../../types";
 import { useToast } from "@/components/ui/use-toast";
+import { useNumberState } from "@/tool-kit/hooks";
 
 export const ChangeClientBalance = ({
   disclosure,
@@ -32,12 +33,17 @@ export const ChangeClientBalance = ({
     value: "",
     isInvalid: false,
   });
+
+  const formattedBalance = useNumberState({
+    separator: ",",
+  });
+
   const { toast } = useToast();
   const { mutate, isPending } = useMutation({
     mutationFn: async () =>
       await changeClientBalance(
         info.row.original.id,
-        Number(balance.value.trim())
+        Number(info.row.original.current_balance) + formattedBalance.rawValue
       ),
     onSuccess: () => {
       toast({
@@ -57,9 +63,9 @@ export const ChangeClientBalance = ({
   const validation = () => {
     setBalance((prev) => ({
       ...prev,
-      isInvalid: balance.value.trim() == "",
+      isInvalid: formattedBalance.value.trim() == "",
     }));
-    if (balance.value.trim() !== "") {
+    if (formattedBalance.value.trim() !== "") {
       mutate();
     }
   };
@@ -78,15 +84,19 @@ export const ChangeClientBalance = ({
           <Divider />
           <ModalBody>
             <Input
+              autoFocus
               errorMessage="Добавьте баланс"
-              isInvalid={balance.isInvalid}
+              isInvalid={formattedBalance.rawValue < 0}
               label="Добаленный баланс"
-              value={balance.value}
+              value={formattedBalance.value}
               onChange={(e) => {
-                setBalance((prev) => ({
-                  ...prev,
-                  value: e.target.value,
-                }));
+                formattedBalance.onChange(e);
+                console.log("e.target.value", e.target.value);
+                console.log("formattedBalance.value", formattedBalance.value);
+                console.log(
+                  "formattedBalance.rawValue",
+                  formattedBalance.rawValue
+                );
               }}
             />
           </ModalBody>

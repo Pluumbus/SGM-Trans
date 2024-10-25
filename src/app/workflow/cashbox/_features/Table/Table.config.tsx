@@ -9,8 +9,12 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useCashierActions } from "./useCashierActions";
+import { isArray } from "lodash";
+import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
+import { useNumberState } from "@/tool-kit/hooks";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -25,38 +29,85 @@ export const useCashierColumnsConfig =
       },
       {
         accessorKey: "amount_to_pay",
-        header: "Сумма которую должен клиент за все грузы",
+        header: "Сумма долга",
         filter: false,
         cell: (info: Cell<CashboxType, ReactNode>) => {
-          return <div>{info.getValue() || ""}</div>;
+          const paidAmount = useNumberState({
+            initValue: Number(info.getValue() as CashboxType["amount_to_pay"]),
+          });
+          return <div>{paidAmount.value || ""}</div>;
         },
       },
       {
         accessorKey: "current_balance",
         header: "Текущий баланс клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => (
-          <div>{info.getValue()}</div>
-        ),
+        cell: (info: Cell<CashboxType, ReactNode>) => {
+          const paidAmount = useNumberState({
+            initValue: Number(
+              info.getValue() as CashboxType["current_balance"]
+            ),
+          });
+          return <div>{paidAmount.value || ""}</div>;
+        },
       },
 
-      {
-        accessorKey: "rest_amount_needed_to_be_payed",
-        header: "Остаток",
-        filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => (
-          <div>
-            {Number(info.row.original.amount_to_pay) -
-              Number(info.row.original.current_balance)}
-          </div>
-        ),
-      },
+      // {
+      //   accessorKey: "rest_amount_needed_to_be_payed",
+      //   header: "Остаток",
+      //   filter: false,
+      //   cell: (info: Cell<CashboxType, ReactNode>) => (
+      //     <div>
+      //       {Number(info.row.original.amount_to_pay) -
+      //         Number(info.row.original.current_balance)}
+      //     </div>
+      //   ),
+      // },
 
       {
         accessorKey: "cargos",
-        header: "Рейсы в которых находятся грузы клиента",
+        header: "Рейсы клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => <div>грузы</div>,
+        cell: (info: Cell<CashboxType, ReactNode>) =>
+          isArray(info.getValue()) && (
+            <div className="grid grid-cols-2 min-w-[250px]">
+              {(info.getValue() as CashboxType["cargos"]).map((e, i) => {
+                const paidAmount = useNumberState({ initValue: e.paid_amount });
+                const amountToPay = useNumberState({
+                  initValue: Number(e.amount.value),
+                });
+                const disclosure = useDisclosure();
+                return (
+                  <>
+                    <div
+                      className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
+                      onClick={() => {
+                        disclosure.onOpenChange();
+                      }}
+                    >
+                      <div
+                        className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
+                      >
+                        <span>№{e.trip_id}</span>
+                        <span>-</span>
+                        <span>{amountToPay.value} тг.</span>
+                      </div>
+                      {e.paid_amount !== 0 && (
+                        <span className="text-xs">
+                          Оплачено: {paidAmount.value}&nbsp;тг
+                        </span>
+                      )}
+                    </div>
+                    <AddPaymentToCargo
+                      disclosure={disclosure}
+                      info={info}
+                      cargo={e}
+                    />
+                  </>
+                );
+              })}
+            </div>
+          ),
       },
       {
         accessorKey: "payment_terms",

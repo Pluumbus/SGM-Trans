@@ -19,11 +19,11 @@ import React from "react";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
-import { Timer } from "@/app/workflow/_feature/Timer/Timer";
+import { Timer } from "@/app/workflow/[slug]/week/[weekId]/trip/[id]/_features/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
-import { TripAndWeeksIdType } from "../types";
+import { TripAndWeeksIdType } from "../_api/types";
 import { TripInfoMscCard } from "./_features/TripInfoCard/TripMscInfoCard";
 
 const Page: NextPage = () => {
@@ -173,10 +173,13 @@ const Page: NextPage = () => {
                     {trip.city_to.map((city, index) => (
                       <div key={index}>
                         {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
-                        {index < trip.city_to.length - 1 ? ", " : "."}
+                        {city !== ""
+                          ? index < trip.city_to.length - 1
+                            ? ", "
+                            : "."
+                          : ""}
                       </div>
                     ))}
-                    {tabTitles[trip.id]?.join(" " + trip.status.slice(0, 5))}
                   </span>
                 </div>
               }

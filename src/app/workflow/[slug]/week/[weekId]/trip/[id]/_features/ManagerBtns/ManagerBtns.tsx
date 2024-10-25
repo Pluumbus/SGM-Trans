@@ -1,6 +1,6 @@
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { Button } from "@nextui-org/react";
-import { CargoType } from "../types";
+import { CargoType } from "../../../../../../../_feature/types";
 import {
   ClientsActType,
   PrintClientButton,
