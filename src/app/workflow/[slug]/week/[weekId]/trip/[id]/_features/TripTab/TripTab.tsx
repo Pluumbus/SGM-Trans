@@ -113,15 +113,13 @@ export const TripTab = ({
     };
   }, []);
 
-  if (isLoading) {
-    return <Spinner />;
-  }
-
   return (
     <>
       <UTable
         tBodyProps={{
           emptyContent: `Пока что в рейсе №${currentTrip.id} нет грузов`,
+          isLoading: isLoading,
+          loadingContent: <Spinner />,
         }}
         data={cargos}
         isPagiantion={false}
