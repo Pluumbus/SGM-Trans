@@ -120,6 +120,9 @@ export const TripTab = ({
   return (
     <>
       <UTable
+        tBodyProps={{
+          emptyContent: `Пока что в рейсе №${currentTrip.id} нет грузов`,
+        }}
         data={cargos}
         isPagiantion={false}
         columns={columns}
