@@ -21,7 +21,7 @@ import React from "react";
 import {
   MngrClientButton,
   MngrWrhButton,
-} from "@/app/workflow/_feature/ManagerBtns/ManagerBtns";
+} from "@/app/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 
 export const TripTab = ({
   currentTrip,
