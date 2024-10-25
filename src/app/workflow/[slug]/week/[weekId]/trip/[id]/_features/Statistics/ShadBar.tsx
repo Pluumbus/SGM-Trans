@@ -5,6 +5,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  Skeleton,
   Spinner,
 } from "@nextui-org/react";
 import { TrendingUp } from "lucide-react";
@@ -91,23 +92,23 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
         <span>Статистика по Грузам</span>
       </CardHeader>
       <CardBody>
-        {isPending ? (
-          <Spinner />
-        ) : (
-          <>
-            <TotalStats allCargos={mCargos} />
-            <CustomBar
-              data={chartData}
-              cargoCount={cargos.length}
-              colors={colors}
-            />
-          </>
-        )}
+        <TotalStats cargos={cargos} />
+
+        <CustomBar
+          data={chartData}
+          cargoCount={cargos.length}
+          colors={colors}
+          isPending={isPending}
+        />
       </CardBody>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Лидирует
-          <span>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</span>
+          {isPending ? (
+            <Skeleton className="h-[18px] w-[150px]" />
+          ) : (
+            <span>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</span>
+          )}
           <TrendingUp className="h-4 w-4" />
         </div>
         <div className="leading-none text-muted-foreground">
@@ -122,6 +123,7 @@ const CustomBar = ({
   data,
   cargoCount,
   colors,
+  isPending,
 }: {
   data: {
     user: string;
@@ -131,6 +133,7 @@ const CustomBar = ({
   }[];
   cargoCount: number;
   colors: any[];
+  isPending: boolean;
 }) => {
   const [state, setState] = useState(data);
   useEffect(() => {
@@ -142,28 +145,45 @@ const CustomBar = ({
   return (
     <Card className="flex flex-col gap-2 w-full">
       <CardHeader>
-        <span>Всего грузов: {cargoCount}</span>
+        <div className="flex gap-2 items-end">
+          <span>Всего грузов:</span>
+          <span>
+            {isPending ? (
+              <Skeleton className="h-[16px] w-[50px]" />
+            ) : (
+              cargoCount
+            )}
+          </span>
+        </div>
       </CardHeader>
       <CardBody className="flex flex-col gap-2">
-        {state.map((e, i) => (
-          <div key={`cargo-statistics-${i}`}>
-            <div className="flex justify-between w-full">
-              <span className="w-[10%] text-lg font-semibold">{e.user}</span>
-              <div className="w-[80%]">
-                <div
-                  style={{
-                    width: `${e.percentageOfAll}%`,
-                    backgroundColor: colors[i],
-                  }}
-                  className="min-h-full rounded-[0.25rem]"
-                ></div>
-              </div>
-              <span className="w-[10%] flex justify-center text-lg font-semibold">
-                {e.count}
-              </span>
-            </div>
+        {isPending ? (
+          <div className="flex gap-2 justify-between">
+            <Skeleton className="h-[22px] w-[50px]" />
+            <Skeleton className="h-[22px] w-[850px]" />
+            <Skeleton className="h-[22px] w-[50px]" />
           </div>
-        ))}
+        ) : (
+          state.map((e, i) => (
+            <div key={`cargo-statistics-${i}`}>
+              <div className="flex justify-between w-full">
+                <span className="w-[10%] text-lg font-semibold">{e.user}</span>
+                <div className="w-[80%]">
+                  <div
+                    style={{
+                      width: `${e.percentageOfAll}%`,
+                      backgroundColor: colors[i],
+                    }}
+                    className="min-h-full rounded-[0.25rem]"
+                  ></div>
+                </div>
+                <span className="w-[10%] flex justify-center text-lg font-semibold">
+                  {e.count}
+                </span>
+              </div>
+            </div>
+          ))
+        )}
       </CardBody>
     </Card>
   );

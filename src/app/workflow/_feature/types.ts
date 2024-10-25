@@ -4,11 +4,11 @@ import { AllCitiesType, PriceType, QuantityType } from "@/lib/references";
 export type CargoType = {
   id: number;
   trip_id: number;
-  created_at: Date;
+  created_at: string;
   receipt_address: string;
 
   unloading_point: {
-    city: AllCitiesType;
+    city: string;
     withDelivery: boolean;
     deliveryAddress: string;
   };
@@ -16,7 +16,7 @@ export type CargoType = {
   volume: string;
   quantity: {
     value: string;
-    type: QuantityType;
+    type?: QuantityType;
   };
 
   driver: {
@@ -25,7 +25,7 @@ export type CargoType = {
   };
   amount: {
     value: string;
-    type: PriceType;
+    type?: PriceType;
   };
 
   is_unpalletizing: boolean;

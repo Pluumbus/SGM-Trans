@@ -88,13 +88,14 @@ export const TripTab = ({
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
             setCargos((prev) => {
-              return prev
+              const res = prev
                 .map((e) =>
                   e.id === payload.old.id
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
                 .filter((e) => e.trip_id == currentTrip.id);
+              return res;
             });
             const rowsToSelect = cargos.map((e) => ({
               number: e.id,
@@ -129,10 +130,12 @@ export const TripTab = ({
       {rowSelected?.some((e) => e.isSelected) && (
         <UpdateTripNumber currentTripId={currentTrip.id} trips={trips} />
       )}
-      <div className="flex justify-between">
-        <MngrClientButton cargos={cargos} />
-        <MngrWrhButton cargos={cargos} />
-      </div>
+      {cargos.length > 0 && (
+        <div className="flex justify-between">
+          <MngrClientButton cargos={cargos} />
+          <MngrWrhButton cargos={cargos} />
+        </div>
+      )}
       <div className="mb-8"></div>
       <BarGraph cargos={cargos} />
       <div className="mb-8"></div>
