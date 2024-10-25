@@ -63,14 +63,24 @@ export const AddPaymentToCargo = ({
         formattedBalance.rawValue -
         Number(cargo.amount.value), // текущий баланс
 
-      cargo.amount.value, // сколько оплачено за груз
+      currentCargo.amount.value, // сколько оплачено за груз
     ];
 
-    return Number(currentCargo.amount.value) -
-      (currentCargo.paid_amount + formattedBalance.rawValue + balance) >
-      0
-      ? [...newCurrBalanceGreaterThanZero]
-      : [...newCurrBalanceLessThanZero];
+    const newCurrBalanceEqualZero = [
+      Number(o.current_balance) + formattedBalance.rawValue,
+      currentCargo.amount.value,
+    ];
+    const comparison =
+      Number(currentCargo.amount.value) -
+      (currentCargo.paid_amount + formattedBalance.rawValue + balance);
+
+    if (Number(currentCargo.amount.value) - currentCargo.paid_amount === 0) {
+      return newCurrBalanceEqualZero;
+    } else if (comparison > 0) {
+      return newCurrBalanceGreaterThanZero;
+    } else if (comparison < 0) {
+      return newCurrBalanceLessThanZero;
+    }
   };
 
   const { mutate: updateBalance } = useMutation({
