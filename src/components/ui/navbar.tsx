@@ -45,7 +45,7 @@ const Navbar = () => {
             </RoleBasedWrapper>
 
             <Link
-              href="/cars"
+              href="/cars&drivers"
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Машины
