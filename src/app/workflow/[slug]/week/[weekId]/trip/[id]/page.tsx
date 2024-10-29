@@ -6,7 +6,15 @@ import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 
 import { getTripsByWeekId } from "../_api";
-import { Checkbox, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
+import {
+  BreadcrumbItem,
+  Breadcrumbs,
+  Checkbox,
+  Spinner,
+  Tab,
+  Tabs,
+  useDisclosure,
+} from "@nextui-org/react";
 import { CargoModal } from "@/app/workflow/_feature";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { TripTab } from "./_features/TripTab";
@@ -19,7 +27,7 @@ import React from "react";
 import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { useRoleBasedSchema } from "@/components/roles/RoleBasedSchema";
 import { WeekType } from "@/app/workflow/_feature/types";
-import { Timer } from "@/app/workflow/[slug]/week/[weekId]/trip/[id]/_features/Timer/Timer";
+import { Timer } from "@/components/Timer/Timer";
 import { CreateTripInsideWeek } from "@/app/workflow/_feature/WeekCard/WeekCard";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
@@ -27,7 +35,8 @@ import { TripAndWeeksIdType } from "../_api/types";
 import { TripInfoMscCard } from "./_features/TripInfoCard/TripMscInfoCard";
 
 const Page: NextPage = () => {
-  const { weekId, id } = useParams<{
+  const { slug, weekId, id } = useParams<{
+    slug: string;
     weekId: string;
     id: string;
   }>();
@@ -95,7 +104,6 @@ const Page: NextPage = () => {
   const columns = useMemo(() => useRoleBasedSchema(), []);
 
   const handleCargosUpdate = (tripId: string, cities: string[]) => {
-    console.log(tabTitles);
     const uniqueData = Array.from(new Set(cities));
     // setTabTitles((prevTitles) => ({
     //   ...prevTitles,
@@ -131,16 +139,13 @@ const Page: NextPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between">
+      <div className="flex justify-between mt-3">
         <TripInfoCard
           onOpenChange={onOpenChange}
           selectedTabId={selectedTabId}
           tripsData={tripsData}
         />
         <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} />
-        <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
-          <Timer />
-        </RoleBasedWrapper>
       </div>
       <div className="flex flex-col ">
         <div className="flex flex-col justify-center items-center mb-2">
@@ -161,40 +166,48 @@ const Page: NextPage = () => {
           defaultSelectedKey={selectedTabId}
           onSelectionChange={(key) => setSelectedTabId(key as string)}
         >
-          {tripsData.map((trip) => (
-            <Tab
-              key={trip.id}
-              className="h-auto"
-              title={
-                <div className="flex flex-col items-center text-sm space-y-1">
-                  <span className="text-gray-500 truncate">{trip.status}</span>
-                  <span className="font-bold truncate">{trip.id}</span>
-                  <span className="text-gray-500 truncate">
-                    {trip.city_to.map((city, index) => (
-                      <div key={index}>
-                        {city.length <= 5 ? city.slice(0, 3) : city.slice(0, 4)}
-                        {city !== ""
-                          ? index < trip.city_to.length - 1
-                            ? ", "
-                            : "."
-                          : ""}
-                      </div>
-                    ))}
-                  </span>
-                </div>
-              }
-            >
-              <TripTab
-                currentTrip={trip}
-                trips={tripsData}
-                columns={columns}
-                isOnlyMycargos={isOnlyMycargos}
-                onCargosUpdate={(cities) =>
-                  handleCargosUpdate(trip?.id.toString(), cities)
+          {tripsData
+            .sort((a, b) => a.id - b.id)
+            .map((trip) => (
+              <Tab
+                key={trip.id}
+                className="h-auto"
+                title={
+                  <div className="flex flex-col items-center text-sm space-y-1">
+                    <span className="text-gray-500 truncate">
+                      {trip.status}
+                    </span>
+                    <span className="font-bold truncate">{trip.id}</span>
+                    <span className="text-gray-500 truncate">
+                      {trip.city_to.map((city, index) => (
+                        <div key={index}>
+                          {city.length <= 5
+                            ? city.slice(0, 3)
+                            : city.includes("-")
+                              ? city.slice(0, 3)
+                              : city.slice(0, 4)}
+                          {city !== ""
+                            ? index < trip.city_to.length - 1
+                              ? ", "
+                              : "."
+                            : ""}
+                        </div>
+                      ))}
+                    </span>
+                  </div>
                 }
-              />
-            </Tab>
-          ))}
+              >
+                <TripTab
+                  currentTrip={trip}
+                  trips={tripsData}
+                  columns={columns}
+                  isOnlyMycargos={isOnlyMycargos}
+                  onCargosUpdate={(cities) =>
+                    handleCargosUpdate(trip?.id.toString(), cities)
+                  }
+                />
+              </Tab>
+            ))}
           <Tab isDisabled>
             <CreateTripInsideWeek weekId={weekId} inTrip={true} />
           </Tab>

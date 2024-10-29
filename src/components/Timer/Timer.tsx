@@ -52,28 +52,22 @@ export const Timer = ({}) => {
   }, [isActive]);
 
   useEffect(() => {
-    localStorage.setItem("seconds", seconds.toString());
-    if (seconds > 0 && seconds % 60 === 0) {
-      setTimeMutation(seconds);
-    }
-  }, [seconds]);
-
-  useEffect(() => {
     let activityTimeout;
 
     const handleUserActivity = () => {
-      if (isActive) {
-        clearTimeout(activityTimeout);
-        activityTimeout = setTimeout(() => {
-          setIsPaused(true);
-          setIsActive(false);
-          toast({
-            title: `Пауза`,
-            description: `Ваш таймер был остановлен из-за бездействия`,
-          });
-        }, 300000);
-      }
+      clearTimeout(activityTimeout);
+
+      setIsActive(true);
+
+      activityTimeout = setTimeout(() => {
+        setIsActive(false);
+        toast({
+          title: `Пауза`,
+          description: `Ваш таймер был остановлен из-за бездействия`,
+        });
+      }, 300000);
     };
+
     window.addEventListener("mousemove", handleUserActivity);
     window.addEventListener("keydown", handleUserActivity);
 
@@ -83,7 +77,17 @@ export const Timer = ({}) => {
       window.removeEventListener("keydown", handleUserActivity);
     };
   }, []);
+  useEffect(() => {
+    let endJobTimeout;
 
+    if (isActive) {
+      endJobTimeout = setTimeout(() => {
+        handleRefreshTimer();
+      }, 3600000);
+    }
+
+    return () => clearTimeout(endJobTimeout);
+  }, [isActive]);
   const hours = Math.floor(seconds / 3600);
   const minutes = Math.floor((seconds % 3600) / 60);
   const displaySeconds = seconds % 60;
@@ -121,26 +125,6 @@ export const Timer = ({}) => {
             {hours} {hoursLabel}, {minutes} {minutesLabel}, {displaySeconds}{" "}
             {secondsLabel}
           </p>
-          {isPaused && (
-            <Button
-              color="success"
-              onClick={() => {
-                setIsActive((prev) => !prev);
-                setIsPaused(false);
-              }}
-            >
-              Запустить
-            </Button>
-          )}
-          {isActive && (
-            <Button
-              color="danger"
-              className="mt-2"
-              onClick={handleRefreshTimer}
-            >
-              Закончить работу
-            </Button>
-          )}
         </CardBody>
       </Card>
     </div>

@@ -4,5 +4,5 @@ export const getDayOfWeek = (dateStr) => {
     const dayIndex = date.getDay();
     return daysOfWeek[dayIndex];
   };
-  export const daysOfWeek = ["ВС", "ПН", "ВТ", "СР", "ЧТ", "ПН", "СБ"];
+  export const daysOfWeek = [ "ПН", "ВТ", "СР", "ЧТ", "ПН", "СБ","ВС",""];
   

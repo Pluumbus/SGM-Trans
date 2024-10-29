@@ -126,7 +126,7 @@ export const TripInfoCard = ({
               </DropdownMenu>
             </Dropdown>
           </div>
-          <div className="flex justify-between">
+          <div className="flex flex-col">
             <span>Водитель: </span>
             <b className="items-end">{currentTripData?.driver} </b>
           </div>

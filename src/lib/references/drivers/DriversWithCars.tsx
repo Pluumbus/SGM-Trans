@@ -10,25 +10,27 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
+import { DriversType } from "@/app/cars&drivers/_api/types";
 
 export const DriversWithCars = (
   autocompleteProps: Omit<AutocompleteProps, "children">
 ) => {
   const { isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
-    queryKey: ["getDrivers"],
+    queryKey: ["getDriversWithGazellCars"],
     queryFn: getDriversWithCars,
     enabled: !!isSignedIn,
   });
 
+  const sortedData = data?.filter((driver) => driver.car_type === "gazell");
   return (
     <Autocomplete
       label="Выберите водителя"
-      isLoading={isLoading || !data?.data}
+      isLoading={isLoading || !sortedData}
       {...autocompleteProps}
     >
       {data &&
-        data?.data?.map((e, i) => (
+        sortedData.map((e, i) => (
           <AutocompleteItem
             key={e.id}
             value={e.id}
