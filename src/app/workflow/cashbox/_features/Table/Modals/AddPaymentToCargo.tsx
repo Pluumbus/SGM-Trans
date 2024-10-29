@@ -70,11 +70,23 @@ export const AddPaymentToCargo = ({
       Number(o.current_balance) + formattedBalance.rawValue,
       currentCargo.amount.value,
     ];
+    const newCurrBalanceFullSinglePayment = [
+      Number(o.current_balance),
+      currentCargo.amount.value,
+    ];
     const comparison =
       Number(currentCargo.amount.value) -
       (currentCargo.paid_amount + formattedBalance.rawValue + balance);
 
-    if (Number(currentCargo.amount.value) - currentCargo.paid_amount === 0) {
+    if (
+      Number(currentCargo.amount.value) - formattedBalance.rawValue === 0 &&
+      currentCargo.paid_amount === 0
+    ) {
+      return newCurrBalanceFullSinglePayment;
+    } else if (
+      Number(currentCargo.amount.value) - currentCargo.paid_amount ===
+      0
+    ) {
       return newCurrBalanceEqualZero;
     } else if (comparison > 0) {
       return newCurrBalanceGreaterThanZero;
