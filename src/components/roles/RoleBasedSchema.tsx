@@ -17,7 +17,12 @@ const GlobalLogistSchema = () => {
 };
 const GlobalWareHouseManagerSchema = () => {
   const excl = [
-    "amount, is_act_ready, is_unpalletizing, loading_scheme,driver, client_bin",
+    "amount",
+    "is_act_ready",
+    "is_unpalletizing",
+    "loading_scheme",
+    "driver",
+    "client_bin",
   ];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
