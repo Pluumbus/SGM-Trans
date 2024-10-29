@@ -22,7 +22,7 @@ import { WeekType } from "../types";
 import { Cities, Drivers } from "@/lib/references";
 import { getWeeks } from "../../[slug]/week/[weekId]/trip/_api";
 import { useParams } from "next/navigation";
-import { WeekTableType } from "../../[slug]/week/[weekId]/trip/types";
+import { WeekTableType } from "../../[slug]/week/[weekId]/trip/_api/types";
 import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
 

@@ -4,7 +4,7 @@ import getSupabaseServer from "@/utils/supabase/server";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TripType } from "@/app/workflow/_feature/TripCard/TripCard";
 import { CargoType, WeekType } from "@/app/workflow/_feature/types";
-import { TripAndWeeksIdType, WeekTableType } from "../types";
+import { TripAndWeeksIdType, WeekTableType } from "./types";
 
 export const getUserById = async (userId: string) => {
   const user = await clerkClient.users.getUser(userId);

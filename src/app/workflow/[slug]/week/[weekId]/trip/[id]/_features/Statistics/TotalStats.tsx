@@ -5,36 +5,36 @@ import supabase from "@/utils/supabase/client";
 import { Card, CardBody } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 
-export const TotalStats = ({ allCargos }: { allCargos: CargoType[] }) => {
-  const [cargos, setCargos] = useState<CargoType[]>(allCargos);
-  const tripId = cargos[0]?.trip_id;
-  useEffect(() => {
-    const cn = supabase
-      .channel(`${tripId}-cargos`)
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: "public",
-          table: "cargos",
-          filter: `trip_id=eq.${tripId}`,
-        },
-        (payload) => {
-          const updatedCargo = payload.new as CargoType;
-          setCargos((prev) => {
-            const updatedTrips = prev.map((cargo) =>
-              cargo.id === updatedCargo.id ? updatedCargo : cargo
-            );
-            return updatedTrips;
-          });
-        }
-      )
-      .subscribe();
+export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
+  // const tripId = cargos[0]?.trip_id;
 
-    return () => {
-      cn.unsubscribe();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const cn = supabase
+  //     .channel(`${tripId}-cargos`)
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "UPDATE",
+  //         schema: "public",
+  //         table: "cargos",
+  //         filter: `trip_id=eq.${tripId}`,
+  //       },
+  //       (payload) => {
+  //         const updatedCargo = payload.new as CargoType;
+  //         setCargos((prev) => {
+  //           const updatedTrips = prev.map((cargo) =>
+  //             cargo.id === updatedCargo.id ? updatedCargo : cargo
+  //           );
+  //           return updatedTrips;
+  //         });
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   return () => {
+  //     cn.unsubscribe();
+  //   };
+  // }, []);
 
   const totalWeight =
     cargos && cargos.length > 0
