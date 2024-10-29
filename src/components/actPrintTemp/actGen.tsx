@@ -5,32 +5,7 @@ import { bodyHtmlTemp, stylesTemp } from "./act";
 import { Button } from "@nextui-org/react";
 import { clientBodyHtmlTemp, clientStylesTemp } from "./clientAct";
 import { wrhBodyHtmlTemp, wrhStylesTemp } from "./wareHouseAct";
-
-export type ActType = {
-  client_bin: string;
-  cargo_name: string;
-  quantity: string;
-  amount: string;
-  date: string;
-};
-
-export type ClientsActType = {
-  amount: string;
-  transportation_manager: string;
-  client_bin: string;
-  unloading_point: string;
-};
-
-export type WareHouseActType = {
-  unloading_point: string;
-  cargo_name: string;
-  weight: string;
-  volume: string;
-  quantity: string;
-  client_bin: string;
-  transportation_manager: string;
-  comments: string;
-};
+import { ActType, ClientsActType, WareHouseActType } from "./types";
 
 export const PrintButton = ({ actData }: { actData: ActType }) => {
   const handlePrintClick = () => {
@@ -117,7 +92,9 @@ export const PrintWarehouseButton = ({
     const compiledTemplate = Handlebars.compile(wrhBodyHtmlTemp);
 
     const printWindow = window.open("", "", "width=800,height=600");
+    console.log(actWrhData);
     if (printWindow) {
+      const htmlContent = compiledTemplate({ items: actWrhData });
       printWindow.document.open();
       printWindow.document.write(`
         <html>
@@ -128,7 +105,7 @@ export const PrintWarehouseButton = ({
             </style>
           </head>
           <body>
-            ${actWrhData.map((client) => compiledTemplate(client))}
+            ${htmlContent}
           </body>
         </html>
       `);

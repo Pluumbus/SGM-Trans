@@ -21,3 +21,4 @@ export type TrailersType ={
 }
 
 export type FullDriversType = CarsType & {drivers : DriversType} & {trailers: TrailersType};
+export type DriversWithCars = DriversType & {cars : CarsType};

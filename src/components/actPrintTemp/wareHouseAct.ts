@@ -69,16 +69,35 @@ li .label {
 export const wrhBodyHtmlTemp = `
     <div class="container">
         <section class="cargo-info">
-            <ul>
-                <li><span class="label">Наименование груза:</span> {{ cargo_name }}</li>
-                <li><span class="label">Вес груза:</span> {{ weight }}</li>
-                <li><span class="label">Объем груза:</span> {{ volume }}</li>
-                <li><span class="label">Количество мест:</span> {{ quantity }}</li>
-                <li><span class="label">Допольнительная ифнормация:</span> {{ comments }}</li>
-                <li><span class="label">Компания-получатель:</span> {{ client_bin }}</li>
-                <li><span class="label">Плательщик:</span> {{ transportation_manager }}</li>
-                <li><span class="label">Адрес разгрузки:</span> {{ unloading_point }}</li>
-            </ul>
+            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Наименование груза</th>
+                        <th>Вес груза</th>
+                        <th>Объем груза</th>
+                        <th>Количество мест</th>
+                        <th>Дополнительная информация</th>
+                        <th>Компания-получатель</th>
+                        <th>Плательщик</th>
+                        <th>Адрес разгрузки</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                        <tr>
+                            <td>{{ cargo_name }}</td>
+                            <td>{{ weight }}</td>
+                            <td>{{ volume }}</td>
+                            <td>{{ quantity }}</td>
+                            <td>{{ comments }}</td>
+                            <td>{{ client_bin }}</td>
+                            <td>{{ transportation_manager }}</td>
+                            <td>{{ unloading_point }}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </section>
     </div>
-`
+`;
+

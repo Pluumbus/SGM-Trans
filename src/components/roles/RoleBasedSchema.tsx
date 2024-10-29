@@ -16,7 +16,9 @@ const GlobalLogistSchema = () => {
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
 const GlobalWareHouseManagerSchema = () => {
-  const excl = ["amount, is_act_ready"];
+  const excl = [
+    "amount, is_act_ready, is_unpalletizing, loading_scheme,driver, client_bin",
+  ];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
 const CashierSchema = () => {
@@ -26,8 +28,8 @@ const CashierSchema = () => {
 export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
   const role = useRole();
   switch (role) {
-    // case "Админ":
-    //   return CashierSchema();
+    case "Админ":
+      return GlobalWareHouseManagerSchema();
     case "Логист":
       return GlobalLogistSchema();
     case "Зав.Склада":

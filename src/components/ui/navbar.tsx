@@ -9,6 +9,7 @@ import React from "react";
 import { useRole } from "../roles/useRole";
 import RoleBasedWrapper from "../roles/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
+import { Timer } from "../Timer/Timer";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {

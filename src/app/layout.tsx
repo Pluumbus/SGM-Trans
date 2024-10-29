@@ -6,6 +6,8 @@ import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import Navbar from "@/components/ui/navbar";
 import React from "react";
+import { Timer } from "../components/Timer/Timer";
+import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -33,6 +35,11 @@ export default function RootLayout({
                 <Navbar />
               </div>
               <main className="w-full pt-16 px-6 flex-grow mb-4">
+                <div className="flex justify-end">
+                  <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
+                    <Timer />
+                  </RoleBasedWrapper>
+                </div>
                 {children}
               </main>
             </div>

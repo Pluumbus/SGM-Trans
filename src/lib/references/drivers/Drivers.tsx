@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDrivers } from "./api";
+import { getDrivers, getDriversWithCars } from "./api";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -14,17 +14,22 @@ import { useUser } from "@clerk/nextjs";
 export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
-    queryKey: ["getDrivers"],
-    queryFn: getDrivers,
+    queryKey: ["getDriversWithCars"],
+    queryFn: getDriversWithCars,
     enabled: !!isSignedIn,
   });
 
+  const sortedData = data?.filter((e) => e.car_type === "truck");
   return (
     <div className="max-w-80">
       <Autocomplete label="Выберите водителя" {...props} isLoading={isLoading}>
-        {data?.data?.map((e, i) => (
-          <AutocompleteItem key={e.name} value={e.name} textValue={`${e.name}`}>
-            {e.name}
+        {sortedData?.map((e, i) => (
+          <AutocompleteItem
+            key={`${e.name} | ${e.cars?.car}`}
+            value={`${e.name} | ${e.cars?.car}`}
+            textValue={`${e.name} | ${e.cars?.car}`}
+          >
+            {`${e.name} | ${e.cars?.car}`}
           </AutocompleteItem>
         ))}
       </Autocomplete>

@@ -20,7 +20,9 @@ export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
       client_bin: crg.client_bin.tempText,
       transportation_manager: crg.transportation_manager,
       unloading_point:
-        crg.unloading_point.city + " " + crg.unloading_point.deliveryAddress,
+        crg.unloading_point.city +
+        " " +
+        (crg.unloading_point.deliveryAddress || ""),
     } as ClientsActType;
   });
   return (
@@ -38,7 +40,9 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
       client_bin: crg.client_bin.tempText,
       transportation_manager: crg.transportation_manager,
       unloading_point:
-        crg.unloading_point.city + " " + crg.unloading_point.deliveryAddress,
+        crg.unloading_point.city +
+        " " +
+        (crg.unloading_point.deliveryAddress || ""),
       cargo_name: crg.cargo_name,
       weight: crg.weight,
       volume: crg.volume,
