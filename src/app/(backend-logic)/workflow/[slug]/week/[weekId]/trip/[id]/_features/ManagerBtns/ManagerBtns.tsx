@@ -2,11 +2,13 @@ import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
 import { Button } from "@nextui-org/react";
 import { CargoType } from "../../../../../../../_feature/types";
 import {
-  ClientsActType,
   PrintClientButton,
   PrintWarehouseButton,
-  WareHouseActType,
 } from "@/components/actPrintTemp/actGen";
+import {
+  ClientsActType,
+  WareHouseActType,
+} from "@/components/actPrintTemp/types";
 
 export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(

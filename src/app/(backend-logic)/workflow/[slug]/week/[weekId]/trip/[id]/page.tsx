@@ -139,7 +139,7 @@ const Page: NextPage = () => {
 
   return (
     <div>
-      <div className="flex justify-between mt-3">
+      <div className="flex justify-between ">
         <TripInfoCard
           onOpenChange={onOpenChange}
           selectedTabId={selectedTabId}
@@ -181,16 +181,12 @@ const Page: NextPage = () => {
                     <span className="text-gray-500 truncate">
                       {trip.city_to.map((city, index) => (
                         <div key={index}>
-                          {city.length <= 5
-                            ? city.slice(0, 3)
-                            : city.includes("-")
-                              ? city.slice(0, 3)
-                              : city.slice(0, 4)}
-                          {city !== ""
-                            ? index < trip.city_to.length - 1
-                              ? ", "
-                              : "."
-                            : ""}
+                          {city.slice(
+                            0,
+                            city.includes("-") || city.length <= 5 ? 3 : 4
+                          )}
+                          {city &&
+                            (index < trip.city_to.length - 1 ? ", " : ".")}
                         </div>
                       ))}
                     </span>

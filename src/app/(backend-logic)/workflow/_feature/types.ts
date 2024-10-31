@@ -1,4 +1,3 @@
-import { ActType } from "@/components/actPrintTemp/actGen";
 import { AllCitiesType, PriceType, QuantityType } from "@/lib/references";
 
 export type CargoType = {
