@@ -35,7 +35,7 @@ export default function RootLayout({
                 <Navbar />
               </div>
               <main className="w-full pt-16 px-6 flex-grow mb-4">
-                <div className="flex justify-end">
+                <div className="flex justify-end mb-3">
                   <RoleBasedWrapper allowedRoles={["Админ", "Логист Дистант"]}>
                     <Timer />
                   </RoleBasedWrapper>

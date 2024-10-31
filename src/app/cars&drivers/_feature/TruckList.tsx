@@ -20,37 +20,54 @@ import {
   Spinner,
   useDisclosure,
 } from "@nextui-org/react";
-import { CarsType, FullDriversType } from "../_api/types";
+import { CarsType, DriversType, FullDriversType } from "../_api/types";
 import { COLORS } from "@/lib/colors";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { toast } from "@/components/ui/use-toast";
-import { updateTrailerData } from "../_api/requests";
+import { updateDriverData, updateTrailerData } from "../_api/requests";
+import { getDrivers } from "@/lib/references/drivers/api";
 import supabase from "@/utils/supabase/client";
+import { GazellList } from "./GazellList";
 
 //TODO: Отображются не все трейлеры, пофиксить реалтайм и драйверов
 export const DriversList = () => {
-  const [driversCarData, setDriversCarData] =
-    useState<Record<string, FullDriversType[]>>();
+  const [driversTruckData, setDriversTruckData] = useState<FullDriversType[]>();
+  const [driversGazellData, setDriversGazellData] =
+    useState<FullDriversType[]>();
 
+  const [drivers, setDrivers] = useState<DriversType[]>();
   const [modalTitle, setModalTitle] = useState("");
   const [itemChangeId, setItemChangeId] = useState<number>();
   const [currCarID, setCurrCarId] = useState<number>();
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   const { data, isLoading, isFetched } = useQuery({
-    queryKey: ["GetDrivers"],
+    queryKey: ["GetAllDataByCars"],
     queryFn: async () => getDriversWithCars(),
   });
 
-  const { mutate } = useMutation({
-    mutationKey: ["ChangeDriverAndCars"],
+  const { data: driversData, isFetched: driversFetched } = useQuery({
+    queryKey: ["GetDrivers"],
+    queryFn: async () => getDrivers(),
+  });
+
+  const { mutate: trailerMutate } = useMutation({
+    mutationKey: ["ChangeTrailer"],
     mutationFn: async () => await updateTrailerData(currCarID, itemChangeId),
     onSuccess() {
       toast({ description: "Прицеп обновлён" });
     },
   });
+  const { mutate: driverMutate } = useMutation({
+    mutationKey: ["ChangeDrivers"],
+    mutationFn: async () => await updateDriverData(itemChangeId, currCarID),
+    onSuccess() {
+      toast({ description: "Водитель обновлён" });
+    },
+  });
+
+  const ddItems = ["Замена водителя", "Замена прицепа"];
 
   useEffect(() => {
     data?.sort((a, b) => {
@@ -59,7 +76,8 @@ export const DriversList = () => {
       return 0;
     });
 
-    setDriversCarData(
+    const cars =
+      isFetched &&
       data?.reduce(
         (acc, car) => {
           if (!acc[car.car_type]) acc[car.car_type] = [];
@@ -67,111 +85,85 @@ export const DriversList = () => {
           return acc;
         },
         {} as Record<string, FullDriversType[]>
+      );
+    setDriversTruckData(cars["truck"]);
+    setDriversGazellData(cars["gazell"]);
+    setDrivers(driversData);
+  }, [data, isFetched, driversData, driversFetched]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`driver&cars`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "cars",
+        },
+        (payload) => {
+          const updatedCarData = payload.new as CarsType;
+          if (updatedCarData.car_type == "truck") {
+            const oldCarToChange = driversTruckData?.filter(
+              (car) => car.id === updatedFullDriversData.id
+            )[0];
+            const updatedFullDriversData: FullDriversType = {
+              ...updatedCarData,
+              car_type: oldCarToChange?.car_type,
+              drivers: oldCarToChange?.drivers,
+              trailers: oldCarToChange?.trailers,
+            };
+            console.log("updatedFullDriversData", updatedFullDriversData);
+
+            setDriversTruckData((prev) =>
+              prev.map((item) =>
+                item.id === updatedCarData.id ? updatedFullDriversData : item
+              )
+            );
+          }
+        }
       )
-    );
-  }, [data, isFetched]);
+      .subscribe();
 
-  // useEffect(() => {
-  //   const cn = supabase
-  //     .channel(`driver&cars`)
-  //     .on(
-  //       "postgres_changes",
-  //       {
-  //         event: "*",
-  //         schema: "public",
-  //         table: "cars",
-  //       },
-  //       (payload) => {
-  //         const updatedCarData = payload.new as CarsType;
-  //         console.log(updatedCarData);
-  //         const newCarData = driversCarData["truck"].map((item) => {
-  //           item.id == updatedCarData.id
-  //             ? updatedCarData.trailer_id
-  //             : item.trailer_id;
-  //           return {
-  //             ...item,
-  //             trailer_id: updatedCarData.trailer_id,
-  //           } as FullDriversType;
-  //         });
-
-  //         const res = newCarData?.reduce(
-  //           (acc, car) => {
-  //             if (!acc[car.car_type]) acc[car.car_type] = [];
-  //             acc[car.car_type]?.push(car);
-  //             return acc;
-  //           },
-  //           {} as Record<string, FullDriversType[]>
-  //         );
-  //         console.log(res);
-  //       }
-  //     )
-  //     .subscribe();
-
-  //   return () => {
-  //     cn.unsubscribe();
-  //   };
-  // }, []);
-
-  if (isLoading) return <Spinner />;
-
-  const handleCopyDriverData = (id) => {
-    const dataToCopy = driversCarData["gazell"].filter(
-      (car) => car.id == id
-    )[0];
-    copyToClipboard(
-      dataToCopy.drivers[0].name +
-        "\n" +
-        "Автомобиль: " +
-        dataToCopy.car +
-        "\n" +
-        "Гос.номер: " +
-        dataToCopy.state_number +
-        "\n" +
-        "Номер: " +
-        dataToCopy.drivers[0].passport_data.id +
-        "\n" +
-        "Выдан: " +
-        dataToCopy.drivers[0].passport_data.issued +
-        "\n" +
-        "Дата: " +
-        dataToCopy.drivers[0].passport_data.date
-    );
-    toast({
-      title: `Данные водителя успешно скопированы в буфер обмена`,
-    });
-  };
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
 
   const handleCurrItem = (key) => {
     console.log(key);
     setCurrCarId(key);
   };
 
-  const handleMutate = () => {
-    mutate();
+  const handleTrailerMutate = () => {
+    trailerMutate();
   };
-
+  const handleDriverMutate = () => {
+    driverMutate();
+  };
   const handleAutoComplete = (value: string) => {
-    console.log(Number(value.slice(0, 1)));
-    setItemChangeId(Number(value.slice(0, 1)));
+    console.log(Number(value.slice(0, 2)));
+    setItemChangeId(Number(value.slice(0, 2)));
   };
-  const ddItems = ["Замена водителя", "Замена прицепа"];
-
+  if (isLoading) return <Spinner />;
+  console.log(driversTruckData);
   return (
     <div className="flex justify-around">
       <Card className="w-1/3">
         <Listbox aria-label="drivers-list">
-          {driversCarData != undefined &&
-            driversCarData["truck"]?.map((car) => (
+          {driversTruckData != undefined &&
+            driversTruckData?.map((car) => (
               <ListboxItem
                 key={car.id}
                 style={{
-                  color: car.drivers[0]?.name ? COLORS.green : COLORS.red,
+                  color: car?.drivers?.length > 0 ? COLORS.green : COLORS.red,
                 }}
                 className="border-b"
               >
                 <Dropdown>
                   <DropdownTrigger onClick={() => handleCurrItem(car.id)}>
-                    {(car.drivers[0]?.name || "Без водителя") +
+                    {((car?.drivers?.length > 0 && car.drivers[0]?.name) ||
+                      "Без водителя") +
                       " | " +
                       car.car +
                       " - " +
@@ -201,19 +193,7 @@ export const DriversList = () => {
             ))}
         </Listbox>
       </Card>
-      <Card className="w-1/4">
-        <Listbox
-          aria-label="drivers-list"
-          onAction={(key) => handleCopyDriverData(key)}
-        >
-          {driversCarData != undefined &&
-            driversCarData["gazell"]?.map((gzl) => (
-              <ListboxItem key={gzl.id} className="border-b">
-                {(gzl.drivers[0]?.name || "Без водителя") + " | " + gzl.car}
-              </ListboxItem>
-            ))}
-        </Listbox>
-      </Card>
+
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           {(onClose) => (
@@ -225,16 +205,29 @@ export const DriversList = () => {
                 <p>Выберите на что заменить</p>
                 {modalTitle == ddItems[0] ? (
                   <div>
-                    <Autocomplete aria-label="Change driver">
-                      {driversCarData["truck"].map((item) => (
-                        <AutocompleteItem
-                          key={item.id}
-                          onInput={() => setItemChangeId(item.drivers?.id)}
-                        >
-                          {item.drivers?.name}
-                        </AutocompleteItem>
-                      ))}
+                    <Autocomplete
+                      aria-label="Change driver"
+                      onInputChange={handleAutoComplete}
+                    >
+                      {drivers
+                        .filter((driver) => driver.car_type !== "gazell")
+                        .map((driver) => (
+                          <AutocompleteItem key={driver.id}>
+                            {driver.id + " | " + driver.name}
+                          </AutocompleteItem>
+                        ))}
                     </Autocomplete>
+                    <div className="flex justify-end">
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          handleDriverMutate();
+                          onClose();
+                        }}
+                      >
+                        Подтвердить
+                      </Button>
+                    </div>
                   </div>
                 ) : (
                   <div>
@@ -242,9 +235,9 @@ export const DriversList = () => {
                       aria-label="Change trailer"
                       onInputChange={handleAutoComplete}
                     >
-                      {driversCarData["truck"]
+                      {driversTruckData
                         .filter((item) => item.trailers)
-                        .sort((item) => item.trailer_id)
+                        .sort((a, b) => a.id - b.id)
                         .map((item) => (
                           <AutocompleteItem key={item.id}>
                             {item.trailer_id +
@@ -255,22 +248,25 @@ export const DriversList = () => {
                           </AutocompleteItem>
                         ))}
                     </Autocomplete>
+                    <div className="flex justify-end">
+                      <Button
+                        color="success"
+                        onClick={() => {
+                          handleTrailerMutate();
+                          onClose();
+                        }}
+                      >
+                        Подтвердить
+                      </Button>
+                    </div>
                   </div>
                 )}
-                <Button
-                  color="success"
-                  onClick={() => {
-                    handleMutate();
-                    onClose();
-                  }}
-                >
-                  Подтвердить
-                </Button>
               </ModalBody>
             </>
           )}
         </ModalContent>
       </Modal>
+      <GazellList driversGazellData={driversGazellData} />
     </div>
   );
 };

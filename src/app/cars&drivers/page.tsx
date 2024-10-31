@@ -1,6 +1,6 @@
 "use client";
 import { NextPage } from "next";
-import { DriversList } from "./_feature/DriversList";
+import { DriversList } from "./_feature/TruckList";
 
 interface Props {}
 

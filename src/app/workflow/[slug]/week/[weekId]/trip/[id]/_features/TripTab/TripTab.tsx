@@ -36,7 +36,7 @@ export const TripTab = ({
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[]) => void;
 }) => {
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isFetched } = useQuery({
     queryKey: [`cargo-${currentTrip.id}`],
     queryFn: async () => await getCargos(currentTrip.id.toString()),
     enabled: !!currentTrip,
@@ -118,7 +118,7 @@ export const TripTab = ({
       <UTable
         tBodyProps={{
           emptyContent: `Пока что в рейсе №${currentTrip.id} нет грузов`,
-          isLoading: isLoading,
+          isLoading: !isFetched,
           loadingContent: <Spinner />,
         }}
         data={cargos}

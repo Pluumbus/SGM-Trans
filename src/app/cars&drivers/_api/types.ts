@@ -20,5 +20,5 @@ export type TrailersType ={
     max_volume: number
 }
 
-export type FullDriversType = CarsType & {drivers : DriversType} & {trailers: TrailersType};
+export type FullDriversType = CarsType & {drivers : DriversType[]} & {trailers: TrailersType};
 export type DriversWithCars = DriversType & {cars : CarsType};
