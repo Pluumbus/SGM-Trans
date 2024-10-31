@@ -10,6 +10,7 @@ import { useRole } from "../roles/useRole";
 import RoleBasedWrapper from "../roles/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
 import { Timer } from "../Timer/Timer";
+import { PATHS } from "@/lib/consts";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
@@ -17,20 +18,27 @@ const Navbar = () => {
   return (
     <header className="text-gray-600 body-font bg-white shadow">
       <div className="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center justify-between">
-        <Link href={"/"}>
+        <Link href={PATHS.home}>
           <Image src={logo} alt="" width={156} height={120} />
         </Link>
         {userRole != "Пользователь" && (
           <nav className="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
             <Link
-              href="/workflow/ru"
+              href={PATHS.workflow_ru}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Таблица
             </Link>
 
             <Link
-              href="/workflow/kz"
+              href={PATHS.client}
+              className="mr-5 cursor-pointer hover:text-gray-900"
+            >
+              Клиент
+            </Link>
+
+            <Link
+              href={PATHS.workflow_kz}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Обратки
@@ -38,7 +46,7 @@ const Navbar = () => {
 
             <RoleBasedWrapper allowedRoles={["Админ", "Кассир"]}>
               <Link
-                href="/workflow/cashbox"
+                href={PATHS.cashbox}
                 className="mr-5 cursor-pointer hover:text-gray-900"
               >
                 Касса
@@ -46,14 +54,14 @@ const Navbar = () => {
             </RoleBasedWrapper>
 
             <Link
-              href="/cars&drivers"
+              href={PATHS.cars_drivers}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Машины
             </Link>
 
             <Link
-              href="/sgm-mechanic"
+              href={PATHS.sgm_mechanic}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               <span className="flex gap-1 items-center">
@@ -64,7 +72,7 @@ const Navbar = () => {
 
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
-                href="/statistics"
+                href={PATHS.statistics}
                 className="mr-5 cursor-pointer hover:text-gray-900"
               >
                 Статистика

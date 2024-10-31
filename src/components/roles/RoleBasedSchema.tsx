@@ -1,8 +1,8 @@
 "use client";
-import { CargoType } from "@/app/workflow/_feature/types";
+import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { useRole } from "@/components/roles/useRole";
-import { getBaseColumnsConfig } from "@/app/workflow/[slug]/week/[weekId]/trip/[id]/_features/_Table/CargoTable.config";
+import { getBaseColumnsConfig } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/_Table/CargoTable.config";
 
 const excludeNeededItems = (
   base: UseTableColumnsSchema<CargoType>[],
@@ -17,7 +17,12 @@ const GlobalLogistSchema = () => {
 };
 const GlobalWareHouseManagerSchema = () => {
   const excl = [
-    "amount, is_act_ready, is_unpalletizing, loading_scheme,driver, client_bin",
+    "amount",
+    "is_act_ready",
+    "is_unpalletizing",
+    "loading_scheme",
+    "driver",
+    "client_bin",
   ];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };

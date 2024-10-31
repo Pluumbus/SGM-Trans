@@ -10,7 +10,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
-import { DriversType } from "@/app/cars&drivers/_api/types";
+import { DriversType } from "@/app/(backend-logic)/cars&drivers/_api/types";
 
 export const DriversWithCars = (
   autocompleteProps: Omit<AutocompleteProps, "children">
