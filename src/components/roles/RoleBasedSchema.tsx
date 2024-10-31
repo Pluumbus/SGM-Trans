@@ -1,8 +1,8 @@
 "use client";
-import { CargoType } from "@/app/workflow/_feature/types";
+import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { useRole } from "@/components/roles/useRole";
-import { getBaseColumnsConfig } from "@/app/workflow/[slug]/week/[weekId]/trip/[id]/_features/_Table/CargoTable.config";
+import { getBaseColumnsConfig } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/_Table/CargoTable.config";
 
 const excludeNeededItems = (
   base: UseTableColumnsSchema<CargoType>[],

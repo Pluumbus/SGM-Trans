@@ -1,5 +1,6 @@
 "use client";
 
+import { PATHS } from "@/lib/consts";
 import { useUser } from "@clerk/nextjs";
 import { Avatar, Button } from "@nextui-org/react";
 import Link from "next/link";
@@ -10,7 +11,7 @@ export const ProfileButton = () => {
   const balance = (user?.publicMetadata?.balance as string | undefined) ?? "0";
   return (
     <div>
-      <Link href="/profile" className="flex gap-4 items-center">
+      <Link href={PATHS.profile} className="flex gap-4 items-center">
         <Avatar src={user?.imageUrl} />
         <div className="flex flex-col">
           <span className="text-sm">Личный кабинет</span>
