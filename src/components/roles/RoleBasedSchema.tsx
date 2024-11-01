@@ -33,8 +33,8 @@ const CashierSchema = () => {
 export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
   const role = useRole();
   switch (role) {
-    case "Админ":
-      return GlobalWareHouseManagerSchema();
+    // case "Админ":
+    //   return GlobalWareHouseManagerSchema();
     case "Логист":
       return GlobalLogistSchema();
     case "Зав.Склада":
