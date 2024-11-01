@@ -8,5 +8,10 @@ export const addTrip = async (data: TripType) => {
   return await supabase.from("trips").insert(data);
 };
 export const addCargo = async (data: CargoType) => {
-  return await supabase.from("cargos").insert(data);
+  const { error } = await supabase.from("cargos").insert(data);
+
+  if (error) {
+    console.log(error);
+    throw new Error();
+  }
 };
