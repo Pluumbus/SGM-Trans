@@ -23,9 +23,11 @@ export const useNumberState = (
       default:
         break;
     }
-    return value.toLocaleString(locale, {
-      useGrouping: true,
-    });
+    return (
+      value?.toLocaleString(locale, {
+        useGrouping: true,
+      }) || "0"
+    );
   };
   const [inputValue, setInputValue] = useState<string>(
     formatWithSeparator(initValue, separator)
