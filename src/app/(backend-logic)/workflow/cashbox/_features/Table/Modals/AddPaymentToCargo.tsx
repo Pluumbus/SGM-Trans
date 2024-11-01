@@ -89,8 +89,11 @@ export const AddPaymentToCargo = ({
     ) {
       return newCurrBalanceEqualZero;
     } else if (comparison > 0) {
+      console.log(comparison);
       return newCurrBalanceGreaterThanZero;
     } else if (comparison < 0) {
+      return newCurrBalanceLessThanZero;
+    } else if (comparison == 0) {
       return newCurrBalanceLessThanZero;
     }
   };
@@ -110,7 +113,6 @@ export const AddPaymentToCargo = ({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       const [_, paidAmount] = calcualteNewDuty(cargo);
-
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
         Number(paidAmount)
