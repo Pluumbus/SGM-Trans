@@ -48,7 +48,7 @@ export const AddPaymentToCargo = ({
     separator: ",",
   });
 
-  const calcualteNewDuty = (currentCargo: CargoType) => {
+  const calculateNewDuty = (currentCargo: CargoType) => {
     const o = info.row.original;
     const balance = isUsingBalance ? Number(o.current_balance) : 0;
 
@@ -58,7 +58,7 @@ export const AddPaymentToCargo = ({
     ];
 
     const newCurrBalanceLessThanZero = [
-      balance +
+      Number(o.current_balance) +
         currentCargo.paid_amount +
         formattedBalance.rawValue -
         Number(cargo.amount.value), // текущий баланс
@@ -79,21 +79,33 @@ export const AddPaymentToCargo = ({
       (currentCargo.paid_amount + formattedBalance.rawValue + balance);
 
     if (
-      Number(currentCargo.amount.value) - formattedBalance.rawValue === 0 &&
-      currentCargo.paid_amount === 0
+      (Number(currentCargo.amount.value) - formattedBalance.rawValue === 0 &&
+        currentCargo.paid_amount === 0) ||
+      Number(currentCargo.amount.value) -
+        (formattedBalance.rawValue + Number(currentCargo.paid_amount)) ===
+        0
     ) {
+      console.log("case 1");
+      // +
       return newCurrBalanceFullSinglePayment;
     } else if (
       Number(currentCargo.amount.value) - currentCargo.paid_amount ===
       0
     ) {
+      // +
+      console.log("case 2");
       return newCurrBalanceEqualZero;
     } else if (comparison > 0) {
-      console.log(comparison);
+      // +
+      console.log("case 3");
       return newCurrBalanceGreaterThanZero;
     } else if (comparison < 0) {
+      // +
+      console.log("case 4");
       return newCurrBalanceLessThanZero;
     } else if (comparison == 0) {
+      // +
+      console.log("case 5");
       return newCurrBalanceLessThanZero;
     }
   };
@@ -101,7 +113,7 @@ export const AddPaymentToCargo = ({
   const { mutate: updateBalance } = useMutation({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
-      const [currentBalance, _] = calcualteNewDuty(cargo);
+      const [currentBalance, _] = calculateNewDuty(cargo);
 
       return await changeClientBalance(
         info.row.original.id,
@@ -112,7 +124,7 @@ export const AddPaymentToCargo = ({
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
-      const [_, paidAmount] = calcualteNewDuty(cargo);
+      const [_, paidAmount] = calculateNewDuty(cargo);
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
         Number(paidAmount)
