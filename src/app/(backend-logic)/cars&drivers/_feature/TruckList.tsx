@@ -29,7 +29,6 @@ import { getDrivers } from "@/lib/references/drivers/api";
 import supabase from "@/utils/supabase/client";
 import { GazellList } from "./GazellList";
 
-//TODO: Отображются не все трейлеры, пофиксить реалтайм и драйверов
 export const DriversList = () => {
   const [driversTruckData, setDriversTruckData] = useState<FullDriversType[]>();
   const [driversGazellData, setDriversGazellData] =
@@ -91,6 +90,45 @@ export const DriversList = () => {
     setDrivers(driversData);
   }, [data, isFetched, driversData, driversFetched]);
 
+  // useEffect(() => {
+  //   const cn = supabase
+  //     .channel(`driver&cars`)
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "public",
+  //         table: "cars",
+  //       },
+  //       (payload) => {
+  //         const updatedCarData = payload.new as CarsType;
+  //         if (updatedCarData.car_type == "truck") {
+  //           const oldCarToChange = driversTruckData?.filter(
+  //             (car) => car.id === updatedFullDriversData.id
+  //           )[0];
+  //           const updatedFullDriversData: FullDriversType = {
+  //             ...updatedCarData,
+  //             car_type: oldCarToChange?.car_type,
+  //             drivers: oldCarToChange?.drivers,
+  //             trailers: oldCarToChange?.trailers,
+  //           };
+  //           console.log("updatedFullDriversData", updatedFullDriversData);
+
+  //           setDriversTruckData((prev) =>
+  //             prev.map((item) =>
+  //               item.id === updatedCarData.id ? updatedFullDriversData : item
+  //             )
+  //           );
+  //         }
+  //       }
+  //     )
+  //     .subscribe();
+
+  //   return () => {
+  //     cn.unsubscribe();
+  //   };
+  // }, []);
+
   useEffect(() => {
     const cn = supabase
       .channel(`driver&cars`)
@@ -99,28 +137,29 @@ export const DriversList = () => {
         {
           event: "*",
           schema: "public",
-          table: "cars",
+          table: "drivers",
         },
         (payload) => {
-          const updatedCarData = payload.new as CarsType;
-          if (updatedCarData.car_type == "truck") {
-            const oldCarToChange = driversTruckData?.filter(
-              (car) => car.id === updatedFullDriversData.id
-            )[0];
-            const updatedFullDriversData: FullDriversType = {
-              ...updatedCarData,
-              car_type: oldCarToChange?.car_type,
-              drivers: oldCarToChange?.drivers,
-              trailers: oldCarToChange?.trailers,
-            };
-            console.log("updatedFullDriversData", updatedFullDriversData);
+          const updatedDriverData = payload.new as DriversType;
 
-            setDriversTruckData((prev) =>
-              prev.map((item) =>
-                item.id === updatedCarData.id ? updatedFullDriversData : item
-              )
-            );
-          }
+          const oldDriverToChange = driversTruckData?.filter(
+            (item) =>
+              item.drivers.length > 0 &&
+              item.drivers[0].id === updatedDriverData.id
+          )[0];
+
+          const updatedFullDriversData: FullDriversType = {
+            ...oldDriverToChange,
+            drivers: Array(updatedDriverData),
+          };
+
+          console.log("updatedFullDriversData", updatedFullDriversData);
+
+          setDriversTruckData((prev) =>
+            prev.map((item) =>
+              item.id === updatedDriverData.id ? updatedFullDriversData : item
+            )
+          );
         }
       )
       .subscribe();
@@ -145,8 +184,9 @@ export const DriversList = () => {
     console.log(Number(value.slice(0, 2)));
     setItemChangeId(Number(value.slice(0, 2)));
   };
+
   if (isLoading) return <Spinner />;
-  console.log(driversTruckData);
+
   return (
     <div className="flex justify-around">
       <Card className="w-1/3">
@@ -159,6 +199,7 @@ export const DriversList = () => {
                   color: car?.drivers?.length > 0 ? COLORS.green : COLORS.red,
                 }}
                 className="border-b"
+                textValue={car.car}
               >
                 <Dropdown>
                   <DropdownTrigger onClick={() => handleCurrItem(car.id)}>
@@ -179,7 +220,7 @@ export const DriversList = () => {
                     {ddItems.map((item: string) => (
                       <DropdownItem
                         key={item}
-                        onClick={(key) => {
+                        onClick={() => {
                           setModalTitle(item);
                           onOpen();
                         }}

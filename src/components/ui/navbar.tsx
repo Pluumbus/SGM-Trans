@@ -31,13 +31,6 @@ const Navbar = () => {
             </Link>
 
             <Link
-              href={PATHS.client}
-              className="mr-5 cursor-pointer hover:text-gray-900"
-            >
-              Клиент
-            </Link>
-
-            <Link
               href={PATHS.workflow_kz}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >

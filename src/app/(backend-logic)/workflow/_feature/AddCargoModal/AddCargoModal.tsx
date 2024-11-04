@@ -48,7 +48,7 @@ export const CargoModal = ({
   ]);
 
   const { mutate, isPending } = useMutation({
-    mutationFn: async (data: CargoType) => await addCargo(data),
+    mutationFn: addCargo,
     onSuccess: () => {
       toast({
         title: "Успех",
@@ -60,7 +60,8 @@ export const CargoModal = ({
     onError: () => {
       toast({
         title: "Ошибка",
-        description: "Не получилось добавить груз",
+        description:
+          "Не получилось добавить груз, проверьте поле 'сумма оплаты'",
       });
     },
   });
