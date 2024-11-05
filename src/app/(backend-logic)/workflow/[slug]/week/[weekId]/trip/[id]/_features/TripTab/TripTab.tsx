@@ -84,9 +84,12 @@ export const TripTab = ({
           table: "cargos",
         },
         (payload) => {
+          console.log(`Пришли changes`);
+
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
+            console.log(`UPDATE`);
             setCargos((prev) => {
               const res = prev
                 .map((e) =>

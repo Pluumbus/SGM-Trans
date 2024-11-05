@@ -46,6 +46,7 @@ export type CargoType = {
     user_id: string;
   };
   paid_amount: number;
+  request_id?: number;
 };
 
 export type WeekType = {
