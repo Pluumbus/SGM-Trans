@@ -1,6 +1,7 @@
 "use client";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { COLORS } from "@/lib/colors";
+import { useNumberState } from "@/tool-kit/hooks";
 import { Card, CardBody } from "@nextui-org/react";
 
 export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
@@ -28,6 +29,8 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
         }, 0)
       : 0;
 
+  const summWithSep = useNumberState({ initValue: totalSumm, separator: "," });
+
   const totalClientsCount =
     cargos && cargos.length > 0
       ? cargos.reduce((count, cargo) => {
@@ -45,6 +48,17 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
         }, 0)
       : 0;
 
+  const totalDocumentsAcceptedCount =
+    cargos && cargos.length > 0
+      ? cargos.reduce((count, cargo) => {
+          const client = cargo.client_bin;
+          const res =
+            client && client.snts?.includes("KZ-SNT-")
+              ? count
+              : client.snts.length + count;
+          return res;
+        }, 0)
+      : 0;
   return (
     <div>
       <Card className="mb-3">
@@ -95,17 +109,18 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
                   color: `${totalSumm < 2500000 ? `${COLORS.red}` : `${COLORS.green}`}`,
                 }}
               >
-                {totalSumm}
+                {summWithSep.value}
               </b>{" "}
               тг
             </span>
           </div>
           <div className="flex justify-around">
             <span>
-              Кол-во клиентов: <b>{totalClientsCount}</b>{" "}
+              Кол-во клиентов: <b>{totalClientsCount}</b> / с документами:{" "}
+              <b>{totalDocumentsCount}</b>
             </span>
             <span>
-              Кол-во СНТ: <b>{totalDocumentsCount}</b>
+              Кол-во полученных СНТ: <b>{totalDocumentsAcceptedCount}</b>
             </span>
           </div>
         </CardBody>

@@ -45,13 +45,13 @@ const Navbar = () => {
                 Касса
               </Link>
             </RoleBasedWrapper>
-
+            {/* 
             <Link
               href={PATHS.cars_drivers}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Машины
-            </Link>
+            </Link> */}
 
             <Link
               href={PATHS.sgm_mechanic}

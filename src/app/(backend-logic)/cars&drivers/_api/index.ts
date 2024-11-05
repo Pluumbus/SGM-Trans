@@ -1,6 +1,6 @@
 "use server"
 import getSupabaseServer from "@/utils/supabase/server";
-import { CarsType, DriversType, FullDriversType, TrailersType } from "./types";
+import { CarsType, DriversType, FullDriversType, TrailersType } from "../../../../lib/references/drivers/feature/types";
 
 export const getDriversWithCars = async () : Promise<FullDriversType[]> => {
     const server = getSupabaseServer();

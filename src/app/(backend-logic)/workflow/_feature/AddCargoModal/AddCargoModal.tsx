@@ -141,7 +141,7 @@ export const CargoModal = ({
                       <Cities
                         selectedKey={field.value}
                         onSelectionChange={(e) => {
-                          setValue("unloading_point.city", e.toString());
+                          setValue("unloading_point.city", e?.toString());
                         }}
                       />
                     )}

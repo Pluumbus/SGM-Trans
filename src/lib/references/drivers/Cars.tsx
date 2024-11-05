@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDrivers, getDriversWithCars } from "./feature/api";
+import { getCars, getDrivers, getDriversWithCars } from "./feature/api";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -11,25 +11,25 @@ import {
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 
-export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
+export const Cars = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
-    queryKey: ["getDriversWithCars"],
-    queryFn: getDrivers,
+    queryKey: ["getCars"],
+    queryFn: getCars,
     enabled: !!isSignedIn,
   });
 
   const sortedData = data?.filter((e) => e.car_type === "truck");
   return (
     <div className="max-w-80">
-      <Autocomplete label="Выберите водителя" {...props} isLoading={isLoading}>
+      <Autocomplete label="Выберите машину" {...props} isLoading={isLoading}>
         {sortedData?.map((e, i) => (
           <AutocompleteItem
-            key={`${e.name}`}
-            value={`${e.name}`}
-            textValue={`${e.name}`}
+            key={`${e.car + " - " + e.state_number}`}
+            value={`${e.car + " - " + e.state_number}`}
+            textValue={`${e.car + " - " + e.state_number}`}
           >
-            {`${e.name}`}
+            {`${e.car + " - " + e.state_number}`}
           </AutocompleteItem>
         ))}
       </Autocomplete>

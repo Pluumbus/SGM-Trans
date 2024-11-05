@@ -1,9 +1,11 @@
 "use client";
 
 import {
+  CarsType,
   DriversType,
   DriversWithCars,
-} from "@/app/(backend-logic)/cars&drivers/_api/types";
+  TrailersType,
+} from "@/lib/references/drivers/feature/types";
 import supabase from "@/utils/supabase/client";
 
 export const getDrivers = async () => {
@@ -16,8 +18,23 @@ export const getDrivers = async () => {
 };
 
 export const getCars = async () => {
-  return await supabase.from(`cars`).select("*");
+  const { data, error } = await supabase.from(`cars`).select(`*`);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data as CarsType[];
 };
+
+export const getTrailers = async () => {
+  const { data, error } = await supabase.from(`trailers`).select(`*`);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data as TrailersType[];
+};
+
 
 export const getCarsWithTrailers = async () => {
   return await supabase.from(`cars`).select("*, trailers(trailer_id) ");

@@ -20,12 +20,16 @@ import {
   Spinner,
   useDisclosure,
 } from "@nextui-org/react";
-import { CarsType, DriversType, FullDriversType } from "../_api/types";
+import {
+  CarsType,
+  DriversType,
+  FullDriversType,
+} from "../../../../lib/references/drivers/feature/types";
 import { COLORS } from "@/lib/colors";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { toast } from "@/components/ui/use-toast";
 import { updateDriverData, updateTrailerData } from "../_api/requests";
-import { getDrivers } from "@/lib/references/drivers/api";
+import { getDrivers } from "@/lib/references/drivers/feature/api";
 import supabase from "@/utils/supabase/client";
 import { GazellList } from "./GazellList";
 

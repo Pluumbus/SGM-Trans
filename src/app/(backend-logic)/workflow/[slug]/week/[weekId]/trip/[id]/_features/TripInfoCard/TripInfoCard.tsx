@@ -3,8 +3,6 @@ import {
   Button,
   Card,
   CardBody,
-  DatePicker,
-  DateValue,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -21,11 +19,7 @@ import { IoMdSettings } from "react-icons/io";
 import { getUserById } from "../../../_api";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
-import {
-  updateTripDate,
-  updateTripRespUser,
-  updateTripStatus,
-} from "../../../_api/requests";
+import { updateTripRespUser, updateTripStatus } from "../../../_api/requests";
 import { useCheckRole } from "@/components/roles/useRole";
 import { daysOfWeek } from "../../_helpers";
 

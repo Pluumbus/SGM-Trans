@@ -38,7 +38,7 @@ const Page: NextPage<Props> = ({}) => {
           }}
         >
           <CardBody className="flex justify-center items-center">
-            <span>Работник</span>
+            <span>Сотрудник</span>
           </CardBody>
         </Card>
       </div>

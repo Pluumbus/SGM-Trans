@@ -77,7 +77,7 @@ export const PrintClientButton = ({
   return (
     <div>
       <Button color="success" onClick={handlePrintClick}>
-        Печать шаблона для клиента
+        Печать для бухгалтера
       </Button>
     </div>
   );
@@ -118,7 +118,7 @@ export const PrintWarehouseButton = ({
   return (
     <div>
       <Button color="success" onClick={handlePrintClick}>
-        Печать шаблона для склада
+        Печать для склада
       </Button>
     </div>
   );
