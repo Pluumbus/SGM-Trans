@@ -26,7 +26,7 @@ export const useNumberState = (
     return (
       value?.toLocaleString(locale, {
         useGrouping: true,
-      }) || "0"
+      }) || ""
     );
   };
   const [inputValue, setInputValue] = useState<string>(
