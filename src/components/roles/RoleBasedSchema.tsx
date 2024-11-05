@@ -15,6 +15,10 @@ const GlobalLogistSchema = () => {
   const excl = [""];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };
+const MngSchema = () => {
+  const excl = [""];
+  return excludeNeededItems(getBaseColumnsConfig(), excl);
+};
 const GlobalWareHouseManagerSchema = () => {
   const excl = [
     "amount",
@@ -43,6 +47,8 @@ export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
       return GlobalWareHouseManagerSchema();
     case "Кассир":
       return CashierSchema();
+    case "Менеджер":
+      return MngSchema();
     default:
       return getBaseColumnsConfig();
   }

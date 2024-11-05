@@ -1,7 +1,7 @@
 "use client";
 
 import { UTable } from "@/tool-kit/ui";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
@@ -22,6 +22,7 @@ import {
   MngrClientButton,
   MngrWrhButton,
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
+import { SgmSpinner } from "@/components/ui/SgmSpinner";
 
 export const TripTab = ({
   currentTrip,
@@ -36,12 +37,19 @@ export const TripTab = ({
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[]) => void;
 }) => {
-  const { data, isLoading, isFetched } = useQuery({
-    queryKey: [`cargo-${currentTrip.id}`],
-    queryFn: async () => await getCargos(currentTrip.id.toString()),
-    enabled: !!currentTrip,
+  const [cargos, setCargos] = useState<CargoType[]>([]);
+
+  // const { data, isLoading, isFetched } = useQuery({
+  //   queryKey: [`cargo-${currentTrip.id}`],
+  //   queryFn: async () => await getCargos(currentTrip.id.toString()),
+  //   enabled: !!currentTrip,
+  // });
+
+  const { mutate: getCargosMutation, isPending } = useMutation({
+    mutationKey: [`cargos-${currentTrip.id}`],
+    mutationFn: async () => await getCargos(currentTrip.id.toString()),
+    onSuccess: (data) => setCargos(data),
   });
-  const [cargos, setCargos] = useState<CargoType[]>(data || []);
 
   const { rowSelected, setRowSelected } = useSelectionStore();
   const config: UseTableConfig<CargoType> = {
@@ -54,12 +62,18 @@ export const TripTab = ({
   const { user } = useUser();
 
   const filterBy = () =>
-    isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+    isOnlyMycargos
+      ? cargos.filter((e) => e.user_id == user.id.toString())
+      : cargos;
 
   useEffect(() => {
-    if (data) {
+    getCargosMutation();
+  }, []);
+
+  useEffect(() => {
+    if (cargos) {
       setRowSelected(
-        data.map((e) => ({
+        cargos.map((e) => ({
           number: e.id,
           isSelected: false,
         }))
@@ -67,11 +81,11 @@ export const TripTab = ({
 
       setCargos(filterBy());
     }
-  }, [data, isOnlyMycargos]);
+  }, [cargos, isOnlyMycargos]);
 
   useEffect(() => {
-    onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
-  }, [data]);
+    onCargosUpdate(cargos?.map((cargo) => cargo.unloading_point.city));
+  }, [cargos]);
 
   useEffect(() => {
     const cn = supabase
@@ -118,8 +132,8 @@ export const TripTab = ({
       <UTable
         tBodyProps={{
           emptyContent: `Пока что в рейсе №${currentTrip.id} нет грузов`,
-          isLoading: !isFetched,
-          loadingContent: <Spinner />,
+          isLoading: isPending,
+          loadingContent: <SgmSpinner />,
         }}
         data={cargos}
         isPagiantion={false}

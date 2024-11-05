@@ -266,7 +266,7 @@ export const DriversList = () => {
                       <Button
                         color="success"
                         onClick={() => {
-                          handleDriverMutate();
+                          trailerMutate();
                           onClose();
                         }}
                       >

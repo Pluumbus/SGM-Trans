@@ -49,17 +49,6 @@ export const TripInfoMscCard = ({
     },
   });
 
-  //   const { mutate: setDateOutMutation } = useMutation({
-  //     mutationKey: ["setTripDate"],
-  //     mutationFn: async (date: string) =>
-  //       await updateTripDate(date, selectedTabId, false),
-  //     onSuccess() {
-  //       toast({
-  //         title: "Дата рейса успешно обновлён",
-  //       });
-  //     },
-  //   });
-
   const handleSetDateChange = (date: DateValue | null) => {
     const dateStr = new Date(
       date.year,

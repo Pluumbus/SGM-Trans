@@ -186,7 +186,7 @@ const Page: NextPage = () => {
                             city.includes("-") || city.length <= 5 ? 3 : 4
                           )}
                           {city &&
-                            (index < trip.city_to.length - 1 ? ", " : ".")}
+                            (index < trip.city_to.length - 1 ? "., " : ".")}
                         </div>
                       ))}
                     </span>
