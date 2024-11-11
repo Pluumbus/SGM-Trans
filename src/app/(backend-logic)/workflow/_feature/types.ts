@@ -36,16 +36,19 @@ export type CargoType = {
     xin: string;
   };
   cargo_name: string;
-  transportation_manager: string;
+  transportation_manager: number;
   is_documents: boolean;
   status: string;
   loading_scheme: string;
   user_id: string;
-  is_act_ready: {
-    value: boolean;
+  act_details: {
+    is_ready: boolean;
     user_id: string;
+    amount: number;
+    date_of_act_printed: string;
   };
   paid_amount: number;
+  request_id: number | null;
 };
 
 export type WeekType = {

@@ -5,6 +5,8 @@ import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import React from "react";
+import { ConfirmModal } from "@/tool-kit/hooks/useConfirm/Modal";
+import { ConfirmProvider } from "@/tool-kit/hooks/useConfirm/useConfirmContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,9 +29,12 @@ export default function RootLayout({
           <Providers
             themeProps={{ attribute: "class", defaultTheme: "light", children }}
           >
-            {children}
+            {/* @ts-ignore */}
+            <ConfirmProvider>
+              {children}
 
-            <Toaster />
+              <Toaster />
+            </ConfirmProvider>
           </Providers>
         </body>
       </html>

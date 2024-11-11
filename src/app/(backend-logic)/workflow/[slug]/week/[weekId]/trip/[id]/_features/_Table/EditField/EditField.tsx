@@ -23,7 +23,8 @@ export const EditField = ({
     | "amount"
     | "client_bin"
     | "status"
-    | "is_act_ready";
+    | "act_details"
+    | "transportation_manager";
 }) => {
   switch (type) {
     case "Checkbox":

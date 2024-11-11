@@ -7,6 +7,28 @@ type UseNumberStateArgs = {
   separator?: "," | " ";
 };
 
+export const getSeparatedNumber = (
+  value: number,
+  separator?: UseNumberStateArgs["separator"]
+) => {
+  let locale = "en";
+  switch (separator) {
+    case ",":
+      locale = "en";
+      break;
+    case " ":
+      locale = "ru";
+    default:
+      locale = "en";
+      break;
+  }
+  return (
+    value?.toLocaleString(locale, {
+      useGrouping: true,
+    }) || ""
+  );
+};
+
 export const useNumberState = (
   { initValue = 0, min, max, separator = "," }: UseNumberStateArgs,
   dependencies: any[] = [],

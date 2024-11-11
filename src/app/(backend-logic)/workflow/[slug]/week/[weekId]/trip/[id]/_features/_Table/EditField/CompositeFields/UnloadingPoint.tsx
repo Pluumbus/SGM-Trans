@@ -13,6 +13,7 @@ export const UnloadingPoint = ({
   info: Cell<CargoType, ReactNode>;
 }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
+
   return (
     <div className="flex flex-col gap-2 w-[20rem]">
       <div className="flex gap-2">

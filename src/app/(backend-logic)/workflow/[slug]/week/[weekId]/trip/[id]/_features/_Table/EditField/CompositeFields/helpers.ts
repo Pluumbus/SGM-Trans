@@ -60,7 +60,7 @@ export const useCompositeStates = <T>(
     }
   }, [info.getValue()]);
 
-  const debouncedValue = useDebouncedState(values, 200);
+  const debouncedValue = useDebouncedState(values, 1000);
 
   const { mutate } = useEditCargo({
     info,

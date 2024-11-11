@@ -8,7 +8,6 @@ import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox, Spinner } from "@nextui-org/react";
 import { useSelectionStore } from "../store";
-import { ActType, PrintButton } from "@/components/ActPrinter/actGen";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -213,7 +212,11 @@ export const getBaseColumnsConfig = () => {
       header: "Менеджер по перевозкам",
       size: 25,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="transportation_manager"
+        />
       ),
       filter: false,
     },
@@ -264,15 +267,11 @@ export const getBaseColumnsConfig = () => {
       filter: false,
     },
     {
-      accessorKey: "is_act_ready",
+      accessorKey: "act_details",
       header: "Выдача талона",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField
-          info={info}
-          type={"Composite"}
-          compositeType="is_act_ready"
-        />
+        <EditField info={info} type={"Composite"} compositeType="act_details" />
       ),
 
       filter: false,

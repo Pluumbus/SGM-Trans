@@ -15,29 +15,54 @@ import {
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
-import { ActType, PrintButton } from "@/components/ActPrinter/actGen";
-import { useCheckRole } from "@/components/RoleManagment/useRole";
+import { PrintButton } from "@/components/actPrintTemp/actGen";
+import { useCheckRole } from "@/components/roles/useRole";
 import { useUser } from "@clerk/nextjs";
-import { toast } from "@/components/ui/use-toast";
+import { toast, useToast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserById } from "../../../../../_api";
 import { setUserData } from "@/lib/references/clerkUserType/SetUserFuncs";
+import { FaCircleXmark } from "react-icons/fa6";
 
-type Type = CargoType["is_act_ready"];
+type Type = CargoType["act_details"];
 
 export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
-  const [values, setValues] = useCompositeStates<Type>(info);
+  const [values, setValues] =
+    useCompositeStates<Pick<Type, "is_ready" | "user_id">>(info);
 
   const { user } = useUser();
-  const { onOpenChange, isOpen } = useDisclosure();
+  const disclosure = useDisclosure();
   const initText = `Одобрить`;
+
   const [givingActText, setGivingActText] = useState<string>(initText);
+
+  const { toast } = useToast();
+  const isReadyToGive = () => {
+    const condition =
+      (user.publicMetadata.balance as number) -
+        (Number(info.row.original.amount.value) -
+          Number(info.row.original.paid_amount)) >
+      0;
+
+    return condition
+      ? disclosure.onOpenChange()
+      : toast({
+          title: (
+            <div className="flex gap-2 items-center leading-4">
+              <span className="text-danger-600">
+                <FaCircleXmark size={20} />
+              </span>
+              <span>У вас недостаточно баланса для одобрения груза</span>
+            </div>
+          ) as string & ReactNode,
+        });
+  };
 
   const { mutate, isPending } = useMutation({
     mutationKey: [`get user ${info.row.original.user_id.toString()}`],
     mutationFn: async () => await getUserById(values?.user_id),
     onSuccess: (res) => {
-      if (values.value) {
+      if (values.is_ready) {
         setGivingActText(`Одобрил: ${res.firstName}`);
       } else {
         setGivingActText(initText);
@@ -46,18 +71,18 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   });
 
   useEffect(() => {
-    if (values.user_id && values.value) {
+    if (values.user_id && values.is_ready) {
       mutate();
     }
   }, [values?.user_id]);
 
   useEffect(() => {
-    if (!values.value) {
+    if (!values.is_ready) {
       setGivingActText(initText);
     } else {
       mutate();
     }
-  }, [values?.value]);
+  }, [values?.is_ready]);
 
   if (isPending) {
     return <Spinner />;
@@ -66,30 +91,30 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className="flex flex-col gap-2 w-[8rem]">
       <div className="flex flex-col gap-2">
-        {useCheckRole(["Кассир", "Админ"]) ? (
+        {useCheckRole(["Менеджер"]) ? (
           <Checkbox
-            isSelected={values.value}
+            isSelected={values.is_ready}
             onValueChange={(e) => {
               setValues({
                 user_id: user.id,
-                value: e,
+                is_ready: e,
               });
             }}
           >
             {givingActText}
           </Checkbox>
-        ) : values.value ? (
-          <Checkbox isSelected={values.value}>{givingActText}</Checkbox>
+        ) : values.is_ready ? (
+          <Checkbox isSelected={values.is_ready}>{givingActText}</Checkbox>
         ) : (
           <Button
             onClick={() => {
-              onOpenChange();
+              isReadyToGive();
             }}
           >
-            <span>{givingActText}</span>
+            <span>Одобрить</span>
           </Button>
         )}
-        {values.value && (
+        {values.is_ready && (
           <div>
             <PrintButton
               actData={{
@@ -104,9 +129,11 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         )}
       </div>
       <GlobalActModal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        cargoPrice={Number(info.row.original.amount.value)}
+        disclosure={disclosure}
+        cargoInfo={{
+          cargoPrice: Number(info.row.original.amount.value),
+          cargoPaidAmount: Number(info.row.original.paid_amount),
+        }}
         setValues={setValues}
       />
     </div>
@@ -114,24 +141,20 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 };
 
 const GlobalActModal = ({
-  onOpenChange,
-  isOpen,
-  cargoPrice,
+  disclosure,
+  cargoInfo,
   setValues,
 }: {
-  onOpenChange: () => void;
-  cargoPrice: number;
-  isOpen: boolean;
-  setValues: React.Dispatch<
-    React.SetStateAction<{
-      value: boolean;
-      user_id: string;
-    }>
-  >;
+  disclosure: { onOpenChange: () => void; isOpen: boolean };
+  cargoInfo: {
+    cargoPrice: number;
+    cargoPaidAmount: number;
+  };
+  setValues: React.Dispatch<React.SetStateAction<CargoType["act_details"]>>;
 }) => {
   const { user } = useUser();
+
   const { mutate: setBalanceMutation, isPending } = useMutation({
-    mutationKey: ["SetBalanceForActUser"],
     mutationFn: async (newBal: number) => {
       await setUserData({
         userId: user.id,
@@ -145,59 +168,56 @@ const GlobalActModal = ({
     },
     onSuccess: () => {
       setValues(() => ({
-        value: true,
+        is_ready: true,
         user_id: user.id,
+        amount: cargoInfo.cargoPrice,
+        date_of_act_printed: new Date().toISOString(),
       }));
-      onOpenChange();
+      disclosure.onOpenChange();
       toast({ title: `Печать талона на груз одобрена` });
     },
   });
-  const res = (user.publicMetadata.balance as number) - cargoPrice;
+  // sum to substract from logist balance
+  const logistSum =
+    (user.publicMetadata.balance as number) -
+    (cargoInfo.cargoPrice - cargoInfo.cargoPaidAmount);
+
   return (
-    <div>
-      <Modal onOpenChange={onOpenChange} isOpen={isOpen} isDismissable={false}>
-        <ModalContent>
-          <>
-            <ModalHeader className="flex flex-col gap-1 ">
-              Одобрение груза
-            </ModalHeader>
-            <ModalBody>
-              {res < 0 || res > (user.publicMetadata.balance as number) ? (
-                <p>Недостаточно баланса</p>
-              ) : (
-                <p>
-                  При соглашении у вас спишется стоимость груза с баланса в
-                  размере <b>{`${cargoPrice}`}</b> и появится возможность
-                  распечатать Акт приема-выдачи
-                </p>
-              )}
-            </ModalBody>
-            <ModalFooter>
-              <Button
-                color="danger"
-                variant="light"
-                isLoading={isPending}
-                onPress={() => {
-                  setValues((prev) => ({ ...prev, value: false }));
-                }}
-              >
-                Закрыть
-              </Button>
-              {!(res < 0 || res > (user.publicMetadata.balance as number)) && (
-                <Button
-                  isLoading={isPending}
-                  color="success"
-                  onPress={() => {
-                    setBalanceMutation(res);
-                  }}
-                >
-                  Да
-                </Button>
-              )}
-            </ModalFooter>
-          </>
-        </ModalContent>
-      </Modal>
-    </div>
+    <Modal onOpenChange={disclosure.onOpenChange} isOpen={disclosure.isOpen}>
+      <ModalContent>
+        <ModalHeader className="flex flex-col gap-1 ">
+          Одобрение груза
+        </ModalHeader>
+        <ModalBody>
+          <p>
+            При соглашении у вас спишется стоимость груза с баланса в размере{" "}
+            <b>{`${logistSum}`}</b> и появится возможность распечатать Акт
+            приема-выдачи
+          </p>
+        </ModalBody>
+        <ModalFooter>
+          <Button
+            color="danger"
+            variant="light"
+            isLoading={isPending}
+            onPress={() => {
+              setValues((prev) => ({ ...prev, value: false }));
+            }}
+          >
+            Закрыть
+          </Button>
+
+          <Button
+            isLoading={isPending}
+            color="success"
+            onPress={() => {
+              setBalanceMutation(logistSum);
+            }}
+          >
+            Да
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };

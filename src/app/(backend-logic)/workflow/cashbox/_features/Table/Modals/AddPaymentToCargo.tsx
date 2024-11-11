@@ -24,7 +24,7 @@ import {
   changeClientBalance,
   changeExactAmountPaidToCargo,
 } from "../../api";
-import { useNumberState } from "@/tool-kit/hooks";
+import { useNumberState, getSeparatedNumber } from "@/tool-kit/hooks";
 
 type AddPaymentToCargoArgs = {
   disclosure: {
@@ -174,10 +174,8 @@ export const AddPaymentToCargo = ({
                   setFormState(Number(e));
                 }}
               >
-                {info.row.original.cargos.map((el) => {
-                  const { value: number } = useNumberState({
-                    initValue: Number(el.amount.value),
-                  });
+                {info.row.original.cargos?.map((el) => {
+                  const number = getSeparatedNumber(Number(el.amount.value));
                   return (
                     <AutocompleteItem
                       key={el.id}
@@ -238,10 +236,8 @@ export const AddPaymentToCargo = ({
 };
 
 const InputEndContent = ({ info }: { info: AddPaymentToCargoArgs["info"] }) => {
-  const val = useNumberState({
-    initValue: Number(info.row.original.current_balance),
-  });
-  return <span className="text-sm">+&nbsp;{val.value}</span>;
+  const val = getSeparatedNumber(Number(info.row.original.current_balance));
+  return <span className="text-sm">+&nbsp;{val}</span>;
 };
 
 const AlreadyPaidBadge = ({
@@ -251,16 +247,15 @@ const AlreadyPaidBadge = ({
   info: AddPaymentToCargoArgs["info"];
   formState: number;
 }) => {
-  const tmp = useNumberState({
-    initValue: info.row.original.cargos.find((e) => e.id == formState)
-      ?.paid_amount,
-  });
+  const tmp = getSeparatedNumber(
+    info.row.original.cargos.find((e) => e.id == formState)?.paid_amount
+  );
 
   return (
-    tmp.value && (
+    tmp && (
       <span className="text-xs pl-1 ">
         Оплачено:&nbsp;
-        {tmp.value || ""}
+        {tmp || ""}
       </span>
     )
   );
