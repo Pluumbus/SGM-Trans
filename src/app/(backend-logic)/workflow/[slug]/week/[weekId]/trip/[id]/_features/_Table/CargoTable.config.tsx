@@ -267,15 +267,11 @@ export const getBaseColumnsConfig = () => {
       filter: false,
     },
     {
-      accessorKey: "is_act_ready",
+      accessorKey: "act_details",
       header: "Выдача талона",
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField
-          info={info}
-          type={"Composite"}
-          compositeType="is_act_ready"
-        />
+        <EditField info={info} type={"Composite"} compositeType="act_details" />
       ),
 
       filter: false,
