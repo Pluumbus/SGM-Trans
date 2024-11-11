@@ -59,6 +59,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
           return res;
         }, 0)
       : 0;
+
   return (
     <div>
       <Card className="mb-3">
@@ -68,7 +69,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               Общий вес:{" "}
               <b
                 style={{
-                  color: `${totalWeight <= 11 ? `${COLORS.green}` : totalWeight <= 19.9 ? `${COLORS.yellow}` : totalWeight <= 22 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                  color: calculateWeightColor(totalWeight),
                 }}
               >
                 {totalWeight}/22
@@ -87,7 +88,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               Общий объем:{" "}
               <b
                 style={{
-                  color: `${totalVolume <= 47 ? `${COLORS.green}` : totalVolume <= 79 ? `${COLORS.yellow}` : totalVolume <= 92 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                  color: calculateVolumeColor(totalVolume),
                 }}
               >
                 {totalVolume}/92
@@ -127,4 +128,24 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
       </Card>
     </div>
   );
+};
+
+export const calculateWeightColor = (totalWeight: number) => {
+  return totalWeight <= 11
+    ? `${COLORS.green}`
+    : totalWeight <= 19.9
+      ? `${COLORS.yellow}`
+      : totalWeight <= 22
+        ? `${COLORS.orange}`
+        : `${COLORS.red}`;
+};
+
+export const calculateVolumeColor = (totalVolume: number) => {
+  return totalVolume <= 47
+    ? `${COLORS.green}`
+    : totalVolume <= 79
+      ? `${COLORS.yellow}`
+      : totalVolume <= 92
+        ? `${COLORS.orange}`
+        : `${COLORS.red}`;
 };

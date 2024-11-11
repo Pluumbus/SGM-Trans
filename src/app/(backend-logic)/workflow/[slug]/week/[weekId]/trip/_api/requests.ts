@@ -1,7 +1,6 @@
 "use client";
 import supabase from "@/utils/supabase/client";
 
-
 export const updateTripStatus = async (value: string | any, tripId) => {
   const { data, error } = await supabase
     .from("trips")
@@ -14,23 +13,27 @@ export const updateTripStatus = async (value: string | any, tripId) => {
   return data;
 };
 
-export const updateTripDate = async (value: string | any, tripId, dateIn : boolean) => {
-  if(dateIn) {
+export const updateTripDate = async (
+  value: string | any,
+  tripId,
+  dateIn: boolean,
+) => {
+  if (dateIn) {
     const { data, error } = await supabase
-    .from("trips")
-    .update({ date_in: value })
-    .eq("id", Number(tripId));
+      .from("trips")
+      .update({ date_in: value })
+      .eq("id", Number(tripId));
 
     if (error) {
       throw new Error();
     }
     return data;
   }
-  
+
   const { data, error } = await supabase
-  .from("trips")
-  .update({ date_out: value })
-  .eq("id", Number(tripId));
+    .from("trips")
+    .update({ date_out: value })
+    .eq("id", Number(tripId));
 
   if (error) {
     throw new Error();
@@ -49,7 +52,6 @@ export const updateTripRespUser = async (value: string | any, tripId) => {
   }
   return data;
 };
-
 
 export const updateTripDriver = async (value: string | any, tripId) => {
   const { data, error } = await supabase

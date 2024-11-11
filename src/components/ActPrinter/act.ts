@@ -102,4 +102,3 @@ export const bodyHtmlTemp = ` <div class="container">
             </div>
         </section>
     </div>`;
-

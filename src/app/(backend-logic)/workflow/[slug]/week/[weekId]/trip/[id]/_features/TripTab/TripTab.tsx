@@ -1,10 +1,9 @@
 "use client";
 
 import { UTable } from "@/tool-kit/ui";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
-import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
   UseTableColumnsSchema,
@@ -14,7 +13,6 @@ import {
 import { getCargos } from "../../../_api";
 import { useSelectionStore } from "../store";
 import supabase from "@/utils/supabase/client";
-import { Button, Spinner } from "@nextui-org/react";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
@@ -25,31 +23,29 @@ import {
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 
 export const TripTab = ({
-  currentTrip,
-  trips,
+  tripid,
   columns,
   isOnlyMycargos,
   onCargosUpdate,
 }: {
-  currentTrip: TripType;
-  trips: TripType[];
+  tripid: number;
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[]) => void;
 }) => {
-  const [cargos, setCargos] = useState<CargoType[]>([]);
-
-  // const { data, isLoading, isFetched } = useQuery({
-  //   queryKey: [`cargo-${currentTrip.id}`],
-  //   queryFn: async () => await getCargos(currentTrip.id.toString()),
-  //   enabled: !!currentTrip,
-  // });
-
-  const { mutate: getCargosMutation, isPending } = useMutation({
-    mutationKey: [`cargos-${currentTrip.id}`],
-    mutationFn: async () => await getCargos(currentTrip.id.toString()),
-    onSuccess: (data) => setCargos(data),
+  const { data, isFetched } = useQuery({
+    queryKey: [`cargo-${tripid}`],
+    queryFn: async () => await getCargos(tripid.toString()),
+    enabled: !!tripid,
   });
+
+  const [cargos, setCargos] = useState<CargoType[]>(data || []);
+
+  // const { mutate: getCargosMutation, isPending } = useMutation({
+  //   mutationKey: [`cargos-${currentTrip.id}`],
+  //   mutationFn: async () => await getCargos(currentTrip.id.toString()),
+  //   onSuccess: (data) => setCargos(data),
+  // });
 
   const { rowSelected, setRowSelected } = useSelectionStore();
   const config: UseTableConfig<CargoType> = {
@@ -62,18 +58,16 @@ export const TripTab = ({
   const { user } = useUser();
 
   const filterBy = () =>
-    isOnlyMycargos
-      ? cargos.filter((e) => e.user_id == user.id.toString())
-      : cargos;
+    isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+
+  // useEffect(() => {
+  //   getCargosMutation();
+  // }, []);
 
   useEffect(() => {
-    getCargosMutation();
-  }, []);
-
-  useEffect(() => {
-    if (cargos) {
+    if (data) {
       setRowSelected(
-        cargos.map((e) => ({
+        data.map((e) => ({
           number: e.id,
           isSelected: false,
         }))
@@ -81,15 +75,15 @@ export const TripTab = ({
 
       setCargos(filterBy());
     }
-  }, [cargos, isOnlyMycargos]);
+  }, [data, isOnlyMycargos]);
 
   useEffect(() => {
-    onCargosUpdate(cargos?.map((cargo) => cargo.unloading_point.city));
-  }, [cargos]);
+    onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
+  }, [data]);
 
   useEffect(() => {
     const cn = supabase
-      .channel(`workflow-trip${currentTrip.id}`)
+      .channel(`workflow-trip${tripid}`)
       .on(
         "postgres_changes",
         {
@@ -108,7 +102,8 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => e.trip_id == currentTrip.id);
+                .filter((e) => e.trip_id == tripid);
+              console.log(res);
               return res;
             });
             const rowsToSelect = cargos.map((e) => ({
@@ -131,19 +126,19 @@ export const TripTab = ({
     <>
       <UTable
         tBodyProps={{
-          emptyContent: `Пока что в рейсе №${currentTrip.id} нет грузов`,
-          isLoading: isPending,
+          emptyContent: `Пока что в рейсе №${tripid} нет грузов`,
+          isLoading: !isFetched,
           loadingContent: <SgmSpinner />,
         }}
         data={cargos}
         isPagiantion={false}
         columns={columns}
-        name={`Cargo Table ${currentTrip.id}`}
+        name={`Cargo Table ${tripid}`}
         config={config}
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber currentTripId={currentTrip.id} trips={trips} />
+        <UpdateTripNumber currentTripId={tripid} />
       )}
       {cargos.length > 0 && (
         <div className="flex justify-between">

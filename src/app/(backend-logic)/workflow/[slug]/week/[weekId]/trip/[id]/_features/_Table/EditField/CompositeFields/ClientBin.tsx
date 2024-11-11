@@ -35,7 +35,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       console.log("use effect", values.snts);
       setValues((prev) => {
         const res = prev.snts.map((e) =>
-          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e,
         );
         console.log("res", res);
 

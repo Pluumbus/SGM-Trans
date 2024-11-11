@@ -8,7 +8,7 @@ import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox, Spinner } from "@nextui-org/react";
 import { useSelectionStore } from "../store";
-import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
+import { ActType, PrintButton } from "@/components/ActPrinter/actGen";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [

@@ -15,16 +15,15 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllCargos } from "../../../_api";
+import { getAllCargos, getTrips, getTripsByWeekId } from "../../../_api";
 import { useSelectionStore } from "../store";
 import { COLORS } from "@/lib/colors";
+import { useParams } from "next/navigation";
 
 export const UpdateTripNumber = ({
   currentTripId,
-  trips,
 }: {
   currentTripId: number;
-  trips: TripType[];
 }) => {
   const { rowSelected: selectedRows, setRowSelected } = useSelectionStore();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -42,6 +41,11 @@ export const UpdateTripNumber = ({
   const { data, isFetched, isLoading } = useQuery({
     queryKey: ["getAllCargos"],
     queryFn: async () => await getAllCargos(),
+  });
+
+  const { data: tripsData, isLoading: tripsLoading } = useQuery({
+    queryKey: ["getAllTrips"],
+    queryFn: async () => await getTrips(),
   });
 
   useEffect(() => {
@@ -76,11 +80,11 @@ export const UpdateTripNumber = ({
     const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
     const totalWeight = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.weight),
-      0
+      0,
     );
     const totalVolume = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.volume),
-      0
+      0,
     );
 
     const weightCalc =
@@ -114,6 +118,7 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
 
+  console.log(tripsData);
   return (
     <div className="mt-4">
       <Button
@@ -149,8 +154,8 @@ export const UpdateTripNumber = ({
                     setSelectedTrip(e);
                   }}
                 >
-                  {trips
-                    .filter((trip) => trip.id !== currentTripId)
+                  {tripsData
+                    ?.filter((trip) => trip.id !== currentTripId)
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}

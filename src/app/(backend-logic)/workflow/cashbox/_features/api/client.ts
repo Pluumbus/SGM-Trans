@@ -17,7 +17,7 @@ export const changeClientBalance = async (clientId: number, value: number) => {
 
 export const changeExactAmountPaidToCargo = async (
   cargo: CargoType,
-  paidAmount: number
+  paidAmount: number,
 ) => {
   const { data, error } = await supabase
     .from("cargos")
@@ -33,7 +33,7 @@ export const changeExactAmountPaidToCargo = async (
 
 export const addPaidAmountToCargo = async (
   cargo: CargoType,
-  paidAmount: number
+  paidAmount: number,
 ) => {
   const { data, error } = await supabase
     .from("cargos")

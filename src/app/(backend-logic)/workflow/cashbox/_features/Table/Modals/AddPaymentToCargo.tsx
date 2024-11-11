@@ -117,7 +117,7 @@ export const AddPaymentToCargo = ({
 
       return await changeClientBalance(
         info.row.original.id,
-        Number(currentBalance)
+        Number(currentBalance),
       );
     },
   });
@@ -127,7 +127,7 @@ export const AddPaymentToCargo = ({
       const [_, paidAmount] = calculateNewDuty(cargo);
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
-        Number(paidAmount)
+        Number(paidAmount),
       );
     },
     onSuccess: () => {

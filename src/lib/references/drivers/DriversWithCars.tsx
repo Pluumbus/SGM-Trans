@@ -13,7 +13,7 @@ import { useUser } from "@clerk/nextjs";
 import { DriversType } from "@/lib/references/drivers/feature/types";
 
 export const DriversWithCars = (
-  autocompleteProps: Omit<AutocompleteProps, "children">
+  autocompleteProps: Omit<AutocompleteProps, "children">,
 ) => {
   const { isSignedIn } = useUser();
   const { data, isLoading } = useQuery({

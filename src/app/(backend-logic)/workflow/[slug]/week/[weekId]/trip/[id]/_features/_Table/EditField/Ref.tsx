@@ -21,7 +21,7 @@ export const Lib = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       await editCargo(
         info.column.columnDef.accessorKey,
         debouncedValue,
-        info.row.original.id
+        info.row.original.id,
       );
     },
   });

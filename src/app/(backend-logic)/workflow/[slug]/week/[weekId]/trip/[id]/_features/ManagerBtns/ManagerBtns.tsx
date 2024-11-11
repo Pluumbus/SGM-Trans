@@ -1,19 +1,19 @@
-import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { Button } from "@nextui-org/react";
 import { CargoType } from "../../../../../../../_feature/types";
 import {
   PrintClientButton,
   PrintWarehouseButton,
-} from "@/components/actPrintTemp/actGen";
+} from "@/components/ActPrinter/actGen";
 import {
   ClientsActType,
   WareHouseActType,
-} from "@/components/actPrintTemp/types";
+} from "@/components/ActPrinter/types";
 
 export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
     (cargo) =>
-      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК"
+      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК",
   );
 
   const actClientData = filteredCargos.map((crg) => {

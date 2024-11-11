@@ -28,7 +28,7 @@ export const GazellList = ({
         dataToCopy.drivers[0].passport_data.issued +
         "\n" +
         "Дата: " +
-        dataToCopy.drivers[0].passport_data.date
+        dataToCopy.drivers[0].passport_data.date,
     );
     toast({
       title: `Данные водителя успешно скопированы в буфер обмена`,

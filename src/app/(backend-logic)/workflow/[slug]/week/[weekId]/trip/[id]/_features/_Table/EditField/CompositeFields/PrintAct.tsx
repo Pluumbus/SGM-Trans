@@ -15,8 +15,8 @@ import {
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";
-import { ActType, PrintButton } from "@/components/actPrintTemp/actGen";
-import { useCheckRole } from "@/components/roles/useRole";
+import { ActType, PrintButton } from "@/components/ActPrinter/actGen";
+import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";

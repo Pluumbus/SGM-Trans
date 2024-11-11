@@ -15,7 +15,7 @@ import { useMutation } from "@tanstack/react-query";
 import { ReactNode, useEffect, useState } from "react";
 import { IoMdSettings } from "react-icons/io";
 import { updateTripDate } from "../../../_api/requests";
-import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 
 export const TripInfoMscCard = ({
   selectedTabId,
@@ -31,7 +31,7 @@ export const TripInfoMscCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
+      (item) => item.id === Number(selectedTabId),
     );
     // setStatusVal(currentTrip?.status);
     setDateValIn(currentTrip?.date_in);
@@ -53,7 +53,7 @@ export const TripInfoMscCard = ({
     const dateStr = new Date(
       date.year,
       date.month - 1,
-      date.day
+      date.day,
     ).toLocaleDateString();
 
     if (dateVal == dateItmes[0]) {

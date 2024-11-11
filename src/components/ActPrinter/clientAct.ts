@@ -65,7 +65,6 @@ li .label {
 }
 `;
 
-
 export const clientBodyHtmlTemp = `
     <div class="container">
         <section class="cargo-info">
@@ -77,5 +76,4 @@ export const clientBodyHtmlTemp = `
             </ul>
         </section>
     </div>
-`
-
+`;

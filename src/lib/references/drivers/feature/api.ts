@@ -35,7 +35,6 @@ export const getTrailers = async () => {
   return data as TrailersType[];
 };
 
-
 export const getCarsWithTrailers = async () => {
   return await supabase.from(`cars`).select("*, trailers(trailer_id) ");
 };

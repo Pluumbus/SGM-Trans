@@ -27,7 +27,7 @@ export const useEditCargo = <T>({
       await editCargo(
         info.column.columnDef!.accessorKey,
         value,
-        info.row.original.id
+        info.row.original.id,
       ),
   });
 
@@ -48,7 +48,7 @@ export const useDebouncedState = <T>(value: T, delay: number): T => {
 };
 
 export const useCompositeStates = <T>(
-  info: Cell<CargoType, ReactNode>
+  info: Cell<CargoType, ReactNode>,
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
 

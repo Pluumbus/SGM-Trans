@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "@nextui-org/react";
-import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export default async function ProfilePage() {

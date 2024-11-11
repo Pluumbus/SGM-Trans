@@ -61,7 +61,7 @@ export const WeekCard = () => {
             ...prev,
             { ...payload.new, trips: [] } as WeekType & { trips: TripType[] },
           ]);
-        }
+        },
       )
       .subscribe();
 

@@ -87,7 +87,7 @@ export const DriversList = () => {
           acc[car.car_type]?.push(car);
           return acc;
         },
-        {} as Record<string, FullDriversType[]>
+        {} as Record<string, FullDriversType[]>,
       );
     setDriversTruckData(cars["truck"]);
     setDriversGazellData(cars["gazell"]);
@@ -149,7 +149,7 @@ export const DriversList = () => {
           const oldDriverToChange = driversTruckData?.filter(
             (item) =>
               item.drivers.length > 0 &&
-              item.drivers[0].id === updatedDriverData.id
+              item.drivers[0].id === updatedDriverData.id,
           )[0];
 
           const updatedFullDriversData: FullDriversType = {
@@ -161,10 +161,10 @@ export const DriversList = () => {
 
           setDriversTruckData((prev) =>
             prev.map((item) =>
-              item.id === updatedDriverData.id ? updatedFullDriversData : item
-            )
+              item.id === updatedDriverData.id ? updatedFullDriversData : item,
+            ),
           );
-        }
+        },
       )
       .subscribe();
 

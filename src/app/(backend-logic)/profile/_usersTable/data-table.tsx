@@ -32,7 +32,7 @@ import React, { useState } from "react";
 import { Input, Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
-import { roleNamesList } from "@/components/roles/useRole";
+import { roleNamesList } from "@/components/RoleManagment/useRole";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export function DataTable() {
