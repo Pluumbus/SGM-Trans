@@ -36,7 +36,7 @@ export type CargoType = {
     xin: string;
   };
   cargo_name: string;
-  transportation_manager: string;
+  transportation_manager: number;
   is_documents: boolean;
   status: string;
   loading_scheme: string;
@@ -46,6 +46,7 @@ export type CargoType = {
     user_id: string;
   };
   paid_amount: number;
+  request_id: number | null;
 };
 
 export type WeekType = {

@@ -9,12 +9,14 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { useCashierActions } from "./useCashierActions";
-import { isArray } from "lodash";
+import { divide, isArray } from "lodash";
 import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
-import { useNumberState } from "@/tool-kit/hooks";
+import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
+import Link from "next/link";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -24,7 +26,11 @@ export const useCashierColumnsConfig =
         header: "Клиент",
         filter: true,
         cell: (info: Cell<CashboxType, ReactNode>) => (
-          <div className="font-semibold">{info.getValue().toString()}</div>
+          <div>
+            {/* 
+            //@ts-ignore */}
+            <FullName value={info.getValue() as CashboxType["client"]} />
+          </div>
         ),
       },
       {
@@ -68,47 +74,52 @@ export const useCashierColumnsConfig =
         accessorKey: "cargos",
         header: "Рейсы клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) =>
-          isArray(info.getValue()) && (
-            <div className="grid grid-cols-2 min-w-[250px]">
-              {(info.getValue() as CashboxType["cargos"]).map((e, i) => {
-                const paidAmount = useNumberState({ initValue: e.paid_amount });
-                const amountToPay = useNumberState({
-                  initValue: Number(e.amount.value),
-                });
-                const disclosure = useDisclosure();
-                return (
-                  <>
-                    <div
-                      className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
-                      onClick={() => {
-                        disclosure.onOpenChange();
-                      }}
-                    >
+        cell: (info: Cell<CashboxType, ReactNode>) => {
+          const disclosure = useDisclosure();
+
+          if (isArray(info.getValue())) {
+            return (
+              <div className="grid grid-cols-2 min-w-[250px]">
+                {(info.getValue() as CashboxType["cargos"])?.map((e, i) => {
+                  const paidAmount = getSeparatedNumber(e.paid_amount);
+                  const amountToPay = getSeparatedNumber(
+                    Number(e.amount.value)
+                  );
+                  return (
+                    <>
                       <div
-                        className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
+                        className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
+                        onClick={() => {
+                          disclosure.onOpenChange();
+                        }}
                       >
-                        <span>№{e.trip_id}</span>
-                        <span>-</span>
-                        <span>{amountToPay.value} тг.</span>
+                        <div
+                          className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
+                        >
+                          <span>№{e.trip_id}</span>
+                          <span>-</span>
+                          <span>{amountToPay} тг.</span>
+                        </div>
+                        {e.paid_amount !== 0 && (
+                          <span className="text-xs">
+                            Оплачено: {paidAmount}&nbsp;тг
+                          </span>
+                        )}
                       </div>
-                      {e.paid_amount !== 0 && (
-                        <span className="text-xs">
-                          Оплачено: {paidAmount.value}&nbsp;тг
-                        </span>
-                      )}
-                    </div>
-                    <AddPaymentToCargo
-                      disclosure={disclosure}
-                      info={info}
-                      cargo={e}
-                    />
-                  </>
-                );
-              })}
-            </div>
-          ),
+                      <AddPaymentToCargo
+                        disclosure={disclosure}
+                        info={info}
+                        cargo={e}
+                      />
+                    </>
+                  );
+                })}
+              </div>
+            );
+          }
+        },
       },
+
       {
         accessorKey: "payment_terms",
         header: "Срок оплаты по договору",
@@ -154,3 +165,43 @@ export const useCashierColumnsConfig =
 
     return columnsConfig;
   };
+
+const FullName = ({ value }: { value: CashboxType["client"] }) => {
+  const TooltipContent = () => (
+    <div className="flex flex-col gap-4">
+      {value.company_name && (
+        <div className="flex flex-col gap-1">
+          <span>Компания на которую работает менеджер: </span>
+          <span className="font-semibold">{value.company_name}</span>
+        </div>
+      )}
+      {value.comment && (
+        <div className="flex flex-col gap-1">
+          <span>Заметка о клиенте:</span>
+          <span className="font-semibold">{value.comment}</span>
+        </div>
+      )}
+      <span className="text-center">
+        Нажмите чтобы написать клиенту на WhatsApp
+      </span>
+    </div>
+  );
+  return (
+    <Tooltip content={<TooltipContent />}>
+      <Link href={`https://wa.me/${value.phone_number}`} target="_blank">
+        <div className="flex flex-col gap-1">
+          <div className="flex gap-2 font-semibold">
+            <span>{value.full_name.first_name}</span>
+            <span>{value.full_name.last_name}</span>
+            <span>{value.full_name.middle_name || ""}</span>
+          </div>
+          <div>
+            <span className="text-green-800 font-semibold">
+              {value.phone_number}
+            </span>
+          </div>
+        </div>
+      </Link>
+    </Tooltip>
+  );
+};

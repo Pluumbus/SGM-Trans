@@ -95,8 +95,10 @@ export const TripTab = ({
                     : (e as CargoType)
                 )
                 .filter((e) => e.trip_id == currentTrip.id);
+
               return res;
             });
+
             const rowsToSelect = cargos.map((e) => ({
               number: e.id,
               isSelected: false,
