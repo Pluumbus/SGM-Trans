@@ -102,10 +102,8 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => e.trip_id == currentTrip.id);
-
                 .filter((e) => e.trip_id == tripid);
-              console.log(res);
+
               return res;
             });
 
