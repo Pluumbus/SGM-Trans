@@ -8,6 +8,7 @@ import { Driver } from "./Driver";
 import { Status } from "./Status";
 import { PrintAct } from "./PrintAct";
 import { ClientBin } from "./ClientBin";
+import { TransportationManager } from "./TransportationManager";
 
 export const Composite = ({
   info,
@@ -21,11 +22,14 @@ export const Composite = ({
     | "amount"
     | "client_bin"
     | "status"
-    | "is_act_ready";
+    | "is_act_ready"
+    | "transportation_manager";
 }) => {
   switch (type) {
     case "amount":
       return <Amount info={info} />;
+    case "transportation_manager":
+      return <TransportationManager info={info} />;
     case "unloading_point":
       return <UnloadingPoint info={info} />;
     case "quantity":

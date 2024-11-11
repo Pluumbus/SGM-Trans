@@ -84,12 +84,9 @@ export const TripTab = ({
           table: "cargos",
         },
         (payload) => {
-          console.log(`Пришли changes`);
-
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, payload.new as CargoType]);
           } else {
-            console.log(`UPDATE`);
             setCargos((prev) => {
               const res = prev
                 .map((e) =>
@@ -98,8 +95,10 @@ export const TripTab = ({
                     : (e as CargoType)
                 )
                 .filter((e) => e.trip_id == currentTrip.id);
+
               return res;
             });
+
             const rowsToSelect = cargos.map((e) => ({
               number: e.id,
               isSelected: false,
