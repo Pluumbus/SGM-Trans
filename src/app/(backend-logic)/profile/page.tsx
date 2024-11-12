@@ -22,7 +22,6 @@ export default async function ProfilePage() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RoleBasedWrapper allowedRoles={["Админ"]}>
           <DataTable />
-          {/* Print button for test only */}
         </RoleBasedWrapper>
       </HydrationBoundary>
       <Button color="danger">
