@@ -6,7 +6,7 @@ const isProtectedRoute = createRouteMatcher(["/workflow(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req))
-    auth().protect({ __experimental_reverification: "moderate" });
+    auth.protect();
 });
 
 export const config = {
