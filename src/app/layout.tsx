@@ -5,7 +5,6 @@ import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/toaster";
 import "./globals.css";
 import React from "react";
-import { ConfirmModal } from "@/tool-kit/hooks/useConfirm/Modal";
 import { ConfirmProvider } from "@/tool-kit/hooks/useConfirm/useConfirmContext";
 
 const inter = Inter({ subsets: ["latin"] });

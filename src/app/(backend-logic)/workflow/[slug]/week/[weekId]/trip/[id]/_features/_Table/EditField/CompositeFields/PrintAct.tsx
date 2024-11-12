@@ -19,9 +19,9 @@ import { PrintButton } from "@/components/actPrintTemp/actGen";
 import { useCheckRole } from "@/components/roles/useRole";
 import { useUser } from "@clerk/nextjs";
 import { toast, useToast } from "@/components/ui/use-toast";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../../../_api";
-import { setUserData } from "@/lib/references/clerkUserType/SetUserFuncs";
+import { setUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
 import { FaCircleXmark } from "react-icons/fa6";
 
 type Type = CargoType["act_details"];
@@ -41,7 +41,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     const condition =
       (user.publicMetadata.balance as number) -
         (Number(info.row.original.amount.value) -
-          Number(info.row.original.paid_amount)) >
+          Number(info.row.original.paid_amount)) >=
       0;
 
     return condition
@@ -57,6 +57,12 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           ) as string & ReactNode,
         });
   };
+
+  const conditionIsReadyToGiveAct =
+    values.is_ready ||
+    Number(info.row.original.amount.value) -
+      Number(info.row.original.paid_amount) ==
+      0;
 
   const { mutate, isPending } = useMutation({
     mutationKey: [`get user ${info.row.original.user_id.toString()}`],
@@ -89,8 +95,8 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-[8rem]">
-      <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-[10rem]">
+      <div className="flex flex-col gap-2 w-full items-center">
         {useCheckRole(["Менеджер"]) ? (
           <Checkbox
             isSelected={values.is_ready}
@@ -103,8 +109,10 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           >
             {givingActText}
           </Checkbox>
+        ) : conditionIsReadyToGiveAct ? (
+          <span>Одобрено Кассой</span>
         ) : values.is_ready ? (
-          <Checkbox isSelected={values.is_ready}>{givingActText}</Checkbox>
+          <Checkbox isSelected={true}>{givingActText}</Checkbox>
         ) : (
           <Button
             onClick={() => {
@@ -114,8 +122,8 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             <span>Одобрить</span>
           </Button>
         )}
-        {values.is_ready && (
-          <div>
+        {conditionIsReadyToGiveAct && (
+          <div className="w-full">
             <PrintButton
               actData={{
                 client_bin: info.row.original.client_bin.tempText,
@@ -156,13 +164,10 @@ const GlobalActModal = ({
 
   const { mutate: setBalanceMutation, isPending } = useMutation({
     mutationFn: async (newBal: number) => {
-      await setUserData({
+      await setUserBalance({
         userId: user.id,
         publicMetadata: {
-          role: user.publicMetadata.role as string,
           balance: newBal,
-          time: user.publicMetadata.time as number,
-          prevTime: user.publicMetadata.prevTime as number,
         },
       });
     },
@@ -178,10 +183,7 @@ const GlobalActModal = ({
     },
   });
   // sum to substract from logist balance
-  const logistSum =
-    (user.publicMetadata.balance as number) -
-    (cargoInfo.cargoPrice - cargoInfo.cargoPaidAmount);
-
+  const logistSum = cargoInfo.cargoPrice - cargoInfo.cargoPaidAmount;
   return (
     <Modal onOpenChange={disclosure.onOpenChange} isOpen={disclosure.isOpen}>
       <ModalContent>
@@ -211,7 +213,9 @@ const GlobalActModal = ({
             isLoading={isPending}
             color="success"
             onPress={() => {
-              setBalanceMutation(logistSum);
+              setBalanceMutation(
+                Number(user.publicMetadata.balance) - logistSum
+              );
             }}
           >
             Да
