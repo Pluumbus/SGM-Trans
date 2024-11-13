@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDrivers, getDriversWithCars } from "./api";
+import { getDrivers, getDriversWithCars } from "./feature/api";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -15,7 +15,7 @@ export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getDriversWithCars"],
-    queryFn: getDriversWithCars,
+    queryFn: getDrivers,
     enabled: !!isSignedIn,
   });
 
@@ -25,11 +25,11 @@ export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
       <Autocomplete label="Выберите водителя" {...props} isLoading={isLoading}>
         {sortedData?.map((e, i) => (
           <AutocompleteItem
-            key={`${e.name} | ${e.cars?.car}`}
-            value={`${e.name} | ${e.cars?.car}`}
-            textValue={`${e.name} | ${e.cars?.car}`}
+            key={`${e.name}`}
+            value={`${e.name}`}
+            textValue={`${e.name}`}
           >
-            {`${e.name} | ${e.cars?.car}`}
+            {`${e.name}`}
           </AutocompleteItem>
         ))}
       </Autocomplete>

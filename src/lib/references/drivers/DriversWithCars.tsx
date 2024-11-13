@@ -2,7 +2,7 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { getDriversWithCars } from "./api";
+import { getDriversWithCars } from "./feature/api";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -10,10 +10,10 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
-import { DriversType } from "@/app/(backend-logic)/cars&drivers/_api/types";
+import { DriversType } from "@/lib/references/drivers/feature/types";
 
 export const DriversWithCars = (
-  autocompleteProps: Omit<AutocompleteProps, "children">
+  autocompleteProps: Omit<AutocompleteProps, "children">,
 ) => {
   const { isSignedIn } = useUser();
   const { data, isLoading } = useQuery({

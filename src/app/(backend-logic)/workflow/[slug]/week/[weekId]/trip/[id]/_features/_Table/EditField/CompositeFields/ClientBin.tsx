@@ -35,7 +35,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       console.log("use effect", values.snts);
       setValues((prev) => {
         const res = prev.snts.map((e) =>
-          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e,
         );
         console.log("res", res);
 
@@ -155,7 +155,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 <Card
                   shadow="none"
                   className="w-full !overflow-visible pl-1 bg-transparent"
-                  key={e}
+                  key={e + i}
                 >
                   <CardBody className="w-full h-full p-0 !overflow-visible">
                     <div className="flex w-full justify-between h-full">

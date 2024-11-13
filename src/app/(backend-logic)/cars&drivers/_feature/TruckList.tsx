@@ -20,12 +20,16 @@ import {
   Spinner,
   useDisclosure,
 } from "@nextui-org/react";
-import { CarsType, DriversType, FullDriversType } from "../_api/types";
+import {
+  CarsType,
+  DriversType,
+  FullDriversType,
+} from "../../../../lib/references/drivers/feature/types";
 import { COLORS } from "@/lib/colors";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { toast } from "@/components/ui/use-toast";
 import { updateDriverData, updateTrailerData } from "../_api/requests";
-import { getDrivers } from "@/lib/references/drivers/api";
+import { getDrivers } from "@/lib/references/drivers/feature/api";
 import supabase from "@/utils/supabase/client";
 import { GazellList } from "./GazellList";
 
@@ -83,7 +87,7 @@ export const DriversList = () => {
           acc[car.car_type]?.push(car);
           return acc;
         },
-        {} as Record<string, FullDriversType[]>
+        {} as Record<string, FullDriversType[]>,
       );
     setDriversTruckData(cars["truck"]);
     setDriversGazellData(cars["gazell"]);
@@ -145,7 +149,7 @@ export const DriversList = () => {
           const oldDriverToChange = driversTruckData?.filter(
             (item) =>
               item.drivers.length > 0 &&
-              item.drivers[0].id === updatedDriverData.id
+              item.drivers[0].id === updatedDriverData.id,
           )[0];
 
           const updatedFullDriversData: FullDriversType = {
@@ -157,10 +161,10 @@ export const DriversList = () => {
 
           setDriversTruckData((prev) =>
             prev.map((item) =>
-              item.id === updatedDriverData.id ? updatedFullDriversData : item
-            )
+              item.id === updatedDriverData.id ? updatedFullDriversData : item,
+            ),
           );
-        }
+        },
       )
       .subscribe();
 
@@ -262,7 +266,7 @@ export const DriversList = () => {
                       <Button
                         color="success"
                         onClick={() => {
-                          handleDriverMutate();
+                          trailerMutate();
                           onClose();
                         }}
                       >

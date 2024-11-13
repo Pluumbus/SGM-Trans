@@ -31,14 +31,14 @@ export const CarList = () => {
       isTiresClicked: false,
       isTireHovered: false,
       isCardHovered: false,
-    }))
+    })),
   );
 
   const setSettingsById = (
     id,
     type: "Tires" | "Card",
     action: "Hover" | "Click",
-    value: boolean | ""
+    value: boolean | "",
   ) => {
     const res = settings.map((e) => {
       if (e.id == id && type == "Tires") {

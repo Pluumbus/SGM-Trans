@@ -51,7 +51,7 @@ export const useCashierColumnsConfig =
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const paidAmount = useNumberState({
             initValue: Number(
-              info.getValue() as CashboxType["current_balance"]
+              info.getValue() as CashboxType["current_balance"],
             ),
           });
           return <div>{paidAmount.value || ""}</div>;

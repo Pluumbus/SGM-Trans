@@ -51,11 +51,11 @@ export const CashierTable = () => {
           else
             setClients((prev) => {
               const updatedClients = prev.map((client) =>
-                client.id === updatedClient.id ? updatedClient : client
+                client.id === updatedClient.id ? updatedClient : client,
               );
               return updatedClients;
             });
-        }
+        },
       )
       .subscribe();
 

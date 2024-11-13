@@ -1,15 +1,21 @@
 "use client";
 import {
+  Autocomplete,
+  AutocompleteItem,
   Button,
   Card,
   CardBody,
-  DatePicker,
-  DateValue,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
   Spinner,
+  useDisclosure,
 } from "@nextui-org/react";
 
 import { toast } from "@/components/ui/use-toast";
@@ -22,12 +28,16 @@ import { getUserById } from "../../../_api";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import {
-  updateTripDate,
+  updateTripDriver,
   updateTripRespUser,
   updateTripStatus,
 } from "../../../_api/requests";
-import { useCheckRole } from "@/components/roles/useRole";
+import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { daysOfWeek } from "../../_helpers";
+import { getCars, getDrivers } from "@/lib/references/drivers/feature/api";
+import { SgmSpinner } from "@/components/ui/SgmSpinner";
+import { TripInfoDriver } from "./TripInfoDriver";
+import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -40,7 +50,10 @@ export const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
+
   const accessRole = useCheckRole(["Логист Москва", "Админ"]);
+
+  //TODO: 2 query in one
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {
@@ -64,17 +77,6 @@ export const TripInfoCard = ({
     },
   });
 
-  const { mutate: setTripUserMutation } = useMutation({
-    mutationKey: ["SetTripRespUser"],
-    mutationFn: async (user_id: string) =>
-      await updateTripRespUser(user_id, selectedTabId),
-    onSuccess() {
-      toast({
-        title: "Ответственный рейса успешно обновлён",
-      });
-    },
-  });
-
   const { mutate: setStatusMutation } = useMutation({
     mutationKey: ["setTripStatus"],
     mutationFn: async () => await updateTripStatus(statusVal, selectedTabId),
@@ -93,6 +95,7 @@ export const TripInfoCard = ({
     setStatusVal(currentTrip?.status);
     refetch();
   }, [selectedTabId, tripsData]);
+
   const respUser = data?.filter(
     (user) => user.tripId === currentTripData?.id
   )[0]?.fullName;
@@ -105,31 +108,17 @@ export const TripInfoCard = ({
             <span>Номер рейса:</span>
             <b>{selectedTabId}</b>
           </div>
-          <div className="flex justify-between">
-            <span>Ответственный:</span>
-            <b>{isLoading ? <Spinner /> : respUser?.firstName}</b>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" color="default">
-                  <IoMdSettings />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu aria-label="Select dropdown">
-                {allUsers?.map((user) => (
-                  <DropdownItem
-                    key={user.id}
-                    onClick={() => setTripUserMutation(user.id)}
-                  >
-                    {user.userName}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-          <div className="flex flex-col">
-            <span>Водитель: </span>
-            <b className="items-end">{currentTripData?.driver} </b>
-          </div>
+
+          <TripInfoResponsibleUser
+            selectedTabId={Number(selectedTabId)}
+            isLoading={isLoading}
+            respUser={respUser}
+            allUsers={allUsers}
+          />
+          <TripInfoDriver
+            currentTripData={currentTripData}
+            selectedTabId={Number(selectedTabId)}
+          />
 
           <div className="flex justify-between">
             <span>Статус:</span>

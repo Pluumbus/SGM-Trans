@@ -1,7 +1,7 @@
 import { toast } from "@/components/ui/use-toast";
 import { Card, Listbox, ListboxItem } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
-import { FullDriversType } from "../_api/types";
+import { FullDriversType } from "../../../../lib/references/drivers/feature/types";
 
 export const GazellList = ({
   driversGazellData,
@@ -28,7 +28,7 @@ export const GazellList = ({
         dataToCopy.drivers[0].passport_data.issued +
         "\n" +
         "Дата: " +
-        dataToCopy.drivers[0].passport_data.date
+        dataToCopy.drivers[0].passport_data.date,
     );
     toast({
       title: `Данные водителя успешно скопированы в буфер обмена`,

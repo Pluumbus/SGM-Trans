@@ -71,7 +71,7 @@ export const TripCard = ({
           acc.quantity += Number(curr.quantity) || 0;
           return acc;
         },
-        { id: "", volume: 0, amount: 0, quantity: 0 }
+        { id: "", volume: 0, amount: 0, quantity: 0 },
       ),
     };
   };
@@ -89,19 +89,19 @@ export const TripCard = ({
               if (week.id === payload.new!.week_id) {
                 const newTrip = payload.new as TripType;
                 const updatedTrips = week.trips.some(
-                  (trip) => trip.id === newTrip.id
+                  (trip) => trip.id === newTrip.id,
                 )
                   ? week.trips.map((trip) =>
-                      trip.id === newTrip.id ? newTrip : trip
+                      trip.id === newTrip.id ? newTrip : trip,
                     )
                   : [...week.trips, newTrip];
 
                 return { ...week, trips: updatedTrips };
               }
               return week;
-            })
+            }),
           );
-        }
+        },
       )
       .subscribe();
 

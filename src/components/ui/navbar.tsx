@@ -6,8 +6,8 @@ import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
 import { ProfileButton } from "@/components/ui/profileButton";
 import React from "react";
-import { useRole } from "../roles/useRole";
-import RoleBasedWrapper from "../roles/RoleBasedWrapper";
+import { useRole } from "../RoleManagment/useRole";
+import RoleBasedWrapper from "../RoleManagment/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
 import { Timer } from "../Timer/Timer";
 import { PATHS } from "@/lib/consts";
@@ -45,13 +45,13 @@ const Navbar = () => {
                 Касса
               </Link>
             </RoleBasedWrapper>
-
+            {/* 
             <Link
               href={PATHS.cars_drivers}
               className="mr-5 cursor-pointer hover:text-gray-900"
             >
               Машины
-            </Link>
+            </Link> */}
 
             <Link
               href={PATHS.sgm_mechanic}

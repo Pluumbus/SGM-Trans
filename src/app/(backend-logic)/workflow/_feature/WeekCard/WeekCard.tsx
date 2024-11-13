@@ -25,6 +25,8 @@ import { useParams } from "next/navigation";
 import { WeekTableType } from "../../[slug]/week/[weekId]/trip/_api/types";
 import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
+import { Cars } from "@/lib/references/drivers/Cars";
+import { Trailers } from "@/lib/references/drivers/Trailers";
 
 export const WeekCard = () => {
   const { slug } = useParams();
@@ -59,7 +61,7 @@ export const WeekCard = () => {
             ...prev,
             { ...payload.new, trips: [] } as WeekType & { trips: TripType[] },
           ]);
-        }
+        },
       )
       .subscribe();
 
@@ -110,12 +112,14 @@ export const CreateTripInsideWeek = ({
     city_from: isMSK ? ["Москва"] : [""],
     city_to: isMSK ? [""] : ["Москва"],
     driver: "",
+    car: "",
   };
 
   const [formState, setFormState] = useState<{
     city_from: any;
     city_to: string[];
     driver: any;
+    car: any;
   }>(initData);
 
   const { mutate } = useMutation({
@@ -123,7 +127,7 @@ export const CreateTripInsideWeek = ({
       await supabase.from("trips").insert({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
-        driver: formState.driver,
+        driver: formState.driver + " | " + formState.car,
         week_id: weekId,
       });
     },
@@ -226,6 +230,22 @@ export const CreateTripInsideWeek = ({
                 {!formState.driver && (
                   <span className="text-danger-400 text-xs pl-1">
                     Выберите водителя*
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <Cars
+                  selectedKey={formState.car}
+                  onSelectionChange={(e) => {
+                    setFormState((prev) => ({
+                      ...prev,
+                      car: e,
+                    }));
+                  }}
+                />
+                {!formState.car && (
+                  <span className="text-danger-400 text-xs pl-1">
+                    Выберите машину*
                   </span>
                 )}
               </div>

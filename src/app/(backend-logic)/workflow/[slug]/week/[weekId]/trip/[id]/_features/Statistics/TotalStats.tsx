@@ -1,6 +1,7 @@
 "use client";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { COLORS } from "@/lib/colors";
+import { useNumberState } from "@/tool-kit/hooks";
 import { Card, CardBody } from "@nextui-org/react";
 
 export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
@@ -28,6 +29,8 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
         }, 0)
       : 0;
 
+  const summWithSep = useNumberState({ initValue: totalSumm, separator: "," });
+
   const totalClientsCount =
     cargos && cargos.length > 0
       ? cargos.reduce((count, cargo) => {
@@ -45,6 +48,18 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
         }, 0)
       : 0;
 
+  const totalDocumentsAcceptedCount =
+    cargos && cargos.length > 0
+      ? cargos.reduce((count, cargo) => {
+          const client = cargo.client_bin;
+          const res =
+            client && client.snts?.includes("KZ-SNT-")
+              ? count
+              : client.snts.length + count;
+          return res;
+        }, 0)
+      : 0;
+
   return (
     <div>
       <Card className="mb-3">
@@ -54,7 +69,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               Общий вес:{" "}
               <b
                 style={{
-                  color: `${totalWeight <= 11 ? `${COLORS.green}` : totalWeight <= 19.9 ? `${COLORS.yellow}` : totalWeight <= 22 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                  color: calculateWeightColor(totalWeight),
                 }}
               >
                 {totalWeight}/22
@@ -73,7 +88,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               Общий объем:{" "}
               <b
                 style={{
-                  color: `${totalVolume <= 47 ? `${COLORS.green}` : totalVolume <= 79 ? `${COLORS.yellow}` : totalVolume <= 92 ? `${COLORS.orange}` : `${COLORS.red}`}`,
+                  color: calculateVolumeColor(totalVolume),
                 }}
               >
                 {totalVolume}/92
@@ -95,21 +110,42 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
                   color: `${totalSumm < 2500000 ? `${COLORS.red}` : `${COLORS.green}`}`,
                 }}
               >
-                {totalSumm}
+                {summWithSep.value}
               </b>{" "}
               тг
             </span>
           </div>
           <div className="flex justify-around">
             <span>
-              Кол-во клиентов: <b>{totalClientsCount}</b>{" "}
+              Кол-во клиентов: <b>{totalClientsCount}</b> / с документами:{" "}
+              <b>{totalDocumentsCount}</b>
             </span>
             <span>
-              Кол-во СНТ: <b>{totalDocumentsCount}</b>
+              Кол-во полученных СНТ: <b>{totalDocumentsAcceptedCount}</b>
             </span>
           </div>
         </CardBody>
       </Card>
     </div>
   );
+};
+
+export const calculateWeightColor = (totalWeight: number) => {
+  return totalWeight <= 11
+    ? `${COLORS.green}`
+    : totalWeight <= 19.9
+      ? `${COLORS.yellow}`
+      : totalWeight <= 22
+        ? `${COLORS.orange}`
+        : `${COLORS.red}`;
+};
+
+export const calculateVolumeColor = (totalVolume: number) => {
+  return totalVolume <= 47
+    ? `${COLORS.green}`
+    : totalVolume <= 79
+      ? `${COLORS.yellow}`
+      : totalVolume <= 92
+        ? `${COLORS.orange}`
+        : `${COLORS.red}`;
 };

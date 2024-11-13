@@ -7,7 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "@nextui-org/react";
-import RoleBasedWrapper from "@/components/roles/RoleBasedWrapper";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export default async function ProfilePage() {
@@ -22,7 +22,6 @@ export default async function ProfilePage() {
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RoleBasedWrapper allowedRoles={["Админ"]}>
           <DataTable />
-          {/* Print button for test only */}
         </RoleBasedWrapper>
       </HydrationBoundary>
       <Button color="danger">

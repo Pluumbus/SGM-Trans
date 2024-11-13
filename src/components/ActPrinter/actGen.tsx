@@ -35,14 +35,12 @@ export const PrintButton = ({ actData }: { actData: ActType }) => {
   };
 
   return (
-    <Button
-      color="success"
-      onClick={handlePrintClick}
-      className="w-full"
-      variant="solid"
-    >
-      Печать
-    </Button>
+    <div>
+      <Button color="success" onClick={handlePrintClick}>
+        Печать
+      </Button>
+      {/* <Image src={logo} alt="" width={156} height={120} /> */}
+    </div>
   );
 };
 
@@ -77,9 +75,11 @@ export const PrintClientButton = ({
   };
 
   return (
-    <Button color="success" onClick={handlePrintClick} className="w-full">
-      Печать шаблона для клиента
-    </Button>
+    <div>
+      <Button color="success" onClick={handlePrintClick}>
+        Печать для бухгалтера
+      </Button>
+    </div>
   );
 };
 
@@ -116,8 +116,10 @@ export const PrintWarehouseButton = ({
   };
 
   return (
-    <Button color="success" onClick={handlePrintClick} fullWidth>
-      Печать шаблона для склада
-    </Button>
+    <div>
+      <Button color="success" onClick={handlePrintClick}>
+        Печать для склада
+      </Button>
+    </div>
   );
 };

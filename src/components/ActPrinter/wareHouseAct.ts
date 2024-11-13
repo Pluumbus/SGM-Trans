@@ -65,7 +65,6 @@ li .label {
 }
 `;
 
-
 export const wrhBodyHtmlTemp = `
     <div class="container">
         <section class="cargo-info">
@@ -100,4 +99,3 @@ export const wrhBodyHtmlTemp = `
         </section>
     </div>
 `;
-

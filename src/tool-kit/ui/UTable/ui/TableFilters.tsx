@@ -15,7 +15,7 @@ export const TableFilters = ({ headers }: any) => {
               header.column.setFilterValue(e.target.value);
             }}
           />
-        ) : null
+        ) : null,
       )}
     </>
   );

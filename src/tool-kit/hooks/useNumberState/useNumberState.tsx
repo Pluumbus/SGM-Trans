@@ -31,7 +31,7 @@ export const getSeparatedNumber = (
 
 export const useNumberState = (
   { initValue = 0, min, max, separator = "," }: UseNumberStateArgs,
-  dependencies: any[] = []
+  dependencies: any[] = [],
 ) => {
   const [state, setState] = useState<number>(initValue);
   const formatWithSeparator = (value: number, separator: string) => {
@@ -52,7 +52,7 @@ export const useNumberState = (
     );
   };
   const [inputValue, setInputValue] = useState<string>(
-    formatWithSeparator(initValue, separator)
+    formatWithSeparator(initValue, separator),
   );
 
   const parseWithoutSeparator = (value: string) => {

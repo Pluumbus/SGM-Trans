@@ -56,7 +56,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       user: groupedData[user].fullName,
       count: groupedData[user].count,
       percentageOfAll: Math.round(
-        (groupedData[user].count / mCargos.length) * 100
+        (groupedData[user].count / mCargos.length) * 100,
       ),
       maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
@@ -64,7 +64,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   };
 
   const [colors, setColors] = useState(
-    getRandomRainbowColors(chartData?.length)
+    getRandomRainbowColors(chartData?.length),
   );
 
   useEffect(() => {
