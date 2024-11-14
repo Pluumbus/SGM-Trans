@@ -40,6 +40,7 @@ export const AddPaymentToCargo = ({
   info,
   cargo,
 }: AddPaymentToCargoArgs) => {
+  const cargoInfo = info.row.original.cargos;
   const [formState, setFormState] = useState<null | number>(cargo?.id || null);
   const [isUsingBalance, setIsUsingBalance] = useState<boolean>(false);
   const { toast } = useToast();
@@ -61,7 +62,7 @@ export const AddPaymentToCargo = ({
       Number(o.current_balance) +
         currentCargo.paid_amount +
         formattedBalance.rawValue -
-        Number(cargo.amount.value), // текущий баланс
+        Number(currentCargo.amount.value), // текущий баланс
 
       currentCargo.amount.value, // сколько оплачено за груз
     ];
@@ -114,10 +115,10 @@ export const AddPaymentToCargo = ({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       const [currentBalance, _] = calculateNewDuty(cargo);
-
+      console.log("Работает updateBalance");
       return await changeClientBalance(
         info.row.original.id,
-        Number(currentBalance),
+        Number(currentBalance)
       );
     },
   });
@@ -125,14 +126,15 @@ export const AddPaymentToCargo = ({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       const [_, paidAmount] = calculateNewDuty(cargo);
+      console.log("Работает mutate");
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
-        Number(paidAmount),
+        Number(paidAmount)
       );
     },
     onSuccess: () => {
       updateBalance();
-
+      const cargo = info.row.original.cargos.find((e) => e.id == formState);
       toast({
         title: `Успех`,
         description: `Вы успешно добавили оплату для груза №${cargo.id} в №${cargo.trip_id} рейсе`,
@@ -148,6 +150,8 @@ export const AddPaymentToCargo = ({
   });
 
   const submit = (e) => {
+    console.log("Работает submit");
+
     e.preventDefault();
     mutate();
   };
@@ -171,6 +175,8 @@ export const AddPaymentToCargo = ({
                 label="Выберите груз"
                 selectedKey={formState?.toString() || null}
                 onSelectionChange={(e) => {
+                  console.log(e);
+
                   setFormState(Number(e));
                 }}
               >

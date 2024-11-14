@@ -17,6 +17,7 @@ import { divide, isArray } from "lodash";
 import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import Link from "next/link";
+import { PAYMENT_TERMS } from "./Modals/ChangePaymentTerms";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -57,77 +58,39 @@ export const useCashierColumnsConfig =
           return <div>{paidAmount.value || ""}</div>;
         },
       },
-
-      // {
-      //   accessorKey: "rest_amount_needed_to_be_payed",
-      //   header: "Остаток",
-      //   filter: false,
-      //   cell: (info: Cell<CashboxType, ReactNode>) => (
-      //     <div>
-      //       {Number(info.row.original.amount_to_pay) -
-      //         Number(info.row.original.current_balance)}
-      //     </div>
-      //   ),
-      // },
-
       {
         accessorKey: "cargos",
         header: "Рейсы клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) =>
-          isArray(info.getValue()) && (
-            <div className="grid grid-cols-2 min-w-[250px]">
-              {(info.getValue() as CashboxType["cargos"])?.map((e, i) => {
-                const disclosure = useDisclosure();
-                const paidAmount = getSeparatedNumber(Number(e.paid_amount));
-                const amountToPay = getSeparatedNumber(Number(e.amount.value));
-
-                console.log(
-                  `amountToPay ${amountToPay} paidAmount ${paidAmount}`,
-                  `Cargo?:`,
-                  e
-                );
-
-                return (
-                  <>
-                    <div
-                      className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
-                      onClick={() => {
-                        disclosure.onOpenChange();
-                      }}
-                    >
-                      <div
-                        className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
-                      >
-                        <span>№{e.trip_id}</span>
-                        <span>-</span>
-                        <span>{amountToPay} тг.</span>
-                      </div>
-                      {Number(paidAmount) != 0 && (
-                        <span className="text-xs">
-                          Оплачено: {paidAmount}&nbsp;тг
-                        </span>
-                      )}
-                    </div>
-                    <AddPaymentToCargo
-                      disclosure={disclosure}
-                      info={info}
-                      cargo={e}
-                    />
-                  </>
-                );
-              })}
-            </div>
-          ),
+        cell: (info: Cell<CashboxType, ReactNode>) => {
+          const cargos = info.getValue() as CashboxType["cargos"];
+          return (
+            isArray(cargos) && (
+              <div className="grid grid-cols-2 min-w-[250px]">
+                {cargos.map((e, i) => (
+                  <CargoItem
+                    key={e.trip_id}
+                    cargo={{ ...e, index: i }}
+                    info={info}
+                  />
+                ))}
+              </div>
+            )
+          );
+        },
       },
 
       {
         accessorKey: "payment_terms",
         header: "Срок оплаты по договору",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => (
-          <div>{info.getValue()}</div>
-        ),
+        cell: (info: Cell<CashboxType, ReactNode>) => {
+          const getTextValueForHrs = (hrs: number): string | null =>
+            PAYMENT_TERMS.find((term) => term.hrs === hrs)
+              ? PAYMENT_TERMS.find((term) => term.hrs === hrs).textValue
+              : null;
+          return <div>{getTextValueForHrs(Number(info.getValue()))}</div>;
+        },
       },
       {
         accessorKey: "action",
@@ -204,5 +167,35 @@ const FullName = ({ value }: { value: CashboxType["client"] }) => {
         </div>
       </Link>
     </Tooltip>
+  );
+};
+
+const CargoItem = ({ cargo, info }) => {
+  const paidAmount = getSeparatedNumber(Number(cargo.paid_amount));
+  const amountToPay = getSeparatedNumber(Number(cargo.amount.value));
+
+  const disclosure = useDisclosure();
+
+  return (
+    <>
+      <div
+        className={`flex flex-col ${cargo.index % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
+        onClick={() => {
+          disclosure.onOpenChange();
+        }}
+      >
+        <div
+          className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${cargo.paid_amount < Number(cargo.amount.value) ? "text-red-700" : "text-green-600"}`}
+        >
+          <span>№{cargo.trip_id}</span>
+          <span>-</span>
+          <span>{amountToPay} тг.</span>
+        </div>
+        {Number(paidAmount) != 0 && (
+          <span className="text-xs">Оплачено: {paidAmount}&nbsp;тг</span>
+        )}
+      </div>
+      <AddPaymentToCargo disclosure={disclosure} info={info} cargo={cargo} />
+    </>
   );
 };

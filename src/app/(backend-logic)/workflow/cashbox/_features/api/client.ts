@@ -14,10 +14,25 @@ export const changeClientBalance = async (clientId: number, value: number) => {
 
   return data;
 };
+export const changeClientPaymentTerms = async (
+  clientId: number,
+  value: number
+) => {
+  const { data, error } = await supabase
+    .from("cashbox")
+    .update({ payment_terms: value })
+    .eq("id", Number(clientId));
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
 
 export const changeExactAmountPaidToCargo = async (
   cargo: CargoType,
-  paidAmount: number,
+  paidAmount: number
 ) => {
   const { data, error } = await supabase
     .from("cargos")
@@ -33,7 +48,7 @@ export const changeExactAmountPaidToCargo = async (
 
 export const addPaidAmountToCargo = async (
   cargo: CargoType,
-  paidAmount: number,
+  paidAmount: number
 ) => {
   const { data, error } = await supabase
     .from("cargos")

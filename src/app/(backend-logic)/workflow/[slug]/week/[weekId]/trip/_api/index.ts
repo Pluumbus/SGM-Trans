@@ -10,7 +10,7 @@ import {
 import { TripAndWeeksIdType, WeekTableType } from "./types";
 
 export const getUserById = async (userId: string) => {
-  const user = await clerkClient.users.getUser(userId);
+  const user = await (await clerkClient()).users.getUser(userId);
 
   return {
     firstName: user.firstName,
@@ -44,7 +44,7 @@ export const getAllCargos = async (): Promise<CargoType[]> => {
 };
 
 export const getCargosByTripId = async (
-  trip_id: number | string,
+  trip_id: number | string
 ): Promise<CargoType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
@@ -60,7 +60,7 @@ export const getCargosByTripId = async (
 };
 
 export const getTripsByWeekId = async (
-  weekId: string,
+  weekId: string
 ): Promise<TripAndWeeksIdType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
@@ -76,7 +76,7 @@ export const getTripsByWeekId = async (
 };
 
 export const getWeeks = async (
-  type: WeekTableType = "ru",
+  type: WeekTableType = "ru"
 ): Promise<(WeekType & { trips: TripType[] })[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)

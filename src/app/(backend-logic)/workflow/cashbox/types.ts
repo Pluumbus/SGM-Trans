@@ -15,5 +15,5 @@ export type CashboxType = {
   amount_to_pay: string;
   current_balance: string;
   cargos: Array<CargoType>;
-  payment_terms: string;
+  payment_terms: number;
 };
