@@ -1,6 +1,5 @@
 import { UseMutateFunction } from "@tanstack/react-query";
 import { CargoType } from "../../types";
-import { SubmitHandler } from "react-hook-form";
 
 export const addCargoOnSubmit = (
   data: CargoType,

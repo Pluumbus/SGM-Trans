@@ -4,6 +4,7 @@ import { TMModal } from "./TMModal";
 import { ExistingClients } from "./ExistingClients";
 import { CashboxType } from "../../cashbox/types";
 import { FaPlus } from "react-icons/fa";
+import { useToast } from "@/components/ui/use-toast";
 
 export const TM = ({
   state,

@@ -5,8 +5,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isProtectedRoute = createRouteMatcher(["/workflow(.*)"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req))
-    auth().protect({ __experimental_reverification: "moderate" });
+  if (isProtectedRoute(req)) auth().protect();
 });
 
 export const config = {

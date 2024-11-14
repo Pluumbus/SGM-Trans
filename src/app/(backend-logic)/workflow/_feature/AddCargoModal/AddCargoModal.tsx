@@ -5,6 +5,7 @@ import { Body, Footer } from "./ModalParts";
 import { useCargoMutation } from "./helpers";
 import { addCargoOnSubmit } from "./helpers";
 import { TM } from "../TransportationManagerActions";
+import { useToast } from "@/components/ui/use-toast";
 
 export const CargoModal = ({
   isOpenCargo,

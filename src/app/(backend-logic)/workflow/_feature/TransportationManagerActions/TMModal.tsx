@@ -17,6 +17,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { useConfirmContext } from "@/tool-kit/hooks";
 import { str } from "./TM";
 import { CashboxType } from "../../cashbox/types";
+import { useEffect } from "react";
 
 type TM = CashboxType["client"];
 
@@ -67,6 +68,28 @@ export const TMModal = ({ disclosure, state }: Props) => {
     });
   };
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        toast({
+          title: "Вы не можете нажать Enter пока создаете клиента",
+          description: "Это было сделано, чтобы избежать лишних ошибок",
+        });
+      }
+    };
+
+    if (disclosure.isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      if (disclosure.isOpen) {
+        document.removeEventListener("keydown", handleKeyDown);
+      }
+    };
+  }, [disclosure.isOpen]);
+
   return (
     <Modal
       isOpen={disclosure.isOpen}
@@ -96,7 +119,14 @@ export const TMModal = ({ disclosure, state }: Props) => {
           </ModalBody>
           <Divider />
           <ModalFooter>
-            <Button variant="light" color="danger" isLoading={isPending}>
+            <Button
+              variant="light"
+              color="danger"
+              isLoading={isPending}
+              onClick={() => {
+                disclosure.onOpenChange();
+              }}
+            >
               Отмена
             </Button>
             <Button

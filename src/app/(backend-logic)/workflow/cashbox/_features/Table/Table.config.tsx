@@ -51,7 +51,7 @@ export const useCashierColumnsConfig =
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const paidAmount = useNumberState({
             initValue: Number(
-              info.getValue() as CashboxType["current_balance"],
+              info.getValue() as CashboxType["current_balance"]
             ),
           });
           return <div>{paidAmount.value || ""}</div>;
@@ -74,50 +74,51 @@ export const useCashierColumnsConfig =
         accessorKey: "cargos",
         header: "Рейсы клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
-          const disclosure = useDisclosure();
+        cell: (info: Cell<CashboxType, ReactNode>) =>
+          isArray(info.getValue()) && (
+            <div className="grid grid-cols-2 min-w-[250px]">
+              {(info.getValue() as CashboxType["cargos"])?.map((e, i) => {
+                const disclosure = useDisclosure();
+                const paidAmount = getSeparatedNumber(Number(e.paid_amount));
+                const amountToPay = getSeparatedNumber(Number(e.amount.value));
 
-          if (isArray(info.getValue())) {
-            return (
-              <div className="grid grid-cols-2 min-w-[250px]">
-                {(info.getValue() as CashboxType["cargos"])?.map((e, i) => {
-                  const paidAmount = getSeparatedNumber(e.paid_amount);
-                  const amountToPay = getSeparatedNumber(
-                    Number(e.amount.value)
-                  );
-                  return (
-                    <>
+                console.log(
+                  `amountToPay ${amountToPay} paidAmount ${paidAmount}`,
+                  `Cargo?:`,
+                  e
+                );
+
+                return (
+                  <>
+                    <div
+                      className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
+                      onClick={() => {
+                        disclosure.onOpenChange();
+                      }}
+                    >
                       <div
-                        className={`flex flex-col  ${i % 2 == 0 && "border-r-1"} pl-2 border-b-1`}
-                        onClick={() => {
-                          disclosure.onOpenChange();
-                        }}
+                        className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
                       >
-                        <div
-                          className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${e.paid_amount < Number(e.amount.value) ? "text-red-700" : "text-green-600"}`}
-                        >
-                          <span>№{e.trip_id}</span>
-                          <span>-</span>
-                          <span>{amountToPay} тг.</span>
-                        </div>
-                        {e.paid_amount !== 0 && (
-                          <span className="text-xs">
-                            Оплачено: {paidAmount}&nbsp;тг
-                          </span>
-                        )}
+                        <span>№{e.trip_id}</span>
+                        <span>-</span>
+                        <span>{amountToPay} тг.</span>
                       </div>
-                      <AddPaymentToCargo
-                        disclosure={disclosure}
-                        info={info}
-                        cargo={e}
-                      />
-                    </>
-                  );
-                })}
-              </div>
-            );
-          }
-        },
+                      {Number(paidAmount) != 0 && (
+                        <span className="text-xs">
+                          Оплачено: {paidAmount}&nbsp;тг
+                        </span>
+                      )}
+                    </div>
+                    <AddPaymentToCargo
+                      disclosure={disclosure}
+                      info={info}
+                      cargo={e}
+                    />
+                  </>
+                );
+              })}
+            </div>
+          ),
       },
 
       {
