@@ -10,7 +10,7 @@ import {
 import { TripAndWeeksIdType, WeekTableType } from "./types";
 
 export const getUserById = async (userId: string) => {
-  const user = await clerkClient.users.getUser(userId);
+  const user = await (await clerkClient()).users.getUser(userId);
 
   return {
     firstName: user.firstName,

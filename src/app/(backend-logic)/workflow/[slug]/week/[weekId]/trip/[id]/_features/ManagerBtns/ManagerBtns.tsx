@@ -9,18 +9,19 @@ import {
   ClientsActType,
   WareHouseActType,
 } from "@/components/ActPrinter/types";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getClient } from "@/app/(backend-logic)/workflow/cashbox/_features/api";
 
 export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
     (cargo) =>
-      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК",
+      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК"
   );
-
   const actClientData = filteredCargos.map((crg) => {
     return {
       amount: crg.amount.value,
       client_bin: crg.client_bin.tempText,
-      transportation_manager: crg.transportation_manager,
+      transportation_manager: crg.client_bin.tempText,
       unloading_point:
         crg.unloading_point.city +
         " " +
@@ -40,7 +41,7 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
   const actWrhData = cargos.map((crg) => {
     return {
       client_bin: crg.client_bin.tempText,
-      transportation_manager: crg.transportation_manager,
+      transportation_manager: crg.client_bin.tempText,
       unloading_point:
         crg.unloading_point.city +
         " " +
