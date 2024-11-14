@@ -14,7 +14,7 @@ import {
   ModalBody,
   Textarea,
 } from "@nextui-org/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Control,
   Controller,
@@ -24,14 +24,15 @@ import {
 } from "react-hook-form";
 import { CargoType } from "../../types";
 import { TM } from "../../TransportationManagerActions";
-import { CashboxType } from "../../../cashbox/types";
+
+import { FormNumberInput } from "@/components";
 
 type Props = {
   props: {
     register: UseFormRegister<CargoType>;
     watch: UseFormWatch<CargoType>;
-    control: Control<CargoType, any>;
     setValue: UseFormSetValue<CargoType>;
+    control: Control<CargoType, any>;
   };
 };
 export const Body = ({
@@ -157,7 +158,15 @@ export const Body = ({
           name="amount"
           render={({ field }) => (
             <div className="flex gap-2 ">
-              <Input label="Сумма оплаты (тг.)" {...register("amount.value")} />
+              <FormNumberInput
+                // @ts-ignore
+                name={"amount.value"}
+                setValue={setValue}
+                inputProps={{
+                  label: "Сумма оплаты (тг.)",
+                }}
+              />
+
               <Autocomplete
                 label="Способ оплаты"
                 selectedKey={amountType}
