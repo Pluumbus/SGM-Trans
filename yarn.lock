@@ -5800,6 +5800,11 @@ tr46@~0.0.3:
   resolved "https://registry.yarnpkg.com/tr46/-/tr46-0.0.3.tgz#8184fd347dac9cdc185992f3a6622e14b9d9ab6a"
   integrity sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==
 
+translit-russian@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/translit-russian/-/translit-russian-0.0.2.tgz#afa79c14830735e361447871b155cd9ee6ae494a"
+  integrity sha512-EnyrQzeoDj2x9r+2Wu3TLBLjoAUp0byE1o37hWM9QxV3VFcapIK38KqL47jxFCo26VctNNhATQSsKAanAkXpvQ==
+
 transliterate@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/transliterate/-/transliterate-1.0.1.tgz#44b97843790c193a001587ef9621b4640d2a7b47"

@@ -5,6 +5,11 @@ import { useEffect, useState } from "react";
 import { DocumentToViewType } from "../api/types";
 import supabase from "@/utils/supabase/client";
 import { DeleteDocuments } from "./DeleteDocuments";
+import {
+  customTransliterateToEngl,
+  reverseTransliterate,
+} from "@/components/CustomTranslit/CustomTranslitToEngl";
+import { customTransliterateToRus } from "@/components/CustomTranslit/CustomTranslitToRus";
 
 export const DocumentsList = () => {
   const { data, isLoading } = useQuery({
@@ -42,17 +47,23 @@ export const DocumentsList = () => {
       cn.unsubscribe();
     };
   }, []);
-
   return (
     <div className="flex justify-center">
-      <ScrollShadow>
+      <ScrollShadow className="h-[20rem]" hideScrollBar>
         {files?.map((f) => (
           <div className="flex flex-col border-b-1 " key={f.id}>
-            <span>Название : {f.title}</span>
+            <span>
+              Название :{" "}
+              {
+                (reverseTransliterate(f.title.split(".")[0]),
+                f.title.split(".")[1])
+                // reverseTransliterate(f.title)
+              }
+            </span>
             <span>
               Добавлено : <b>{new Date(f.created_at).toLocaleDateString()}</b>
             </span>
-            <span className="flex justify-between">
+            <span className="flex justify-between mb-1">
               <a
                 href={f.publicUrl}
                 target="_blank"

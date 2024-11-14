@@ -1,13 +1,11 @@
 "use client";
+import { customTransliterateToEngl } from "@/components/CustomTranslit/CustomTranslitToEngl";
 import { DocumentToViewType, DocumentType } from "./types";
 import supabase from "@/utils/supabase/client";
-import cyrillicToLatin from "cyrillic-to-latin";
-import { transliterate as tr } from 'transliterate';
 
 
 export const uploadFile = async (file: File): Promise<DocumentType | null> => {
- const trFileName = tr(file.name)
-console.log(trFileName)
+ const trFileName = customTransliterateToEngl(file.name)
   const { data, error } = await supabase.storage
     .from("workflow-documents")
     .upload(trFileName, file);
