@@ -71,7 +71,9 @@ export function DataTable() {
   return (
     <div>
       <div className="flex items-center py-4">
-        {JSON.parse(JSON.stringify(data))}
+        {data.map((d) => (
+          <div>{d.userName}</div>
+        ))}
         <Input
           placeholder="Поиск по почте"
           value={(table.getColumn("email")?.getFilterValue() as string) ?? ""}
