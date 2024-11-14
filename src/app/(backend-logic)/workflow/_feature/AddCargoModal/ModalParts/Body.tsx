@@ -159,6 +159,7 @@ export const Body = ({
           render={({ field }) => (
             <div className="flex gap-2 ">
               <FormNumberInput
+                // @ts-ignore
                 name={"amount.value"}
                 setValue={setValue}
                 inputProps={{
