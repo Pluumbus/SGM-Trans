@@ -109,10 +109,10 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           >
             {givingActText}
           </Checkbox>
-        ) : conditionIsReadyToGiveAct ? (
-          <span>Одобрено Кассой</span>
         ) : values.is_ready ? (
           <Checkbox isSelected={true}>{givingActText}</Checkbox>
+        ) : conditionIsReadyToGiveAct ? (
+          <span>Одобрено Кассой</span>
         ) : (
           <Button
             onClick={() => {

@@ -1,7 +1,6 @@
 "use server";
 
 import getClerkClient from "@/utils/clerk/clerk";
-import { useUser } from "@clerk/nextjs";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export const setUserData = async ({
@@ -32,7 +31,7 @@ export const setUserRole = async ({
     role: string;
   };
 }) => {
-  const user = await clerkClient.users.getUser(userId);
+  const user = await (await clerkClient()).users.getUser(userId);
   await (
     await getClerkClient()
   ).users.updateUser(userId, {
@@ -54,7 +53,7 @@ export const setUserBalance = async ({
     balance: number;
   };
 }) => {
-  const user = await clerkClient.users.getUser(userId);
+  const user = await (await clerkClient()).users.getUser(userId);
   await (
     await getClerkClient()
   ).users.updateUser(userId, {
@@ -74,7 +73,7 @@ export const changeUserBalance = async ({
   userId: string;
   addBal: number;
 }) => {
-  const user = await clerkClient.users.getUser(userId);
+  const user = await (await clerkClient()).users.getUser(userId);
   const balance = (user.publicMetadata.balance as number) + addBal;
   await (
     await getClerkClient()
