@@ -1,14 +1,15 @@
 const customTransliterateMap: { [key: string]: string } = {
   a: "а",
   b: "б",
-  c: "ц",
+  v: "в",
+  g: "г",
   d: "д",
   e: "е",
-  f: "ф",
-  g: "г",
-  h: "х",
+  yo: "ё",
+  zh: "ж",
+  z: "з",
   i: "и",
-  j: "й",
+  y: "й",
   k: "к",
   l: "л",
   m: "м",
@@ -19,21 +20,25 @@ const customTransliterateMap: { [key: string]: string } = {
   s: "с",
   t: "т",
   u: "у",
-  v: "в",
-  w: "в",
-  x: "кс",
-  y: "ы",
-  z: "з",
+  f: "ф",
+  kh: "х",
+  ts: "ц",
+  ch: "ч",
+  sh: "ш",
+  shch: "щ",
+  yu: "ю",
+  ya: "я",
   A: "А",
   B: "Б",
-  C: "Ц",
+  V: "В",
+  G: "Г",
   D: "Д",
   E: "Е",
-  F: "Ф",
-  G: "Г",
-  H: "Х",
+  Yo: "Ё",
+  Zh: "Ж",
+  Z: "З",
   I: "И",
-  J: "Й",
+  Y: "Й",
   K: "К",
   L: "Л",
   M: "М",
@@ -44,11 +49,14 @@ const customTransliterateMap: { [key: string]: string } = {
   S: "С",
   T: "Т",
   U: "У",
-  V: "В",
-  W: "В",
-  X: "Кс",
-  Y: "Ы",
-  Z: "З",
+  F: "Ф",
+  Kh: "Х",
+  Ts: "Ц",
+  Ch: "Ч",
+  Sh: "Ш",
+  Shch: "Щ",
+  Yu: "Ю",
+  Ya: "Я",
 };
 
 export function customTransliterateToRus(text: string): string {
@@ -57,4 +65,20 @@ export function customTransliterateToRus(text: string): string {
     .split("")
     .map((char) => reverese[char] || char)
     .join("");
+}
+export function reverseTransliterate(fileName: string): string {
+  let result = fileName;
+
+  // Сортируем ключи словаря по длине в обратном порядке, чтобы сначала заменить длинные сочетания (например, shch)
+  const keys = Object.keys(customTransliterateMap).sort(
+    (a, b) => b.length - a.length
+  );
+
+  keys.forEach((latin) => {
+    const cyrillic = customTransliterateMap[latin];
+    // Заменяем все вхождения латинского сочетания на кириллический символ
+    result = result.replace(new RegExp(latin, "g"), cyrillic);
+  });
+
+  return result;
 }

@@ -4,30 +4,23 @@ import { DocumentToViewType, DocumentType } from "./types";
 import supabase from "@/utils/supabase/client";
 
 
-export const uploadFile = async (file: File): Promise<DocumentType | null> => {
- const trFileName = customTransliterateToEngl(file.name)
+export const uploadFile = async (file: File, weekId : string) => {
+ const fName = customTransliterateToEngl(file.name)
   const { data, error } = await supabase.storage
     .from("workflow-documents")
-    .upload(trFileName, file);
+    .upload(fName, file);
+
+    const url = supabase.storage.from("workflow-documents").getPublicUrl(file.name);
 
 
-  const { data: publicUrl } = supabase.storage
-    .from("workflow-documents")
-    .getPublicUrl(trFileName);
+    const {data:sData, error:weeksError} = await supabase.from("weeks").update({docs : {docUrl: url, originalName: file.name}}).eq("id",weekId)
 
-  const docData: DocumentType = {
-    id: data?.id,
-    title: trFileName,
-    buckerUrl: publicUrl.publicUrl,
-    docType: file.type,
-    fullPath: data?.fullPath,
-    path: data?.path,
-  };
-
-  if (error) {
-    throw new Error(error.message);
-  } else {
-    return docData;
+console.log(sData, "weekId", weekId)
+  if (error || weeksError) {
+    throw new Error(error.message || weeksError.message);
+  } 
+  else {
+    return data;
   }
 };
 
@@ -43,7 +36,7 @@ export const getFileUrlList = async (): Promise<DocumentToViewType[] | null> => 
         title:doc.name,
         docType:doc.metadata.mimetype,
         publicUrl:url.data.publicUrl,
-        created_at: doc.created_at
+        created_at: doc.created_at,
       }
       return docData
     })

@@ -1,4 +1,4 @@
-import { ScrollShadow } from "@nextui-org/react";
+import { Input, ScrollShadow } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { getFileUrlList } from "../api";
 import { useEffect, useState } from "react";
@@ -10,6 +10,8 @@ import {
   reverseTransliterate,
 } from "@/components/CustomTranslit/CustomTranslitToEngl";
 import { customTransliterateToRus } from "@/components/CustomTranslit/CustomTranslitToRus";
+import { SgmSpinner } from "@/components/ui/SgmSpinner";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export const DocumentsList = () => {
   const { data, isLoading } = useQuery({
@@ -17,11 +19,11 @@ export const DocumentsList = () => {
     queryFn: async () => getFileUrlList(),
   });
   const [files, setFiles] = useState<DocumentToViewType[]>(data);
+  const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
     if (data) setFiles(data);
   }, [data]);
-  // console.log("Data in page", data);
 
   useEffect(() => {
     const cn = supabase
@@ -47,18 +49,24 @@ export const DocumentsList = () => {
       cn.unsubscribe();
     };
   }, []);
+  const handleSetFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(e.target.value);
+  };
+  const filteredFiles = files?.filter((item) =>
+    item.title.toLowerCase().includes(filter.toLowerCase())
+  );
+
+  console.log(files);
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-col">
+      <Input placeholder="Поиск по названию" onChange={handleSetFilter} />
+      {isLoading && <SgmSpinner />}
       <ScrollShadow className="h-[20rem]" hideScrollBar>
-        {files?.map((f) => (
+        {filteredFiles?.map((f) => (
           <div className="flex flex-col border-b-1 " key={f.id}>
             <span>
-              Название :{" "}
-              {
-                (reverseTransliterate(f.title.split(".")[0]),
-                f.title.split(".")[1])
-                // reverseTransliterate(f.title)
-              }
+              Название : {reverseTransliterate(f.title.split(".")[0] + ".")}
+              {f.title.split(".")[1]}
             </span>
             <span>
               Добавлено : <b>{new Date(f.created_at).toLocaleDateString()}</b>

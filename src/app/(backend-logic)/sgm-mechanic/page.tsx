@@ -5,30 +5,12 @@ import { fetchFromAPI, getJWTToken } from "./_api/requests";
 
 interface Props {}
 
-const Page: NextPage<Props> = ({}) => {
-  let data;
-  const getData = async () => {
-    try {
-      const result = await getJWTToken();
-      console.log(result);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  data = getData();
-  // console.log(data);
+const Page: NextPage<Props> = async ({}) => {
+  const data = await getJWTToken();
   return (
     <div>
       <h1>Data from API with JWT and Refresh Token</h1>
-      {data ? (
-        <pre>
-          {/* {JSON.stringify(data, null, 2)} */}
-          {data}
-        </pre>
-      ) : (
-        <p>Loading...</p>
-      )}
+      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
     </div>
   );
 };

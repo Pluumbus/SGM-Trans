@@ -31,7 +31,7 @@ export const setUserRole = async ({
     role: string;
   };
 }) => {
-  const user = await (await clerkClient()).users.getUser(userId);
+  const user = await (await getClerkClient()).users.getUser(userId);
   await (
     await getClerkClient()
   ).users.updateUser(userId, {
@@ -53,7 +53,7 @@ export const setUserBalance = async ({
     balance: number;
   };
 }) => {
-  const user = await (await clerkClient()).users.getUser(userId);
+  const user = await (await getClerkClient()).users.getUser(userId);
   await (
     await getClerkClient()
   ).users.updateUser(userId, {
@@ -73,7 +73,7 @@ export const changeUserBalance = async ({
   userId: string;
   addBal: number;
 }) => {
-  const user = await (await clerkClient()).users.getUser(userId);
+  const user = await (await getClerkClient()).users.getUser(userId);
   const balance = (user.publicMetadata.balance as number) + addBal;
   await (
     await getClerkClient()

@@ -2,13 +2,24 @@
 import { useMutation } from "@tanstack/react-query";
 import { uploadFile } from "../api";
 import { toast } from "@/components/ui/use-toast";
+import { useParams } from "next/navigation";
 
 export const AddDocuments = () => {
+  const { weekId, id } = useParams<{
+    weekId: string;
+    id: string;
+  }>();
   const { mutate: AddDocMutation, isPending } = useMutation({
     mutationKey: ["AddDocsToBucket"],
-    mutationFn: async (Addfile: File) => await uploadFile(Addfile),
+    mutationFn: async (Addfile: File) => await uploadFile(Addfile, weekId),
     onSuccess: () => {
       toast({ title: "Документ загружен" });
+    },
+    onError: () => {
+      toast({
+        title: "Ошибка",
+        description: "Попробуйте изменить название файла",
+      });
     },
   });
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

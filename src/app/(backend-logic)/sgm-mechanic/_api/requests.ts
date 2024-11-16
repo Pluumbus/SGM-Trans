@@ -6,7 +6,7 @@ let refreshToken: string | null = null;
 
 export const getJWTToken = async () => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login`,
+    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1.`,
     {
       method: "POST",
 
@@ -14,24 +14,22 @@ export const getJWTToken = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        login: "rudemoru",
-        password: "rudemo123456",
+        login: "imperiya",
+        password: "sgmkz2030",
       }),
-    },
+    }
   );
   if (!response.ok) {
     const errorText = await response.text();
     console.error("Error response:", errorText);
     throw new Error(`API request failed with status ${response.status}`);
   }
+
   const data = await response.json();
   jwtToken = data.jwt;
   refreshToken = data.refresh;
 
-  console.log(data);
-
   try {
-    // return await response.json();
     return jwtToken;
   } catch (error) {
     throw new Error("Failed to parse JSON");
@@ -49,7 +47,7 @@ export const refreshJWTToken = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ refresh: refreshToken }),
-    },
+    }
   );
 
   if (!response.ok) {
@@ -75,7 +73,7 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   if (!response.ok) {
