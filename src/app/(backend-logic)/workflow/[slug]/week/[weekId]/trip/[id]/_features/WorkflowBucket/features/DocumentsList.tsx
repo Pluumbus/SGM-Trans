@@ -25,30 +25,30 @@ export const DocumentsList = () => {
     if (data) setFiles(data);
   }, [data]);
 
-  useEffect(() => {
-    const cn = supabase
-      .channel(`workflow-bucket`)
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "storage",
-          table: "objects",
-        },
-        (payload) => {
-          const newDoc = payload.new;
-          console.log(newDoc);
+  // useEffect(() => {
+  //   const cn = supabase
+  //     .channel(`workflow-bucket`)
+  //     .on(
+  //       "postgres_changes",
+  //       {
+  //         event: "*",
+  //         schema: "storage",
+  //         table: "objects",
+  //       },
+  //       (payload) => {
+  //         const newDoc = payload.new;
+  //         console.log(newDoc);
 
-          // if (payload.eventType == "INSERT")
-          //   setFiles((prev) => [...prev, newDoc]);
-        }
-      )
-      .subscribe();
+  //         // if (payload.eventType == "INSERT")
+  //         //   setFiles((prev) => [...prev, newDoc]);
+  //       }
+  //     )
+  //     .subscribe();
 
-    return () => {
-      cn.unsubscribe();
-    };
-  }, []);
+  //   return () => {
+  //     cn.unsubscribe();
+  //   };
+  // }, []);
   const handleSetFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilter(e.target.value);
   };
