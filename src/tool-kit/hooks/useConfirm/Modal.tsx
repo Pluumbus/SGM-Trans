@@ -15,6 +15,7 @@ export type UseConfirmModalPropsType = {
     isOpen: boolean;
   };
   title: ReactNode;
+  buttonName?: ReactNode;
   description?: ReactNode;
   action: () => Promise<void>;
   isLoading: boolean;
@@ -24,6 +25,7 @@ export const ConfirmModal = ({
   disclosure,
   title,
   description,
+  buttonName,
   action,
   isLoading,
 }: UseConfirmModalPropsType) => {
@@ -62,7 +64,7 @@ export const ConfirmModal = ({
                 });
               }}
             >
-              Создать
+              {buttonName ? buttonName : "Создать"}
             </Button>
           </div>
         </ModalFooter>

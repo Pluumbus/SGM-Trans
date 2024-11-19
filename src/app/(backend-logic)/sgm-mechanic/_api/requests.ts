@@ -46,16 +46,16 @@ export const refreshJWTToken = async () => {
     {
       method: "POST",
       headers: {
+        Authorization: `${refreshToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refresh: refreshToken }),
+      // body: JSON.stringify({ refresh: refreshToken }),
     }
   );
 
   if (!response.ok) {
     throw new Error("Failed to refresh JWT token");
   }
-  // console.log(await response);
   const data = await response.json();
   jwtToken = data.jwt;
   return jwtToken;

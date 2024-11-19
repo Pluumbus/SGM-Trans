@@ -11,6 +11,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   ModalFooter,
+  Input,
 } from "@nextui-org/react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useState } from "react";
@@ -26,6 +27,8 @@ export const TripInfoDriver = ({
 }) => {
   const [tripDriver, setTripDriver] = useState(currentTripData?.driver);
   const [tripCar, setTripCar] = useState("");
+
+  const [isHireDriver, setIsHireDriver] = useState<boolean>(false);
 
   const { isOpen, onOpen, onOpenChange: onOpenModalChange } = useDisclosure();
 
@@ -64,33 +67,66 @@ export const TripInfoDriver = ({
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">
-                Замена данных водителя
-              </ModalHeader>
-              <ModalBody>
-                <div>
-                  Выберите водителя{" "}
-                  {!driversLoading && (
-                    <Autocomplete
-                      onSelectionChange={(e) => setTripDriver(e.toString())}
-                    >
-                      {driversData
-                        ?.filter((e) => e.car_type === "truck")
-                        .map((dr) => (
-                          <AutocompleteItem
-                            key={`${dr.name}`}
-                            textValue={`${dr.name}`}
-                            value={`${dr.name}`}
-                          >
-                            {dr.name}
-                          </AutocompleteItem>
-                        ))}
-                    </Autocomplete>
-                  )}
-                </div>
-                <div>
-                  Выберите машину
-                  {!carLoading && (
+              {!isHireDriver ? (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Замена данных водителя
+                  </ModalHeader>
+                  <ModalBody>
+                    <div>
+                      Выберите водителя{" "}
+                      {!driversLoading && (
+                        <Autocomplete
+                          onSelectionChange={(e) => setTripDriver(e.toString())}
+                        >
+                          {driversData
+                            ?.filter((e) => e.car_type === "truck")
+                            .map((dr) => (
+                              <AutocompleteItem
+                                key={`${dr.name}`}
+                                textValue={`${dr.name}`}
+                                value={`${dr.name}`}
+                              >
+                                {dr.name}
+                              </AutocompleteItem>
+                            ))}
+                        </Autocomplete>
+                      )}
+                    </div>
+                    <div>
+                      Выберите машину
+                      {!carLoading && (
+                        <Autocomplete
+                          onSelectionChange={(e) => setTripCar(e.toString())}
+                        >
+                          {carData
+                            ?.filter((e) => e.car_type === "truck")
+                            .map((c) => (
+                              <AutocompleteItem
+                                key={`${c.car + " - " + c.state_number}`}
+                                textValue={`${c.car + " - " + c.state_number}`}
+                                value={`${c.car + " - " + c.state_number}`}
+                              >
+                                {c.car + " - " + c.state_number}
+                              </AutocompleteItem>
+                            ))}
+                        </Autocomplete>
+                      )}
+                    </div>
+                  </ModalBody>
+                </>
+              ) : (
+                <>
+                  <ModalHeader className="flex flex-col gap-1">
+                    Добавить наёмного водителя
+                  </ModalHeader>
+                  <ModalBody>
+                    Введите Ф.И.О.
+                    <Input
+                      variant="bordered"
+                      onChange={(e) => setTripDriver(e.target.value)}
+                    />
+                    Введите машину
                     <Autocomplete
                       onSelectionChange={(e) => setTripCar(e.toString())}
                     >
@@ -106,10 +142,31 @@ export const TripInfoDriver = ({
                           </AutocompleteItem>
                         ))}
                     </Autocomplete>
-                  )}
-                </div>
-              </ModalBody>
-              <ModalFooter>
+                  </ModalBody>
+                </>
+              )}
+
+              <ModalFooter className="flex justify-between">
+                {!isHireDriver ? (
+                  <Button
+                    color="primary"
+                    onPress={() => {
+                      setIsHireDriver(true);
+                    }}
+                  >
+                    Добавить наёмного водителя
+                  </Button>
+                ) : (
+                  <Button
+                    color="warning"
+                    onPress={() => {
+                      setIsHireDriver(false);
+                    }}
+                  >
+                    Замена данных водителя
+                  </Button>
+                )}
+
                 <Button
                   color="success"
                   onPress={() => {
