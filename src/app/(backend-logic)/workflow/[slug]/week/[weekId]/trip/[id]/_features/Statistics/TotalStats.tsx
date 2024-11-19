@@ -7,18 +7,26 @@ import { Card, CardBody } from "@nextui-org/react";
 export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
   const totalWeight =
     cargos && cargos.length > 0
-      ? cargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.weight.replace(",", "."));
-          return isNaN(value) ? sum : sum + value;
-        }, 0)
+      ? parseFloat(
+          cargos
+            .reduce((sum, cargo) => {
+              const value = parseFloat(cargo.weight.replace(",", "."));
+              return isNaN(value) ? sum : sum + value;
+            }, 0)
+            .toFixed(3)
+        )
       : 0;
 
   const totalVolume =
     cargos && cargos.length > 0
-      ? cargos.reduce((sum, cargo) => {
-          const value = parseFloat(cargo.volume.replace(",", "."));
-          return isNaN(value) ? sum : sum + value;
-        }, 0)
+      ? parseFloat(
+          cargos
+            .reduce((sum, cargo) => {
+              const value = parseFloat(cargo.volume.replace(",", "."));
+              return isNaN(value) ? sum : sum + value;
+            }, 0)
+            .toFixed(1)
+        )
       : 0;
 
   const totalSumm =
@@ -52,14 +60,17 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
     cargos && cargos.length > 0
       ? cargos.reduce((count, cargo) => {
           const client = cargo.client_bin;
-          const res =
-            client && client.snts?.includes("KZ-SNT-")
-              ? count
-              : client.snts.length + count;
-          return res;
-        }, 0)
+          const isModified =
+            client &&
+            client.snts &&
+            Array.isArray(client.snts) &&
+            client.snts.some(
+              (snt) =>
+                snt.startsWith("KZ-SNT-") && snt.length > "KZ-SNT-".length
+            );
+          return isModified ? count + client.snts.length : count;
+        }, 0) - 1
       : 0;
-
   return (
     <div>
       <Card className="mb-3">

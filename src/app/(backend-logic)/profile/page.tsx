@@ -1,4 +1,4 @@
-import { DataTable } from "./_usersTable/data-table";
+import { UsersDataTable } from "./_usersTable/data-table";
 import React from "react";
 import {
   dehydrate,
@@ -21,7 +21,7 @@ export default async function ProfilePage() {
     <div>
       <HydrationBoundary state={dehydrate(queryClient)}>
         <RoleBasedWrapper allowedRoles={["Админ"]}>
-          <DataTable />
+          <UsersDataTable />
         </RoleBasedWrapper>
       </HydrationBoundary>
       <Button color="danger">
