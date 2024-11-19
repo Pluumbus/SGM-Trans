@@ -7,11 +7,13 @@ import {
   TrailersType,
 } from "../../../../lib/references/drivers/feature/types";
 
-export const getDriversWithCars = async (): Promise<FullDriversType[]> => {
-  const server = getSupabaseServer();
+const server = getSupabaseServer();
+
+export const getFullGazellsData = async (): Promise<FullDriversType[]> => {
   const { data, error } = await (await server)
     .from("cars")
-    .select("*,drivers(*), trailers(*)");
+    .select("*,drivers(*)")
+    .eq("car_type", "gazell");
 
   if (error) {
     throw new Error(error.message);

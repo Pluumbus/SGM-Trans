@@ -2,16 +2,18 @@ import { toast } from "@/components/ui/use-toast";
 import { Card, Listbox, ListboxItem } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { FullDriversType } from "../../../../lib/references/drivers/feature/types";
+import { useQuery } from "@tanstack/react-query";
+import { getFullGazellsData } from "../_api";
 
-export const GazellList = ({
-  driversGazellData,
-}: {
-  driversGazellData: FullDriversType[];
-}) => {
+export const GazellList = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["GetGazellAndDrivers"],
+    queryFn: async () => await getFullGazellsData(),
+  });
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
   const handleCopyDriverData = (id) => {
-    const dataToCopy = driversGazellData.filter((car) => car.id == id)[0];
+    const dataToCopy = data.filter((car) => car.id == id)[0];
     copyToClipboard(
       dataToCopy.drivers[0].name +
         "\n" +
@@ -28,20 +30,21 @@ export const GazellList = ({
         dataToCopy.drivers[0].passport_data.issued +
         "\n" +
         "Дата: " +
-        dataToCopy.drivers[0].passport_data.date,
+        dataToCopy.drivers[0].passport_data.date
     );
     toast({
       title: `Данные водителя успешно скопированы в буфер обмена`,
     });
   };
+  if (isLoading) return;
   return (
     <Card className="w-1/4">
       <Listbox
         aria-label="drivers-list"
         onAction={(key) => handleCopyDriverData(key)}
       >
-        {driversGazellData != undefined &&
-          driversGazellData?.map((gzl) => (
+        {data != undefined &&
+          data?.map((gzl) => (
             <ListboxItem key={gzl.id} className="border-b">
               {(gzl.drivers[0]?.name || "Без водителя") + " | " + gzl.car}
             </ListboxItem>

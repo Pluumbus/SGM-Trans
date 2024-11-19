@@ -1,8 +1,11 @@
 "use server";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 let jwtToken: string | null = null;
 let refreshToken: string | null = null;
+
+export const getVehiclesTree = async () => {
+  return await fetchFromAPI("/ls/api/v2/tree/vehicle");
+};
 
 export const getJWTToken = async () => {
   const response = await fetch(
@@ -14,8 +17,8 @@ export const getJWTToken = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        login: "imperiya",
-        password: "sgmkz2030",
+        login: `${process.env.OMNICOMM_USER_LOGIN}`,
+        password: `${process.env.OMNICOMM_USER_PWD}`,
       }),
     }
   );
@@ -38,22 +41,21 @@ export const getJWTToken = async () => {
 
 export const refreshJWTToken = async () => {
   if (!refreshToken) throw new Error("Отсутвует refresh токен");
-
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/refresh`,
     {
       method: "POST",
       headers: {
+        Authorization: `${refreshToken}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ refresh: refreshToken }),
+      // body: JSON.stringify({ refresh: refreshToken }),
     }
   );
 
   if (!response.ok) {
     throw new Error("Failed to refresh JWT token");
   }
-
   const data = await response.json();
   jwtToken = data.jwt;
   return jwtToken;
@@ -70,7 +72,7 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
       ...options,
       headers: {
         ...options?.headers,
-        Authorization: `Bearer ${jwtToken}`,
+        Authorization: `JWT ${jwtToken}`,
         "Content-Type": "application/json",
       },
     }
@@ -85,13 +87,4 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
   }
 
   return response.json();
-};
-
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-  try {
-    const data = await fetchFromAPI("/endpoint");
-    res.status(200).json(data);
-  } catch (error) {
-    res.status(500).json({ error: "Failed to fetch data" });
-  }
 };
