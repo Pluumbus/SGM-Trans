@@ -38,10 +38,18 @@ type Props = {
 export const Body = ({
   props: { register, watch, control, setValue },
 }: Props) => {
-  const [withDelivery, amountType, quantityType] = watch([
+  const [
+    withDelivery,
+    amountType,
+    quantityType,
+    amountValue,
+    transportationManager,
+  ] = watch([
     "unloading_point.withDelivery",
     "amount.type",
     "quantity.type",
+    "amount.value",
+    "transportation_manager",
   ]);
   const state = useState<number>(null);
 
@@ -52,14 +60,23 @@ export const Body = ({
   return (
     <ModalBody className="transition-all">
       <div className="grid grid-cols-2 gap-2 w-full">
-        <Textarea
-          {...register("receipt_address")}
-          label="Адрес получения груза"
-        />
-        <Textarea
-          {...register("client_bin.tempText")}
-          label={`Клиент\n\n(получатель груза)\n\nБИН`}
-        />
+        <div className="col-span-2 flex gap-2 h-full">
+          <Textarea
+            {...register("receipt_address")}
+            label="Адрес получения груза"
+            className="!min-h-full w-1/2"
+            minRows={4}
+          />
+
+          <div className="flex flex-col gap-2 w-1/2">
+            <Input
+              {...register("client_bin.tempText")}
+              label={`Клиент\n\n(получатель груза)`}
+            />
+            <Input {...register("client_bin.xin")} label={`БИН`} />
+          </div>
+        </div>
+
         <TM state={state} onChange={onChange} />
 
         {withDelivery ? (
@@ -165,6 +182,7 @@ export const Body = ({
                 inputProps={{
                   label: "Сумма оплаты (тг.)",
                 }}
+                {...register("amount.value")}
               />
 
               <Autocomplete
@@ -207,17 +225,11 @@ export const Body = ({
           )}
         />
 
-        <div className="col-span-2 flex gap-2 justify-between">
+        <div className="col-span-2">
           <Textarea
             {...register("comments")}
             label="Комментарии"
-            className="w-1/3"
-          />
-
-          <Textarea
-            {...register("transportation_manager")}
-            label="Плательщик (Менеджер ведущий перевозку)"
-            className="w-2/3"
+            className="full"
           />
         </div>
 

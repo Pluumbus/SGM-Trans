@@ -1,5 +1,6 @@
 import { useNumberState } from "@/tool-kit/hooks";
 import { Input, InputProps } from "@nextui-org/react";
+import { useEffect } from "react";
 import { UseFormSetValue } from "react-hook-form";
 
 type Props<T> = {
@@ -17,10 +18,15 @@ export const FormNumberInput = <T,>({
     initValue: 0,
   });
 
+  useEffect(() => {
+    if (state.rawValue) {
+      // @ts-ignore
+      setValue(name, state.rawValue.toString());
+    }
+  }, [state]);
+
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     state.onChange(e);
-    // @ts-ignore
-    setValue(name, state.rawValue.toString());
   };
 
   return <Input value={state.value} onChange={onChange} {...inputProps} />;

@@ -111,7 +111,7 @@ export const getBaseColumnsConfig = () => {
       ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} cl="!min-w-[2rem]" />
+        <EditField info={info} type={"Text"} cl="!min-w-[3rem]" />
       ),
       filter: false,
     },

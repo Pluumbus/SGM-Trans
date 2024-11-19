@@ -133,39 +133,30 @@ export const useCashierColumnsConfig =
 const FullName = ({ value }: { value: CashboxType["client"] }) => {
   const TooltipContent = () => (
     <div className="flex flex-col gap-4">
-      {value.company_name && (
-        <div className="flex flex-col gap-1">
-          <span>Компания на которую работает менеджер: </span>
-          <span className="font-semibold">{value.company_name}</span>
-        </div>
-      )}
-      {value.comment && (
+      {value.comment ? (
         <div className="flex flex-col gap-1">
           <span>Заметка о клиенте:</span>
           <span className="font-semibold">{value.comment}</span>
         </div>
+      ) : (
+        <span>Дополнительной ифнормации о клиенте нет</span>
       )}
-      <span className="text-center">
-        Нажмите чтобы написать клиенту на WhatsApp
-      </span>
     </div>
   );
+
   return (
-    <Tooltip content={<TooltipContent />}>
-      <Link href={`https://wa.me/${value.phone_number}`} target="_blank">
-        <div className="flex flex-col gap-1">
-          <div className="flex gap-2 font-semibold">
-            <span>{value.full_name.first_name}</span>
-            <span>{value.full_name.last_name}</span>
-            <span>{value.full_name.middle_name || ""}</span>
-          </div>
-          <div>
-            <span className="text-green-800 font-semibold">
-              {value.phone_number}
-            </span>
-          </div>
+    <Tooltip content={<TooltipContent />} showArrow placement="left">
+      <div className="flex flex-col gap-1 py-2">
+        <div className="flex gap-2 font-semibold">
+          <span>{value.full_name.first_name}</span>
+          <span>{value.full_name.last_name}</span>
+          <span>{value.full_name.middle_name || ""}</span>
         </div>
-      </Link>
+
+        {value.company_name && (
+          <span className="font-semibold">{value.company_name}</span>
+        )}
+      </div>
     </Tooltip>
   );
 };

@@ -20,7 +20,7 @@ export const addCargoOnSubmit = (
     client_bin: {
       snts: ["KZ-SNT-"],
       tempText: data.client_bin.tempText || "",
-      xin: "",
+      xin: data.client_bin.xin || "",
     },
     unloading_point: unlPoint,
     // @ts-ignore

@@ -16,7 +16,7 @@ export const UnloadingPoint = ({
 
   return (
     <div className="flex flex-col gap-2 w-[20rem]">
-      <div className="flex gap-2">
+      <div className={`flex gap-2 ${!values.withDelivery && "flex-col"}`}>
         <Cities
           variant="underlined"
           aria-label="Cities lib"

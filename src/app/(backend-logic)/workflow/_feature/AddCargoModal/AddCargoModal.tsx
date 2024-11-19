@@ -2,10 +2,8 @@ import { Divider, Modal, ModalContent, ModalHeader } from "@nextui-org/react";
 import { useForm } from "react-hook-form";
 import { CargoType } from "../types";
 import { Body, Footer } from "./ModalParts";
-import { useCargoMutation } from "./helpers";
+import { useCargoMutation, useValdiateForm } from "./helpers";
 import { addCargoOnSubmit } from "./helpers";
-import { TM } from "../TransportationManagerActions";
-import { useToast } from "@/components/ui/use-toast";
 
 export const CargoModal = ({
   isOpenCargo,
@@ -20,13 +18,15 @@ export const CargoModal = ({
     useForm<CargoType>();
   const { mutate, isPending } = useCargoMutation(onOpenChangeCargo, reset);
 
+  const validate = useValdiateForm();
+
   return (
     <>
       <Modal isOpen={isOpenCargo} onOpenChange={onOpenChangeCargo} size="2xl">
         <ModalContent>
           <form
             onSubmit={handleSubmit((data) => {
-              addCargoOnSubmit(data, mutate, trip_id);
+              validate(data) && addCargoOnSubmit(data, mutate, trip_id);
             })}
           >
             <ModalHeader>Добавить груз</ModalHeader>

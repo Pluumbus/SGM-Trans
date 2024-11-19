@@ -51,7 +51,7 @@ export const TransportationManager = ({
 
   return (
     <div className="min-w-[500px]">
-      <TM state={state} type="Table" />
+      <TM state={state} type="Table" info={info} />
     </div>
   );
 };
