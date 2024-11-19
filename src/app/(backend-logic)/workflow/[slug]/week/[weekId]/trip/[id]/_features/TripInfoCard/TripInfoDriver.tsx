@@ -27,6 +27,10 @@ export const TripInfoDriver = ({
 }) => {
   const [tripDriver, setTripDriver] = useState(currentTripData?.driver);
   const [tripCar, setTripCar] = useState("");
+  const [secondaryInputCar, setSecondaryInputCar] = useState({
+    car: "",
+    state_number: "",
+  });
 
   const [isHireDriver, setIsHireDriver] = useState<boolean>(false);
 
@@ -52,6 +56,18 @@ export const TripInfoDriver = ({
       });
     },
   });
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSecondaryInputCar((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    console.log(secondaryInputCar);
+    if (secondaryInputCar.car !== "" && secondaryInputCar.state_number !== "")
+      setTripCar(
+        secondaryInputCar.car + " - " + secondaryInputCar.state_number
+      );
+  };
   return (
     <div>
       <div className="flex flex-col">
@@ -127,21 +143,20 @@ export const TripInfoDriver = ({
                       onChange={(e) => setTripDriver(e.target.value)}
                     />
                     Введите машину
-                    <Autocomplete
-                      onSelectionChange={(e) => setTripCar(e.toString())}
-                    >
-                      {carData
-                        ?.filter((e) => e.car_type === "truck")
-                        .map((c) => (
-                          <AutocompleteItem
-                            key={`${c.car + " - " + c.state_number}`}
-                            textValue={`${c.car + " - " + c.state_number}`}
-                            value={`${c.car + " - " + c.state_number}`}
-                          >
-                            {c.car + " - " + c.state_number}
-                          </AutocompleteItem>
-                        ))}
-                    </Autocomplete>
+                    <div className="flex gap-4">
+                      <Input
+                        name="car"
+                        variant="bordered"
+                        placeholder="DAF XF 480"
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        name="state_number"
+                        variant="bordered"
+                        placeholder="747 CU 01"
+                        onChange={handleInputChange}
+                      />
+                    </div>
                   </ModalBody>
                 </>
               )}
