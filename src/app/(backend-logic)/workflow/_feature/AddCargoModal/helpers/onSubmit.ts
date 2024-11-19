@@ -16,6 +16,7 @@ export const addCargoOnSubmit = (
   mutate({
     ...data,
     trip_id: trip_id,
+    transportation_manager: Number(data.transportation_manager),
     client_bin: {
       snts: ["KZ-SNT-"],
       tempText: data.client_bin.tempText || "",
