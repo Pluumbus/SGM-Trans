@@ -85,7 +85,7 @@ export const DriversList = () => {
     },
   });
 
-  const { mutate: DeleteObj, isPending } = useMutation({
+  const { mutate: deleteObject, isPending } = useMutation({
     mutationFn: async ({ id, table }: { id: number; table: string }) =>
       await deleteObj(id, table),
     onSuccess: () => {
@@ -114,7 +114,7 @@ export const DriversList = () => {
   };
   const handlePress = (name: string, table: string, id: number) => {
     openModal({
-      action: async () => DeleteObj({ id: id, table: table }),
+      action: async () => deleteObject({ id: id, table: table }),
       title: "Подтвердите действие",
       description: `Вы уверены что хотите удалить ${name}?`,
       buttonName: "Подтвердить",
