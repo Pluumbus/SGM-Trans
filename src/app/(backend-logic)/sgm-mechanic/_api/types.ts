@@ -24,6 +24,21 @@ export interface TrackReport {
   }>;
 }
 
+export interface VehicleStatus {
+  status: boolean;
+  address: string; // Address or location of the vehicle
+  currentFuel: number; // Current fuel level
+  currentIgn: boolean; // Indicates if the ignition is on
+  currentSpeed: number; // Current speed of the vehicle
+  lastDataDate: number; // UNIX timestamp (UTC seconds) of the last recorded data
+  lastGPS: {
+    latitude: number; // Latitude of the last recorded GPS position
+    longitude: number; // Longitude of the last recorded GPS position
+  };
+  lastGPSDir: number; // Direction of the last GPS position (in degrees, 0-360)
+  speedExceed: boolean; // Indicates if the speed exceeds a defined threshold
+}
+
 export interface VehicleObject {
   terminal: {
     terminalId: number;

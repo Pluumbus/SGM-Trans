@@ -26,6 +26,15 @@ export const getVehicleReport = async (
   );
 };
 
+/** @param id - Это либо terminal ID или uuid машины @returns current state of the vehicle */
+export const getVehicleCurrentState = async (
+  id?: string | number
+): Promise<TrackReport> => {
+  const tempID = id || 202010968;
+
+  return await fetchFromAPI(`/ls/api/v1/vehicles/${tempID}/state`);
+};
+
 export const getVihiclesInfo = async () => {
   const vehiclesTree = await getVehiclesTree();
 

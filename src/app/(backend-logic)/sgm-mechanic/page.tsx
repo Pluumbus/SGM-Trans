@@ -1,7 +1,11 @@
 "use client";
 
 import { NextPage } from "next";
-import { getVehicleReport, getVihiclesInfo } from "./_api/requests";
+import {
+  getVehicleCurrentState,
+  getVehicleReport,
+  getVihiclesInfo,
+} from "./_api/requests";
 import { useQuery } from "@tanstack/react-query";
 import { Spinner } from "@nextui-org/react";
 
@@ -10,7 +14,7 @@ interface Props {}
 const Page: NextPage<Props> = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["get vehicles ls"],
-    queryFn: async () => await getVihiclesInfo(),
+    queryFn: async () => await getVehicleCurrentState(),
   });
 
   if (isLoading) {
