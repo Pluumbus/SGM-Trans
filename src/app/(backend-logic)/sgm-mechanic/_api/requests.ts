@@ -1,90 +1,43 @@
-"use server";
+"use client";
 
-let jwtToken: string | null = null;
-let refreshToken: string | null = null;
+import { fetchFromAPI } from "./api";
+import { TrackReport, VehicleObject, VehicleTreeObject } from "./types";
 
-export const getVehiclesTree = async () => {
+const getVehiclesTree = async (): Promise<VehicleTreeObject> => {
   return await fetchFromAPI("/ls/api/v2/tree/vehicle");
 };
 
-export const getJWTToken = async () => {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1.`,
-    {
-      method: "POST",
-
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        login: `${process.env.OMNICOMM_USER_LOGIN}`,
-        password: `${process.env.OMNICOMM_USER_PWD}`,
-      }),
-    }
-  );
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error("Error response:", errorText);
-    throw new Error(`API request failed with status ${response.status}`);
-  }
-
-  const data = await response.json();
-  jwtToken = data.jwt;
-  refreshToken = data.refresh;
-
-  try {
-    return jwtToken;
-  } catch (error) {
-    throw new Error("Failed to parse JSON");
-  }
+const getSingleVehicleInfo = async (id: string): Promise<VehicleObject> => {
+  return await fetchFromAPI(`/ls/api/v1/profile/vehicle/${id}`);
 };
 
-export const refreshJWTToken = async () => {
-  if (!refreshToken) throw new Error("Отсутвует refresh токен");
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/refresh`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `${refreshToken}`,
-        "Content-Type": "application/json",
-      },
-      // body: JSON.stringify({ refresh: refreshToken }),
-    }
-  );
+/** @param id - Это либо terminal ID или uuid машины */
+export const getVehicleReport = async (
+  id?: string | number
+): Promise<TrackReport> => {
+  const timeBegin = 1712084400; // UNIX for 2024-01-01 00:00:00
+  const timeEnd = 1722625200; // UNIX for 2024-08-02 00:00:00
 
-  if (!response.ok) {
-    throw new Error("Failed to refresh JWT token");
-  }
-  const data = await response.json();
-  jwtToken = data.jwt;
-  return jwtToken;
+  const tempID = id || 202010968; // Terminal ID - этот я для теста взял первый из списка который мне отдал getVihiclesInfo
+  // для теста оставил tempID
+
+  return await fetchFromAPI(
+    `/ls/api/v1/reports/track/${tempID}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`
+  );
 };
 
-export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
-  if (!jwtToken) {
-    jwtToken = await getJWTToken();
-  }
+export const getVihiclesInfo = async () => {
+  const vehiclesTree = await getVehiclesTree();
 
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}${endpoint}`,
-    {
-      ...options,
-      headers: {
-        ...options?.headers,
-        Authorization: `JWT ${jwtToken}`,
-        "Content-Type": "application/json",
-      },
-    }
+  const allVehiclesData = await Promise.all(
+    vehiclesTree.objects.map(async (vehicle) => {
+      const singleVehicleInfo = await getSingleVehicleInfo(vehicle.uuid);
+      return {
+        ...vehicle,
+        details: singleVehicleInfo,
+      };
+    })
   );
 
-  if (!response.ok) {
-    if (response.status === 401) {
-      jwtToken = await refreshJWTToken();
-      return fetchFromAPI(endpoint, options);
-    }
-    throw new Error(`Error: ${response.status}`);
-  }
-
-  return response.json();
+  return allVehiclesData;
 };

@@ -1,21 +1,26 @@
+"use client";
+
 import { NextPage } from "next";
-import { fetchFromAPI, getJWTToken, getVehiclesTree } from "./_api/requests";
+import { getVehicleReport, getVihiclesInfo } from "./_api/requests";
+import { useQuery } from "@tanstack/react-query";
+import { Spinner } from "@nextui-org/react";
 
 interface Props {}
 
-const Page: NextPage<Props> = async ({}) => {
-  const data = await getVehiclesTree();
+const Page: NextPage<Props> = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["get vehicles ls"],
+    queryFn: async () => await getVihiclesInfo(),
+  });
+
+  if (isLoading) {
+    return <Spinner />;
+  }
   return (
     <div>
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 };
-
-// return (
-//   <div>
-//     <CarList />
-//   </div>
-// );
 
 export default Page;
