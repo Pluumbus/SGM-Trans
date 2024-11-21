@@ -56,7 +56,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       user: groupedData[user].fullName,
       count: groupedData[user].count,
       percentageOfAll: Math.round(
-        (groupedData[user].count / mCargos.length) * 100,
+        (groupedData[user].count / mCargos.length) * 100
       ),
       maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
@@ -64,7 +64,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   };
 
   const [colors, setColors] = useState(
-    getRandomRainbowColors(chartData?.length),
+    getRandomRainbowColors(chartData?.length)
   );
 
   useEffect(() => {
@@ -164,25 +164,29 @@ const CustomBar = ({
             <Skeleton className="h-[22px] w-[50px]" />
           </div>
         ) : (
-          state.map((e, i) => (
-            <div key={`cargo-statistics-${i}`}>
-              <div className="flex justify-between w-full">
-                <span className="w-[10%] text-lg font-semibold">{e.user}</span>
-                <div className="w-[80%]">
-                  <div
-                    style={{
-                      width: `${e.percentageOfAll}%`,
-                      backgroundColor: colors[i],
-                    }}
-                    className="min-h-full rounded-[0.25rem]"
-                  ></div>
+          state
+            .sort((a, b) => b.count - a.count)
+            .map((e, i) => (
+              <div key={`cargo-statistics-${i}`}>
+                <div className="flex justify-between w-full">
+                  <span className="w-[10%] text-lg font-semibold">
+                    {e.user}
+                  </span>
+                  <div className="w-[80%]">
+                    <div
+                      style={{
+                        width: `${e.percentageOfAll}%`,
+                        backgroundColor: colors[i],
+                      }}
+                      className="min-h-full rounded-[0.25rem]"
+                    ></div>
+                  </div>
+                  <span className="w-[10%] flex justify-center text-lg font-semibold">
+                    {e.count}
+                  </span>
                 </div>
-                <span className="w-[10%] flex justify-center text-lg font-semibold">
-                  {e.count}
-                </span>
               </div>
-            </div>
-          ))
+            ))
         )}
       </CardBody>
     </Card>
