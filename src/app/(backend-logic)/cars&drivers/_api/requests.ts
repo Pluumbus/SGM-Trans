@@ -39,10 +39,10 @@ export const setDriver = async (driver: string) => {
   }
 };
 
-export const setCar = async (car: { input1: string; input2: string }) => {
+export const setCar = async (car: { name: string; state_number: string }) => {
   const { data, error } = await supabase
     .from("cars")
-    .insert({ car: car.input1, state_number: car.input2 });
+    .insert({ car: car.name, state_number: car.state_number });
 
   if (error) {
     throw new Error(error.message);
@@ -50,12 +50,12 @@ export const setCar = async (car: { input1: string; input2: string }) => {
 };
 
 export const setTrailer = async (trailer: {
-  input1: string;
-  input2: string;
+  name: string;
+  state_number: string;
 }) => {
   const { data, error } = await supabase
     .from("trailers")
-    .insert({ trailer: trailer.input1, state_number: trailer.input2 });
+    .insert({ trailer: trailer.name, state_number: trailer.state_number });
 
   if (error) {
     throw new Error(error.message);

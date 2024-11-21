@@ -38,7 +38,7 @@ export const GazellList = () => {
   };
   if (isLoading) return;
   return (
-    <Card className="w-1/4">
+    <Card className="h-full">
       <Listbox
         aria-label="drivers-list"
         onAction={(key) => handleCopyDriverData(key)}

@@ -58,7 +58,9 @@ export const TripInfoCard = ({
     queryKey: ["getUsersList"],
     queryFn: async () => {
       const users = await getUserList();
-      const filteredUsrs = users.filter((user) => user.role === "Логист");
+      const filteredUsrs = users.filter(
+        (user) => user.role === "Логист" || user.role === "Логист Дистант"
+      );
       return filteredUsrs as UsersList[];
     },
   });

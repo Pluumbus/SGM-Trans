@@ -6,7 +6,7 @@ import { Button, Card, CardBody } from "@nextui-org/react";
 import { toast } from "@/components/ui/use-toast";
 import { setUserData } from "@/lib/references/clerkUserType/SetUserFuncs";
 
-export const Timer = ({}) => {
+export const Timer = () => {
   const { user, isLoaded } = useUser();
 
   let oldSec = isLoaded && (user.publicMetadata.time as number);
@@ -32,7 +32,6 @@ export const Timer = ({}) => {
   });
 
   const [isActive, setIsActive] = useState(true);
-  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     let interval;
@@ -41,6 +40,7 @@ export const Timer = ({}) => {
       interval = setInterval(() => {
         setSeconds((prevSeconds) => {
           const newSeconds = prevSeconds + 1;
+          localStorage.setItem("seconds", newSeconds.toString());
           return newSeconds;
         });
       }, 1000);
@@ -106,7 +106,7 @@ export const Timer = ({}) => {
     displaySeconds,
     "секунда",
     "секунды",
-    "секунд",
+    "секунд"
   );
 
   const handleRefreshTimer = () => {
