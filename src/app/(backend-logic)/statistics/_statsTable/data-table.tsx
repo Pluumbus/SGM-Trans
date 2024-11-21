@@ -35,9 +35,7 @@ export function DataTable() {
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
-  const [filteredData, setFilteredData] = useState<StatsUserList[]>(
-    []
-  );
+  const [filteredData, setFilteredData] = useState<StatsUserList[]>([]);
   const [dateVal, setDateVal] = useState({
     start: parseDate(
       `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
@@ -64,7 +62,7 @@ export function DataTable() {
     },
   });
   const handleSetTimeRangeFilter = () => {
-    console.log(filteredData)
+    console.log(filteredData);
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,
@@ -76,35 +74,39 @@ export function DataTable() {
       dateVal.end.day + 1
     ).toISOString();
 
-      const sumAmountsForDateRange = (user: StatsUserList) => {
-        let bidSumArr = [];
-        let total = 0;
-      
-        total = user.created_at.reduce((sum, date, index) => {
-          if (isWithinInterval(date, { start: startDate, end: endDate })) {
-            bidSumArr.push(user.value[index]);
-            return sum + Number(user.value[index]);
-          }
-          return sum;
-        }, 0);
-      
-        return { total, bidSumArr };
-      };
+    const sumAmountsForDateRange = (user: StatsUserList) => {
+      let bidSumArr = [];
+      let total = 0;
 
-      const filtered = data
-        .map((user) => {
-          const { total, bidSumArr } = sumAmountsForDateRange(user); 
-          const totalBidsInRange = bidSumArr.length;
-          const bidSum = user.value.length;
-          
-          return { ...user, totalAmountInRange: total, totalBidsInRange, bidSum };
-        })
-        .filter((user) => 
-        
-          user.totalAmountInRange > 0
-        );
-      setFilteredData(filtered);
-    }
+      total = user.created_at.reduce((sum, date, index) => {
+        if (isWithinInterval(date, { start: startDate, end: endDate })) {
+          bidSumArr.push(user.value[index]);
+          return sum + Number(user.value[index]);
+        }
+        return sum;
+      }, 0);
+
+      return { total, bidSumArr };
+    };
+
+    const filtered = data
+      .map((user) => {
+        const { total, bidSumArr } = sumAmountsForDateRange(user);
+        const totalBidsInRange = bidSumArr.length;
+        const bidSum = user.value.length;
+
+        return { ...user, totalAmountInRange: total, totalBidsInRange, bidSum };
+      })
+      .filter(
+        (user) =>
+          user.role == "Логист" ||
+          user.role === "Логист Дистант" ||
+          user.role == "Логист Москва"
+      )
+      .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
+
+    setFilteredData(filtered);
+  };
 
   useEffect(() => {
     if (isFetched && data) {

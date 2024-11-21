@@ -35,7 +35,7 @@ export const getVehicleCurrentState = async (
   return await fetchFromAPI(`/ls/api/v1/vehicles/${tempID}/state`);
 };
 
-export const getVihiclesInfo = async () => {
+export const getVehiclesInfo = async () => {
   const vehiclesTree = await getVehiclesTree();
 
   const allVehiclesData = await Promise.all(
