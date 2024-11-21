@@ -1,9 +1,10 @@
 import { toast } from "@/components/ui/use-toast";
-import { Card, Listbox, ListboxItem } from "@nextui-org/react";
+import { Card, CardHeader, Listbox, ListboxItem } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
-import { FullDriversType } from "../../../../lib/references/drivers/feature/types";
+import gazellImg from "@/app/_imgs/gazell-icon.png";
 import { useQuery } from "@tanstack/react-query";
 import { getFullGazellsData } from "../_api";
+import Image from "next/image";
 
 export const GazellList = () => {
   const { data, isLoading } = useQuery({
@@ -39,6 +40,9 @@ export const GazellList = () => {
   if (isLoading) return;
   return (
     <Card className="h-full">
+      <CardHeader className="flex justify-center">
+        <Image src={gazellImg} alt="gazell-icon" width={50} />
+      </CardHeader>
       <Listbox
         aria-label="drivers-list"
         onAction={(key) => handleCopyDriverData(key)}
