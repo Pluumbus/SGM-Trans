@@ -66,7 +66,11 @@ const config = {
     },
   },
   darkMode: "class",
-  plugins: [nextui(), require("tailwindcss-animate")],
+  plugins: [
+    nextui(),
+    require("tailwindcss-animate"),
+    require("tailwind-scrollbar"),
+  ],
 } satisfies Config;
 
 export default config;

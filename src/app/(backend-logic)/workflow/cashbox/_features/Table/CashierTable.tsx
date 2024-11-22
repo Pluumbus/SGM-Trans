@@ -6,7 +6,7 @@ import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getClients } from "../api";
-import { Spinner } from "@nextui-org/react";
+import { Card, CardBody, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase/client";
 
@@ -15,6 +15,16 @@ export const CashierTable = () => {
   const config: UseTableConfig<CashboxType> = {
     row: {
       setRowData(info) {},
+      setClassNameOnRow(info) {
+        if (
+          info.original.cargos.some(
+            (e) =>
+              e.amount.type == "Б/нал в МСК" || e.amount.type == "Нал в МСК"
+          )
+        ) {
+          return "bg-primary-100";
+        }
+      },
       className: "",
     },
   };
@@ -51,11 +61,11 @@ export const CashierTable = () => {
           else
             setClients((prev) => {
               const updatedClients = prev.map((client) =>
-                client.id === updatedClient.id ? updatedClient : client,
+                client.id === updatedClient.id ? updatedClient : client
               );
               return updatedClients;
             });
-        },
+        }
       )
       .subscribe();
 
@@ -69,15 +79,29 @@ export const CashierTable = () => {
   }
 
   return (
-    <UTable
-      props={{
-        isCompact: false,
-      }}
-      data={clients}
-      isPagiantion={false}
-      columns={columns}
-      name={`Cashier Table`}
-      config={config}
-    />
+    <div>
+      <Card shadow="none" className="w-2/12">
+        <CardBody>
+          <div className="flex gap-2 items-start">
+            <div className="bg-primary-200 min-w-5 min-h-5 border"></div>
+            <span className="text-sm">
+              - Этим цветом показаны грузы которые оплачены или будут оплачены в
+              МСК
+            </span>
+          </div>
+        </CardBody>
+      </Card>
+
+      <UTable
+        props={{
+          isCompact: false,
+        }}
+        data={clients}
+        isPagiantion={false}
+        columns={columns}
+        name={`Cashier Table`}
+        config={config}
+      />
+    </div>
   );
 };

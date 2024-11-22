@@ -4,10 +4,13 @@ import { RowConfigProps } from "../types";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>,
+  config: RowConfigProps<T>
 ) => {
   return tInstance.getRowModel().rows.map((row, i) => (
-    <TableRow className={config?.className} key={row.id}>
+    <TableRow
+      className={config.setClassNameOnRow && config?.setClassNameOnRow(row)}
+      key={row.id}
+    >
       {row.getVisibleCells().map((cell) => (
         <TableCell
           key={cell.id}
