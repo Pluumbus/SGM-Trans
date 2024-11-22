@@ -23,10 +23,6 @@ export const VehicleCard = ({ vehicle }: VehicleCardProps) => {
       <CardBody>
         <div className="space-y-2 flex flex-col">
           <span>
-            <span className="font-semibold">Название автомобиля:</span>{" "}
-            {vehicleInfo.thingName || "N/A"}
-          </span>
-          <span>
             <span className="font-semibold">Функция автомобиля:</span>{" "}
             {vehicleInfo.function || ""}
           </span>
@@ -52,7 +48,7 @@ export const VehicleCard = ({ vehicle }: VehicleCardProps) => {
           </span>
           <span>
             <span className="font-semibold">Расход двигателем в час:</span>{" "}
-            {mainTank.refuelBreakRangeTime}
+            {movement.mileageDrift}
           </span>
         </div>
       </CardBody>

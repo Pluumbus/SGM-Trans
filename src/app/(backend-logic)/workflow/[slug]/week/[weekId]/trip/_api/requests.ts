@@ -16,7 +16,7 @@ export const updateTripStatus = async (value: string | any, tripId) => {
 export const updateTripDate = async (
   value: string | any,
   tripId,
-  dateIn: boolean,
+  dateIn: boolean
 ) => {
   if (dateIn) {
     const { data, error } = await supabase
@@ -53,7 +53,10 @@ export const updateTripRespUser = async (value: string | any, tripId) => {
   return data;
 };
 
-export const updateTripDriver = async (value: string | any, tripId) => {
+export const updateTripDriver = async (
+  value: { driver: string; car: string; state_number: string },
+  tripId: number
+) => {
   const { data, error } = await supabase
     .from("trips")
     .update({ driver: value })

@@ -18,7 +18,7 @@ export type TripType = {
   id: number;
   user_id: string;
   week_id: string;
-  driver: string;
+  driver: { driver: string; car: string; state_number: string };
   city_from: string[];
   city_to: string[];
   status: string;

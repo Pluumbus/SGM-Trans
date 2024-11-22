@@ -160,6 +160,9 @@ const Page: NextPage = () => {
                 title={
                   <div className="flex flex-col items-center text-sm space-y-1">
                     <span className="text-gray-500 truncate">
+                      {trip.driver.state_number}
+                    </span>
+                    <span className="text-gray-500 truncate">
                       {trip.status}
                     </span>
                     <span className="font-bold truncate">{trip.id}</span>

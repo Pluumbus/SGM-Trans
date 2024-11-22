@@ -25,7 +25,7 @@ export const TripInfoDriver = ({
   currentTripData: TripType;
   selectedTabId: number;
 }) => {
-  const [tripDriver, setTripDriver] = useState(currentTripData?.driver);
+  const [tripDriver, setTripDriver] = useState(currentTripData?.driver.driver);
   const [tripCar, setTripCar] = useState("");
   const [secondaryInputCar, setSecondaryInputCar] = useState({
     car: "",
@@ -48,8 +48,14 @@ export const TripInfoDriver = ({
 
   const { mutate: setDriverMutation } = useMutation({
     mutationKey: ["setTripStatus"],
-    mutationFn: async () =>
-      await updateTripDriver(tripDriver + " | " + tripCar, selectedTabId),
+    mutationFn: async () => {
+      const [car, state_number] = tripCar.split(" - ");
+      console.log(car, "AND", state_number);
+      await updateTripDriver(
+        { driver: tripDriver, car: car, state_number: state_number },
+        selectedTabId
+      );
+    },
     onSuccess() {
       toast({
         title: "Водитель рейса успешно обновлён",
@@ -73,7 +79,13 @@ export const TripInfoDriver = ({
       <div className="flex flex-col">
         <span>Водитель: </span>
         <div className="flex justify-between">
-          <b className="items-end">{currentTripData?.driver} </b>
+          <b className="items-end">
+            {currentTripData?.driver.driver +
+              " | " +
+              currentTripData?.driver.car +
+              " - " +
+              currentTripData?.driver.state_number}{" "}
+          </b>
           <Button isIconOnly size="sm" color="default" onPress={onOpen}>
             <IoMdSettings />
           </Button>
