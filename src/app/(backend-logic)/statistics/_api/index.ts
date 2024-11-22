@@ -5,8 +5,8 @@ import getSupabaseServer from "@/utils/supabase/server";
 import { User } from "@clerk/nextjs/server";
 
 export const getStatsUserList = async () => {
-  const users = await (await getClerkClient()).users.getUserList();
-  const userList = users.data.map((user: User) => ({
+  const users = (await (await getClerkClient()).users.getUserList()).data;
+  const userList = users.map((user: User) => ({
     user_id: user.id,
     userName: user.fullName || "Имя отсутствует",
     avatar: user.imageUrl,
@@ -14,13 +14,17 @@ export const getStatsUserList = async () => {
     value: [],
     created_at: [],
   }));
+
   const server = getSupabaseServer();
+
   const { data, error } = await (await server)
     .from("cargos")
     .select(`amount,user_id,created_at`);
+
   if (error) {
     throw new Error(error.message);
   }
+
   const userMap = new Map(userList.map((user) => [user.user_id, user]));
 
   data.forEach((cargo) => {
@@ -31,7 +35,7 @@ export const getStatsUserList = async () => {
 
       if (existingUser!.value) {
         existingUser!.value.push(
-          Number((amount.value as string).replace(/[\s,]/g, "")),
+          Number((amount.value as string).replace(/[\s,]/g, ""))
         );
       } else
         existingUser!.value = [
