@@ -11,6 +11,17 @@ const getSingleVehicleInfo = async (id: string): Promise<VehicleObject> => {
   return await fetchFromAPI(`/ls/api/v1/profile/vehicle/${id}`);
 };
 
+const getSingleVehicleFuelLevel = async (
+  id: string
+): Promise<VehicleObject> => {
+  const timeBegin = 1712084400; // UNIX for 2024-01-01 00:00:00
+  const timeEnd = 1722625200; // UNIX for 2024-08-02 00:00:00
+
+  return await fetchFromAPI(
+    `/ls/api/v1/reports/fuellevel/${id}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`
+  );
+};
+
 /** @param id - Это либо terminal ID или uuid машины */
 export const getVehicleReport = async (
   id?: string | number
@@ -33,6 +44,22 @@ export const getVehicleCurrentState = async (
   const tempID = id || 202010968;
 
   return await fetchFromAPI(`/ls/api/v1/vehicles/${tempID}/state`);
+};
+
+export const getVehiclesFuelLevel = async () => {
+  const vehiclesTree = await getVehiclesTree();
+
+  const allVehiclesData = await Promise.all(
+    vehiclesTree.objects.map(async (vehicle) => {
+      const singleVehicleInfo = await getSingleVehicleFuelLevel(vehicle.uuid);
+      return {
+        ...vehicle,
+        details: singleVehicleInfo,
+      };
+    })
+  );
+
+  return allVehiclesData;
 };
 
 export const getVehiclesInfo = async () => {

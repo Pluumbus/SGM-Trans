@@ -1,13 +1,10 @@
 "use client";
 
 import { NextPage } from "next";
-import {
-  getVehicleCurrentState,
-  getVehicleReport,
-  getVehiclesInfo,
-} from "./_api/requests";
+import { getVehiclesInfo } from "./_api/requests";
 import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Spinner } from "@nextui-org/react";
+import { VehicleCard } from "./_features/CarCard";
 
 interface Props {}
 
@@ -21,8 +18,10 @@ const Page: NextPage<Props> = () => {
     return <Spinner />;
   }
   return (
-    <div>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+    <div className="grid grid-cols-4 gap-2">
+      {data.map((e) => (
+        <VehicleCard vehicle={e} />
+      ))}
     </div>
   );
 };
