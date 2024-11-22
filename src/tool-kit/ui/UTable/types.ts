@@ -14,6 +14,7 @@ export type ColumnType<T> = ColumnDef<DataType<T>>;
 
 export type RowConfigProps<T> = {
   setRowData?: (info: Row<T>) => void;
+  setClassNameOnRow?: (info: Row<T>) => string;
   className?: string;
 };
 

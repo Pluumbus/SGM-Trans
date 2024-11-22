@@ -74,14 +74,26 @@ export const UTable = <T,>({
   });
 
   return (
-    <div>
+    <div className="flex flex-col h-screen">
       <UTableTopContent tInstance={tInstance} />
-      <Table aria-label={name} isCompact={true} isStriped={true} {...props}>
-        <TableHeader>{renderColumns(tInstance)}</TableHeader>
-        <TableBody {...tBodyProps}>
-          {renderRows(tInstance, config!.row)}
-        </TableBody>
-      </Table>
+      <div className="flex-grow overflow-hidden">
+        <Table
+          aria-label={name}
+          isCompact={true}
+          isStriped={true}
+          {...props}
+          isHeaderSticky={true}
+          className="h-full"
+        >
+          <TableHeader>{renderColumns(tInstance)}</TableHeader>
+          <TableBody
+            {...tBodyProps}
+            className="overflow-auto h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+          >
+            {renderRows(tInstance, config!.row)}
+          </TableBody>
+        </Table>
+      </div>
       {isPagiantion && (
         <UPagination tInstance={tInstance} isPagiantion={isPagiantion} />
       )}

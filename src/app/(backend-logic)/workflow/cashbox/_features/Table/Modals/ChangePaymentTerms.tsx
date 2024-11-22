@@ -54,7 +54,8 @@ export const ChangePaymentTerms = ({ info, disclosure }: PropsType) => {
           <Autocomplete
             selectedKey={state}
             onSelectionChange={(e) => {
-              setState[e];
+              // @ts-ignore
+              setState(e);
             }}
           >
             {PAYMENT_TERMS.map((e) => (
@@ -74,7 +75,7 @@ export const ChangePaymentTerms = ({ info, disclosure }: PropsType) => {
             color="danger"
             variant="light"
             onClick={() => {
-              mutate;
+              disclosure.onOpenChange();
             }}
             isLoading={isPending}
           >
@@ -102,18 +103,18 @@ export const PAYMENT_TERMS = [
   },
   {
     textValue: "7 дней",
-    hrs: 24 * 7,
+    hrs: 168,
   },
   {
     textValue: "14 дней",
-    hrs: 14 * 24,
+    hrs: 336,
   },
   {
     textValue: "21 день",
-    hrs: 21 * 24,
+    hrs: 504,
   },
   {
     textValue: "30 дней",
-    hrs: 30 * 24,
+    hrs: 720,
   },
 ] as const;
