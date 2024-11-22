@@ -6,7 +6,7 @@ import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getClients } from "../api";
-import { Card, CardBody, Spinner } from "@nextui-org/react";
+import { Card, CardBody, Checkbox, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase/client";
 
@@ -17,7 +17,8 @@ export const CashierTable = () => {
       setRowData(info) {},
       setClassNameOnRow(info) {
         if (
-          info.original.cargos.some(
+          info.original?.cargos &&
+          info.original?.cargos?.some(
             (e) =>
               e.amount.type == "Б/нал в МСК" || e.amount.type == "Нал в МСК"
           )
@@ -31,13 +32,20 @@ export const CashierTable = () => {
 
   const [clients, setClients] = useState<CashboxType[]>([]);
 
+  const [mskClientsOnly, setMskClientsOnly] = useState<CashboxType[]>([]);
+
+  const [isMSKOnly, setIsMSKOnly] = useState<boolean>(false);
+
   const { mutate, isPending } = useMutation({
     mutationKey: ["get clients for cashbox"],
     mutationFn: async () => await getClients(),
     onSuccess: (data) => {
       setClients(data);
+      setMskClientsOnly(getMSKClients(data));
     },
   });
+
+  const getClientsFortable = () => (isMSKOnly ? mskClientsOnly : clients);
 
   useEffect(() => {
     mutate();
@@ -91,12 +99,22 @@ export const CashierTable = () => {
           </div>
         </CardBody>
       </Card>
+      <div className="flex justify-center w-full">
+        <Checkbox
+          isSelected={isMSKOnly}
+          onValueChange={(e) => {
+            setIsMSKOnly(e);
+          }}
+        >
+          Показать только клиентов которые оплачивают в МСК
+        </Checkbox>
+      </div>
 
       <UTable
         props={{
           isCompact: false,
         }}
-        data={clients}
+        data={getClientsFortable()}
         isPagiantion={false}
         columns={columns}
         name={`Cashier Table`}
@@ -105,3 +123,13 @@ export const CashierTable = () => {
     </div>
   );
 };
+
+const getMSKClients = (data: CashboxType[]) =>
+  data.filter(
+    (e) =>
+      Array.isArray(e.cargos) &&
+      e.cargos.some(
+        (el) =>
+          el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
+      )
+  );
