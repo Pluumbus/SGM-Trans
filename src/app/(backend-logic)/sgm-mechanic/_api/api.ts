@@ -41,8 +41,8 @@ const getJWTToken = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        login: `${process.env.OMNICOMM_USER_LOGIN}`,
-        password: `${process.env.OMNICOMM_USER_PWD}`,
+        login: `imperiya`,
+        password: `sgmkz2030`,
       }),
     }
   );
