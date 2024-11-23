@@ -52,18 +52,17 @@ const Navbar = () => {
             >
               Машины
             </Link>
-
-            <Link
-              href={PATHS.sgm_mechanic}
-              className="mr-5 cursor-pointer hover:text-gray-900"
-            >
-              <span className="flex gap-1 items-center">
-                SGM Механик
-                <BiSolidCarMechanic size={20} />
-              </span>
-            </Link>
-
             <RoleBasedWrapper allowedRoles={["Админ"]}>
+              <Link
+                href={PATHS.sgm_mechanic}
+                className="mr-5 cursor-pointer hover:text-gray-900"
+              >
+                <span className="flex gap-1 items-center">
+                  SGM Механик
+                  <BiSolidCarMechanic size={20} />
+                </span>
+              </Link>
+
               <Link
                 href={PATHS.statistics}
                 className="mr-5 cursor-pointer hover:text-gray-900"

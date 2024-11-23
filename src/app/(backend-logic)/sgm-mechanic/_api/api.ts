@@ -32,8 +32,6 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
 };
 
 const getJWTToken = async () => {
-  const login = process.env.OMNICOMM_USER_LOGIN;
-  const pwd = process.env.OMNICOMM_USER_PWD;
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1.`,
     {
@@ -43,8 +41,8 @@ const getJWTToken = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        login: `${process.env.OMNICOMM_USER_LOGIN}`,
-        password: `${process.env.OMNICOMM_USER_PWD}`,
+        login: `imperiya`,
+        password: `sgmkz2030`,
       }),
     }
   );
