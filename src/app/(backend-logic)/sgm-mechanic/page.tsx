@@ -19,9 +19,7 @@ const Page: NextPage<Props> = () => {
   }
   return (
     <div className="grid grid-cols-4 gap-2">
-      {data.map((e) => (
-        <VehicleCard vehicle={e} />
-      ))}
+      {data?.map((e) => <VehicleCard vehicle={e} />)}
     </div>
   );
 };
