@@ -9,6 +9,7 @@ import { getClients } from "../api";
 import { Card, CardBody, Checkbox, Spinner } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase/client";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
@@ -109,7 +110,7 @@ export const CashierTable = () => {
           Показать только клиентов которые оплачивают в МСК
         </Checkbox>
       </div>
-
+      <CashoboxSummary data={clients} />
       <UTable
         props={{
           isCompact: false,
@@ -120,6 +121,19 @@ export const CashierTable = () => {
         name={`Cashier Table`}
         config={config}
       />
+    </div>
+  );
+};
+
+const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
+  const sum = data
+    .flatMap((e) => e.cargos)
+    .reduce((total, el) => total + Number(el.amount.value), 0);
+
+  return (
+    <div className="flex gap-2">
+      <span>Общая сумма кассы:</span>
+      <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
     </div>
   );
 };
