@@ -18,6 +18,9 @@ import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import Link from "next/link";
 import { PAYMENT_TERMS } from "./Modals/ChangePaymentTerms";
+import { customFilter } from "@/tool-kit/ui/UTable/helpers/customFilter";
+import { customArrayFilter } from "@/tool-kit/ui/UTable/helpers/customArrayfilter";
+import { Operations } from "./Modals";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -26,11 +29,22 @@ export const useCashierColumnsConfig =
         accessorKey: "client",
         header: "Клиент",
         filter: true,
+        filterBy: [
+          "client.full_name.first_name",
+          "client.full_name.middle_name",
+          "client.full_name.last_name",
+          "client.company_name",
+        ],
+        filterFn: customFilter,
         cell: (info: Cell<CashboxType, ReactNode>) => (
           <div>
-            {/* 
-            //@ts-ignore */}
-            <FullName value={info.getValue() as CashboxType["client"]} />
+            <FullName
+              //@ts-ignore
+              value={info.getValue() as CashboxType["client"]}
+              operations={
+                info.row.original.operations as CashboxType["operations"]
+              }
+            />
           </div>
         ),
       },
@@ -61,7 +75,9 @@ export const useCashierColumnsConfig =
       {
         accessorKey: "cargos",
         header: "Рейсы клиента",
-        filter: false,
+        filter: true,
+        filterBy: ["trip_id"],
+        filterFn: customArrayFilter,
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const cargos = info.getValue() as CashboxType["cargos"];
           return (
@@ -69,7 +85,7 @@ export const useCashierColumnsConfig =
               <div className="grid grid-cols-2 min-w-[250px]">
                 {cargos.map((e, i) => (
                   <CargoItem
-                    key={e.trip_id}
+                    key={e.id}
                     cargo={{ ...e, index: i }}
                     info={info}
                   />
@@ -99,7 +115,7 @@ export const useCashierColumnsConfig =
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const actions = useCashierActions(info);
           return (
-            <div>
+            <div key={"cashier actions"}>
               <div className="py-2">
                 <Dropdown>
                   <DropdownTrigger>
@@ -130,7 +146,14 @@ export const useCashierColumnsConfig =
     return columnsConfig;
   };
 
-const FullName = ({ value }: { value: CashboxType["client"] }) => {
+const FullName = ({
+  value,
+  operations,
+}: {
+  value: CashboxType["client"];
+  operations: CashboxType["operations"];
+}) => {
+  const disclosure = useDisclosure();
   const TooltipContent = () => (
     <div className="flex flex-col gap-4">
       {value.comment ? (
@@ -145,19 +168,27 @@ const FullName = ({ value }: { value: CashboxType["client"] }) => {
   );
 
   return (
-    <Tooltip content={<TooltipContent />} showArrow placement="left">
-      <div className="flex flex-col gap-1 py-2">
-        <div className="flex gap-2 font-semibold">
-          <span>{value.full_name.first_name}</span>
-          <span>{value.full_name.last_name}</span>
-          <span>{value.full_name.middle_name || ""}</span>
-        </div>
+    <>
+      <Tooltip content={<TooltipContent />} showArrow placement="left">
+        <div
+          className="flex flex-col gap-1 py-2 cursor-pointer"
+          onClick={() => {
+            disclosure.onOpenChange();
+          }}
+        >
+          <div className="flex gap-2 font-semibold">
+            <span>{value.full_name.first_name}</span>
+            <span>{value.full_name.last_name}</span>
+            <span>{value.full_name.middle_name || ""}</span>
+          </div>
 
-        {value.company_name && (
-          <span className="font-semibold">{value.company_name}</span>
-        )}
-      </div>
-    </Tooltip>
+          {value.company_name && (
+            <span className="font-semibold">{value.company_name}</span>
+          )}
+        </div>
+      </Tooltip>
+      <Operations disclosure={disclosure} operations={operations} />
+    </>
   );
 };
 

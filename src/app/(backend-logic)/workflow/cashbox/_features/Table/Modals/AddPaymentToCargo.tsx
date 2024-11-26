@@ -20,11 +20,16 @@ import { CashboxType } from "../../../types";
 import { useToast } from "@/components/ui/use-toast";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
-  addPaidAmountToCargo,
+  addOperations,
   changeClientBalance,
   changeExactAmountPaidToCargo,
 } from "../../api";
-import { useNumberState, getSeparatedNumber } from "@/tool-kit/hooks";
+import {
+  useNumberState,
+  getSeparatedNumber,
+  useConfirmContext,
+} from "@/tool-kit/hooks";
+import { useUser } from "@clerk/nextjs";
 
 type AddPaymentToCargoArgs = {
   disclosure: {
@@ -122,11 +127,24 @@ export const AddPaymentToCargo = ({
       );
     },
   });
+
+  const { user } = useUser();
+
+  const { mutate: addOperation } = useMutation({
+    mutationFn: async () => {
+      addOperations(info.row.original.operations, info.row.original.id, {
+        amount: Number(formattedBalance.rawValue),
+        date: new Date().toString(),
+        user_id: user.id,
+        cargo_id: info.row.original.cargos.find((e) => e.id == formState).id,
+      });
+    },
+  });
   const { mutate, isPending } = useMutation({
     mutationFn: async () => {
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       const [_, paidAmount] = calculateNewDuty(cargo);
-      console.log("Работает mutate");
+
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
         Number(paidAmount)
@@ -134,6 +152,7 @@ export const AddPaymentToCargo = ({
     },
     onSuccess: () => {
       updateBalance();
+      addOperation();
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       toast({
         title: `Успех`,
@@ -149,11 +168,35 @@ export const AddPaymentToCargo = ({
     },
   });
 
-  const submit = (e) => {
-    console.log("Работает submit");
+  const { openModal } = useConfirmContext();
 
+  const submit = (e) => {
     e.preventDefault();
-    mutate();
+
+    const client = `${info.row.original.client.full_name.first_name} ${info.row.original.client.full_name.last_name} ${info.row.original.client.company_name && `который работает на ${info.row.original.client.company_name}`}`;
+    const tripId = `${info.row.original.cargos.find((e) => e.id == formState).trip_id}`;
+    openModal({
+      action: async () => mutate(),
+      isLoading: isPending,
+      title: `Вы уверены что хотите внести оплату?`,
+      description: (
+        <div className="flex flex-col gap-4">
+          <span>
+            Подтвердите что хотите добавить{" "}
+            <span className="font-semibold">{formattedBalance.value} тг</span> в{" "}
+            <span className="font-semibold">{tripId}</span> рейс к{" "}
+            <span className="font-semibold">{client}</span>
+          </span>
+          <span className="font-semibold text-medium text-danger text-center">
+            Это действие невозможно будет отменить
+          </span>
+        </div>
+      ),
+      buttonName: "Добавить оплату",
+      modalProps: {
+        backdrop: "blur",
+      },
+    });
   };
 
   return (

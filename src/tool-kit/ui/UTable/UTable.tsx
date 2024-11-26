@@ -16,6 +16,8 @@ import { renderColumns, renderRows } from "./helpers";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
+import { customFilter } from "./helpers/customFilter";
+import { customArrayFilter } from "./helpers/customArrayfilter";
 
 export const UTable = <T,>({
   data = [],
@@ -36,6 +38,10 @@ export const UTable = <T,>({
 
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {
+      if (e.filterFn) {
+        return e;
+      }
+
       e.filterFn = "includesString";
       return e;
     });
@@ -71,6 +77,11 @@ export const UTable = <T,>({
     onColumnFiltersChange: setColumnFilters,
     onColumnVisibilityChange: setColumnVisibility,
     onSortingChange: setSorting,
+
+    filterFns: {
+      customFilter,
+      customArrayFilter,
+    },
   });
 
   return (

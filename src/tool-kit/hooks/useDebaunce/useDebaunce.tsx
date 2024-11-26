@@ -1,12 +1,14 @@
 import { useCallback, useEffect, useRef } from "react";
 
-type UseDebounceFunction = (fn: () => void, delay: number) => () => void;
+type UseDebounceFunction = () => (fn: () => void, delay: number) => void;
 
-/** @param fn - function to delay @param delay - number in ms to delay the function */
-export const useDebounce: UseDebounceFunction = (fn, delay) => {
+export const useDebounce: UseDebounceFunction = () => {
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  const debouncedFn = useCallback(() => {
+  let fun: Function | undefined = undefined;
+
+  /** @param fn - function to delay @param delay - number in ms to delay the function */
+  const useFn = (fn, delay) => {
     if (debounceTimerRef.current !== undefined) {
       clearTimeout(debounceTimerRef.current);
     }
@@ -14,15 +16,18 @@ export const useDebounce: UseDebounceFunction = (fn, delay) => {
     debounceTimerRef.current = setTimeout(() => {
       fn();
     }, delay);
-  }, [fn, delay]);
 
+    fun = fn;
+
+    return fn;
+  };
   useEffect(() => {
     return () => {
       if (debounceTimerRef.current !== undefined) {
         clearTimeout(debounceTimerRef.current);
       }
     };
-  }, [debouncedFn]);
+  }, [fun]);
 
-  return debouncedFn;
+  return useFn;
 };

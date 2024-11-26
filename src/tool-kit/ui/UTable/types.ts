@@ -40,5 +40,6 @@ export type UseTableColumnsSchema<T> = {
   size?: number;
   cell: (info: Cell<T, ReactNode>) => ReactNode;
   filter: boolean;
-  filterFn?: string | undefined;
+  filterBy?: string[];
+  filterFn?: string | FilterFn<any> | undefined;
 };

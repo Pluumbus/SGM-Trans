@@ -6,6 +6,7 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ModalProps,
 } from "@nextui-org/react";
 import { ReactNode } from "react";
 
@@ -16,6 +17,7 @@ export type UseConfirmModalPropsType = {
   };
   title: ReactNode;
   buttonName?: ReactNode;
+  modalProps?: Omit<ModalProps, "children">;
   description?: ReactNode;
   action: () => Promise<void>;
   isLoading: boolean;
@@ -28,9 +30,14 @@ export const ConfirmModal = ({
   buttonName,
   action,
   isLoading,
+  modalProps,
 }: UseConfirmModalPropsType) => {
   return (
-    <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
+    <Modal
+      isOpen={disclosure.isOpen}
+      onOpenChange={disclosure.onOpenChange}
+      {...modalProps}
+    >
       <ModalContent>
         <ModalHeader>
           <span>{title}</span>

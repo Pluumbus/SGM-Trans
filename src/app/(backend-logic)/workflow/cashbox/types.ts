@@ -12,6 +12,12 @@ export type CashboxType = {
     company_name?: string;
     comment?: string;
   };
+  operations: Array<{
+    date: string;
+    amount: number;
+    user_id: string;
+    cargo_id: number;
+  }> | null;
   amount_to_pay: string;
   current_balance: string;
   cargos: Array<CargoType>;
