@@ -80,11 +80,11 @@ export const UpdateTripNumber = ({
     const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
     const totalWeight = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.weight),
-      0,
+      0
     );
     const totalVolume = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.volume),
-      0,
+      0
     );
 
     const weightCalc =
@@ -135,14 +135,20 @@ export const UpdateTripNumber = ({
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <div className="flex gap-2">
-                  Перенести грузы:
-                  {selectedCargos.map((cargo, index) => (
-                    <span key={index}>
-                      {cargo.number}
-                      {index < selectedCargos.length - 1 ? "," : ""}
-                    </span>
-                  ))}
-                  из {currentTripId}
+                  <span>Перенести грузы:</span>
+                  <div
+                    className={`grid grid-cols-${selectedCargos.length < 4 ? selectedCargos.length : "3"}`}
+                  >
+                    {selectedCargos.map((cargo, index) => (
+                      <span key={index}>
+                        {cargo.number}
+                        {index < selectedCargos.length - 1 && (
+                          <span>,&nbsp;</span>
+                        )}
+                      </span>
+                    ))}
+                  </div>
+                  <span>из {currentTripId} рейса</span>
                 </div>
               </ModalHeader>
               <ModalBody>
@@ -159,11 +165,11 @@ export const UpdateTripNumber = ({
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
-                        textValue={`${e.driver} | ${e.id}`}
+                        textValue={`${e.driver.driver} | ${e.id}`}
                         value={e.id}
                         style={{ color: `${sumCargosColorForTrip(e, false)}` }}
                       >
-                        {`${e.driver} | ${e.id} рейс`}{" "}
+                        {`${e.driver.driver} | ${e.id} рейс`}{" "}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>
                     ))}

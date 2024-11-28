@@ -146,7 +146,7 @@ const Page: NextPage = () => {
         </div>
 
         <Tabs
-          className="flex justify-center "
+          className="flex justify-center"
           aria-label="Trips"
           defaultSelectedKey={selectedTabId}
           onSelectionChange={(key) => setSelectedTabId(key as string)}
@@ -156,22 +156,8 @@ const Page: NextPage = () => {
             .map((trip) => (
               <Tab
                 key={trip.trip_number}
-                className="h-auto"
-                title={
-                  <div className="flex flex-col items-center text-sm space-y-1">
-                    <span className="text-gray-500 truncate">
-                      {trip.driver.state_number}
-                    </span>
-                    <span className="text-gray-500 truncate">
-                      {trip.status}
-                    </span>
-                    <span className="font-bold truncate">
-                      {trip.trip_number}
-                    </span>
-                    <span className="text-gray-500 truncate"></span>
-                    <TabTitle city_to={trip.city_to} />
-                  </div>
-                }
+                className="!min-h-full !h-full"
+                title={<TabTitle trip={trip} />}
               >
                 <TripTab
                   tripid={trip.trip_number}
@@ -195,13 +181,36 @@ const Page: NextPage = () => {
   );
 };
 
-const TabTitle = ({ city_to }: { city_to: string[] }) => {
-  return city_to.map((city, index) => (
-    <span key={index}>
-      {city.slice(0, city.includes("-") || city.length <= 5 ? 3 : 4)}
-      {city && (index < city_to.length - 1 ? "., " : ".")}
-    </span>
-  ));
+const TabTitle = ({ trip }: { trip: TripType }) => {
+  return (
+    <div className="grid grid-rows-2 min-w-[4.20rem]">
+      <div className="grid grid-rows-3 !min-h-full !h-full ">
+        <div className="text-gray-500 truncate grid-rows-1 break-words">
+          <span>{trip.driver?.state_number}</span>
+        </div>
+        <div className="text-gray-500 truncate grid-rows-1">
+          <span>{trip.status}</span>
+        </div>
+        <div className="font-bold truncate grid-rows-1">
+          <span>{trip.trip_number}</span>
+        </div>
+      </div>
+      <TabCities city_to={trip.city_to} />
+    </div>
+  );
+};
+
+const TabCities = ({ city_to }: { city_to: string[] }) => {
+  return (
+    <div className="flex flex-col">
+      {city_to.map((city, index) => (
+        <span key={index}>
+          {city.slice(0, city.includes("-") || city.length <= 5 ? 3 : 4)}
+          {city && (index < city_to.length - 1 ? "., " : ".")}
+        </span>
+      ))}
+    </div>
+  );
 };
 
 export default Page;
