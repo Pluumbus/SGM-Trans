@@ -50,7 +50,7 @@ export const TripInfoDriver = ({
     mutationKey: ["setTripStatus"],
     mutationFn: async () => {
       const [car, state_number] = tripCar.split(" - ");
-      console.log(car, "AND", state_number);
+
       await updateTripDriver(
         { driver: tripDriver, car: car, state_number: state_number },
         selectedTabId

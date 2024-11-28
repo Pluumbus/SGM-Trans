@@ -17,8 +17,10 @@ export const getDrivers = async () => {
   return data as DriversType[];
 };
 
-export const getCars = async () => {
-  const { data, error } = await supabase.from(`cars`).select(`*`);
+export const getCars = async (type?: CarsType["car_type"]) => {
+  const { data, error } = type
+    ? await supabase.from(`cars`).select(`*`).eq("car_type", type)
+    : await supabase.from(`cars`).select(`*`);
 
   if (error) {
     throw new Error(error.message);

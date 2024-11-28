@@ -1,66 +1,91 @@
-import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import {
-  ReportStatisticsType,
-  VehicleObject,
-  VehicleReportStatisticsType,
-} from "../_api/types";
+  CarDetailType,
+  CarsType,
+} from "@/lib/references/drivers/feature/types";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  Divider,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
+import React from "react";
+import { ManageDetails } from "./Modals";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
+import { IoAddOutline } from "react-icons/io5";
+import { VehicleReportStatisticsType } from "../_api/types";
 
-type VehicleCardProps = {
-  vehicle: VehicleObject;
-};
-
-type ReportCardProsp = {
-  vehicle: VehicleReportStatisticsType;
-};
-export const VehicleCard = ({ vehicle }: ReportCardProsp) => {
-  const { name, mw, fuel } = vehicle;
-  // const {
-  //   vehicle: vehicleInfo,
-  //   movement,
-  //   engine,
-  //   mainTank,
-  //   safeDriving,
-  // } = details;
+export const CarCard = ({
+  car,
+}: {
+  car: CarsType & {
+    omnicommData?: VehicleReportStatisticsType;
+  };
+}) => {
+  const disclosure = useDisclosure();
 
   return (
-    <Card className="w-full max-w-md mx-auto my-4">
-      <CardHeader className="bg-gray-100">
-        <span className="font-bold text-lg">{name}</span>
-      </CardHeader>
-      <CardBody>
-        <div className="space-y-2 flex flex-col">
-          {/* <span>
-            <span className="font-semibold">Функция автомобиля:</span>{" "}
-            {vehicleInfo.function || ""}
-          </span> */}
-          <span>
-            <span className="font-semibold">Максимальная скорость:</span>{" "}
-            {parseFloat(mw.maxSpeed.toFixed(3)) || ""}
-          </span>
-          <span>
+    <>
+      <Card>
+        <CardHeader className="justify-between">
+          <div className="flex p-3 w-full gap-2 items-center h-full subpixel-antialiased">
+            <span className="font-semibold">{car.car}</span>
+            <Divider orientation="vertical" />
+            <span className="text-sm text-center">{car.state_number}</span>
+            <Divider orientation="vertical" />
             <span className="font-semibold">
-              Пробег с превышением скорости:
-            </span>{" "}
-            {parseFloat(mw.mileageSpeeding.toFixed(2))}
+              {parseFloat(
+                !isNaN(car.omnicommData?.mw?.mileage)
+                  ? car.omnicommData?.mw?.mileage.toString()
+                  : "0"
+              ).toFixed(2)}{" "}
+              км
+            </span>
+          </div>
+          <Button
+            isIconOnly
+            size="sm"
+            onClick={() => {
+              disclosure.onOpenChange();
+            }}
+          >
+            <IoAddOutline className="text-lg" />
+          </Button>
+        </CardHeader>
+        <CardBody>
+          <div className="w-full">
+            {car?.details?.map((e) => <DetailCard e={e} car={car} />)}
+          </div>
+        </CardBody>
+        <CardFooter></CardFooter>
+      </Card>
+      <ManageDetails disclosure={disclosure} car={car} />
+    </>
+  );
+};
+
+const DetailCard = ({ e, car }: { e: CarDetailType; car: CarsType }) => {
+  const disclosure = useDisclosure();
+  return (
+    <>
+      <div
+        className="grid grid-cols-2 items-center cursor-pointer hover:opacity-70"
+        onClick={() => {
+          disclosure.onOpenChange();
+        }}
+      >
+        <span>{e.name}:&nbsp;</span>
+        <Tooltip content={<span>До замены осталось</span>} showArrow>
+          <span className="text-green-600">
+            {getSeparatedNumber(Number(e.mileage_to_inform))} км
           </span>
-          <span>
-            <span className="font-semibold">Пробег:</span>{" "}
-            {parseFloat(mw.mileage.toFixed(2))} км
-          </span>
-          <span>
-            <span className="font-semibold">Обороты двигателя:</span>{" "}
-            {mw.normalRPM}
-          </span>
-          <span>
-            <span className="font-semibold">Начальный объем бака:</span>{" "}
-            {fuel.startVolume}
-          </span>
-          <span>
-            <span className="font-semibold">Конечный объем бака:</span>{" "}
-            {fuel.endVolume}
-          </span>
-        </div>
-      </CardBody>
-    </Card>
+        </Tooltip>
+      </div>
+      <Divider />
+      <ManageDetails disclosure={disclosure} car={car} isUpdate detail={e} />
+    </>
   );
 };

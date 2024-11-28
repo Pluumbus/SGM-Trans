@@ -10,8 +10,17 @@ export type CarsType = {
   car: string;
   state_number: string;
   trailer_id: number;
-  car_type: string;
+  car_type: "truck" | "gazell";
+  details: CarDetailType[];
+  omnicomm_uuid: string;
 };
+
+export type CarDetailType = {
+  created_at: string;
+  name: string;
+  mileage_to_inform: string;
+};
+
 export type TrailersType = {
   id: number;
   trailer: string;

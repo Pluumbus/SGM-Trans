@@ -7,15 +7,17 @@ type Props<T> = {
   setValue: UseFormSetValue<T>;
   name: keyof T;
   inputProps?: InputProps;
+  initValue?: number;
 };
 
 export const FormNumberInput = <T,>({
   setValue,
   inputProps,
+  initValue,
   name,
 }: Props<T>) => {
   const state = useNumberState({
-    initValue: 0,
+    initValue: initValue || 0,
   });
 
   useEffect(() => {

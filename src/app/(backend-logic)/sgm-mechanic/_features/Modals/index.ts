@@ -1,0 +1,1 @@
+export { ManageDetails } from "./ManageDetails";
