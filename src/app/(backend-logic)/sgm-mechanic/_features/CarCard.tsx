@@ -1,19 +1,26 @@
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
-import { VehicleObject } from "../_api/types";
+import {
+  ReportStatisticsType,
+  VehicleObject,
+  VehicleReportStatisticsType,
+} from "../_api/types";
 
 type VehicleCardProps = {
   vehicle: VehicleObject;
 };
 
-export const VehicleCard = ({ vehicle }: VehicleCardProps) => {
-  const { name, details } = vehicle;
-  const {
-    vehicle: vehicleInfo,
-    movement,
-    engine,
-    mainTank,
-    safeDriving,
-  } = details;
+type ReportCardProsp = {
+  vehicle: VehicleReportStatisticsType;
+};
+export const VehicleCard = ({ vehicle }: ReportCardProsp) => {
+  const { name, mw, fuel } = vehicle;
+  // const {
+  //   vehicle: vehicleInfo,
+  //   movement,
+  //   engine,
+  //   mainTank,
+  //   safeDriving,
+  // } = details;
 
   return (
     <Card className="w-full max-w-md mx-auto my-4">
@@ -22,33 +29,35 @@ export const VehicleCard = ({ vehicle }: VehicleCardProps) => {
       </CardHeader>
       <CardBody>
         <div className="space-y-2 flex flex-col">
-          <span>
+          {/* <span>
             <span className="font-semibold">Функция автомобиля:</span>{" "}
             {vehicleInfo.function || ""}
+          </span> */}
+          <span>
+            <span className="font-semibold">Максимальная скорость:</span>{" "}
+            {parseFloat(mw.maxSpeed.toFixed(3)) || ""}
           </span>
           <span>
-            <span className="font-semibold">Год производства:</span>{" "}
-            {vehicleInfo.engineManufacturer || ""}
+            <span className="font-semibold">
+              Пробег с превышением скорости:
+            </span>{" "}
+            {parseFloat(mw.mileageSpeeding.toFixed(2))}
           </span>
           <span>
             <span className="font-semibold">Пробег:</span>{" "}
-            {movement.mileageDrift} км
+            {parseFloat(mw.mileage.toFixed(2))} км
           </span>
           <span>
             <span className="font-semibold">Обороты двигателя:</span>{" "}
-            {engine.rpmIdling}
+            {mw.normalRPM}
           </span>
           <span>
-            <span className="font-semibold">Тип двигателя:</span>{" "}
-            {mainTank.fuelType}
+            <span className="font-semibold">Начальный объем бака:</span>{" "}
+            {fuel.startVolume}
           </span>
           <span>
-            <span className="font-semibold">Расход двигателем в час:</span>{" "}
-            {mainTank.motorHourConsumption}
-          </span>
-          <span>
-            <span className="font-semibold">Расход двигателем в час:</span>{" "}
-            {movement.mileageDrift}
+            <span className="font-semibold">Конечный объем бака:</span>{" "}
+            {fuel.endVolume}
           </span>
         </div>
       </CardBody>

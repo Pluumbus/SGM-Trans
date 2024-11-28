@@ -54,7 +54,6 @@ export const TripInfoCard = ({
 
   const accessRole = useCheckRole(["Логист Москва", "Админ"]);
 
-  //TODO: 2 query in one
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {

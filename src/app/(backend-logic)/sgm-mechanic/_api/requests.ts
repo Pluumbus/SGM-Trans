@@ -104,13 +104,13 @@ export const getAllVehiclesStatistics = async () => {
 };
 
 export const getSingleVehicleStatistics = async (vUuid: number[]) => {
-  const timeBegin = 1725148800; // (2024-09-01 00:00:00 UTC).
+  const timeBegin = 1732771200; // (2024-09-01 00:00:00 UTC).
   const timeEnd = 1735689599; //  (2024-12-31 23:59:59 UTC).\
   const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
-  console.log(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,can,canmnt]&vehicles=${encodedVUuid}`
-  );
+  // console.log(
+  //   `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,can,canmnt]&vehicles=${encodedVUuid}`
+  // );
   return await fetchFromAPI(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,can,canmnt]&vehicles=${encodedVUuid}`
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,fuel,can,canmnt,ccan]&vehicles=${encodedVUuid}`
   );
 };
