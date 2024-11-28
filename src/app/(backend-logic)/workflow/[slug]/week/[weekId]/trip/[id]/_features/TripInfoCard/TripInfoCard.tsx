@@ -49,13 +49,11 @@ export const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
-  console.log(selectedTabId);
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
 
   const accessRole = useCheckRole(["Логист Москва", "Админ"]);
 
-  //TODO: 2 query in one
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {
@@ -64,20 +62,6 @@ export const TripInfoCard = ({
         (user) => user.role === "Логист" || user.role === "Логист Дистант"
       );
       return filteredUsrs as UsersList[];
-    },
-  });
-
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: [`GetResponsibleUsersNames`],
-    queryFn: async () => {
-      const namesList = await Promise.all(
-        tripsData.map(async (trip) => {
-          const fullName = await getUserById(trip.user_id);
-          const tripId = trip.id;
-          return { tripId, fullName };
-        })
-      );
-      return namesList;
     },
   });
 
@@ -97,26 +81,23 @@ export const TripInfoCard = ({
     );
     setCurrentTripData(currentTrip);
     setStatusVal(currentTrip?.status);
-    refetch();
   }, [selectedTabId, tripsData]);
 
-  const respUser = data?.filter(
-    (user) => user.tripId === currentTripData?.id
-  )[0]?.fullName;
+  const respUser = allUsers?.filter(
+    (user) => user.id === currentTripData?.user_id
+  )[0]?.userName;
   return (
     <Card className="bg-gray-200 w-72">
       <CardBody>
         <div className="flex flex-col gap-2">
+          <TripInfoResponsibleUser
+            selectedTabId={Number(selectedTabId)}
+            respUser={respUser}
+            allUsers={allUsers}
+          />
           <TripInfoNum
             id={currentTripData?.id}
             tempId={Number(selectedTabId)}
-          />
-
-          <TripInfoResponsibleUser
-            selectedTabId={Number(selectedTabId)}
-            isLoading={isLoading}
-            respUser={respUser}
-            allUsers={allUsers}
           />
           <TripInfoDriver
             currentTripData={currentTripData}

@@ -192,3 +192,143 @@ export interface VehicleObject {
     };
   };
 }
+
+export type ReportStatisticsType = {
+  code: number;
+  data: {
+    totalFuel: {
+      totalFuelOnMoveCrit: number | null;
+      consPerMHEngineOn: number;
+      totalFuelNotMoveIdle: number;
+      averageConsumptionMH: number;
+      consumptionEngineOn: number;
+      [key: string]: number | null; // Для дополнительных параметров
+    };
+    totalMw: {
+      totalMoveTimePercent: number;
+      totalMovementMileage: number;
+      totalWorkedOnExcessRPM: number;
+      totalMileage: number;
+      totalWorkedPercent: number;
+      [key: string]: number; // Для дополнительных параметров
+    };
+    vehicleDataList: Array<{
+      can: {
+        engineOperationMin: number | null;
+        distance: number | null;
+        fuelUsed: number | null;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      canmnt: {
+        spn914: number | null;
+        spn916: number | null;
+        motoHoursServiceCounter: number | null;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      ccan: {
+        spn250: number | null;
+        spn245: number | null;
+        spn246: number | null;
+        spn247: number | null;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      cmw: {
+        mileageAtPeriodBegin: number | null;
+        mileageAtPeriodEnd: number | null;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      fuel: {
+        fuelConsMHWOMovement: number | null;
+        fuelConsMH: number;
+        fuelConsumptionWOMovement: number | null;
+        startVolume: number;
+        fuelCons100Ex: number;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      mw: {
+        excessRPM: number;
+        excessRPMPercent: number;
+        idlingRPM: number;
+        idlingRPMPercent: number;
+        layUp: number;
+        layUpPercent: number;
+        maxSpeed: number;
+        mileage: number;
+        mileageSpeeding: number;
+        motoHoursServiceCounter: number | null;
+        movement: number;
+        movementPercent: number;
+        normalRPM: number;
+        normalRPMPercent: number;
+        worked: number;
+        workedNoMovement: number;
+        workedNoMovementPercent: number;
+        workedOnMovement: number;
+        workedOnMovementPercent: number;
+        [key: string]: number | null; // Для дополнительных параметров
+      };
+      name: string;
+      vehicleID: number;
+    }>;
+  };
+};
+
+export type VehicleReportStatisticsType = {
+  can: {
+    engineOperationMin: number | null;
+    distance: number | null;
+    fuelUsed: number | null;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  canmnt: {
+    spn914: number | null;
+    spn916: number | null;
+    motoHoursServiceCounter: number | null;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  ccan: {
+    spn250: number | null;
+    spn245: number | null;
+    spn246: number | null;
+    spn247: number | null;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  cmw: {
+    mileageAtPeriodBegin: number | null;
+    mileageAtPeriodEnd: number | null;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  fuel: {
+    fuelConsMHWOMovement: number | null;
+    fuelConsMH: number;
+    fuelConsumptionWOMovement: number | null;
+    startVolume: number;
+    endVolume: number;
+    fuelCons100Ex: number;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  mw: {
+    excessRPM: number;
+    excessRPMPercent: number;
+    idlingRPM: number;
+    idlingRPMPercent: number;
+    layUp: number;
+    layUpPercent: number;
+    maxSpeed: number;
+    mileage: number;
+    mileageSpeeding: number;
+    motoHoursServiceCounter: number | null;
+    movement: number;
+    movementPercent: number;
+    normalRPM: number;
+    normalRPMPercent: number;
+    worked: number;
+    workedNoMovement: number;
+    workedNoMovementPercent: number;
+    workedOnMovement: number;
+    workedOnMovementPercent: number;
+    [key: string]: number | null; // Для дополнительных параметров
+  };
+  name: string;
+  vehicleID: number;
+};
