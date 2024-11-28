@@ -67,3 +67,15 @@ export const updateTripDriver = async (
   }
   return data;
 };
+
+export const updateTripNumber = async (newNum: number, tripId: number) => {
+  const { data, error } = await supabase
+    .from("trips")
+    .update({ trip_number: newNum })
+    .eq("id", Number(tripId));
+
+  if (error) {
+    throw new Error();
+  }
+  return data;
+};

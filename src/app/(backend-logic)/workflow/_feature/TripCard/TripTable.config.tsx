@@ -6,60 +6,68 @@ import { ReactNode } from "react";
 import { TripType } from "./TripCard";
 import { Button, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "../AddCargoModal/AddCargoModal";
-import { CargoType } from "../types";
+import { WeekType } from "../types";
 
 export const getBaseTripColumnsConfig = () => {
-  const columnsConfig: UseTableColumnsSchema<
-    CargoType & { trips: TripType }
-  >[] = [
-    {
-      accessorKey: "id",
-      header: "Номер рейса",
-      size: 20,
-      cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => {
-        return <span>{info.row.original.id}</span>;
+  const columnsConfig: UseTableColumnsSchema<TripType & { weeks: WeekType }>[] =
+    [
+      {
+        accessorKey: "id",
+        header: "Номер рейса",
+        size: 20,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => {
+          return <span>{info.row.original.trip_number}</span>;
+        },
+        filter: true,
       },
-      filter: true,
-    },
-    {
-      accessorKey: "driver",
-      header: "Водитель",
-      size: 30,
-      cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
-      ),
-      filter: false,
-    },
-    {
-      accessorKey: "city_from",
-      header: "Город отправитель",
-      size: 20,
-      cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
-      ),
-      filter: false,
-    },
+      {
+        accessorKey: "driver",
+        header: "Водитель",
+        size: 30,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => {
+          const driverData = info.row.original.driver;
+          return (
+            <div>
+              {driverData.driver +
+                " | " +
+                driverData.car +
+                " - " +
+                driverData.state_number}
+            </div>
+          );
+        },
+        filter: false,
+      },
+      {
+        accessorKey: "city_from",
+        header: "Город отправитель",
+        size: 20,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => (
+          <span>{info.getValue()?.toString()}</span>
+        ),
+        filter: false,
+      },
 
-    {
-      accessorKey: "city_to",
-      header: "Город получатель",
-      size: 20,
-      cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
-        <span>{info.getValue()?.toString()}</span>
-      ),
-      filter: false,
-    },
+      {
+        accessorKey: "city_to",
+        header: "Город получатель",
+        size: 20,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => (
+          <span>{info.getValue()?.toString()}</span>
+        ),
+        filter: false,
+      },
 
-    {
-      accessorKey: "action",
-      header: "",
-      size: 20,
-      cell: (info: Cell<CargoType & { trips: TripType }, ReactNode>) => (
-        <CreateCargo info={info} />
-      ),
-      filter: false,
-    },
-  ];
+      {
+        accessorKey: "action",
+        header: "",
+        size: 20,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => (
+          <CreateCargo info={info} />
+        ),
+        filter: false,
+      },
+    ];
 
   return columnsConfig;
 };
@@ -67,7 +75,7 @@ export const getBaseTripColumnsConfig = () => {
 const CreateCargo = ({
   info,
 }: {
-  info: Cell<CargoType & { trips: TripType }, ReactNode>;
+  info: Cell<TripType & { weeks: WeekType }, ReactNode>;
 }) => {
   const { isOpen: isOpenCargo, onOpenChange: onOpenChangeCargo } =
     useDisclosure();

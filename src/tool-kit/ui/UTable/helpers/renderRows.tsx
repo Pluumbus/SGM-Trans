@@ -1,6 +1,7 @@
 import { Divider, TableCell, TableRow } from "@nextui-org/react";
 import { Table, flexRender } from "@tanstack/react-table";
 import { RowConfigProps } from "../types";
+import { cx } from "class-variance-authority";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
@@ -8,7 +9,10 @@ export const renderRows = <T,>(
 ) => {
   return tInstance.getRowModel().rows.map((row, i) => (
     <TableRow
-      className={config.setClassNameOnRow && config?.setClassNameOnRow(row)}
+      className={cx(
+        config.setClassNameOnRow && config?.setClassNameOnRow(row),
+        i % 2 == 0 ? "bg-orange-100" : "bg-slate-100"
+      )}
       key={row.id}
     >
       {row.getVisibleCells().map((cell) => (

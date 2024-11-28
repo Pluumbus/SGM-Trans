@@ -24,7 +24,7 @@ export const CheckboxField = ({
       await editCargo(
         info.column.columnDef.accessorKey as string,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
 
