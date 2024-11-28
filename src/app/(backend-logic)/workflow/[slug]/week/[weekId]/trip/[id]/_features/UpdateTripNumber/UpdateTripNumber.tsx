@@ -15,10 +15,9 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllCargos, getTrips, getTripsByWeekId } from "../../../_api";
+import { getAllCargos, getTrips } from "../../../_api";
 import { useSelectionStore } from "../store";
 import { COLORS } from "@/lib/colors";
-import { useParams } from "next/navigation";
 
 export const UpdateTripNumber = ({
   currentTripId,
@@ -80,11 +79,11 @@ export const UpdateTripNumber = ({
     const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
     const totalWeight = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.weight),
-      0,
+      0
     );
     const totalVolume = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.volume),
-      0,
+      0
     );
 
     const weightCalc =
@@ -163,7 +162,7 @@ export const UpdateTripNumber = ({
                         value={e.id}
                         style={{ color: `${sumCargosColorForTrip(e, false)}` }}
                       >
-                        {`${e.driver} | ${e.id} рейс`}{" "}
+                        {`${e.driver.driver} - ${e.driver.state_number} | ${e.trip_number} рейс`}{" "}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>
                     ))}
