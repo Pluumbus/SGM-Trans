@@ -24,9 +24,6 @@ export const getBaseColumnsConfig = () => {
                   ...item,
                   isSelected: true,
                 }));
-
-                console.log("updatedSelection", updatedSelection);
-
                 setRowSelected(updatedSelection);
               }}
             />
