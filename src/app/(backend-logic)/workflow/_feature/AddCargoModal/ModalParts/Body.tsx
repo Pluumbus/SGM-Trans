@@ -26,6 +26,7 @@ import { CargoType } from "../../types";
 import { TM } from "../../TransportationManagerActions";
 
 import { FormNumberInput } from "@/components";
+import { BINInput } from "../../BINInput";
 
 type Props = {
   props: {
@@ -57,6 +58,10 @@ export const Body = ({
     setValue("transportation_manager", state[0]);
   };
 
+  const onChangeBIN = (str: string) => {
+    setValue("client_bin.xin", str);
+  };
+
   return (
     <ModalBody className="transition-all">
       <div className="grid grid-cols-2 gap-2 w-full">
@@ -73,7 +78,7 @@ export const Body = ({
               {...register("client_bin.tempText")}
               label={`Клиент\n\n(получатель груза)`}
             />
-            <Input {...register("client_bin.xin")} label={`БИН`} />
+            <BINInput onChange={onChangeBIN} />
           </div>
         </div>
 

@@ -32,14 +32,19 @@ export const getCargos = async (trip_id: string): Promise<CargoType[]> => {
   return data as CargoType[];
 };
 
-export const getAllCargos = async (): Promise<CargoType[]> => {
+export const getAllCargos = async (
+  field?: string | string[]
+): Promise<CargoType[]> => {
   const server = getSupabaseServer();
-  const { data, error } = await (await server).from("cargos").select("*");
+
+  const whatToGet = Array.isArray(field) ? field.join(",") : field || "*";
+
+  const { data, error } = await (await server).from("cargos").select(whatToGet);
 
   if (error) {
     throw new Error(error.message);
   }
-
+  // @ts-ignore
   return data as CargoType[];
 };
 
