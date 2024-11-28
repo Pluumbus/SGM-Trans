@@ -92,7 +92,7 @@ const Page: NextPage = () => {
     const uniqueData = Array.from(new Set(cities));
 
     const mainCity = tripsData.filter(
-      (trip) => trip.id === Number(selectedTabId)
+      (trip) => trip.trip_number === Number(selectedTabId)
     )[0].city_to[0];
 
     const newCities =
@@ -103,7 +103,7 @@ const Page: NextPage = () => {
     const newCurrentTripCities = Array.from(
       new Set(
         (tripsData.filter(
-          (trip) => trip.id === Number(selectedTabId)
+          (trip) => trip.trip_number === Number(selectedTabId)
         )[0].city_to = newCities)
       )
     );
@@ -155,7 +155,7 @@ const Page: NextPage = () => {
             .sort((a, b) => a.id - b.id)
             .map((trip) => (
               <Tab
-                key={trip.id}
+                key={trip.trip_number}
                 className="h-auto"
                 title={
                   <div className="flex flex-col items-center text-sm space-y-1">
@@ -165,14 +165,16 @@ const Page: NextPage = () => {
                     <span className="text-gray-500 truncate">
                       {trip.status}
                     </span>
-                    <span className="font-bold truncate">{trip.id}</span>
+                    <span className="font-bold truncate">
+                      {trip.trip_number}
+                    </span>
                     <span className="text-gray-500 truncate"></span>
                     <TabTitle city_to={trip.city_to} />
                   </div>
                 }
               >
                 <TripTab
-                  tripid={trip.id}
+                  tripid={trip.trip_number}
                   columns={columns}
                   isOnlyMycargos={isOnlyMycargos}
                   onCargosUpdate={(cities) => handleCargosUpdate(cities)}

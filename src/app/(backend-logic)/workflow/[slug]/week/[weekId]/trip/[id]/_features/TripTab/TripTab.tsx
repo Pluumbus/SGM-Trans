@@ -131,7 +131,9 @@ export const TripTab = ({
           isLoading: !isFetched,
           loadingContent: <SgmSpinner />,
         }}
-        data={cargos}
+        data={cargos.sort((a, b) =>
+          a.client_bin.tempText.localeCompare(b.client_bin.tempText)
+        )}
         isPagiantion={false}
         columns={columns}
         name={`Cargo Table ${tripid}`}

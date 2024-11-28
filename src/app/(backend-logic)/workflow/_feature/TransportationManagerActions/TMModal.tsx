@@ -105,17 +105,14 @@ export const TMModal = ({ disclosure, state }: Props) => {
             <div className="grid grid-cols-2 gap-2">
               <Input {...register("full_name.first_name")} label="Имя" />
               <Input {...register("full_name.last_name")} label="Фамилия" />
-              <Input
-                {...register("full_name.middle_name")}
-                label="Отчество (опционально)"
-              />
+              <Input {...register("full_name.middle_name")} label="Отчество " />
               <Input {...register("phone_number")} label="Номер телефона" />
-              <Textarea
-                {...register("company_name")}
-                label="Компания (опционально)"
-              />
+              <Textarea {...register("company_name")} label="Компания" />
               <Textarea {...register("comment")} label="Заметка" />
             </div>
+            <span className="text-xs text-green-600">
+              *Все строки кроме "Имя" и "Номер телефона" не обязательны.
+            </span>
           </ModalBody>
           <Divider />
           <ModalFooter>

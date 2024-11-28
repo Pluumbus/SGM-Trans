@@ -45,8 +45,12 @@ export const ExistingClients = ({
     >
       {data &&
         data.map((e) => (
-          <AutocompleteItem value={e.id} key={e.id} textValue={str(e)}>
-            <span>{str(e)}</span>
+          <AutocompleteItem
+            value={e.id}
+            key={e.id}
+            textValue={str(e) + " " + e.client.company_name}
+          >
+            <span>{str(e) + " " + e.client.company_name}</span>
           </AutocompleteItem>
         ))}
     </Autocomplete>

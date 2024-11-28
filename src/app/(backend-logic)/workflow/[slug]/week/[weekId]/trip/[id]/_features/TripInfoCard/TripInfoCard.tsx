@@ -38,6 +38,7 @@ import { getCars, getDrivers } from "@/lib/references/drivers/feature/api";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
+import { TripInfoNum } from "./TripInfoNum";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -48,6 +49,7 @@ export const TripInfoCard = ({
   tripsData: TripType[];
   onOpenChange: () => void;
 }) => {
+  console.log(selectedTabId);
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
 
@@ -91,7 +93,7 @@ export const TripInfoCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
+      (item) => item.trip_number === Number(selectedTabId)
     );
     setCurrentTripData(currentTrip);
     setStatusVal(currentTrip?.status);
@@ -101,15 +103,14 @@ export const TripInfoCard = ({
   const respUser = data?.filter(
     (user) => user.tripId === currentTripData?.id
   )[0]?.fullName;
-
   return (
     <Card className="bg-gray-200 w-72">
       <CardBody>
         <div className="flex flex-col gap-2">
-          <div className="flex justify-between">
-            <span>Номер рейса:</span>
-            <b>{selectedTabId}</b>
-          </div>
+          <TripInfoNum
+            id={currentTripData?.id}
+            tempId={Number(selectedTabId)}
+          />
 
           <TripInfoResponsibleUser
             selectedTabId={Number(selectedTabId)}

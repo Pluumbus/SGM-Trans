@@ -1,5 +1,4 @@
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
-import { Button } from "@nextui-org/react";
 import { CargoType } from "../../../../../../../_feature/types";
 import {
   PrintClientButton,
@@ -9,8 +8,6 @@ import {
   ClientsActType,
   WareHouseActType,
 } from "@/components/ActPrinter/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getClient } from "@/app/(backend-logic)/workflow/cashbox/_features/api";
 
 export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(

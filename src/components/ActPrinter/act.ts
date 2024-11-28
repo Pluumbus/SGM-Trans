@@ -65,7 +65,7 @@ export const bodyHtmlTemp = ` <div class="container">
         <header>
             <div class="company-info">
                 <b>ТОО «SGM - Trans»</b>
-                <p>г. Нур-Султан, ул. Пушкина, 39</p>
+                <p>г. Астана, ул. Пушкина, 39</p>
                 <p>тел.: 8 (7172) 48-43-41</p>
                 <p><a href="http://www.sgm-trans.com/">www.sgm-trans.com</a></p>
 

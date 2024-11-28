@@ -14,6 +14,7 @@ import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { TotalStats } from "./TotalStats";
+import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   const mCargos = useMemo(() => cargos, [cargos.length]);
@@ -35,11 +36,16 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
         try {
           const user = await mutateAsync(cargo.user_id);
           const fullName = `${user.firstName} ${user.lastName}`;
-          grouped[cargo.user_id] = { fullName, count: 1 };
+          grouped[cargo.user_id] = {
+            fullName,
+            amount: Number(cargo.amount.value),
+            count: 1,
+          };
         } catch (error) {
           throw error;
         }
       } else {
+        grouped[cargo.user_id].amount += Number(cargo.amount.value);
         grouped[cargo.user_id].count += 1;
       }
     }
@@ -55,6 +61,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     return users.map((user) => ({
       user: groupedData[user].fullName,
       count: groupedData[user].count,
+      totalAmount: groupedData[user].amount,
       percentageOfAll: Math.round(
         (groupedData[user].count / mCargos.length) * 100
       ),
@@ -107,7 +114,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           {isPending ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (
-            <span>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</span>
+            <b>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</b>
           )}
           <TrendingUp className="h-4 w-4" />
         </div>
@@ -130,6 +137,7 @@ const CustomBar = ({
     count: number;
     percentageOfAll: number;
     percentage: number;
+    totalAmount: number;
   }[];
   cargoCount: number;
   colors: any[];
@@ -141,7 +149,6 @@ const CustomBar = ({
       setState(data);
     }
   }, [data]);
-
   return (
     <Card className="flex flex-col gap-2 w-full">
       <CardHeader>
@@ -172,7 +179,7 @@ const CustomBar = ({
                   <span className="w-[10%] text-lg font-semibold">
                     {e.user}
                   </span>
-                  <div className="w-[80%]">
+                  <div className="w-[75%]">
                     <div
                       style={{
                         width: `${e.percentageOfAll}%`,
@@ -181,8 +188,9 @@ const CustomBar = ({
                       className="min-h-full rounded-[0.25rem]"
                     ></div>
                   </div>
-                  <span className="w-[10%] flex justify-center text-lg font-semibold">
-                    {e.count}
+                  <span className="w-[15%] flex justify-center text-lg font-semibold">
+                    {e.count} гр. на сумму {getSeparatedNumber(e.totalAmount)}{" "}
+                    тг.
                   </span>
                 </div>
               </div>

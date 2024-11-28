@@ -27,7 +27,8 @@ export const renderRows = <T,>(
     <TableRow
       className={cx(
         config.setClassNameOnRow && config?.setClassNameOnRow(row),
-        highlightedRows.has(row.id) && "bg-orange-300"
+        highlightedRows.has(row.id) && "bg-orange-300",
+        i % 2 == 0 ? "bg-orange-100" : "bg-slate-100"
       )}
       onContextMenu={(e) => {
         e.preventDefault();

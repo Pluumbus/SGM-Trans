@@ -61,7 +61,7 @@ export const WeekCard = () => {
             ...prev,
             { ...payload.new, trips: [] } as WeekType & { trips: TripType[] },
           ]);
-        },
+        }
       )
       .subscribe();
 
@@ -118,8 +118,8 @@ export const CreateTripInsideWeek = ({
   const [formState, setFormState] = useState<{
     city_from: any;
     city_to: string[];
-    driver: any;
-    car: any;
+    driver: string;
+    car: string;
   }>(initData);
 
   const { mutate } = useMutation({
@@ -127,7 +127,11 @@ export const CreateTripInsideWeek = ({
       await supabase.from("trips").insert({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
-        driver: formState.driver + " | " + formState.car,
+        driver: {
+          car: formState.car.split(" - ")[0],
+          driver: formState.driver,
+          state_number: formState.car.split(" - ")[1],
+        },
         week_id: weekId,
       });
     },
@@ -223,7 +227,7 @@ export const CreateTripInsideWeek = ({
                   onSelectionChange={(e) => {
                     setFormState((prev) => ({
                       ...prev,
-                      driver: e,
+                      driver: e.toString(),
                     }));
                   }}
                 />
@@ -239,7 +243,7 @@ export const CreateTripInsideWeek = ({
                   onSelectionChange={(e) => {
                     setFormState((prev) => ({
                       ...prev,
-                      car: e,
+                      car: e.toString(),
                     }));
                   }}
                 />

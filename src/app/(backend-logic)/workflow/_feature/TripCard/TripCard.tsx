@@ -24,6 +24,7 @@ export type TripType = {
   status: string;
   date_in: string;
   date_out: string;
+  trip_number: number;
 };
 
 export const TripCard = ({

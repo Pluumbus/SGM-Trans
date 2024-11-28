@@ -71,21 +71,21 @@ export const getBaseColumnsConfig = () => {
     //   ),
     // },
 
-    {
-      accessorKey: "created_at",
-      header: "Дата создания",
-      size: 20,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <span>{new Date(info?.getValue() as string).toLocaleDateString()}</span>
-      ),
-      filter: false,
-    },
+    // {
+    //   accessorKey: "created_at",
+    //   header: "Дата создания",
+    //   size: 20,
+    //   cell: (info: Cell<CargoType, ReactNode>) => (
+    //     <span>{new Date(info?.getValue() as string).toLocaleDateString()}</span>
+    //   ),
+    //   filter: false,
+    // },
     {
       accessorKey: "receipt_address",
       header: "Адрес получения",
       size: 30,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} cl="min-w-[7rem]" />
+        <EditField info={info} type={"Text"} cl="min-w-[12rem]" />
       ),
       filter: false,
     },
@@ -161,7 +161,7 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "is_unpalletizing",
       header: () => (
-        <div className="w-[3rem] flex flex-col items-center">
+        <div className="w-[2rem] flex flex-col items-center">
           <span>Распа</span>
           <span>летир</span>
           <span>ование</span>
@@ -223,9 +223,11 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "is_documents",
       header: () => (
-        <div className="flex flex-col items-center">
-          <span>Наличие</span>
-          <span>документов</span>
+        <div className="flex flex-col items-center w-[2rem]">
+          <span>Нали</span>
+          <span>чие</span>
+          <span>доку</span>
+          <span>ментов</span>
         </div>
       ),
       size: 15,
