@@ -15,7 +15,6 @@ export const TripInfoNum = ({ id, tempId }: { id: number; tempId: number }) => {
       toast({ title: `Номер рейса успешно изменён на ${tripNumber}` });
     },
   });
-  console.log(id, "id", tripNumber, "tripNumber");
   return (
     <div className="flex justify-between">
       <span>Номер рейса:</span>

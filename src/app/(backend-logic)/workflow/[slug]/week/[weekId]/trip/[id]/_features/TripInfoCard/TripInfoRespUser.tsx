@@ -14,13 +14,11 @@ import { updateTripRespUser } from "../../../_api/requests";
 
 export const TripInfoResponsibleUser = ({
   selectedTabId,
-  isLoading,
   respUser,
   allUsers,
 }: {
   selectedTabId: number;
-  isLoading: boolean;
-  respUser: { firstName: string; lastName: string };
+  respUser: string;
   allUsers: UsersList[];
 }) => {
   const { mutate: setTripUserMutation } = useMutation({
@@ -35,8 +33,8 @@ export const TripInfoResponsibleUser = ({
   });
   return (
     <div className="flex justify-between">
-      <span>Ответственный:</span>
-      <b>{isLoading ? <Spinner /> : respUser?.firstName}</b>
+      {/* <span>Ответственный:</span> */}
+      <b>{respUser}</b>
       <Dropdown>
         <DropdownTrigger>
           <Button isIconOnly size="sm" color="default">

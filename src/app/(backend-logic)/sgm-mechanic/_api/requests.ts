@@ -3,7 +3,7 @@
 import { fetchFromAPI } from "./api";
 import { TrackReport, VehicleObject, VehicleTreeObject } from "./types";
 
-const getVehiclesTree = async (): Promise<VehicleTreeObject> => {
+export const getVehiclesTree = async (): Promise<VehicleTreeObject> => {
   return await fetchFromAPI("/ls/api/v2/tree/vehicle");
 };
 
@@ -76,4 +76,41 @@ export const getVehiclesInfo = async () => {
   );
 
   return allVehiclesData;
+};
+
+export const getAllVehiclesStates = async () => {
+  const vehiclesTree = await getVehiclesTree();
+
+  const allVehiclesData = await Promise.all(
+    vehiclesTree.objects.map(async (vehicle) => {
+      const singleVehicleInfo = await getVehicleCurrentState(vehicle.uuid);
+      return {
+        ...vehicle,
+        details: singleVehicleInfo,
+      };
+    })
+  );
+
+  return allVehiclesData;
+};
+export const getAllVehiclesStatistics = async () => {
+  const vehiclesTree = await getVehiclesTree();
+  const allVehiclesUuid = vehiclesTree.objects.map(
+    (vehicle) => vehicle.terminal_id
+  );
+  // .map((vehicle) => vehicle.uuid)
+  // .splice(9, 18);
+  return await getSingleVehicleStatistics(allVehiclesUuid);
+};
+
+export const getSingleVehicleStatistics = async (vUuid: number[]) => {
+  const timeBegin = 1725148800; // (2024-09-01 00:00:00 UTC).
+  const timeEnd = 1735689599; //  (2024-12-31 23:59:59 UTC).\
+  const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
+  console.log(
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,can,canmnt]&vehicles=${encodedVUuid}`
+  );
+  return await fetchFromAPI(
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,can,canmnt]&vehicles=${encodedVUuid}`
+  );
 };

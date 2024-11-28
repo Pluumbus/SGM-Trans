@@ -53,10 +53,13 @@ export const TripCard = ({
     }
   }, [isLoading, tripsData]);
 
-  const config: UseTableConfig<CargoType & { trips: TripType }> = {
+  const config: UseTableConfig<TripType & { weeks: WeekType }> = {
     row: {
       setRowData(info) {
-        router.push(`${pathname}/week/${weekId}/trip/${info.original.id}`);
+        console.log(info.original);
+        router.push(
+          `${pathname}/week/${weekId}/trip/${info.original.trip_number}`
+        );
       },
       setClassNameOnRow: (info) => "cursor-pointer",
       className: "cursor-pointer",
