@@ -80,11 +80,9 @@ export const UpdateTripNumber = ({
     const totalWeight = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.weight),
       0
-      0
     );
     const totalVolume = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.volume),
-      0
       0
     );
 
