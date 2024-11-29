@@ -26,6 +26,9 @@ export const getBaseTripColumnsConfig = () => {
         size: 30,
         cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => {
           const driverData = info.row.original.driver;
+          if (typeof info.getValue() == "string") {
+            return <div>{info.getValue()}</div>;
+          }
           return (
             <div>
               {driverData.driver +

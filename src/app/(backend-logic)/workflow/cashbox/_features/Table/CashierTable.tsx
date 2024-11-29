@@ -127,8 +127,8 @@ export const CashierTable = () => {
 
 const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
   const sum = data
-    .flatMap((e) => e.cargos)
-    .reduce((total, el) => total + Number(el.amount.value), 0);
+    ?.flatMap((e) => e.cargos)
+    ?.reduce((total, el) => total + Number(el?.amount?.value || 0), 0);
 
   return (
     <div className="flex gap-2">
