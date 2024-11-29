@@ -21,7 +21,7 @@ export const CashierTable = () => {
           info.original?.cargos &&
           info.original?.cargos?.some(
             (e) =>
-              e.amount.type == "Б/нал в МСК" || e.amount.type == "Нал в МСК"
+              e?.amount?.type == "Б/нал в МСК" || e?.amount?.type == "Нал в МСК"
           )
         ) {
           return "bg-primary-100";
