@@ -1,7 +1,5 @@
 "use client";
 import {
-  Autocomplete,
-  AutocompleteItem,
   Button,
   Card,
   CardBody,
@@ -9,13 +7,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Spinner,
-  useDisclosure,
 } from "@nextui-org/react";
 
 import { toast } from "@/components/ui/use-toast";
@@ -24,18 +15,11 @@ import { ReactNode, useEffect, useState } from "react";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IoMdSettings } from "react-icons/io";
-import { getUserById } from "../../../_api";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
-import {
-  updateTripDriver,
-  updateTripRespUser,
-  updateTripStatus,
-} from "../../../_api/requests";
+import { updateTripStatus } from "../../../_api/requests";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { daysOfWeek } from "../../_helpers";
-import { getCars, getDrivers } from "@/lib/references/drivers/feature/api";
-import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";

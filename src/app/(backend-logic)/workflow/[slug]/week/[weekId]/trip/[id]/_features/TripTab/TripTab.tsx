@@ -21,22 +21,23 @@ import {
   MngrWrhButton,
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
+import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 
 export const TripTab = ({
-  tripid,
+  trip,
   columns,
   isOnlyMycargos,
   onCargosUpdate,
 }: {
-  tripid: number;
+  trip: TripType;
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[]) => void;
 }) => {
   const { data, isFetched } = useQuery({
-    queryKey: [`cargo-${tripid}`],
-    queryFn: async () => await getCargos(tripid.toString()),
-    enabled: !!tripid,
+    queryKey: [`cargo-${trip.id}`],
+    queryFn: async () => await getCargos(trip.id.toString()),
+    enabled: !!trip.id,
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
@@ -83,7 +84,7 @@ export const TripTab = ({
 
   useEffect(() => {
     const cn = supabase
-      .channel(`workflow-trip${tripid}`)
+      .channel(`workflow-trip${trip.id}`)
       .on(
         "postgres_changes",
         {
@@ -102,7 +103,7 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => e.trip_id == tripid);
+                .filter((e) => e.trip_id == trip.id);
 
               return res;
             });
@@ -127,7 +128,7 @@ export const TripTab = ({
     <>
       <UTable
         tBodyProps={{
-          emptyContent: `Пока что в рейсе №${tripid} нет грузов`,
+          emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
           isLoading: !isFetched,
           loadingContent: <SgmSpinner />,
         }}
@@ -136,12 +137,12 @@ export const TripTab = ({
         )}
         isPagiantion={false}
         columns={columns}
-        name={`Cargo Table ${tripid}`}
+        name={`Cargo Table ${trip.id}`}
         config={config}
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber currentTripId={tripid} />
+        <UpdateTripNumber currentTripId={trip.id} />
       )}
       {cargos.length > 0 && (
         <div className="flex justify-between">

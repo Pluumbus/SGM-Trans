@@ -20,10 +20,11 @@ import {
   useDeleteObject,
 } from "./Modals/AddTruckObjectsModal";
 import Image from "next/image";
+
 export const CarList = () => {
   const { data: carsData, isLoading } = useQuery({
     queryKey: ["GetCars"],
-    queryFn: async () => getCars(),
+    queryFn: async () => await getCars(),
   });
   const [cars, setCars] = useState<CarsType[]>(carsData || []);
   const [tempCars, setTempCars] = useState<CarsType[]>(cars);

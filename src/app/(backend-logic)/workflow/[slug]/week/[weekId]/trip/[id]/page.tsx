@@ -53,6 +53,7 @@ const Page: NextPage = () => {
     setSelectedTabId(id);
   }, []);
 
+  console.log(selectedTabId);
   useEffect(() => {
     const cn = supabase
       .channel(`${weekId}-trips`)
@@ -90,7 +91,6 @@ const Page: NextPage = () => {
 
   const handleCargosUpdate = (cities: string[]) => {
     const uniqueData = Array.from(new Set(cities));
-
     const mainCity = tripsData.filter(
       (trip) => trip.trip_number === Number(selectedTabId)
     )[0].city_to[0];
@@ -107,9 +107,8 @@ const Page: NextPage = () => {
         )[0].city_to = newCities)
       )
     );
-
     const newTripsData = tripsData.map((trip) =>
-      trip.id === Number(selectedTabId)
+      trip.trip_number === Number(selectedTabId)
         ? { ...trip, city_to: newCurrentTripCities }
         : trip
     ) as TripType[];
@@ -160,7 +159,7 @@ const Page: NextPage = () => {
                 title={<TabTitle trip={trip} />}
               >
                 <TripTab
-                  tripid={trip.trip_number}
+                  trip={trip}
                   columns={columns}
                   isOnlyMycargos={isOnlyMycargos}
                   onCargosUpdate={(cities) => handleCargosUpdate(cities)}

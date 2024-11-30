@@ -2,17 +2,11 @@
 
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import {
-  getCars,
-  getDrivers,
-  getDriversWithCars,
-  getTrailers,
-} from "./feature/api";
+import { getTrailers } from "./feature/api";
 import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteProps,
-  Spinner,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 

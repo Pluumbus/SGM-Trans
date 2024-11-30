@@ -15,7 +15,7 @@ export const Cars = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
     queryKey: ["getCars"],
-    queryFn: getCars,
+    queryFn: async () => await getCars(),
     enabled: !!isSignedIn,
   });
 

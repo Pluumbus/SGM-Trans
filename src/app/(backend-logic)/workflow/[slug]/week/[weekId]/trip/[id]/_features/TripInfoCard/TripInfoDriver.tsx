@@ -43,7 +43,7 @@ export const TripInfoDriver = ({
 
   const { data: carData, isLoading: carLoading } = useQuery({
     queryKey: ["getAllCars"],
-    queryFn: getCars,
+    queryFn: async () => await getCars(),
   });
 
   const { mutate: setDriverMutation } = useMutation({

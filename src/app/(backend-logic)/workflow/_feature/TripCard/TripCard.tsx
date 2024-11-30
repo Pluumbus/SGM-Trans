@@ -56,7 +56,6 @@ export const TripCard = ({
   const config: UseTableConfig<TripType & { weeks: WeekType }> = {
     row: {
       setRowData(info) {
-        console.log(info.original);
         router.push(
           `${pathname}/week/${weekId}/trip/${info.original.trip_number}`
         );
