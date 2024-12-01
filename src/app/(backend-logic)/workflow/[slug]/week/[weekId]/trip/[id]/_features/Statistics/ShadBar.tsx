@@ -10,34 +10,47 @@ import {
 } from "@nextui-org/react";
 import { TrendingUp } from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserById } from "../../../_api";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { TotalStats } from "./TotalStats";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import { UsersList } from "@/lib/references/clerkUserType/types";
 
 export function Chart({ cargos }: { cargos: CargoType[] }) {
-  const mCargos = useMemo(() => cargos, [cargos.length]);
+  // const mCargos = useMemo(() => cargos, [cargos.length]);
 
   const [chartData, setChartData] = useState([]);
   const [leadingManager, setLeadingManager] = useState([]);
 
-  const { mutateAsync, isPending } = useMutation({
-    mutationKey: ["get users"],
-    mutationFn: async (user_id: string) => await getUserById(user_id),
-    retryDelay: 5000,
+  // const { mutateAsync, isPending } = useMutation({
+  //   mutationKey: ["get users"],
+  //   mutationFn: async (user_id: string) => await getUserById(user_id),
+  //   retryDelay: 5000,
+  // });
+  const { data: allUsers, isLoading } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => {
+      const users = await getUserList();
+      const filteredUsrs = users.filter(
+        (user) => user.role === "Логист" || user.role === "Логист Дистант"
+      );
+      return filteredUsrs as UsersList[];
+    },
   });
 
-  const groupCargosByUser = async (data) => {
+  const groupCargosByUser = (data) => {
     const grouped = {};
 
     for (const cargo of data) {
       if (!grouped[cargo.user_id]) {
         try {
-          const user = await mutateAsync(cargo.user_id);
-          const fullName = `${user.firstName} ${user.lastName}`;
+          // const user = await mutateAsync(cargo.user_id);
+          const user = allUsers?.filter((u) => u.id === cargo.user_id)[0];
+          // const fullName = `${user.} ${user.lastName}`;
           grouped[cargo.user_id] = {
-            fullName,
+            fullName: user.userName,
             amount: Number(cargo.amount.value),
             count: 1,
           };
@@ -63,7 +76,8 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       count: groupedData[user].count,
       totalAmount: groupedData[user].amount,
       percentageOfAll: Math.round(
-        (groupedData[user].count / mCargos.length) * 100
+        // (groupedData[user].count / mCargos.length) * 100
+        (groupedData[user].count / cargos.length) * 100
       ),
       maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
@@ -75,9 +89,11 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   );
 
   useEffect(() => {
-    const fetch = async () => {
-      if (!mCargos || mCargos.length === 0) return;
-      const data = await groupCargosByUser(mCargos);
+    const fetch = () => {
+      // if (!mCargos || mCargos.length === 0) return;
+      if (!cargos || cargos.length === 0) return;
+      // const data = groupCargosByUser(mCargos);
+      const data = groupCargosByUser(cargos);
       if (data) {
         const dataToSet = calculatePercentages(data);
         const leadingManagers = dataToSet
@@ -91,7 +107,8 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     };
 
     fetch();
-  }, [mCargos.length]);
+    // }, [mCargos.length]);
+  }, [cargos.length]);
 
   return (
     <Card>
@@ -105,13 +122,13 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           data={chartData}
           cargoCount={cargos.length}
           colors={colors}
-          isPending={isPending}
+          isPending={isLoading}
         />
       </CardBody>
       <CardFooter className="flex-col items-start gap-2 text-sm">
         <div className="flex gap-2 font-medium leading-none">
           Лидирует
-          {isPending ? (
+          {isLoading ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (
             <b>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</b>

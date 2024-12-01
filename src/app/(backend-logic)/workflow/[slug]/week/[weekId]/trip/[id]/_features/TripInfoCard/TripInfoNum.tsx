@@ -4,17 +4,27 @@ import { useState } from "react";
 import { IoIosCheckmark, IoMdSettings } from "react-icons/io";
 import { updateTripNumber } from "../../../_api/requests";
 import { toast } from "@/components/ui/use-toast";
+import { useParams, useRouter } from "next/navigation";
 
 export const TripInfoNum = ({ id, tempId }: { id: number; tempId: number }) => {
+  const { slug, weekId, tripId } = useParams<{
+    slug: string;
+    weekId: string;
+    tripId: string;
+  }>();
+  const router = useRouter();
+
   const [tripNumber, setTripNumber] = useState(id);
   const [isChanging, setIsChanging] = useState(false);
   const { mutate } = useMutation({
     mutationKey: ["updateTripNum"],
     mutationFn: async () => updateTripNumber(tripNumber, id),
     onSuccess() {
+      // router.push(`${tripNumber}`);
       toast({ title: `Номер рейса успешно изменён на ${tripNumber}` });
     },
   });
+
   return (
     <div className="flex justify-between">
       <span>Номер рейса:</span>

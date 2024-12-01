@@ -4,8 +4,7 @@ import {
   AutocompleteProps,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { getClients } from "../../cashbox/_features/api";
-import { str } from "./TM";
+import { getClients, getClientsNames } from "../../cashbox/_features/api";
 import { useEffect, useState } from "react";
 
 export const ExistingClients = ({
@@ -18,8 +17,8 @@ export const ExistingClients = ({
   props?: Omit<AutocompleteProps, "children">;
 }) => {
   const { data, isLoading, refetch, isRefetching } = useQuery({
-    queryKey: ["get clients for autocomplete"],
-    queryFn: async () => await getClients(),
+    queryKey: ["GetClientForAutocomplete"],
+    queryFn: async () => await getClientsNames(),
   });
 
   const [value, setValue] = useState<string>(state[0]?.toString() || "");
@@ -48,9 +47,25 @@ export const ExistingClients = ({
           <AutocompleteItem
             value={e.id}
             key={e.id}
-            textValue={str(e) + " " + e.client.company_name}
+            textValue={
+              e.client.full_name.first_name +
+              " " +
+              e.client.full_name.last_name +
+              " " +
+              e.client.company_name +
+              " " +
+              e.client.phone_number
+            }
           >
-            <span>{str(e) + " " + e.client.company_name}</span>
+            <span>
+              {e.client.full_name.first_name +
+                " " +
+                e.client.full_name.last_name +
+                " " +
+                e.client.company_name +
+                " " +
+                e.client.phone_number}
+            </span>
           </AutocompleteItem>
         ))}
     </Autocomplete>
