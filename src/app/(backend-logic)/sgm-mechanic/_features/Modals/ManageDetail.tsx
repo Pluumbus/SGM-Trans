@@ -70,7 +70,7 @@ export const ManageDetail = () => {
               Number(getValues().mileage?.last_mileage))
           : data.car?.omnicommData?.mw?.mileage
             ? parseFloat(
-                data.car?.omnicommData?.mw?.mileage.toString()
+                data?.car?.omnicommData?.mw?.mileage.toString()
               ).toFixed(2)
             : 0,
         last_mileage: data.car?.omnicommData?.mw?.mileage

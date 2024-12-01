@@ -309,9 +309,9 @@ const DetailSampleCard = ({
           {parseFloat(
             (
               Number(
-                data.car?.omnicommData?.mw?.mileage
+                data?.car?.omnicommData?.mw?.mileage
                   ? parseFloat(
-                      data.car?.omnicommData?.mw?.mileage.toString()
+                      data?.car?.omnicommData?.mw?.mileage.toString()
                     ).toFixed(2)
                   : 0
               ) - Number(fieldData?.mileage?.last_mileage)
