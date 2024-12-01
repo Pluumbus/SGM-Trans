@@ -50,7 +50,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           const user = allUsers?.filter((u) => u.id === cargo.user_id)[0];
           // const fullName = `${user.} ${user.lastName}`;
           grouped[cargo.user_id] = {
-            fullName: user.userName,
+            fullName: user?.userName,
             amount: Number(cargo.amount.value),
             count: 1,
           };
