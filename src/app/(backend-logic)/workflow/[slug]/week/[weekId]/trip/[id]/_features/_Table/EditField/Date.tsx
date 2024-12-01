@@ -6,10 +6,11 @@ import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { DateValue, parseDate } from "@internationalized/date";
 import { useMutation } from "@tanstack/react-query";
 import { editCargo } from "./api";
+import { formatDate } from "@/lib/helpers";
 
 export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [date, setDate] = useState<DateValue>(
-    parseDate(formatDate(new Date(info.getValue()?.toString()).toISOString())),
+    parseDate(formatDate(new Date(info.getValue()?.toString()).toISOString()))
   );
   const [debouncedDate, setDebouncedDate] = useState<DateValue>(date);
 
@@ -17,8 +18,8 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     if (info && date.toString() != info.getValue()) {
       setDate(
         parseDate(
-          formatDate(new Date(info.getValue()?.toString()).toISOString()),
-        ),
+          formatDate(new Date(info.getValue()?.toString()).toISOString())
+        )
       );
     }
   }, [info.getValue()]);
@@ -28,7 +29,7 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       await editCargo(
         info.column.columnDef.accessorKey as string,
         debouncedDate.toString(),
-        info.row.original.id,
+        info.row.original.id
       );
     },
     onError: (error) => {
@@ -65,8 +66,4 @@ export const DateField = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       />
     </div>
   );
-};
-
-export const formatDate = (isoString: string) => {
-  return isoString.split("T")[0];
 };

@@ -1,1 +1,1 @@
-export { ManageDetails } from "./ManageDetails";
+export { ManageDetail } from "./ManageDetail";

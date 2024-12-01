@@ -1,19 +1,38 @@
 "use client";
 
 import { NextPage } from "next";
-import { useQuery } from "@tanstack/react-query";
-import { Spinner } from "@nextui-org/react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { Accordion, AccordionItem, Divider, Spinner } from "@nextui-org/react";
 import { getCars } from "@/lib/references/drivers/feature/api";
-import { CarCard } from "./_features/CarCard";
+
 import { getAllVehiclesStatistics } from "./_api/requests";
-import { VehicleReportStatisticsType } from "./_api/types";
+import {
+  ReportStatisticsType,
+  VehicleReportStatisticsType,
+} from "./_api/types";
+import { CarCard } from "./_features/CarCard";
+import { ManageDetail } from "./_features/Modals";
+import { DisclosureProvider } from "./_features/DisclosureContext";
+import { useEffect, useState } from "react";
+import { CarsType } from "@/lib/references/drivers/feature/types";
+import supabase from "@/utils/supabase/client";
 
 interface Props {}
 
+type CarsWithOmnicommType = CarsType & {
+  omnicommData: ReportStatisticsType["data"]["vehicleDataList"];
+};
+
 const Page: NextPage<Props> = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["get cars ls"],
-    queryFn: async () => await getCars("truck"),
+  const [cars, setCars] = useState<CarsType[] | CarsWithOmnicommType[]>([]);
+
+  const { isPending, mutate } = useMutation({
+    mutationKey: ["get cars ls"],
+    mutationFn: async () => await getCars("truck"),
+    onSuccess: (data) => {
+      setCars(data);
+    },
+    retry: (failureCount, error) => (error ? true : false),
   });
 
   const { data: omnicommCars, isLoading: isLoadingOmicomm } = useQuery({
@@ -24,26 +43,93 @@ const Page: NextPage<Props> = () => {
       ),
   });
 
-  if (isLoading || isLoadingOmicomm) {
+  useEffect(() => {
+    mutate();
+  }, []);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`view-cars`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "cars",
+        },
+        (payload) => {
+          console.log("payload пришла шлюха", payload);
+
+          const updatedTrip = payload.new as CarsType;
+          setCars((prev) => {
+            const updatedTrips = prev.map((e) =>
+              e.id === updatedTrip.id ? updatedTrip : e
+            );
+            return updatedTrips;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
+
+  if (isPending || isLoadingOmicomm) {
     return <Spinner />;
   }
 
   return (
-    <>
-      <div className="grid grid-cols-4 gap-2">
-        {data?.map((e) => (
-          <CarCard
-            car={{
-              ...e,
-              omnicommData: omnicommCars.find(
-                (el) =>
-                  el.name !== "D" && el.vehicleID.toString() == e.omnicomm_uuid
-              ) as VehicleReportStatisticsType,
-            }}
-          />
-        ))}
-      </div>
-    </>
+    <DisclosureProvider>
+      <Accordion
+        className="grid grid-cols-4 gap-4"
+        showDivider={false}
+        selectionMode="multiple"
+      >
+        {cars
+          ?.sort((a, b) => {
+            const carComparison = a.car.localeCompare(b.car);
+            if (carComparison !== 0) {
+              return carComparison;
+            }
+            return a.state_number.localeCompare(b.state_number);
+          })
+          .map((e, i) => (
+            <AccordionItem
+              key={i + 89}
+              aria-label={`Accordion ${i + 89}`}
+              className="border border-gray-600 pr-2"
+              title={
+                <div className="justify-between">
+                  <div className="flex p-3 w-full gap-2 items-center h-full subpixel-antialiased">
+                    <span className="font-semibold">{e.car}</span>
+                    <Divider
+                      orientation="vertical"
+                      className="h-auto min-h-6"
+                    />
+                    <span className="text-sm text-center">
+                      {e.state_number}
+                    </span>
+                  </div>
+                </div>
+              }
+            >
+              <CarCard
+                car={{
+                  ...e,
+                  omnicommData: omnicommCars?.find(
+                    (el) =>
+                      el.name !== "D" &&
+                      el.vehicleID.toString() == e.omnicomm_uuid
+                  ) as VehicleReportStatisticsType,
+                }}
+              />
+            </AccordionItem>
+          ))}
+      </Accordion>
+      <ManageDetail />
+    </DisclosureProvider>
   );
 };
 

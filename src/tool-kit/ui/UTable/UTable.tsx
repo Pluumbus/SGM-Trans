@@ -85,7 +85,7 @@ export const UTable = <T,>({
   });
 
   return (
-    <div className="flex flex-col h-auto max-h-screen">
+    <div className="flex flex-col h-screen">
       <UTableTopContent tInstance={tInstance} />
       <div className="flex-grow overflow-hidden">
         <Table
