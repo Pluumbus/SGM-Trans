@@ -31,9 +31,11 @@ export const CarList = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
-    const cars = carsData?.filter((c) => c.car_type == "truck");
-    setCars(cars);
-    setTempCars(cars);
+    if (carsData) {
+      const cars = carsData?.filter((c) => c.car_type == "truck");
+      setCars(cars);
+      setTempCars(cars);
+    }
   }, [carsData]);
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
