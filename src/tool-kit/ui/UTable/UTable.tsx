@@ -85,7 +85,7 @@ export const UTable = <T,>({
   });
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-auto max-h-screen">
       <UTableTopContent tInstance={tInstance} />
       <div className="flex-grow overflow-hidden">
         <Table
@@ -99,7 +99,7 @@ export const UTable = <T,>({
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
           <TableBody
             {...tBodyProps}
-            className="overflow-auto h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+            className="overflow-auto h-auto max-h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
           >
             {renderRows(tInstance, config!.row)}
           </TableBody>
