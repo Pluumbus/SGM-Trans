@@ -21,7 +21,7 @@ export const CashierTable = () => {
           info.original?.cargos &&
           info.original?.cargos?.some(
             (e) =>
-              e.amount.type == "Б/нал в МСК" || e.amount.type == "Нал в МСК"
+              e?.amount?.type == "Б/нал в МСК" || e?.amount?.type == "Нал в МСК"
           )
         ) {
           return "bg-primary-100";
@@ -127,8 +127,8 @@ export const CashierTable = () => {
 
 const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
   const sum = data
-    .flatMap((e) => e.cargos)
-    .reduce((total, el) => total + Number(el.amount.value), 0);
+    ?.flatMap((e) => e.cargos)
+    ?.reduce((total, el) => total + Number(el?.amount?.value || 0), 0);
 
   return (
     <div className="flex gap-2">

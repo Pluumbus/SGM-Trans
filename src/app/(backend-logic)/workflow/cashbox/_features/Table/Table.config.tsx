@@ -56,7 +56,7 @@ export const useCashierColumnsConfig =
           const paidAmount = useNumberState({
             initValue: Number(info.getValue() as CashboxType["amount_to_pay"]),
           });
-          return <div>{paidAmount.value || ""}</div>;
+          return <div>{paidAmount?.value || ""}</div>;
         },
       },
       {
@@ -193,8 +193,8 @@ const FullName = ({
 };
 
 const CargoItem = ({ cargo, info }) => {
-  const paidAmount = getSeparatedNumber(Number(cargo.paid_amount));
-  const amountToPay = getSeparatedNumber(Number(cargo.amount.value));
+  const paidAmount = getSeparatedNumber(Number(cargo?.paid_amount));
+  const amountToPay = getSeparatedNumber(Number(cargo?.amount.value));
 
   const disclosure = useDisclosure();
 
@@ -207,7 +207,7 @@ const CargoItem = ({ cargo, info }) => {
         }}
       >
         <div
-          className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${cargo.paid_amount < Number(cargo.amount.value) ? "text-red-700" : "text-green-600"}`}
+          className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${cargo?.paid_amount < Number(cargo?.amount.value) ? "text-red-700" : "text-green-600"}`}
         >
           <span>№{cargo.trip_id}</span>
           <span>-</span>
