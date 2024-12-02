@@ -149,12 +149,13 @@ export const TripInfoDriver = ({
                     Добавить наёмного водителя
                   </ModalHeader>
                   <ModalBody>
-                    Введите Ф.И.О.
+                    Введите Ф.И.
                     <Input
                       variant="bordered"
+                      placeholder="Иванов Иван"
                       onChange={(e) => setTripDriver(e.target.value)}
                     />
-                    Введите машину
+                    Введите машину и номер.
                     <div className="flex gap-4">
                       <Input
                         name="car"

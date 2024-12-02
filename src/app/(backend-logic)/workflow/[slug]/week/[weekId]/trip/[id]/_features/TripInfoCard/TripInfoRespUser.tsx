@@ -1,7 +1,6 @@
 import { toast } from "@/components/ui/use-toast";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import {
-  Spinner,
   Dropdown,
   DropdownTrigger,
   Button,
@@ -33,7 +32,7 @@ export const TripInfoResponsibleUser = ({
   });
   return (
     <div className="flex justify-between">
-      {/* <span>Ответственный:</span> */}
+      <span>Ответственный:</span>
       <b>{respUser}</b>
       <Dropdown>
         <DropdownTrigger>

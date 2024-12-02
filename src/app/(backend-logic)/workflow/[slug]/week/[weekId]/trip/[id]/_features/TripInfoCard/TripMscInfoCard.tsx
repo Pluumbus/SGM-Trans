@@ -27,13 +27,11 @@ export const TripInfoMscCard = ({
   const [dateVal, setDateVal] = useState<string | undefined>();
   const [dateValIn, setDateValIn] = useState<string | undefined>();
   const [dateValOut, setDateValOut] = useState<string | undefined>();
-  const [statusVal, setStatusVal] = useState<string | undefined>();
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId),
+      (item) => item.id === Number(selectedTabId)
     );
-    // setStatusVal(currentTrip?.status);
     setDateValIn(currentTrip?.date_in);
     setDateValOut(currentTrip?.date_out);
   }, [selectedTabId, tripsData]);
@@ -53,7 +51,7 @@ export const TripInfoMscCard = ({
     const dateStr = new Date(
       date.year,
       date.month - 1,
-      date.day,
+      date.day
     ).toLocaleDateString();
 
     if (dateVal == dateItmes[0]) {
@@ -70,11 +68,11 @@ export const TripInfoMscCard = ({
   const dateItmes = ["Установить дату выхода", "Установить дату прихода"];
 
   return (
-    <Card className="bg-gray-200 w-80 h-24">
+    <Card className="bg-gray-200 w-full h-24">
       <CardBody>
         <div className="w-full flex justify-between">
           <div className="grid grid-cols-2 items-center gap-2">
-            <span className="">Дата выезда:</span>
+            <span>Дата выезда:</span>
             <span>
               {dateVal == dateItmes[0] ? (
                 <DatePicker

@@ -253,7 +253,7 @@ export const CreateTripInsideWeek = ({
                   </span>
                 )}
               </div>
-              {formState.city_from.map((city, index) => (
+              {/* {formState.city_from.map((city, index) => (
                 <Cities
                   key={index + 2}
                   label={`Город отправитель ${index + 1}`}
@@ -261,7 +261,7 @@ export const CreateTripInsideWeek = ({
                   isReadOnly={isMSK}
                   onSelectionChange={(e) => handleCityToChange(index, e, false)}
                 />
-              ))}
+              ))} */}
 
               {formState.city_to.map((city, index) => (
                 <Cities

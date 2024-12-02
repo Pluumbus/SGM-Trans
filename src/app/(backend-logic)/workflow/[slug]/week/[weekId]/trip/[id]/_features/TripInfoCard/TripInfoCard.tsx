@@ -23,6 +23,7 @@ import { daysOfWeek } from "../../_helpers";
 import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";
+import { TripInfoMscCard } from "./TripMscInfoCard";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -70,8 +71,10 @@ export const TripInfoCard = ({
   const respUser = allUsers?.filter(
     (user) => user.id === currentTripData?.user_id
   )[0]?.userName;
+
+  const statusItems = ["Машина закрыта", "В пути", "Прибыл"];
   return (
-    <Card className="bg-gray-200 w-72">
+    <Card className="bg-gray-200 w-[28rem]">
       <CardBody>
         <div className="flex flex-col gap-2">
           <TripInfoResponsibleUser
@@ -88,12 +91,12 @@ export const TripInfoCard = ({
             selectedTabId={Number(selectedTabId)}
           />
 
-          <div className="flex justify-between">
-            <span>Статус:</span>
-            <b>{statusVal}</b>
-            {
-              <div>
-                {accessRole ? (
+          {
+            <div>
+              {accessRole ? (
+                <div className="flex justify-between">
+                  <span>Статус:</span>
+                  <b>{statusVal}</b>
                   <Dropdown>
                     <DropdownTrigger>
                       <Button isIconOnly size="sm" color="default">
@@ -101,22 +104,28 @@ export const TripInfoCard = ({
                       </Button>
                     </DropdownTrigger>
                     <DropdownMenu>
-                      {["Машина закрыта", "В пути", "Прибыл"].map(
-                        (stat: string) => (
-                          <DropdownItem
-                            key={stat}
-                            onClick={() => {
-                              setStatusVal(stat);
-                              setStatusMutation();
-                            }}
-                          >
-                            {stat}
-                          </DropdownItem>
-                        )
-                      )}
+                      {statusItems.map((stat: string) => (
+                        <DropdownItem
+                          key={stat}
+                          onClick={() => {
+                            setStatusVal(stat);
+                            setStatusMutation();
+                          }}
+                        >
+                          {stat}
+                        </DropdownItem>
+                      ))}
                     </DropdownMenu>
                   </Dropdown>
-                ) : (
+                </div>
+              ) : (
+                <div className="flex justify-between">
+                  <span>
+                    {statusItems.includes(statusVal)
+                      ? "Статус:"
+                      : "День недели:"}
+                  </span>
+                  <b>{statusVal}</b>
                   <Dropdown isDisabled={!daysOfWeek.includes(statusVal)}>
                     <DropdownTrigger>
                       <Button isIconOnly size="sm" color="default">
@@ -137,10 +146,15 @@ export const TripInfoCard = ({
                       ))}
                     </DropdownMenu>
                   </Dropdown>
-                )}
-              </div>
-            }
-          </div>
+                </div>
+              )}
+            </div>
+          }
+          <TripInfoMscCard
+            selectedTabId={selectedTabId}
+            tripsData={tripsData}
+          />
+
           <div>
             <Button color="success" onClick={onOpenChange}>
               Добавить груз

@@ -91,6 +91,7 @@ const Page: NextPage = () => {
 
   const handleCargosUpdate = (cities: string[]) => {
     const uniqueData = Array.from(new Set(cities));
+
     const mainCity = tripsData.filter(
       (trip) => trip.trip_number === Number(selectedTabId)
     )[0].city_to[0];
@@ -128,7 +129,7 @@ const Page: NextPage = () => {
           selectedTabId={selectedTabId}
           tripsData={tripsData}
         />
-        <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} />
+        {/* <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} /> */}
         <WorkflowBucket />
       </div>
       <div className="flex flex-col ">
@@ -184,11 +185,11 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
   return (
     <div className="grid grid-rows-2 min-w-[4.20rem]">
       <div className="grid grid-rows-3 !min-h-full !h-full ">
-        <div className="text-gray-500 truncate grid-rows-1 break-words">
-          <span>{trip.driver?.state_number}</span>
-        </div>
         <div className="text-gray-500 truncate grid-rows-1">
           <span>{trip.status}</span>
+        </div>
+        <div className="text-gray-500 truncate grid-rows-1 break-words">
+          <span>{trip.driver?.state_number}</span>
         </div>
         <div className="font-bold truncate grid-rows-1">
           <span>{trip.trip_number}</span>

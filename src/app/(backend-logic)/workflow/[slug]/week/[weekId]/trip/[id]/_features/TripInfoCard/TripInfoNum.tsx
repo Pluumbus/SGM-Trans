@@ -20,8 +20,9 @@ export const TripInfoNum = ({ id, tempId }: { id: number; tempId: number }) => {
     mutationKey: ["updateTripNum"],
     mutationFn: async () => updateTripNumber(tripNumber, id),
     onSuccess() {
-      // router.push(`${tripNumber}`);
-      toast({ title: `Номер рейса успешно изменён на ${tripNumber}` });
+      if (tripNumber !== undefined || tripNumber !== null) {
+        toast({ title: `Номер рейса успешно изменён на ${tripNumber}` });
+      }
     },
   });
 
