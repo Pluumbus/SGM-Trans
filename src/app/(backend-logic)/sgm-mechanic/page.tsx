@@ -58,8 +58,6 @@ const Page: NextPage<Props> = () => {
           table: "cars",
         },
         (payload) => {
-          console.log("payload пришла шлюха", payload);
-
           const updatedTrip = payload.new as CarsType;
           setCars((prev) => {
             const updatedTrips = prev.map((e) =>
@@ -85,7 +83,7 @@ const Page: NextPage<Props> = () => {
       <Accordion
         className="grid grid-cols-4 gap-4"
         showDivider={false}
-        selectionMode="multiple"
+        selectionMode="single"
       >
         {cars
           ?.sort((a, b) => {
@@ -95,10 +93,10 @@ const Page: NextPage<Props> = () => {
             }
             return a.state_number.localeCompare(b.state_number);
           })
-          .map((e, i) => (
+          .map((e) => (
             <AccordionItem
-              key={i + 89}
-              aria-label={`Accordion ${i + 89}`}
+              key={e.id}
+              aria-label={`Accordion ${e.id}`}
               className="border border-gray-600 pr-2"
               title={
                 <div className="justify-between">
@@ -116,6 +114,7 @@ const Page: NextPage<Props> = () => {
               }
             >
               <CarCard
+                key={`CarCard ${e.id}`}
                 car={{
                   ...e,
                   omnicommData: omnicommCars?.find(
