@@ -16,7 +16,7 @@ import { DetailNameType, useDisclosureContext } from "../DisclosureContext";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { updateDetailToCar } from "../../_api/supa.requests";
-import { useEffect } from "react";
+import { useEffect, useId, useMemo } from "react";
 
 export type FieldDataType =
   | DetailType
@@ -25,12 +25,14 @@ export type FieldDataType =
   | WheelType["wheel"];
 
 export const CarDetailsCard = ({
-  car,
+  car: oCarInfo,
 }: {
   car: CarsType & {
     omnicommData: VehicleReportStatisticsType;
   };
 }) => {
+  const car = useMemo(() => oCarInfo, [oCarInfo]);
+
   const { details: carDetails } = car;
   const { details: commonDetails } = carDetails;
   const { setData, onOpenChange } = useDisclosureContext();
@@ -63,6 +65,7 @@ export const CarDetailsCard = ({
     });
     onOpenChange();
   };
+  const id = useId();
 
   return (
     <>
@@ -78,7 +81,7 @@ export const CarDetailsCard = ({
                 {commonDetails.map((e, index) => (
                   <div
                     className="leading-4 flex flex-col gap-1 w-full cursor-pointer hover:opacity-70"
-                    key={index}
+                    key={`Common detail ${e.name} ${e.installation_date} ${id}`}
                     onClick={() => handleOpenDetail(e)}
                   >
                     <div className="flex w-full items-end gap-2">

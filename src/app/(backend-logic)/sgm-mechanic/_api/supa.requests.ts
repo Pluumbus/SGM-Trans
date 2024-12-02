@@ -48,11 +48,7 @@ export const updateDetailToCar = async ({
     throw new Error("Car does not have existing details.");
   }
 
-  console.log("updatedDetail REQUESTS: ", updatedDetail);
-
   const updatedCarDetails = { ...car.details };
-
-  console.log("updatedCarDetails REQUESTS: ", updatedCarDetails);
 
   switch (section) {
     case "detail":
