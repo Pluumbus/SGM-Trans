@@ -11,14 +11,69 @@ export type CarsType = {
   state_number: string;
   trailer_id: number;
   car_type: "truck" | "gazell";
-  details: CarDetailType[];
+  details: CarDetailsType;
   omnicomm_uuid: string;
 };
 
-export type CarDetailType = {
+export type SingleDetailType =
+  | CarDetailsType["details"][number]
+  | WheelType["brake_shoe"]
+  | WheelType["wheel"]
+  | CarDetailsType["accumulator"]["accumulators"][number];
+
+// TODO: добавить триггер в базу на изменение таблицы Cars, чтобы через тригер сетилось в отдельную табличку с историей
+
+export enum DetailsName {
+  Transmission = "КПП",
+  Engine = "Двигатель",
+  Reducer = "Редуктор",
+  SL = "Смазка подвески",
+  BL = "Смазка подшибников",
+}
+export type MileageType = {
+  last_mileage: string | number;
+  next_mileage: string | number;
+};
+
+export type BreakShowType = {
+  model: string;
+  installation_date: string;
+  mileage: MileageType;
+};
+
+export type WheelType = {
+  brake_shoe: BreakShowType;
+  wheel: {
+    installation_date: string;
+    mileage: MileageType;
+  };
+};
+
+export type AccumulatorType = {
+  model: string;
+  mileage: MileageType; // сколько пробег на момент замены
+  installation_date: string;
+  location: "Верхний" | "Нижний";
+};
+
+export type DetailType = {
+  installation_date: string;
+  name: DetailsName;
+  mileage: MileageType;
+};
+
+export type CarDetailsType = {
   created_at: string;
-  name: string;
-  mileage_to_inform: string;
+  details: DetailType[];
+  accumulator: {
+    last_swap: string;
+    accumulators: AccumulatorType[];
+  };
+  vehicle_axis: VehicleAxis[];
+};
+
+export type VehicleAxis = {
+  [key in "left" | "right"]: WheelType;
 };
 
 export type TrailersType = {

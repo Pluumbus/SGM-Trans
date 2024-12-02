@@ -119,7 +119,7 @@ export const Timer = () => {
 
   return (
     <div>
-      <Card className="flex justify-center w-64 bg-gray-200">
+      <Card className="flex justify-center w-auto bg-gray-200">
         <CardBody>
           <p>
             {hours} {hoursLabel}, {minutes} {minutesLabel}, {displaySeconds}{" "}

@@ -99,7 +99,7 @@ export const UTable = <T,>({
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
           <TableBody
             {...tBodyProps}
-            className="overflow-auto h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+            className="overflow-auto h-auto max-h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
           >
             {renderRows(tInstance, config!.row)}
           </TableBody>
