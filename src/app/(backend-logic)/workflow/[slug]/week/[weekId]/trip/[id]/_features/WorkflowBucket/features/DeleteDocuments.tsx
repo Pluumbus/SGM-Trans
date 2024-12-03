@@ -1,15 +1,22 @@
 import { Button } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { deleteFile } from "../api";
-import { DocumentToViewType } from "../api/types";
 import { toast } from "@/components/ui/use-toast";
+import { deleteFile } from "../api/request";
 
-export const DeleteDocuments = ({ file }: { file: DocumentToViewType }) => {
+export const DeleteDocuments = ({
+  pathName,
+  originalName,
+  weekId,
+}: {
+  pathName: string;
+  originalName: string;
+  weekId: string;
+}) => {
   const { mutate: DeleteDocMutation } = useMutation({
     mutationKey: ["DeleteDoc"],
-    mutationFn: async () => await deleteFile(file.title),
+    mutationFn: async () => await deleteFile(pathName, weekId),
     onSuccess: () => {
-      toast({ title: `Документ ${file.title} удалён` });
+      toast({ title: `Документ ${originalName} удалён` });
     },
   });
   const handleDeleteDoc = () => {

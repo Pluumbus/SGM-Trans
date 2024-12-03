@@ -73,7 +73,6 @@ export const WeekCard = () => {
   if (isPending) {
     return <Spinner />;
   }
-
   return (
     <div>
       <AddWeek />

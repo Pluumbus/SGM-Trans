@@ -1,63 +1,98 @@
-"use client";
-import { customTransliterateToEngl } from "@/components/CustomTranslit/CustomTranslitToEngl";
-import { DocumentToViewType, DocumentType } from "./types";
-import supabase from "@/utils/supabase/client";
+"use server";
+import getSupabaseServer from "@/utils/supabase/server";
 
-export const uploadFile = async (file: File, weekId: string) => {
-  const fName = customTransliterateToEngl(file.name);
-  const sup = await supabase;
-  const { data, error } = await supabase.storage
-    .from("workflow-documents")
-    .upload(fName, file);
+export const uploadFileToDb = async (
+  fileName: string,
+  url: string,
+  weekId: string,
+  fCreated_at: string,
+  fileId: string,
+  path: string
+) => {
+  const supabase = await getSupabaseServer();
 
-  const url = supabase.storage
-    .from("workflow-documents")
-    .getPublicUrl(file.name);
-
-  const { data: sData, error: weeksError } = await supabase
+  const { data: oldData, error: oldError } = await supabase
     .from("weeks")
-    .update({ docs: { docUrl: url, originalName: file.name } })
-    .eq("id", weekId);
+    .select("docs")
+    .eq("id", Number(weekId))
+    .single();
 
-  console.log(sData, "weekId", weekId);
-  if (error || weeksError) {
-    throw new Error(error.message || weeksError.message);
+  if (oldError) {
+    throw new Error(oldError.message);
+  }
+
+  const currentDocs = oldData?.docs?.doc || [];
+
+  const updatedDocs = [
+    ...currentDocs,
+    {
+      id: fileId,
+      docUrl: url,
+      comments: "",
+      pathName: path,
+      created_at: fCreated_at,
+      originalName: fileName,
+    },
+  ];
+
+  const { data, error } = await supabase
+    .from("weeks")
+    .update({
+      docs: { doc: updatedDocs },
+    })
+    .eq("id", Number(weekId));
+
+  if (error) {
+    throw new Error(error.message);
   } else {
     return data;
   }
 };
 
-export const getFileUrlList = async (): Promise<
-  DocumentToViewType[] | null
-> => {
-  const { data, error } = await supabase.storage
-    .from("workflow-documents")
-    .list();
+export const getDocsFromWeek = async (weekId: string) => {
+  const supabase = await getSupabaseServer();
 
-  let docsToView;
-  if (data) {
-    docsToView = data.map((doc) => {
-      const url = supabase.storage
-        .from("workflow-documents")
-        .getPublicUrl(doc.name);
+  const { data, error } = await supabase
+    .from("weeks")
+    .select("docs")
+    .eq("id", Number(weekId))
+    .single();
 
-      const docData: DocumentToViewType = {
-        id: doc.id,
-        title: doc.name,
-        docType: doc.metadata.mimetype,
-        publicUrl: url.data.publicUrl,
-        created_at: doc.created_at,
-      };
-      return docData;
-    });
-  }
   if (error) {
     throw new Error(error.message);
-  } else {
-    return docsToView;
   }
+
+  return data?.docs?.doc || [];
 };
 
-export const deleteFile = async (path: string) => {
-  await supabase.storage.from("workflow-documents").remove([path]);
+export const deleteFileFromDb = async (weekId: string, path: string) => {
+  const supabase = await getSupabaseServer();
+
+  const { data: oldData, error: fetchError } = await supabase
+    .from("weeks")
+    .select("docs")
+    .eq("id", Number(weekId))
+    .single();
+
+  if (fetchError) {
+    throw new Error(fetchError.message);
+  }
+
+  const currentDocs = oldData?.docs?.doc || [];
+
+  const updatedDocs = currentDocs.filter(
+    (doc: { pathName: string }) => !doc.pathName.includes(path)
+  );
+  console.log(updatedDocs);
+
+  const { error: updateError } = await supabase
+    .from("weeks")
+    .update({ docs: { doc: updatedDocs } })
+    .eq("id", Number(weekId));
+
+  if (updateError) {
+    throw new Error(updateError.message);
+  }
+
+  // return { success: true };
 };

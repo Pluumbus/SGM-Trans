@@ -12,8 +12,12 @@ import {
 } from "@nextui-org/react";
 import { AddDocuments } from "./features/AddDocuments";
 import { DocumentsList } from "./features/DocumentsList";
+import { useParams } from "next/navigation";
 
 export const WorkflowBucket = () => {
+  const { weekId } = useParams<{
+    weekId: string;
+  }>();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
@@ -30,8 +34,8 @@ export const WorkflowBucket = () => {
                 Корзина документов
               </ModalHeader>
               <ModalBody>
-                <AddDocuments />
-                <DocumentsList />
+                <AddDocuments weekId={weekId} />
+                <DocumentsList weekId={weekId} />
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>

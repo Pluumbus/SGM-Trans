@@ -1,14 +1,10 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { uploadFile } from "../api";
 import { toast } from "@/components/ui/use-toast";
 import { useParams } from "next/navigation";
+import { uploadFile } from "../api/request";
 
-export const AddDocuments = () => {
-  const { weekId, id } = useParams<{
-    weekId: string;
-    id: string;
-  }>();
+export const AddDocuments = ({ weekId }: { weekId: string }) => {
   const { mutate: AddDocMutation, isPending } = useMutation({
     mutationKey: ["AddDocsToBucket"],
     mutationFn: async (Addfile: File) => await uploadFile(Addfile, weekId),

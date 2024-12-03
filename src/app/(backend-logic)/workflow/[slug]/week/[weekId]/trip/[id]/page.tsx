@@ -53,7 +53,6 @@ const Page: NextPage = () => {
     setSelectedTabId(id);
   }, []);
 
-  console.log(selectedTabId);
   useEffect(() => {
     const cn = supabase
       .channel(`${weekId}-trips`)

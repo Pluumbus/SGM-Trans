@@ -1,4 +1,5 @@
 import { AllCitiesType, PriceType, QuantityType } from "@/lib/references";
+import { SupaDoc } from "../[slug]/week/[weekId]/trip/[id]/_features/WorkflowBucket/api/types";
 
 export type CargoType = {
   id: number;
@@ -61,4 +62,5 @@ export type WeekType = {
     end_date: string;
     start_date: string;
   };
+  docs: { doc: SupaDoc[] };
 };
