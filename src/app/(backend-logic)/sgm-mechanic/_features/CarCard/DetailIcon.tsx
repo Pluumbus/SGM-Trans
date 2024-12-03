@@ -5,8 +5,6 @@ import { GiGearStick } from "react-icons/gi";
 import { DetailsName } from "@/lib/references/drivers/feature/types";
 
 export const DetailIcon = ({ name }: { name: DetailsName }) => {
-  return <></>;
-
   switch (name) {
     case DetailsName.Transmission:
       return <GiGearStick size={20} title="КПП" />;

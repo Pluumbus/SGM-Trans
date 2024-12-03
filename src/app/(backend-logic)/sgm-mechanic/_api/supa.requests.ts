@@ -4,12 +4,33 @@ import {
   CarDetailsType,
   CarsType,
   SingleDetailType,
-  VehicleAxis,
-  WheelType,
 } from "@/lib/references/drivers/feature/types";
 import supabase from "@/utils/supabase/client";
 import { DetailNameType } from "../_features/DisclosureContext";
-import { isEqual } from "lodash";
+
+export const swapAccumulators = async (car: CarsType) => {
+  const { details } = car;
+  const updatedDetails: CarDetailsType = {
+    ...details,
+    accumulator: {
+      accumulators: details.accumulator.accumulators.map((e) => ({
+        ...e,
+        location: e.location == "Верхний" ? "Нижний" : "Верхний",
+      })),
+
+      last_swap: new Date().toISOString(),
+    },
+  };
+  const { data, error } = await supabase
+    .from("cars")
+    .update({ details: updatedDetails })
+    .eq("id", Number(car.id));
+
+  if (error) {
+    throw new Error();
+  }
+  return data;
+};
 
 export const addDetailToCar = async ({
   car,
