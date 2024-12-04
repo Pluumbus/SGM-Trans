@@ -20,10 +20,10 @@ import { updateTripDriver } from "../../../_api/requests";
 
 export const TripInfoDriver = ({
   currentTripData,
-  selectedTabId,
+  tripId,
 }: {
   currentTripData: TripType;
-  selectedTabId: number;
+  tripId: number;
 }) => {
   const [tripDriver, setTripDriver] = useState(currentTripData?.driver.driver);
   const [tripCar, setTripCar] = useState("");
@@ -53,7 +53,7 @@ export const TripInfoDriver = ({
 
       await updateTripDriver(
         { driver: tripDriver, car: car, state_number: state_number },
-        selectedTabId
+        tripId
       );
     },
     onSuccess() {

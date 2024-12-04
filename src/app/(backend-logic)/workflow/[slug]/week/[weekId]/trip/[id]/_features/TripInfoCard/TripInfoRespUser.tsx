@@ -12,18 +12,18 @@ import { IoMdSettings } from "react-icons/io";
 import { updateTripRespUser } from "../../../_api/requests";
 
 export const TripInfoResponsibleUser = ({
-  selectedTabId,
+  tripId,
   respUser,
   allUsers,
 }: {
-  selectedTabId: number;
+  tripId: number;
   respUser: string;
   allUsers: UsersList[];
 }) => {
   const { mutate: setTripUserMutation } = useMutation({
     mutationKey: ["SetTripRespUser"],
     mutationFn: async (user_id: string) =>
-      await updateTripRespUser(user_id, selectedTabId),
+      await updateTripRespUser(user_id, tripId),
     onSuccess() {
       toast({
         title: "Ответственный рейса успешно обновлён",

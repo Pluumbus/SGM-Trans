@@ -7,11 +7,6 @@ import { toast } from "@/components/ui/use-toast";
 import { useParams, useRouter } from "next/navigation";
 
 export const TripInfoNum = ({ id, tempId }: { id: number; tempId: number }) => {
-  const { slug, weekId, tripId } = useParams<{
-    slug: string;
-    weekId: string;
-    tripId: string;
-  }>();
   const router = useRouter();
 
   const [tripNumber, setTripNumber] = useState(id);

@@ -78,7 +78,7 @@ export const TripInfoCard = ({
       <CardBody>
         <div className="flex flex-col gap-2">
           <TripInfoResponsibleUser
-            selectedTabId={Number(selectedTabId)}
+            tripId={currentTripData?.id}
             respUser={respUser}
             allUsers={allUsers}
           />
@@ -88,7 +88,7 @@ export const TripInfoCard = ({
           />
           <TripInfoDriver
             currentTripData={currentTripData}
-            selectedTabId={Number(selectedTabId)}
+            tripId={currentTripData?.id}
           />
 
           {
