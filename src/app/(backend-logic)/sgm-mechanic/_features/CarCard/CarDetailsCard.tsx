@@ -15,8 +15,16 @@ import { ManageDetail } from "../Modals";
 import { DetailNameType, useDisclosureContext } from "../DisclosureContext";
 import { FaMinus, FaPlus } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
-import { updateDetailToCar } from "../../_api/supa.requests";
+import { swapAccumulators, updateDetailToCar } from "../../_api/supa.requests";
 import { useEffect, useId, useMemo } from "react";
+import { GiCarWheel, GiStoneWheel } from "react-icons/gi";
+import {
+  IoSwapHorizontalOutline,
+  IoSwapVerticalOutline,
+} from "react-icons/io5";
+import { useConfirmContext } from "@/tool-kit/hooks";
+import { useToast } from "@/components/ui/use-toast";
+import { FaX } from "react-icons/fa6";
 
 export type FieldDataType =
   | DetailType
@@ -125,7 +133,8 @@ export const CarDetailsCard = ({
 
 const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
   const { data } = useDisclosureContext();
-  const { mutate } = useMutation({
+  const { openModal } = useConfirmContext();
+  const { mutate, isPending } = useMutation({
     mutationFn: updateDetailToCar,
     onSuccess: () => {},
     onError: (error) => {
@@ -140,53 +149,65 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
     });
   };
   const handleDeleteAxis = (i: number) => {
-    mutate({
-      car: data.car,
-      section: "deleteAxis",
-      updatedDetail: { index: i },
+    openModal({
+      action: async () =>
+        mutate({
+          car: data.car,
+          section: "deleteAxis",
+          updatedDetail: { index: i },
+        }),
+      isLoading: isPending,
+      title: "Удалить ОСЬ?",
+      buttonName: "Удалить",
     });
   };
   return (
     <>
       {axis.map((e, i) => (
         <>
-          <div className="flex h-full w-full gap-3 overflow-hidden" key={i + 5}>
-            <Wheel prop={e.left} side={"left"} index={i} />
-
-            <Divider orientation="vertical" className="h-auto relative">
-              {i == axis.length - 1 && (
+          <div key={i + 5} className="w-full overflow-hidden relative">
+            {axis.length > 1 && (
+              <div className="w-full flex justify-end">
                 <Button
                   isIconOnly
                   size="sm"
                   variant="light"
-                  className="absolute top-[50%] -right-[15.1249px]"
-                  color="success"
-                  onClick={() => {
-                    handleAddAxis();
-                  }}
-                >
-                  <FaPlus size={18} />
-                </Button>
-              )}
-              {axis.length > 1 && (
-                <Button
-                  isIconOnly
-                  size="sm"
-                  variant="light"
-                  className="absolute top-[5%] -right-[15.1249px]"
                   color="danger"
                   onClick={() => {
                     handleDeleteAxis(i);
                   }}
                 >
-                  <FaMinus size={18} />
+                  <FaX size={10} />
                 </Button>
-              )}
-            </Divider>
+              </div>
+            )}
+            <div className="flex h-full w-full gap-3 overflow-hidden">
+              <Wheel prop={e.left} side={"left"} index={i} />
 
-            <Wheel prop={e.right} side={"right"} index={i} />
+              <Divider orientation="vertical" className="h-auto relative" />
+
+              <Wheel prop={e.right} side={"right"} index={i} />
+            </div>
           </div>
-          <Divider />
+          <div className="pt-2">
+            <Divider />
+          </div>
+          <div className="col-span-2 w-full flex justify-center mt-2">
+            {i == axis.length - 1 && i < 5 && (
+              <Button
+                isIconOnly
+                size="sm"
+                fullWidth
+                variant="light"
+                color="success"
+                onClick={() => {
+                  handleAddAxis();
+                }}
+              >
+                <FaPlus size={18} />
+              </Button>
+            )}
+          </div>
         </>
       ))}
     </>
@@ -250,23 +271,22 @@ const Wheel = ({
     delete res?.name;
     if (type !== "brake_shoe") delete res?.model;
     const dataToPass = { ...res, index, side };
-    console.log("Data to PASS: ", { type, detail: dataToPass });
 
     setData({ type, detail: dataToPass });
     onOpenChange();
   };
 
   return (
-    <div className="grid grid-cols-2 w-full">
+    <div className={`grid grid-cols-2 w-full `}>
       <div
         onClick={() => {
           handleOpen("wheel", wheel);
         }}
-        className="cursor-pointer hover:opacity-70"
+        className={`cursor-pointer hover:opacity-70 ${side == "right" && "order-2"}`}
       >
         <div className="flex gap-1 items-center">
           <span className="font-semibold">Колесо</span>
-          {/* <GiCarWheel size={18} /> */}
+          <GiCarWheel size={18} />
         </div>
         <DetailSampleCard fieldData={wheel} v="short" />
       </div>
@@ -278,10 +298,10 @@ const Wheel = ({
       >
         <div className="flex gap-1 items-center">
           <span className="font-semibold">Колодка</span>
-          {/* <GiStoneWheel size={18} /> */}
+          <GiStoneWheel size={18} />
         </div>
         <DetailSampleCard fieldData={brake_shoe} v="short" />
-        <div className="flex gap-1">
+        <div className="flex gap-1 leading-3">
           <span>Модель: </span>
           <span className="font-semibold">{brake_shoe.model}</span>
         </div>
@@ -331,43 +351,84 @@ const AccumCard = ({
 }: {
   accumData: CarsType["details"]["accumulator"];
 }) => {
-  const { onOpenChange, setData } = useDisclosureContext();
+  const { onOpenChange, setData, data } = useDisclosureContext();
 
   const handleOpen = (data: AccumulatorType) => {
     setData({ type: "accumulator", detail: { ...data } });
     onOpenChange();
   };
+  const { toast } = useToast();
+  const { mutate, isPending } = useMutation({
+    mutationFn: async () => await swapAccumulators(data.car),
+    onSuccess: () => {
+      toast({
+        title: "Вы успешно поменяли аккумуляторы местами",
+      });
+    },
+    onError(error) {
+      toast({
+        title: "Ошибка",
+        description: `${error.message}`,
+      });
+    },
+  });
+  const { openModal } = useConfirmContext();
 
   return (
     <div className="w-full">
-      {accumData.accumulators.map((e, i) => (
-        <div
-          className="flex flex-col gap-2 pb-2 cursor-pointer hover:opacity-70"
-          key={`Accum ${i + 2}`}
-          onClick={() => {
-            handleOpen(e);
-          }}
-        >
-          <div>
-            <span className="font-semibold">{e?.location}</span>
-            <div className="grid grid-cols-2 ">
-              <span>Модель аккумулятора: </span>
-              <span className="font-semibold text-center">{e?.model}</span>
-            </div>
+      {accumData.accumulators
+        ?.sort((a, b) => {
+          if (a.location === "Верхний" && b.location !== "Верхний") return -1;
+          if (a.location !== "Верхний" && b.location === "Верхний") return 1;
+          return 0;
+        })
+        .map((e, i) => (
+          <>
+            <div
+              className="flex flex-col gap-2 pb-2 cursor-pointer hover:opacity-70"
+              key={`Accum ${i + 2}`}
+              onClick={() => {
+                handleOpen(e);
+              }}
+            >
+              <div>
+                <span className="font-semibold">{e?.location}</span>
+                <div className="grid grid-cols-2 ">
+                  <span>Модель аккумулятора: </span>
+                  <span className="font-semibold text-center">{e?.model}</span>
+                </div>
 
-            {/* 
-            @ts-ignore */}
-            <DetailSampleCard fieldData={e} />
-          </div>
-          <Divider />
-        </div>
-      ))}
+                <DetailSampleCard fieldData={e} />
+              </div>
+            </div>
+            {i == 0 && (
+              <div
+                className="relative py-4 cursor-pointer hover:opacity-70"
+                onClick={() => {
+                  openModal({
+                    action: async () => mutate(),
+                    isLoading: isPending,
+                    title: "Поменять аккумуляторы местами?",
+                    buttonName: "Поменять",
+                  });
+                }}
+              >
+                <Divider className="relative" />
+                <IoSwapVerticalOutline
+                  className="absolute self-center top-1 left-[45%]"
+                  size={22}
+                />
+              </div>
+            )}
+          </>
+        ))}
 
       <div className="w-full grid grid-cols-2 items-center">
         <span>Последний раз их меняли местами:</span>
 
         <span className="font-semibold text-center">
-          {accumData?.last_swap}
+          {new Date(accumData?.last_swap).toLocaleDateString()}:
+          {new Date(accumData?.last_swap).toLocaleTimeString()}
         </span>
       </div>
     </div>

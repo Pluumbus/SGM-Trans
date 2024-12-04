@@ -15,7 +15,10 @@ import { FormNumberInput } from "@/components";
 import { DatePicker } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { updateDetailToCar } from "../../_api/supa.requests";
-import { SingleDetailType } from "@/lib/references/drivers/feature/types";
+import {
+  AccumulatorType,
+  SingleDetailType,
+} from "@/lib/references/drivers/feature/types";
 import { parseDate } from "@internationalized/date";
 import { formatDate } from "@/lib/helpers";
 
@@ -205,7 +208,11 @@ export const ManageDetail = () => {
                 />
               )}
             />
-            <Input label="Модель" defaultValue={data.detail?.model} />
+            <Input
+              {...register("model")}
+              label="Модель аккумулятора"
+              defaultValue={(data.detail as AccumulatorType)?.model}
+            />
           </div>
         );
       case "wheel":

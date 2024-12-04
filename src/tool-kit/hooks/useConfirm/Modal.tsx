@@ -42,12 +42,16 @@ export const ConfirmModal = ({
         <ModalHeader>
           <span>{title}</span>
         </ModalHeader>
-        {description && (
-          <>
-            <Divider />
-            <ModalBody>{description}</ModalBody>
-          </>
-        )}
+
+        <Divider />
+        <ModalBody>
+          {description || (
+            <span className="text-danger font-semibold">
+              Это действие нельзя будет отменить
+            </span>
+          )}
+        </ModalBody>
+
         <Divider />
         <ModalFooter>
           <div className="flex justify-end gap-4">

@@ -82,6 +82,11 @@ export type TrailersType = {
   state_number: string;
   max_weight: number;
   max_volume: number;
+  details: TrailerDetailsType;
+};
+
+export type TrailerDetailsType = {
+  vehicle_axis: VehicleAxis[];
 };
 
 export type FullDriversType = CarsType & { drivers: DriversType[] };
