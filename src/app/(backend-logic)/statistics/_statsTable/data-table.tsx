@@ -62,7 +62,6 @@ export function DataTable() {
     },
   });
   const handleSetTimeRangeFilter = () => {
-    console.log(filteredData);
     const startDate = new Date(
       dateVal.start.year,
       dateVal.start.month - 1,

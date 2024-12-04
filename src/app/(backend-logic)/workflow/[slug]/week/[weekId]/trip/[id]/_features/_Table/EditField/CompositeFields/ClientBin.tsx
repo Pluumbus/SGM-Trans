@@ -32,12 +32,10 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   useEffect(() => {
     if (isOpen && !values.snts.every((e) => e.startsWith(SNT))) {
-      console.log("use effect", values.snts);
       setValues((prev) => {
         const res = prev.snts.map((e) =>
-          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e,
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
         );
-        console.log("res", res);
 
         return {
           ...prev,

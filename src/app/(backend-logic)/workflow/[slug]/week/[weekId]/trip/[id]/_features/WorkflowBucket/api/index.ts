@@ -83,7 +83,6 @@ export const deleteFileFromDb = async (weekId: string, path: string) => {
   const updatedDocs = currentDocs.filter(
     (doc: { pathName: string }) => !doc.pathName.includes(path)
   );
-  console.log(updatedDocs);
 
   const { error: updateError } = await supabase
     .from("weeks")

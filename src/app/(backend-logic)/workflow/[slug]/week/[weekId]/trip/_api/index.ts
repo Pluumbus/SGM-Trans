@@ -99,7 +99,6 @@ export const getWeeks = async (
 export const getTrips = async (): Promise<TripType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server).from(`trips`).select("*");
-  console.log(data);
 
   if (error) {
     throw new Error(error.message);

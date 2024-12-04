@@ -4,7 +4,7 @@ import { useCompositeStates } from "./helpers";
 import { Cell } from "@tanstack/react-table";
 import { DatePicker, DateValue } from "@nextui-org/react";
 import { getLocalTimeZone, parseDate, today } from "@internationalized/date";
-import { formatDate } from "../Date";
+import { formatDate } from "@/lib/helpers";
 
 type Type = CargoType["status"];
 
@@ -13,7 +13,7 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [estDate, setEstDate] = useState<DateValue>(
     values
       ? parseDate(formatDate(new Date(values?.toString())?.toISOString()))
-      : today(getLocalTimeZone()).add({ days: 7 }),
+      : today(getLocalTimeZone()).add({ days: 7 })
   );
 
   return (

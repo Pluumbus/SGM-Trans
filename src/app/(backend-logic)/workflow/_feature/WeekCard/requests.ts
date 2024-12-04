@@ -11,7 +11,7 @@ export const addCargo = async (data: CargoType) => {
   const { error } = await supabase.from("cargos").insert(data);
 
   if (error) {
-    console.log(error);
+    console.error(error);
     throw new Error();
   }
 };

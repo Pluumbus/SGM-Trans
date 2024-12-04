@@ -54,8 +54,6 @@ export const useCompositeStates = <T>(
 
   useEffect(() => {
     if (!isEqual(values, info.getValue())) {
-      console.log("isEqual:", !isEqual(debouncedValue, info.getValue()));
-
       setValues(info.getValue() as T);
     }
   }, [info.getValue()]);

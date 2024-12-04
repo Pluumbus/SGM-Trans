@@ -68,7 +68,6 @@ export const TripInfoDriver = ({
       ...prev,
       [name]: value,
     }));
-    console.log(secondaryInputCar);
     if (secondaryInputCar.car !== "" && secondaryInputCar.state_number !== "")
       setTripCar(
         secondaryInputCar.car + " - " + secondaryInputCar.state_number

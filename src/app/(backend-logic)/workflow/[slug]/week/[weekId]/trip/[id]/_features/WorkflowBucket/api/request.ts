@@ -32,7 +32,6 @@ export const uploadFile = async (file: File, weekId: string) => {
 };
 
 export const deleteFile = async (path: string, weekId: string) => {
-  console.log(path);
   await supabase.storage.from("workflow-documents").remove([path]);
   await deleteFileFromDb(weekId, path);
 };

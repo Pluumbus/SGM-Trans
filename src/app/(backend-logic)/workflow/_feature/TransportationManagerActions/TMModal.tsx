@@ -37,8 +37,6 @@ export const TMModal = ({ disclosure, state }: Props) => {
   const { mutate, isPending } = useMutation({
     mutationFn: createClient,
     onSuccess: (data) => {
-      console.log("success: ", data);
-
       toast({
         title: "Вы успешно добавили клиента",
         description: `${getValues().full_name.first_name} ${getValues().full_name.last_name} c номером: ${getValues().phone_number}`,

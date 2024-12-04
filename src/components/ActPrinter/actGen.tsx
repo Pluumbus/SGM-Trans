@@ -92,7 +92,6 @@ export const PrintWarehouseButton = ({
     const compiledTemplate = Handlebars.compile(wrhBodyHtmlTemp);
 
     const printWindow = window.open("", "", "width=800,height=600");
-    console.log(actWrhData);
     if (printWindow) {
       const htmlContent = compiledTemplate({ items: actWrhData });
       printWindow.document.open();

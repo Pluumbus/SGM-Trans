@@ -117,7 +117,6 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
 
-  console.log(tripsData);
   return (
     <div className="mt-4">
       <Button

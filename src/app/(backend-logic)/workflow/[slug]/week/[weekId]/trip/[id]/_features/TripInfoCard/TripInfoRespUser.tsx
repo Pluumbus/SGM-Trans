@@ -44,7 +44,9 @@ export const TripInfoResponsibleUser = ({
           {allUsers?.map((user) => (
             <DropdownItem
               key={user.id}
-              onClick={() => setTripUserMutation(user.id)}
+              onClick={() => {
+                setTripUserMutation(user.id);
+              }}
             >
               {user.userName}
             </DropdownItem>

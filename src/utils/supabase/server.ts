@@ -12,7 +12,6 @@ async function getSupabaseServer() {
 
   const accessToken = await getToken({ template: "SGM-TRANS" });
 
-  console.log(accessToken);
   return createClient(supabaseUrl, supabaseAnonKey, {
     global: { headers: { Authorization: `Bearer ${accessToken}` } },
   });

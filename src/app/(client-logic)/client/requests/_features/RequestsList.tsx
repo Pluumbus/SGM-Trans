@@ -40,8 +40,6 @@ export const RequestsList = () => {
 };
 
 const RequestCard = ({ reqInfo }: { reqInfo: ClientRequestType }) => {
-  console.log(reqInfo);
-
   return (
     <Card isHoverable isPressable>
       <CardHeader>
