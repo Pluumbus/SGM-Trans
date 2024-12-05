@@ -107,9 +107,12 @@ export const getTrips = async (): Promise<TripType[]> => {
   return data as TripType[];
 };
 
-export const getJustWeeks = async () => {
+export const getJustWeeks = async (type: WeekTableType = "ru") => {
   const server = getSupabaseServer();
-  const { data, error } = await (await server).from(`weeks`).select("*");
+  const { data, error } = await (await server)
+    .from(`weeks`)
+    .select("*")
+    .eq("table_type", type);
 
   if (error) {
     throw new Error(error.message);
