@@ -1,8 +1,8 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "@/components/ui/use-toast";
-import { useParams } from "next/navigation";
 import { uploadFile } from "../api/request";
+import { SgmSpinner } from "@/components/ui/SgmSpinner";
 
 export const AddDocuments = ({ weekId }: { weekId: string }) => {
   const { mutate: AddDocMutation, isPending } = useMutation({
@@ -24,7 +24,7 @@ export const AddDocuments = ({ weekId }: { weekId: string }) => {
     }
   };
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center flex-col items-center">
       <div className="flex justify-center items-center p-4 rounded-lg ">
         <label className="flex items-center px-6 py-3 bg-green-500 text-black text-md font-semibold  cursor-pointer hover:bg-green-600 transition duration-300 rounded-lg">
           <span className="mr-2">Загрузить документы</span>
@@ -36,6 +36,7 @@ export const AddDocuments = ({ weekId }: { weekId: string }) => {
           />
         </label>
       </div>
+      {isPending && <SgmSpinner />}
     </div>
   );
 };

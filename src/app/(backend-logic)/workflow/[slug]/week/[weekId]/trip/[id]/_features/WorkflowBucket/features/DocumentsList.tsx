@@ -1,6 +1,6 @@
 import { Input, ScrollShadow } from "@nextui-org/react";
-import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { use, useEffect, useState } from "react";
 import { SupaDoc } from "../api/types";
 import { DeleteDocuments } from "./DeleteDocuments";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
@@ -9,16 +9,19 @@ import supabase from "@/utils/supabase/client";
 import { WeekType } from "@/app/(backend-logic)/workflow/_feature/types";
 
 export const DocumentsList = ({ weekId }: { weekId: string }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["GetAllFiles"],
-    queryFn: async () => getDocsFromWeek(weekId),
+  const { mutate, isPending } = useMutation({
+    mutationKey: ["GetAllFiles"],
+    mutationFn: async () => getDocsFromWeek(weekId),
+    onSuccess: (data) => {
+      setFiles(data);
+    },
   });
-  const [files, setFiles] = useState<SupaDoc[]>(data);
+  const [files, setFiles] = useState<SupaDoc[]>();
   const [filter, setFilter] = useState<string>("");
 
   useEffect(() => {
-    if (data) setFiles(data);
-  }, [data]);
+    mutate();
+  }, []);
 
   useEffect(() => {
     const cn = supabase
@@ -49,35 +52,37 @@ export const DocumentsList = ({ weekId }: { weekId: string }) => {
   );
 
   return (
-    <div className="flex justify-center flex-col">
-      <Input placeholder="Поиск по названию" onChange={handleSetFilter} />
-      {isLoading && <SgmSpinner />}
-      <ScrollShadow className="h-[20rem]" hideScrollBar>
-        {filteredFiles?.map((f) => (
-          <div className="flex flex-col border-b-1 " key={f.id}>
-            <span>Название : {f.originalName}</span>
-            <span>
-              Добавлено : <b>{new Date(f.created_at).toLocaleDateString()}</b>
-            </span>
-            <span className="flex justify-between mb-1">
-              <a
-                href={f.docUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                download={f.pathName}
-                className="underline text-blue-600 hover:text-blue-800"
-              >
-                Скачать
-              </a>
-              <DeleteDocuments
-                pathName={f.pathName}
-                originalName={f.originalName}
-                weekId={weekId}
-              />
-            </span>
-          </div>
-        ))}
-      </ScrollShadow>
+    <div className="flex justify-center flex-col items-center">
+      {isPending && <SgmSpinner />}
+      <div className="w-full">
+        <Input placeholder="Поиск по названию" onChange={handleSetFilter} />
+        <ScrollShadow className="h-[20rem]" hideScrollBar>
+          {filteredFiles?.map((f) => (
+            <div className="flex flex-col border-b-1 " key={f.id}>
+              <span>Название : {f.originalName}</span>
+              <span>
+                Добавлено : <b>{new Date(f.created_at).toLocaleDateString()}</b>
+              </span>
+              <span className="flex justify-between mb-1">
+                <a
+                  href={f.docUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={f.pathName}
+                  className="underline text-blue-600 hover:text-blue-800"
+                >
+                  Скачать
+                </a>
+                <DeleteDocuments
+                  pathName={f.pathName}
+                  originalName={f.originalName}
+                  weekId={weekId}
+                />
+              </span>
+            </div>
+          ))}
+        </ScrollShadow>
+      </div>
     </div>
   );
 };

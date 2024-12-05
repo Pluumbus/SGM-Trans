@@ -78,17 +78,20 @@ export const WeekCard = () => {
       <AddWeek />
       <div className="flex gap-4 w-full min-h-44">
         <Accordion selectionMode="multiple">
-          {weeks.toReversed().map((week, i) => (
-            <AccordionItem
-              key={i + 1}
-              aria-label={`Accordion ${i}`}
-              title={`Неделя ${week.week_number}`}
-              subtitle={<SummaryOfTrip week={week} />}
-            >
-              <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
-              <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
-            </AccordionItem>
-          ))}
+          {weeks
+            .toReversed()
+            .sort((a, b) => b.week_number - a.week_number)
+            .map((week, i) => (
+              <AccordionItem
+                key={i + 1}
+                aria-label={`Accordion ${i}`}
+                title={`Неделя ${week.week_number}`}
+                subtitle={<SummaryOfTrip week={week} />}
+              >
+                <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
+                <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
+              </AccordionItem>
+            ))}
         </Accordion>
       </div>
     </div>
