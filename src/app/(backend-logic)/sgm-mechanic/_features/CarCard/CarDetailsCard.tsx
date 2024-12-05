@@ -5,6 +5,7 @@ import {
   CarsType,
   DetailType,
   MileageType,
+  SingleDetailType,
   VehicleAxis,
   WheelType,
 } from "@/lib/references/drivers/feature/types";
@@ -12,19 +13,21 @@ import { Button, Card, CardBody, Divider } from "@nextui-org/react";
 import { DetailIcon } from "./DetailIcon";
 import { VehicleReportStatisticsType } from "../../_api/types";
 import { ManageDetail } from "../Modals";
-import { DetailNameType, useDisclosureContext } from "../DisclosureContext";
-import { FaMinus, FaPlus } from "react-icons/fa";
+import {
+  DetailNameType,
+  DisclosureContextType,
+  useDisclosureContext,
+} from "../DisclosureContext";
+import { FaPlus } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { swapAccumulators, updateDetailToCar } from "../../_api/supa.requests";
 import { useEffect, useId, useMemo } from "react";
 import { GiCarWheel, GiStoneWheel } from "react-icons/gi";
-import {
-  IoSwapHorizontalOutline,
-  IoSwapVerticalOutline,
-} from "react-icons/io5";
-import { useConfirmContext } from "@/tool-kit/hooks";
+import { IoSwapVerticalOutline } from "react-icons/io5";
+import { getSeparatedNumber, useConfirmContext } from "@/tool-kit/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { FaX } from "react-icons/fa6";
+import { ChangeMileage } from "./ChangeMileage";
 
 export type FieldDataType =
   | DetailType
@@ -32,13 +35,13 @@ export type FieldDataType =
   | WheelType["brake_shoe"]
   | WheelType["wheel"];
 
-export const CarDetailsCard = ({
-  car: oCarInfo,
-}: {
+export type CarsWithOmnicommType = {
   car: CarsType & {
     omnicommData: VehicleReportStatisticsType;
   };
-}) => {
+};
+
+export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
   const car = useMemo(() => oCarInfo, [oCarInfo]);
 
   const { details: carDetails } = car;
@@ -84,6 +87,7 @@ export const CarDetailsCard = ({
           }}
         >
           <div className="w-full">
+            <ChangeMileage car={car} />
             <div className="w-full text-sm flex flex-col gap-2">
               <div className="grid grid-cols-2 gap-2 w-full">
                 {commonDetails.map((e, index) => (
@@ -102,11 +106,15 @@ export const CarDetailsCard = ({
                     <DetailSampleCard fieldData={e} />
                     <div className="grid grid-cols-2">
                       <span className="text-danger-500">
-                        {parseFloat(Number(e.mileage.last_mileage)).toFixed(2)}
+                        {parseFloat(
+                          Number(e.mileage.last_mileage).toString()
+                        ).toFixed(2)}
                         км
                       </span>
                       <span className="text-success-500 text-center">
-                        {parseFloat(Number(e.mileage.next_mileage)).toFixed(2)}
+                        {parseFloat(
+                          Number(e.mileage.next_mileage).toString()
+                        ).toFixed(2)}
                         км
                       </span>
                     </div>
@@ -135,7 +143,15 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
   const { data } = useDisclosureContext();
   const { openModal } = useConfirmContext();
   const { mutate, isPending } = useMutation({
-    mutationFn: updateDetailToCar,
+    mutationFn: ({
+      car,
+      section,
+      updatedDetail,
+    }: {
+      car: CarsType;
+      section: DetailNameType;
+      updatedDetail: SingleDetailType;
+    }) => updateDetailToCar({ car, section, updatedDetail }),
     onSuccess: () => {},
     onError: (error) => {
       console.error("Error updating detail:", error);
@@ -143,7 +159,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
   });
   const handleAddAxis = () => {
     mutate({
-      car: data.car,
+      car: data.car.car,
       section: "axis",
       updatedDetail: emptyAxis,
     });
@@ -152,7 +168,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
     openModal({
       action: async () =>
         mutate({
-          car: data.car,
+          car: data.car.car,
           section: "deleteAxis",
           updatedDetail: { index: i },
         }),
@@ -318,6 +334,14 @@ const DetailSampleCard = ({
   v?: "short" | "long";
 }) => {
   const { data } = useDisclosureContext();
+
+  console.log(data);
+
+  const currMileage = useMemo(
+    () => currentMileage(data, fieldData),
+    [data, fieldData]
+  );
+
   return (
     <>
       <div className={v == "short" ? "flex gap-1" : "grid grid-cols-2"}>
@@ -329,23 +353,35 @@ const DetailSampleCard = ({
       <div className={v == "short" ? "flex gap-1" : "grid grid-cols-2"}>
         <span>{v == "short" ? "КМ: " : "Пробег: "} </span>
         <span className="font-semibold text-center">
-          {parseFloat(
-            (
-              Number(
-                data?.car?.omnicommData?.mw?.mileage
-                  ? parseFloat(
-                      data?.car?.omnicommData?.mw?.mileage.toString()
-                    ).toFixed(2)
-                  : 0
-              ) - Number(fieldData?.mileage?.last_mileage)
-            ).toString()
-          ).toFixed(2)}
-          км
+          {currMileage}
+          {v !== "short" && " км"}
         </span>
       </div>
     </>
   );
 };
+
+const currentMileage = (
+  data: DisclosureContextType["data"],
+  fieldData: FieldDataType
+) =>
+  data
+    ? getSeparatedNumber(
+        Number(
+          parseFloat(
+            (data?.car.details?.temp_can_mileage
+              ? Number(
+                  parseFloat(
+                    data?.car.details?.temp_can_mileage.toString()
+                  ).toFixed(2)
+                ) - Number(fieldData?.mileage?.last_mileage)
+              : 0
+            ).toString()
+          ).toFixed(2)
+        )
+      )
+    : 0;
+
 const AccumCard = ({
   accumData,
 }: {
@@ -427,8 +463,14 @@ const AccumCard = ({
         <span>Последний раз их меняли местами:</span>
 
         <span className="font-semibold text-center">
-          {new Date(accumData?.last_swap).toLocaleDateString()}:
-          {new Date(accumData?.last_swap).toLocaleTimeString()}
+          {accumData?.last_swap ? (
+            <span>
+              {new Date(accumData?.last_swap).toLocaleDateString()}:
+              {new Date(accumData?.last_swap).toLocaleTimeString()}
+            </span>
+          ) : (
+            <span>Аккумуляторы не меняли местами</span>
+          )}
         </span>
       </div>
     </div>

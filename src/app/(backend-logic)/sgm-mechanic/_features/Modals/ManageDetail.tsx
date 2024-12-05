@@ -8,7 +8,7 @@ import {
   Button,
   Input,
 } from "@nextui-org/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDisclosureContext } from "../DisclosureContext";
 import { Controller, useForm } from "react-hook-form";
 import { FormNumberInput } from "@/components";
@@ -26,7 +26,7 @@ export const ManageDetail = () => {
   const { isOpen, onOpenChange, data, onClose } = useDisclosureContext();
 
   const { handleSubmit, register, setValue, reset, getValues, control } =
-    useForm<SingleDetailType>();
+    useForm<SingleDetailType & { inputMileage: string }>();
 
   const { mutate } = useMutation({
     mutationFn: updateDetailToCar,
@@ -54,32 +54,38 @@ export const ManageDetail = () => {
     };
   }, [isOpen]);
 
-  const onSubmit = (formData: SingleDetailType) => {
+  const onSubmit = (formData: SingleDetailType & { inputMileage: string }) => {
     if (!data) return;
+
+    const getNextMileage = () => {
+      if (getValues().inputMileage) {
+        return Number(
+          data.car.details?.temp_can_mileage
+            ? Number(getValues().inputMileage) +
+                Number(
+                  parseFloat(
+                    data.car.details?.temp_can_mileage.toString()
+                  ).toFixed(2)
+                )
+            : 0
+        );
+      } else {
+        return data.car.details?.temp_can_mileage
+          ? parseFloat(data.car.details?.temp_can_mileage.toString()).toFixed(2)
+          : 0;
+      }
+    };
+
+    const dataWOInputField = formData;
+    delete dataWOInputField.inputMileage;
 
     const updatedDetail = {
       ...data.detail,
-      ...formData,
+      ...dataWOInputField,
       mileage: {
-        next_mileage: Number(getValues().mileage?.next_mileage)
-          ? Number(getValues().mileage?.next_mileage) +
-            (Number(
-              data.car?.omnicommData?.mw?.mileage
-                ? parseFloat(
-                    data.car?.omnicommData?.mw?.mileage.toString()
-                  ).toFixed(2)
-                : 0
-            ) -
-              Number(getValues().mileage?.last_mileage))
-          : data.car?.omnicommData?.mw?.mileage
-            ? parseFloat(
-                data?.car?.omnicommData?.mw?.mileage.toString()
-              ).toFixed(2)
-            : 0,
-        last_mileage: data.car?.omnicommData?.mw?.mileage
-          ? parseFloat(data.car?.omnicommData?.mw?.mileage.toString()).toFixed(
-              2
-            )
+        next_mileage: getNextMileage(),
+        last_mileage: data.car.details?.temp_can_mileage
+          ? parseFloat(data.car.details?.temp_can_mileage.toString()).toFixed(2)
           : 0,
       },
       installation_date:
@@ -121,34 +127,6 @@ export const ManageDetail = () => {
     }
   };
 
-  const EndContent = () => {
-    return (
-      <div className="flex gap-1 text-sm">
-        <span>+</span>
-        <span>
-          {Number(getValues().mileage?.next_mileage)
-            ? parseFloat(
-                (
-                  Number(
-                    data.car?.omnicommData?.mw?.mileage
-                      ? parseFloat(
-                          data.car?.omnicommData?.mw?.mileage.toString()
-                        ).toFixed(2)
-                      : 0
-                  ) - Number(getValues().mileage?.last_mileage)
-                ).toString()
-              ).toFixed(2)
-            : data.car?.omnicommData?.mw?.mileage
-              ? parseFloat(
-                  data.car?.omnicommData?.mw?.mileage.toString()
-                ).toFixed(2)
-              : 0}
-        </span>
-        <span>км</span>
-      </div>
-    );
-  };
-
   const renderModalContent = () => {
     if (!data) return null;
 
@@ -176,12 +154,10 @@ export const ManageDetail = () => {
               )}
             />
             <FormNumberInput
-              name="mileage.next_mileage"
+              name="inputMileage"
               setValue={setValue}
-              initValue={Number(getValues().mileage?.next_mileage)}
               inputProps={{
                 label: "Через сколько км замена",
-                endContent: <EndContent />,
               }}
             />
           </div>
@@ -219,12 +195,10 @@ export const ManageDetail = () => {
         return (
           <div className="flex flex-col gap-2">
             <FormNumberInput
-              name="mileage.next_mileage"
+              name="inputMileage"
               setValue={setValue}
-              initValue={Number(getValues("mileage.next_mileage") || 0)}
               inputProps={{
                 label: "Через сколько км замена",
-                endContent: <EndContent />,
               }}
             />
           </div>
@@ -234,12 +208,10 @@ export const ManageDetail = () => {
           <div className="flex flex-col gap-2">
             <Input label="Модель колодки" {...register("model")} />
             <FormNumberInput
-              name="mileage.next_mileage"
+              name="inputMileage"
               setValue={setValue}
-              initValue={Number(getValues("mileage.next_mileage") || 0)}
               inputProps={{
                 label: "Через сколько км замена",
-                endContent: <EndContent />,
               }}
             />
           </div>

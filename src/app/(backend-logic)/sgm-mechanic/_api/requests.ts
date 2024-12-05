@@ -105,15 +105,27 @@ export const getAllVehiclesStatistics =
       (vehicle) => vehicle.terminal_id
     );
 
+    const res = await getSingleVehicleStatistics(allVehiclesUuid).then(
+      (data) => data
+    );
+    console.log("getSingleVehicleStatistics(allVehiclesUuid)", res);
+
     return await getSingleVehicleStatistics(allVehiclesUuid);
   };
 
 export const getSingleVehicleStatistics = async (vUuid: number[]) => {
-  const timeBegin = 1732771200; // (2024-09-01 00:00:00 UTC).
-  const timeEnd = 1735689599; //  (2024-12-31 23:59:59 UTC).
+  const timeBegin = Date.now() - 86400000;
+  const timeEnd = Date.now();
+  // const timeBegin = new Date("2024-09-01T00:00:00Z").getTime() - 86400000;
+  // const timeEnd = 1735689599000; // (2024-12-31 23:59:59 UTC in milliseconds).
+
   const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
 
+  console.log(
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
+  );
+
   return await fetchFromAPI(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[mw,cmw,fuel,can,canmnt,ccan]&vehicles=${encodedVUuid}`
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
   );
 };

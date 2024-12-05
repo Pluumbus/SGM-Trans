@@ -65,6 +65,7 @@ export type DetailType = {
 export type CarDetailsType = {
   created_at: string;
   details: DetailType[];
+  temp_can_mileage?: string;
   accumulator: {
     last_swap: string;
     accumulators: AccumulatorType[];
