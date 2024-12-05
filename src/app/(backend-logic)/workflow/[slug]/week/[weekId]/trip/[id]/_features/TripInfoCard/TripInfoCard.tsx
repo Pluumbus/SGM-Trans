@@ -62,7 +62,7 @@ export const TripInfoCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.trip_number === Number(selectedTabId)
+      (item) => item.id === Number(selectedTabId)
     );
     setCurrentTripData(currentTrip);
     setStatusVal(currentTrip?.status);
@@ -83,8 +83,8 @@ export const TripInfoCard = ({
             allUsers={allUsers}
           />
           <TripInfoNum
-            id={currentTripData?.id}
-            tempId={Number(selectedTabId)}
+            id={Number(selectedTabId)}
+            tempId={currentTripData?.trip_number}
           />
           <TripInfoDriver
             currentTripData={currentTripData}

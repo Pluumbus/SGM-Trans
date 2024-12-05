@@ -22,7 +22,7 @@ export const updateTripDate = async (
     const { data, error } = await supabase
       .from("trips")
       .update({ date_in: value })
-      .eq("trip_number", Number(tripId));
+      .eq("id", Number(tripId));
 
     if (error) {
       throw new Error();

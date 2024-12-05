@@ -123,11 +123,11 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
         />
       </CardBody>
       <CardFooter className="items-start gap-2 text-sm">
-        <div className="flex flex-col gap-2 font-medium leading-none">
+        <div className="flex flex-col items-start gap-2 font-medium leading-none">
           <span>Лидирует по сумме грузов</span>
           <span>Лидирует по сумме тенге</span>
         </div>
-        <div className="flex flex-col gap-2 font-medium leading-none">
+        <div className="flex flex-col items-start gap-2 font-medium leading-none">
           {isLoading ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (

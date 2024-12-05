@@ -9,11 +9,9 @@ import { TripType } from "../TripCard/TripCard";
 export const CargoModal = ({
   isOpenCargo,
   onOpenChangeCargo,
-  trip_number,
-  tripsData,
+  trip_id,
 }: {
-  trip_number: number;
-  tripsData: TripType[];
+  trip_id: number;
   isOpenCargo: boolean;
   onOpenChangeCargo: () => void;
 }) => {
@@ -23,16 +21,13 @@ export const CargoModal = ({
 
   const validate = useValdiateForm();
 
-  const currentTripId = tripsData?.find(
-    (tr) => tr.trip_number === trip_number
-  )?.id;
   return (
     <>
       <Modal isOpen={isOpenCargo} onOpenChange={onOpenChangeCargo} size="2xl">
         <ModalContent>
           <form
             onSubmit={handleSubmit((data) => {
-              validate(data) && addCargoOnSubmit(data, mutate, currentTripId);
+              validate(data) && addCargoOnSubmit(data, mutate, trip_id);
             })}
           >
             <ModalHeader>Добавить груз</ModalHeader>
