@@ -8,6 +8,25 @@ import {
 import supabase from "@/utils/supabase/client";
 import { DetailNameType } from "../_features/DisclosureContext";
 
+export const changeMileage = async (car: CarsType, mileage: string) => {
+  const { details } = car;
+
+  const updatedDetails: CarDetailsType = {
+    ...details,
+    temp_can_mileage: mileage,
+  };
+
+  const { data, error } = await (await supabase)
+    .from("cars")
+    .update({ details: updatedDetails })
+    .eq("id", Number(car.id));
+
+  if (error) {
+    throw new Error();
+  }
+  return data;
+};
+
 export const swapAccumulators = async (car: CarsType) => {
   const { details } = car;
   const updatedDetails: CarDetailsType = {

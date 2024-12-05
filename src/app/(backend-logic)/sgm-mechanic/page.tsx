@@ -2,7 +2,13 @@
 
 import { NextPage } from "next";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { Accordion, AccordionItem, Divider, Spinner } from "@nextui-org/react";
+import {
+  Accordion,
+  AccordionItem,
+  Divider,
+  Input,
+  Spinner,
+} from "@nextui-org/react";
 import { getCars } from "@/lib/references/drivers/feature/api";
 
 import { getAllVehiclesStatistics } from "./_api/requests";
@@ -98,20 +104,7 @@ const Page: NextPage<Props> = () => {
               key={e.id}
               aria-label={`Accordion ${e.id}`}
               className="border border-gray-600 pr-2"
-              title={
-                <div className="justify-between">
-                  <div className="flex p-3 w-full gap-2 items-center h-full subpixel-antialiased">
-                    <span className="font-semibold">{e.car}</span>
-                    <Divider
-                      orientation="vertical"
-                      className="h-auto min-h-6"
-                    />
-                    <span className="text-sm text-center">
-                      {e.state_number}
-                    </span>
-                  </div>
-                </div>
-              }
+              title={<ItemTitle e={e} />}
             >
               <CarCard
                 key={`CarCard ${e.id}`}
@@ -129,6 +122,26 @@ const Page: NextPage<Props> = () => {
       </Accordion>
       <ManageDetail />
     </DisclosureProvider>
+  );
+};
+
+const ItemTitle = ({ e }: { e: CarsType }) => {
+  return (
+    <div className="justify-between">
+      <div className="flex p-3 w-full gap-2 items-center h-full subpixel-antialiased">
+        <span className="font-semibold">{e.car}</span>
+        <Divider orientation="vertical" className="h-auto min-h-6" />
+        <span className="text-sm text-center">{e.state_number}</span>
+        {e.details?.temp_can_mileage && (
+          <>
+            <Divider orientation="vertical" className="h-auto min-h-6" />
+            <span className="text-sm text-center font-semibold">
+              {e.details.temp_can_mileage || ""}&nbsp;км
+            </span>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

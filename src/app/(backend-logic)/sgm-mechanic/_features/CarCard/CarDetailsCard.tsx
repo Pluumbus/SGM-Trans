@@ -18,13 +18,11 @@ import { useMutation } from "@tanstack/react-query";
 import { swapAccumulators, updateDetailToCar } from "../../_api/supa.requests";
 import { useEffect, useId, useMemo } from "react";
 import { GiCarWheel, GiStoneWheel } from "react-icons/gi";
-import {
-  IoSwapHorizontalOutline,
-  IoSwapVerticalOutline,
-} from "react-icons/io5";
+import { IoSwapVerticalOutline } from "react-icons/io5";
 import { useConfirmContext } from "@/tool-kit/hooks";
 import { useToast } from "@/components/ui/use-toast";
 import { FaX } from "react-icons/fa6";
+import { ChangeMileage } from "./ChangeMileage";
 
 export type FieldDataType =
   | DetailType
@@ -84,6 +82,7 @@ export const CarDetailsCard = ({
           }}
         >
           <div className="w-full">
+            <ChangeMileage car={car} />
             <div className="w-full text-sm flex flex-col gap-2">
               <div className="grid grid-cols-2 gap-2 w-full">
                 {commonDetails.map((e, index) => (
@@ -340,7 +339,7 @@ const DetailSampleCard = ({
               ) - Number(fieldData?.mileage?.last_mileage)
             ).toString()
           ).toFixed(2)}
-          км
+          {v !== "short" && " км"}
         </span>
       </div>
     </>
