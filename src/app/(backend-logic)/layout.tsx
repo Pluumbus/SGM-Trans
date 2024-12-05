@@ -1,6 +1,4 @@
 import Navbar from "@/components/ui/navbar";
-import React from "react";
-
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { Timer } from "@/components/Timer/Timer";
 

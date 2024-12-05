@@ -1,6 +1,5 @@
 "use server";
 
-import getClerkClient from "@/utils/clerk/clerk";
 import { clerkClient } from "@clerk/nextjs/server";
 
 export const setUserData = async ({
@@ -15,9 +14,8 @@ export const setUserData = async ({
     prevTime: number;
   };
 }) => {
-  await (
-    await getClerkClient()
-  ).users.updateUser(userId, {
+  const client = await clerkClient();
+  await client.users.updateUser(userId, {
     publicMetadata: { role, balance, time, prevTime },
   });
 };
@@ -31,10 +29,9 @@ export const setUserRole = async ({
     role: string;
   };
 }) => {
-  const user = await (await getClerkClient()).users.getUser(userId);
-  await (
-    await getClerkClient()
-  ).users.updateUser(userId, {
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+  await client.users.updateUser(userId, {
     publicMetadata: {
       role,
       balance: user.publicMetadata.balance as number,
@@ -53,10 +50,9 @@ export const setUserBalance = async ({
     balance: number;
   };
 }) => {
-  const user = await (await getClerkClient()).users.getUser(userId);
-  await (
-    await getClerkClient()
-  ).users.updateUser(userId, {
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
+  await client.users.updateUser(userId, {
     publicMetadata: {
       role: user.publicMetadata.role as string,
       balance,
@@ -73,11 +69,10 @@ export const changeUserBalance = async ({
   userId: string;
   addBal: number;
 }) => {
-  const user = await (await getClerkClient()).users.getUser(userId);
+  const client = await clerkClient();
+  const user = await client.users.getUser(userId);
   const balance = (user.publicMetadata.balance as number) + addBal;
-  await (
-    await getClerkClient()
-  ).users.updateUser(userId, {
+  await client.users.updateUser(userId, {
     publicMetadata: {
       role: user.publicMetadata.role as string,
       balance,

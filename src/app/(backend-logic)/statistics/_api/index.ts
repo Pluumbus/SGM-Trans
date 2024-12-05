@@ -1,11 +1,13 @@
 "use server";
 import { StatsUserList } from "@/lib/references/stats/types";
-import getClerkClient from "@/utils/clerk/clerk";
+
 import getSupabaseServer from "@/utils/supabase/server";
-import { User } from "@clerk/nextjs/server";
+import { clerkClient, User } from "@clerk/nextjs/server";
 
 export const getStatsUserList = async () => {
-  const users = (await (await getClerkClient()).users.getUserList()).data;
+  const client = await clerkClient();
+
+  const users = await client.users.getUserList().data;
   const userList = users.map((user: User) => ({
     user_id: user.id,
     userName: user.fullName || "Имя отсутствует",
