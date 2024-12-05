@@ -20,7 +20,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input, RangeCalendar } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
@@ -29,6 +28,8 @@ import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import { isWithinInterval } from "date-fns";
 import { StatsUserList } from "@/lib/references/stats/types";
 import { getStatsUserList } from "../_api";
+import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
+import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
@@ -39,12 +40,11 @@ export function DataTable() {
   const [dateVal, setDateVal] = useState({
     start: parseDate(
       `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
-    ),
-    end: today(getLocalTimeZone()),
+    ).toString(),
+    end: today(getLocalTimeZone()).toString(),
   });
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const table = useReactTable({
@@ -62,39 +62,43 @@ export function DataTable() {
     },
   });
   const handleSetTimeRangeFilter = () => {
-    const startDate = new Date(
-      dateVal.start.year,
-      dateVal.start.month - 1,
-      dateVal.start.day - 1
-    ).toISOString();
-    const endDate = new Date(
-      dateVal.end.year,
-      dateVal.end.month - 1,
-      dateVal.end.day + 1
-    ).toISOString();
+    // const startDate = new Date(
+    //   dateVal.start.year,
+    //   dateVal.start.month - 1,
+    //   dateVal.start.day - 1
+    // ).toISOString();
+    // const endDate = new Date(
+    //   dateVal.end.year,
+    //   dateVal.end.month - 1,
+    //   dateVal.end.day + 1
+    // ).toISOString();
 
     const sumAmountsForDateRange = (user: StatsUserList) => {
       let bidSumArr = [];
-      let total = 0;
+      let totalBase = 0;
 
-      total = user.created_at.reduce((sum, date, index) => {
-        if (isWithinInterval(date, { start: startDate, end: endDate })) {
+      totalBase = user.created_at.reduce((sum, date, index) => {
+        if (
+          isWithinInterval(date, { start: dateVal.start, end: dateVal.end })
+        ) {
           bidSumArr.push(user.value[index]);
           return sum + Number(user.value[index]);
         }
         return sum;
       }, 0);
-
+      const total = getSeparatedNumber(totalBase, ",");
       return { total, bidSumArr };
     };
 
     const filtered = data
       .map((user) => {
         const { total, bidSumArr } = sumAmountsForDateRange(user);
-        const totalBidsInRange = bidSumArr.length;
-        const bidSum = user.value.length;
-
-        return { ...user, totalAmountInRange: total, totalBidsInRange, bidSum };
+        return {
+          ...user,
+          totalAmountInRange: total,
+          totalBidsInRange: bidSumArr.length,
+          bidSum: user.value.length,
+        };
       })
       .filter(
         (user) =>
@@ -102,8 +106,7 @@ export function DataTable() {
           user.role === "Логист Дистант" ||
           user.role == "Логист Москва"
       )
-      .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
-
+      .sort((a, b) => b.bidSum - a.bidSum);
     setFilteredData(filtered);
   };
 
@@ -174,13 +177,14 @@ export function DataTable() {
           </Table>
         </div>
         <div className="ml-8 sticky">
-          <RangeCalendar
+          {/* <RangeCalendar
             aria-label="Date (Uncontrolled)"
             color="foreground"
             value={dateVal}
             onChange={setDateVal}
             maxValue={today(getLocalTimeZone())}
-          />
+          /> */}
+          <CustomWeekSelector setDateVal={setDateVal} />
         </div>
       </div>
     </div>

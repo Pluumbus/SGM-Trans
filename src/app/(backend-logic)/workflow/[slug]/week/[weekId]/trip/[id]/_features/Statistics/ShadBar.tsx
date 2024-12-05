@@ -17,12 +17,13 @@ import { TotalStats } from "./TotalStats";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { UsersList } from "@/lib/references/clerkUserType/types";
-
+import { FaCoins } from "react-icons/fa6";
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   // const mCargos = useMemo(() => cargos, [cargos.length]);
 
   const [chartData, setChartData] = useState([]);
-  const [leadingManager, setLeadingManager] = useState([]);
+  const [leadingCountManager, setLeadingCountManager] = useState([]);
+  const [leadingAmountManager, setLeadingAmountManager] = useState();
 
   // const { mutateAsync, isPending } = useMutation({
   //   mutationKey: ["get users"],
@@ -46,9 +47,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     for (const cargo of data) {
       if (!grouped[cargo.user_id]) {
         try {
-          // const user = await mutateAsync(cargo.user_id);
           const user = allUsers?.filter((u) => u.id === cargo.user_id)[0];
-          // const fullName = `${user.} ${user.lastName}`;
           grouped[cargo.user_id] = {
             fullName: user?.userName,
             amount: Number(cargo.amount.value),
@@ -76,7 +75,6 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       count: groupedData[user].count,
       totalAmount: groupedData[user].amount,
       percentageOfAll: Math.round(
-        // (groupedData[user].count / mCargos.length) * 100
         (groupedData[user].count / cargos.length) * 100
       ),
       maxCount: maxCount,
@@ -90,24 +88,24 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
 
   useEffect(() => {
     const fetch = () => {
-      // if (!mCargos || mCargos.length === 0) return;
       if (!cargos || cargos.length === 0) return;
-      // const data = groupCargosByUser(mCargos);
       const data = groupCargosByUser(cargos);
       if (data) {
         const dataToSet = calculatePercentages(data);
-        const leadingManagers = dataToSet
+        const leadingCountManagers = dataToSet
           .filter((e) => e.count === e.maxCount)
           .map((e) => e.user);
-
-        setLeadingManager(leadingManagers);
+        const leadingAmountManagers = dataToSet.reduce((max, current) =>
+          current.totalAmount > max.totalAmount ? current : max
+        ).user;
+        setLeadingCountManager(leadingCountManagers);
+        setLeadingAmountManager(leadingAmountManagers);
         setChartData(dataToSet);
         setColors(getRandomRainbowColors(dataToSet.length));
       }
     };
 
     fetch();
-    // }, [mCargos.length]);
   }, [cargos.length]);
 
   return (
@@ -117,7 +115,6 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       </CardHeader>
       <CardBody>
         <TotalStats cargos={cargos} />
-
         <CustomBar
           data={chartData}
           cargoCount={cargos.length}
@@ -125,18 +122,28 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           isPending={isLoading}
         />
       </CardBody>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Лидирует
+      <CardFooter className="items-start gap-2 text-sm">
+        <div className="flex flex-col gap-2 font-medium leading-none">
+          <span>Лидирует по сумме грузов</span>
+          <span>Лидирует по сумме тенге</span>
+        </div>
+        <div className="flex flex-col gap-2 font-medium leading-none">
           {isLoading ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (
-            <b>{leadingManager?.map((e) => <span key={e}>{e}</span>)}</b>
+            <b className="flex gap-2">
+              {leadingCountManager?.map((e) => <span key={e}>{e}</span>)}
+              <TrendingUp className="h-4 w-4" />
+            </b>
           )}
-          <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Показано общее количество грузов, добавленных каждым менеджером.
+          {isLoading ? (
+            <Skeleton className="h-[18px] w-[150px]" />
+          ) : (
+            <b className="flex gap-2">
+              {leadingAmountManager}
+              <FaCoins className="h-4 w-4" />
+            </b>
+          )}
         </div>
       </CardFooter>
     </Card>
