@@ -1,10 +1,8 @@
 "use client";
 
 import { useParams } from "next/navigation";
-
 import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-
 import { getTripsByWeekId } from "../_api";
 import { Checkbox, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
@@ -19,7 +17,6 @@ import { CreateTripInsideWeek } from "@/app/(backend-logic)/workflow/_feature/We
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../_api/types";
-import { TripInfoMscCard } from "./_features/TripInfoCard/TripMscInfoCard";
 import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
 
 const Page: NextPage = () => {
@@ -53,6 +50,9 @@ const Page: NextPage = () => {
     setSelectedTabId(id);
   }, []);
 
+  // useEffect(() => {
+
+  // },[tripsData])
   useEffect(() => {
     const cn = supabase
       .channel(`${weekId}-trips`)
@@ -119,7 +119,7 @@ const Page: NextPage = () => {
   if (isPending) {
     return <Spinner />;
   }
-
+  console.log(selectedTabId);
   return (
     <div>
       <div className="flex justify-between ">
@@ -128,7 +128,6 @@ const Page: NextPage = () => {
           selectedTabId={selectedTabId}
           tripsData={tripsData}
         />
-        {/* <TripInfoMscCard selectedTabId={selectedTabId} tripsData={tripsData} /> */}
         <WorkflowBucket />
       </div>
       <div className="flex flex-col ">
@@ -174,7 +173,8 @@ const Page: NextPage = () => {
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}
-        trip_id={Number(selectedTabId)}
+        trip_number={Number(selectedTabId)}
+        tripsData={tripsData}
       />
     </div>
   );

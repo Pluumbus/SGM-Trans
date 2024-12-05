@@ -30,7 +30,7 @@ export const TripInfoMscCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId)
+      (item) => item.trip_number === Number(selectedTabId)
     );
     setDateValIn(currentTrip?.date_in);
     setDateValOut(currentTrip?.date_out);

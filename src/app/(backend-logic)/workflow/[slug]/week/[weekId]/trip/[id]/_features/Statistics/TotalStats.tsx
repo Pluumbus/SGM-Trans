@@ -132,7 +132,12 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               <b>{totalDocumentsCount}</b>
             </span>
             <span>
-              Кол-во полученных СНТ: <b>{totalDocumentsAcceptedCount}</b>
+              Кол-во полученных СНТ:{" "}
+              <b>
+                {totalDocumentsAcceptedCount < 0
+                  ? 0
+                  : totalDocumentsAcceptedCount}
+              </b>
             </span>
           </div>
         </CardBody>
