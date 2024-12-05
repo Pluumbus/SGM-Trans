@@ -7,6 +7,7 @@ import {
 } from "@/lib/references/drivers/feature/types";
 import supabase from "@/utils/supabase/client";
 import { DetailNameType } from "../_features/DisclosureContext";
+import { CarsWithOmnicommType } from "../_features/CarCard/CarDetailsCard";
 
 export const changeMileage = async (car: CarsType, mileage: string) => {
   const { details } = car;
@@ -27,8 +28,8 @@ export const changeMileage = async (car: CarsType, mileage: string) => {
   return data;
 };
 
-export const swapAccumulators = async (car: CarsType) => {
-  const { details } = car;
+export const swapAccumulators = async (car: CarsWithOmnicommType) => {
+  const { details } = car.car;
   const updatedDetails: CarDetailsType = {
     ...details,
     accumulator: {
@@ -43,7 +44,7 @@ export const swapAccumulators = async (car: CarsType) => {
   const { data, error } = await supabase
     .from("cars")
     .update({ details: updatedDetails })
-    .eq("id", Number(car.id));
+    .eq("id", Number(car.car.id));
 
   if (error) {
     throw new Error();

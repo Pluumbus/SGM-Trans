@@ -23,7 +23,7 @@ export type DetailNameType =
   | "axis"
   | "deleteAxis";
 
-interface DisclosureContextType extends UseDisclosureProps {
+export interface DisclosureContextType extends UseDisclosureProps {
   onOpenChange: () => void;
   data: {
     detail: SingleDetailType;

@@ -44,9 +44,10 @@ const Page: NextPage<Props> = () => {
   const { data: omnicommCars, isLoading: isLoadingOmicomm } = useQuery({
     queryKey: ["get omnicomm cars"],
     queryFn: async () =>
-      await getAllVehiclesStatistics().then(
-        (data) => data.data.vehicleDataList
-      ),
+      await getAllVehiclesStatistics().then((data) => {
+        console.log("data from getAllVehiclesStatistics", data);
+        return data.data.vehicleDataList;
+      }),
   });
 
   useEffect(() => {
