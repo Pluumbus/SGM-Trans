@@ -41,18 +41,18 @@ const Page: NextPage = () => {
         setWeek(weeks);
         return main;
       });
+      setSelectedTabId(
+        data.find((e) => e.trip_number == Number(id)).id.toString()
+      );
+
       setTripsData(processedData);
     },
   });
 
   useEffect(() => {
     mutate();
-    setSelectedTabId(id);
   }, []);
 
-  // useEffect(() => {
-
-  // },[tripsData])
   useEffect(() => {
     const cn = supabase
       .channel(`${weekId}-trips`)
@@ -88,12 +88,11 @@ const Page: NextPage = () => {
 
   const columns = useMemo(() => useRoleBasedSchema(), []);
 
-  const handleCargosUpdate = (cities: string[]) => {
+  const handleCargosUpdate = (cities: string[], tripid: number) => {
     const uniqueData = Array.from(new Set(cities));
 
-    const mainCity = tripsData.filter(
-      (trip) => trip.trip_number === Number(selectedTabId)
-    )[0].city_to[0];
+    const mainCity = tripsData.filter((trip) => trip.id === tripid)[0]
+      .city_to[0];
 
     const newCities =
       uniqueData.length <= 5 ? uniqueData.slice(0, 3) : uniqueData.slice(0, 4);
@@ -102,15 +101,11 @@ const Page: NextPage = () => {
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter(
-          (trip) => trip.trip_number === Number(selectedTabId)
-        )[0].city_to = newCities)
+        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities)
       )
     );
     const newTripsData = tripsData.map((trip) =>
-      trip.trip_number === Number(selectedTabId)
-        ? { ...trip, city_to: newCurrentTripCities }
-        : trip
+      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];
 
     setTripsData(newTripsData);
@@ -119,7 +114,6 @@ const Page: NextPage = () => {
   if (isPending) {
     return <Spinner />;
   }
-  console.log(selectedTabId);
   return (
     <div>
       <div className="flex justify-between ">
@@ -153,7 +147,7 @@ const Page: NextPage = () => {
             .sort((a, b) => a.id - b.id)
             .map((trip) => (
               <Tab
-                key={trip.trip_number}
+                key={trip.id}
                 className="!min-h-full !h-full"
                 title={<TabTitle trip={trip} />}
               >
@@ -161,7 +155,9 @@ const Page: NextPage = () => {
                   trip={trip}
                   columns={columns}
                   isOnlyMycargos={isOnlyMycargos}
-                  onCargosUpdate={(cities) => handleCargosUpdate(cities)}
+                  onCargosUpdate={(cities) =>
+                    handleCargosUpdate(cities, trip.id)
+                  }
                 />
               </Tab>
             ))}
@@ -173,8 +169,7 @@ const Page: NextPage = () => {
       <CargoModal
         isOpenCargo={isOpen}
         onOpenChangeCargo={onOpenChange}
-        trip_number={Number(selectedTabId)}
-        tripsData={tripsData}
+        trip_id={Number(selectedTabId)}
       />
     </div>
   );
