@@ -44,7 +44,10 @@ export const TripInfoCard = ({
     queryFn: async () => {
       const users = await getUserList();
       const filteredUsrs = users.filter(
-        (user) => user.role === "Логист" || user.role === "Логист Дистант"
+        (user) =>
+          user.role === "Логист" ||
+          user.role === "Логист Дистант" ||
+          user.role === "Логист Москва"
       );
       return filteredUsrs as UsersList[];
     },
