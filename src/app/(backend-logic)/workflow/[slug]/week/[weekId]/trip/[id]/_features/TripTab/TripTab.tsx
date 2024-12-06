@@ -22,6 +22,9 @@ import {
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
+import { Button } from "@nextui-org/react";
+import { useCopyToClipboard } from "@uidotdev/usehooks";
+import { useToast } from "@/components/ui/use-toast";
 
 export const TripTab = ({
   trip,
@@ -124,8 +127,34 @@ export const TripTab = ({
     };
   }, []);
 
+  const { toast } = useToast();
+  const [text, copy] = useCopyToClipboard();
+
   return (
     <>
+      <Button
+        variant="ghost"
+        onClick={() => {
+          const formattedText = cargos
+            .filter((e) => e.client_bin.xin || e.client_bin.tempText)
+            .map((e) => {
+              const snts = e.client_bin.snts
+                .filter((el) => el !== "KZ-SNT-")
+                .join("");
+
+              return `${e.client_bin.tempText || ""}\nБИН: ${e.client_bin.xin || ""}\n${snts}`.trim();
+            })
+            .join("\n\n");
+
+          copy(formattedText);
+          toast({
+            title: "Скопировано в буфер обмена",
+            description: `Информация о ${cargos.length} клиент(ах) была скопирована`,
+          });
+        }}
+      >
+        Скопировать всех клиентов
+      </Button>
       <UTable
         tBodyProps={{
           emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
