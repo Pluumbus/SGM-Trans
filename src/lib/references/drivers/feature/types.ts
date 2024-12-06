@@ -30,6 +30,7 @@ export enum DetailsName {
   SL = "Смазка подвески",
   BL = "Смазка подшибников",
 }
+
 export type MileageType = {
   last_mileage: string | number;
   next_mileage: string | number;
