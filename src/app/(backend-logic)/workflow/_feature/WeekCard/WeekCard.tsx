@@ -97,7 +97,7 @@ export const WeekCard = () => {
                 title={`Неделя ${week.week_number}`}
                 subtitle={<SummaryOfTrip week={week} />}
                 className={
-                  CurrentWeekIndicator(week.week_dates) ? "bg-orange-300" : ""
+                  CurrentWeekIndicator(week.week_dates) ? "bg-blue-100" : ""
                 }
               >
                 <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
