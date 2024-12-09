@@ -124,7 +124,12 @@ export const BINInput = ({ inputProps, onChange }: Props) => {
                 }`}
                 onMouseEnter={() => setHighlightedIndex(index)}
               >
-                <CardBody className="py-2 px-3" onClick={() => handleSelect(e)}>
+                <CardBody
+                  className="py-2 px-3"
+                  onClick={() => {
+                    handleSelect(e);
+                  }}
+                >
                   {e}
                 </CardBody>
               </Card>

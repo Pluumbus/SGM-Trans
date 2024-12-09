@@ -94,7 +94,7 @@ export const Body = ({
                   <Cities
                     selectedKey={field.value}
                     onSelectionChange={(e) => {
-                      setValue("unloading_point.city", e.toString());
+                      setValue("unloading_point.city", e?.toString());
                     }}
                   />
                 )}
@@ -119,9 +119,9 @@ export const Body = ({
               name="unloading_point.city"
               render={({ field }) => (
                 <Cities
-                  selectedKey={field.value}
+                  selectedKey={field?.value}
                   onSelectionChange={(e) => {
-                    setValue("unloading_point.city", e.toString());
+                    setValue("unloading_point.city", e?.toString());
                   }}
                 />
               )}
