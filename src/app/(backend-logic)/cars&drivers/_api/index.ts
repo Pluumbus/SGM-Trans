@@ -9,7 +9,7 @@ import {
 
 const server = getSupabaseServer();
 
-export const getFullGazellsData = async (): Promise<FullDriversType[]> => {
+export const getFullGazellsData = async () => {
   const { data, error } = await (await server)
     .from("cars")
     .select("*,drivers(*)")

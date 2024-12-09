@@ -12,6 +12,8 @@ import gazellImg from "@/app/_imgs/gazell-icon.png";
 import { useQuery } from "@tanstack/react-query";
 import { getFullGazellsData } from "../_api";
 import Image from "next/image";
+import { FullDriversType } from "@/lib/references/drivers/feature/types";
+import { useEffect, useState } from "react";
 
 export const GazellList = () => {
   const { data, isLoading } = useQuery({
@@ -20,7 +22,11 @@ export const GazellList = () => {
   });
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
-  console.log(data);
+  const [gazellDat, setGazellData] = useState<FullDriversType[]>(data);
+
+  useEffect(() => {
+    setGazellData(data);
+  }, [data]);
   const handleCopyDriverData = (id) => {
     const dataToCopy = data.filter((car) => car.id == id)[0];
     copyToClipboard(
@@ -55,7 +61,7 @@ export const GazellList = () => {
         aria-label="drivers-list"
         onAction={(key) => handleCopyDriverData(key)}
       >
-        {data?.map((gzl) => (
+        {gazellDat?.map((gzl) => (
           <ListboxItem key={gzl.id} className="border-b">
             {(gzl.drivers[0]?.name || "Без водителя") + " | " + gzl.car}
           </ListboxItem>
