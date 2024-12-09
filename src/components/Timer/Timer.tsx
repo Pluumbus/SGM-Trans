@@ -5,10 +5,11 @@ import { useUser } from "@clerk/nextjs";
 import { Button, Card, CardBody } from "@nextui-org/react";
 import { toast } from "@/components/ui/use-toast";
 import { setUserData } from "@/lib/references/clerkUserType/SetUserFuncs";
+import { Role, useCheckRole } from "../RoleManagment/useRole";
 
 export const Timer = () => {
   const { user, isLoaded } = useUser();
-
+  // const accessVisibl = useCheckRole(["Логист Дистант"]);
   let oldSec = isLoaded && (user.publicMetadata.time as number);
 
   const [seconds, setSeconds] = useState(() => {
@@ -119,14 +120,14 @@ export const Timer = () => {
 
   return (
     <div>
-      <Card className="flex justify-center w-auto bg-gray-200">
+      {/* <Card className="flex justify-center w-auto bg-gray-200">
         <CardBody>
           <p>
             {hours} {hoursLabel}, {minutes} {minutesLabel}, {displaySeconds}{" "}
             {secondsLabel}
           </p>
         </CardBody>
-      </Card>
+      </Card> */}
     </div>
   );
 };

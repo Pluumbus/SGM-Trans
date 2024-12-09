@@ -174,25 +174,20 @@ export const TripInfoDriver = ({
               )}
 
               <ModalFooter className="flex justify-between">
-                {!isHireDriver ? (
-                  <Button
-                    color="primary"
-                    onPress={() => {
-                      setIsHireDriver(true);
-                    }}
-                  >
-                    Добавить наёмного водителя
-                  </Button>
-                ) : (
-                  <Button
-                    color="warning"
-                    onPress={() => {
-                      setIsHireDriver(false);
-                    }}
-                  >
-                    Замена данных водителя
-                  </Button>
-                )}
+                <Button
+                  color={!isHireDriver ? "primary" : "warning"}
+                  onPress={() => {
+                    !isHireDriver
+                      ? setIsHireDriver(true)
+                      : setIsHireDriver(false);
+                  }}
+                >
+                  {!isHireDriver ? (
+                    <span>Добавить наёмного водителя</span>
+                  ) : (
+                    <span>Добавить своего водителя</span>
+                  )}
+                </Button>
 
                 <Button
                   color="success"

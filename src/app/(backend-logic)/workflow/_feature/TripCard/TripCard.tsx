@@ -43,7 +43,7 @@ export const TripCard = ({
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
-  const [trips, setTrips] = useState([]);
+  const [trips, setTrips] = useState<TripType[]>([]);
 
   const { slug } = useParams();
 
@@ -65,21 +65,6 @@ export const TripCard = ({
     },
   };
 
-  const getSummaryFromCargos = (cargos: CargoType[]) => {
-    return {
-      ...cargos.reduce(
-        (acc, curr) => {
-          acc.id = curr.trip_id.toString();
-          acc.volume += Number(curr.volume) || 0;
-          acc.amount += Number(curr.amount) || 0;
-          acc.quantity += Number(curr.quantity) || 0;
-          return acc;
-        },
-        { id: "", volume: 0, amount: 0, quantity: 0 }
-      ),
-    };
-  };
-
   useEffect(() => {
     const cn = supabase
       .channel(`view-trips-${slug}`)
@@ -87,7 +72,7 @@ export const TripCard = ({
         "postgres_changes",
         { event: "*", schema: "public", table: "trips" },
         (payload) => {
-          setTrips((prev) => [...prev, payload.new]);
+          setTrips((prev) => [...prev, payload.new as TripType]);
           setWeeks((prev) =>
             prev.map((week) => {
               if (week.id === payload.new!.week_id) {
@@ -114,11 +99,6 @@ export const TripCard = ({
     };
   }, []);
 
-  const getCargosFromTripIdAndSummarize = async (trip_id) => {
-    const data = await getCargosByTripId(trip_id);
-    return getSummaryFromCargos(data);
-  };
-
   if (isLoading) {
     return <Spinner />;
   }
@@ -126,10 +106,12 @@ export const TripCard = ({
   return (
     <div>
       <UTable
-        data={trips.map((e, i) => ({
-          ...e,
-          number: i + 1,
-        }))}
+        data={trips
+          .map((e, i) => ({
+            ...e,
+            number: i + 1,
+          }))
+          .sort((a, b) => a.trip_number - b.trip_number)}
         columns={columns}
         name={`Cargo Table ${weekId}`}
         config={config}

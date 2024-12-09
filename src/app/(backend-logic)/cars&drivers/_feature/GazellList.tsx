@@ -1,5 +1,12 @@
+"use client";
 import { toast } from "@/components/ui/use-toast";
-import { Card, CardHeader, Listbox, ListboxItem } from "@nextui-org/react";
+import {
+  Card,
+  CardHeader,
+  Listbox,
+  ListboxItem,
+  Spinner,
+} from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import gazellImg from "@/app/_imgs/gazell-icon.png";
 import { useQuery } from "@tanstack/react-query";
@@ -13,6 +20,7 @@ export const GazellList = () => {
   });
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
+  console.log(data);
   const handleCopyDriverData = (id) => {
     const dataToCopy = data.filter((car) => car.id == id)[0];
     copyToClipboard(
@@ -37,7 +45,7 @@ export const GazellList = () => {
       title: `Данные водителя успешно скопированы в буфер обмена`,
     });
   };
-  if (isLoading) return;
+  if (isLoading) return <Spinner />;
   return (
     <Card className="h-full">
       <CardHeader className="flex justify-center">
@@ -47,12 +55,11 @@ export const GazellList = () => {
         aria-label="drivers-list"
         onAction={(key) => handleCopyDriverData(key)}
       >
-        {data != undefined &&
-          data?.map((gzl) => (
-            <ListboxItem key={gzl.id} className="border-b">
-              {(gzl.drivers[0]?.name || "Без водителя") + " | " + gzl.car}
-            </ListboxItem>
-          ))}
+        {data?.map((gzl) => (
+          <ListboxItem key={gzl.id} className="border-b">
+            {(gzl.drivers[0]?.name || "Без водителя") + " | " + gzl.car}
+          </ListboxItem>
+        ))}
       </Listbox>
     </Card>
   );
