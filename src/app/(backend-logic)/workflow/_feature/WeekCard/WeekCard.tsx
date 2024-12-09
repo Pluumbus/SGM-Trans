@@ -4,6 +4,7 @@ import {
   AccordionItem,
   Button,
   Divider,
+  Input,
   Modal,
   ModalBody,
   ModalContent,
@@ -26,7 +27,6 @@ import { WeekTableType } from "../../[slug]/week/[weekId]/trip/_api/types";
 import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
 import { Cars } from "@/lib/references/drivers/Cars";
-import { Trailers } from "@/lib/references/drivers/Trailers";
 
 export const WeekCard = () => {
   const { slug } = useParams();
@@ -70,6 +70,15 @@ export const WeekCard = () => {
     };
   }, []);
 
+  const CurrentWeekIndicator = ({ end_date, start_date }) => {
+    const today = new Date();
+
+    const start = new Date(start_date);
+    const end = new Date(end_date);
+
+    return today >= start && today <= end;
+  };
+
   if (isPending) {
     return <Spinner />;
   }
@@ -87,6 +96,9 @@ export const WeekCard = () => {
                 aria-label={`Accordion ${i}`}
                 title={`Неделя ${week.week_number}`}
                 subtitle={<SummaryOfTrip week={week} />}
+                className={
+                  CurrentWeekIndicator(week.week_dates) ? "bg-orange-300" : ""
+                }
               >
                 <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
                 <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
@@ -124,6 +136,11 @@ export const CreateTripInsideWeek = ({
     car: string;
   }>(initData);
 
+  const [isHire, setIsHire] = useState(false);
+  const [tripCar, setTripCar] = useState<{
+    car: string;
+    state_number: string;
+  }>();
   const { mutate } = useMutation({
     mutationFn: async () => {
       await supabase.from("trips").insert({
@@ -195,7 +212,19 @@ export const CreateTripInsideWeek = ({
         break;
     }
   };
-
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setTripCar((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setFormState((prev) => ({
+      ...prev,
+      car: tripCar.car + " - " + tripCar.state_number,
+    }));
+    // if (tripCar.car !== "" && tripCar.state_number !== "")
+    //   setTripCar(tripCar.car + " - " + tripCar.state_number);
+  };
   return (
     <div>
       {inTrip ? (
@@ -222,39 +251,97 @@ export const CreateTripInsideWeek = ({
           <form onSubmit={onSubmit}>
             <ModalHeader>Добавить путь</ModalHeader>
             <Divider />
-            <ModalBody className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col">
-                <Drivers
-                  selectedKey={formState.driver}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      driver: e.toString(),
-                    }));
-                  }}
-                />
-                {!formState.driver && (
-                  <span className="text-danger-400 text-xs pl-1">
-                    Выберите водителя*
-                  </span>
-                )}
-              </div>
-              <div className="flex flex-col">
-                <Cars
-                  selectedKey={formState.car}
-                  onSelectionChange={(e) => {
-                    setFormState((prev) => ({
-                      ...prev,
-                      car: e.toString(),
-                    }));
-                  }}
-                />
-                {!formState.car && (
-                  <span className="text-danger-400 text-xs pl-1">
-                    Выберите машину*
-                  </span>
-                )}
-              </div>
+            <ModalBody className={!isHire ? "grid grid-cols-2 gap-2" : "flex"}>
+              {/* <ModalBody className="flex"> */}
+              {!isHire ? (
+                <>
+                  <div className="flex flex-col">
+                    <Drivers
+                      selectedKey={formState.driver}
+                      onSelectionChange={(e) => {
+                        setFormState((prev) => ({
+                          ...prev,
+                          driver: e.toString(),
+                        }));
+                      }}
+                    />
+                    {!formState.driver && (
+                      <span className="text-danger-400 text-xs pl-1">
+                        Выберите водителя*
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex flex-col">
+                    <Cars
+                      selectedKey={formState.car}
+                      onSelectionChange={(e) => {
+                        setFormState((prev) => ({
+                          ...prev,
+                          car: e.toString(),
+                        }));
+                      }}
+                    />
+                    {!formState.car && (
+                      <span className="text-danger-400 text-xs pl-1">
+                        Выберите машину*
+                      </span>
+                    )}
+                  </div>
+                  {formState.city_to.map((city, index) => (
+                    <Cities
+                      key={index + 1}
+                      isReadOnly={!isMSK}
+                      label={`Город получатель ${index + 1}`}
+                      selectedKey={city}
+                      onSelectionChange={(e) => handleCityToChange(index, e)}
+                    />
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div className="flex gap-2">
+                    <div>
+                      <Input
+                        variant="bordered"
+                        placeholder="Иванов Иван"
+                        onChange={(e) =>
+                          setFormState((prev) => ({
+                            ...prev,
+                            driver: e.target.value,
+                          }))
+                        }
+                      />
+                    </div>
+
+                    <div className="flex gap-2">
+                      <Input
+                        name="car"
+                        variant="bordered"
+                        placeholder="DAF XF 480"
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        name="state_number"
+                        variant="bordered"
+                        placeholder="747 CU 01"
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {formState.city_to.map((city, index) => (
+                      <Cities
+                        key={index + 1}
+                        isReadOnly={!isMSK}
+                        label={`Город получатель ${index + 1}`}
+                        selectedKey={city}
+                        onSelectionChange={(e) => handleCityToChange(index, e)}
+                      />
+                    ))}
+                  </div>
+                </>
+              )}
+
               {/* {formState.city_from.map((city, index) => (
                 <Cities
                   key={index + 2}
@@ -265,28 +352,36 @@ export const CreateTripInsideWeek = ({
                 />
               ))} */}
 
-              {formState.city_to.map((city, index) => (
-                <Cities
-                  key={index + 1}
-                  isReadOnly={!isMSK}
-                  label={`Город получатель ${index + 1}`}
-                  selectedKey={city}
-                  onSelectionChange={(e) => handleCityToChange(index, e)}
-                />
-              ))}
+              {/* <div className="grid grid-cols-2 gap-2">
+                {formState.city_to.map((city, index) => (
+                  <Cities
+                    key={index + 1}
+                    isReadOnly={!isMSK}
+                    label={`Город получатель ${index + 1}`}
+                    selectedKey={city}
+                    onSelectionChange={(e) => handleCityToChange(index, e)}
+                  />
+                ))}
+              </div> */}
             </ModalBody>
             <Divider />
-            <ModalFooter>
+            <ModalFooter className="flex justify-between">
               <Button
-                color="danger"
-                variant="light"
-                onClick={() => {
-                  onOpenChangeTrip();
+                color={!isHire ? "primary" : "warning"}
+                onPress={() => {
+                  !isHire ? setIsHire(true) : setIsHire(false);
                 }}
               >
-                Отмена
+                {!isHire ? (
+                  <span>Добавить наёмного водителя</span>
+                ) : (
+                  <span>Добавить своего водителя</span>
+                )}
               </Button>
-              <Button type="submit">Добавить</Button>
+
+              <Button type="submit" color="success">
+                Добавить
+              </Button>
             </ModalFooter>
           </form>
         </ModalContent>
@@ -306,7 +401,14 @@ const SummaryOfTrip = ({
         {week?.week_dates?.start_date} - {week?.week_dates?.end_date}
       </span>
       <Divider orientation="vertical" className="!min-h-4 !w-[1px]" />
-      <span>Рейсов: {week?.trips?.length || 0}</span>
+      <span>
+        Рейсов: {week?.trips?.length > 0 ? week?.trips?.length + " | " : 0}
+        {week?.trips.map((t, i) => (
+          <span>
+            {t.trip_number + (i === week?.trips?.length - 1 ? ". " : ", ")}
+          </span>
+        ))}{" "}
+      </span>
     </div>
   );
 };

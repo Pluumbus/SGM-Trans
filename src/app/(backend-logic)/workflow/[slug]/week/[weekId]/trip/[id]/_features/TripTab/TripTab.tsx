@@ -162,7 +162,8 @@ export const TripTab = ({
           loadingContent: <SgmSpinner />,
         }}
         data={cargos.sort((a, b) =>
-          a.client_bin.tempText.localeCompare(b.client_bin.tempText)
+          // a.client_bin.tempText.localeCompare(b.client_bin.tempText)
+          a.unloading_point.city.localeCompare(b.unloading_point.city)
         )}
         isPagiantion={false}
         columns={columns}
