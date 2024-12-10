@@ -53,6 +53,9 @@ const Page: NextPage<Props> = () => {
         console.log("data from getAllVehiclesStatistics", data);
         return data.data.vehicleDataList;
       }),
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
