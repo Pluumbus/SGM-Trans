@@ -1,5 +1,6 @@
 "use client";
 import supabase from "@/utils/supabase/client";
+import { isArray } from "lodash";
 
 export const updateTripStatus = async (value: string | any, tripId) => {
   const { data, error } = await supabase
@@ -11,6 +12,31 @@ export const updateTripStatus = async (value: string | any, tripId) => {
     throw new Error();
   }
   return data;
+};
+
+export const deleteCargo = async (cargoId: number | number[]) => {
+  if (isArray(cargoId)) {
+    cargoId.forEach(async (e) => {
+      const { error } = await supabase
+        .from("cargos")
+        .update({ is_deleted: true })
+        .eq("id", Number(e));
+      if (error) {
+        throw new Error();
+      }
+    });
+    return;
+  } else {
+    const { data, error } = await supabase
+      .from("cargos")
+      .update({ is_deleted: true })
+      .eq("id", Number(cargoId));
+
+    if (error) {
+      throw new Error();
+    }
+    return data;
+  }
 };
 
 export const updateTripDate = async (

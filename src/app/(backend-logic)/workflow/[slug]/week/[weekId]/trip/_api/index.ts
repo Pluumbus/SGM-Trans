@@ -18,12 +18,16 @@ export const getUserById = async (userId: string) => {
   };
 };
 
-export const getCargos = async (trip_id: string): Promise<CargoType[]> => {
+export const getCargos = async (
+  trip_id: string,
+  wDeleted: boolean = false
+): Promise<CargoType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
     .from("cargos")
     .select("*")
-    .eq("trip_id", trip_id);
+    .eq("trip_id", trip_id)
+    .eq("is_deleted", wDeleted);
 
   if (error) {
     throw new Error(error.message);

@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 import { customFilter } from "./helpers/customFilter";
@@ -29,12 +29,19 @@ export const UTable = <T,>({
   isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
   const [mdata, setMData] = useState(data);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (data) {
       setMData(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [mdata]);
 
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {
@@ -48,8 +55,8 @@ export const UTable = <T,>({
 
     return normalCols;
   }, [columns]);
-  const { rowsPerPage } = useRowsPerPage();
 
+  const { rowsPerPage } = useRowsPerPage();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState({});
@@ -87,7 +94,10 @@ export const UTable = <T,>({
   return (
     <div className="flex flex-col h-screen">
       <UTableTopContent tInstance={tInstance} />
-      <div className="flex-grow overflow-hidden">
+      <div
+        ref={scrollRef}
+        className="flex-grow overflow-auto h-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+      >
         <Table
           aria-label={name}
           isCompact={true}
@@ -97,10 +107,7 @@ export const UTable = <T,>({
           className="h-full"
         >
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
-          <TableBody
-            {...tBodyProps}
-            className="overflow-auto h-auto max-h-[calc(100vh-200px)] scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
-          >
+          <TableBody {...tBodyProps}>
             {renderRows(tInstance, config!.row)}
           </TableBody>
         </Table>

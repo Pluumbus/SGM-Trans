@@ -20,10 +20,15 @@ export const getBaseColumnsConfig = () => {
             <Checkbox
               isSelected={rowSelected?.every((e) => e.isSelected)}
               onChange={() => {
-                const updatedSelection = rowSelected?.map((item) => ({
-                  ...item,
-                  isSelected: true,
-                }));
+                const updatedSelection = rowSelected?.every((e) => e.isSelected)
+                  ? rowSelected?.map((item) => ({
+                      ...item,
+                      isSelected: false,
+                    }))
+                  : rowSelected?.map((item) => ({
+                      ...item,
+                      isSelected: true,
+                    }));
                 setRowSelected(updatedSelection);
               }}
             />
@@ -47,7 +52,6 @@ export const getBaseColumnsConfig = () => {
                   ? { ...item, isSelected: !item.isSelected }
                   : item
               );
-
               setRowSelected(updatedSelection);
             }}
           />

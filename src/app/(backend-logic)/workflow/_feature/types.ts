@@ -50,6 +50,11 @@ export type CargoType = {
   };
   paid_amount: number;
   request_id: number | null;
+  is_deleted: boolean;
+  // delete_info: {
+  //   is_deleted: boolean;
+  //   user_id: string;
+  // };
 };
 
 export type WeekType = {

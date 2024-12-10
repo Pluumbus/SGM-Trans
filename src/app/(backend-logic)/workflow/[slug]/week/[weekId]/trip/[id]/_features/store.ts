@@ -7,10 +7,18 @@ type RowSelectionType = {
 
 type SelectionStoreType = {
   rowSelected: RowSelectionType[];
-  setRowSelected: (newSelection: RowSelectionType[]) => void;
+  setRowSelected: (
+    updater:
+      | RowSelectionType[]
+      | ((prev: RowSelectionType[]) => RowSelectionType[])
+  ) => void;
 };
 
 export const useSelectionStore = create<SelectionStoreType>((set) => ({
   rowSelected: [],
-  setRowSelected: (newSelection) => set({ rowSelected: newSelection }),
+  setRowSelected: (updater) =>
+    set((state) => ({
+      rowSelected:
+        typeof updater === "function" ? updater(state.rowSelected) : updater,
+    })),
 }));

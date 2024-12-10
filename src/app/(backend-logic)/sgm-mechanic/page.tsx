@@ -6,7 +6,6 @@ import {
   Accordion,
   AccordionItem,
   Divider,
-  Input,
   Spinner,
   Tooltip,
 } from "@nextui-org/react";
@@ -49,10 +48,9 @@ const Page: NextPage<Props> = () => {
   const { data: omnicommCars, isLoading: isLoadingOmicomm } = useQuery({
     queryKey: ["get omnicomm cars"],
     queryFn: async () =>
-      await getAllVehiclesStatistics().then((data) => {
-        console.log("data from getAllVehiclesStatistics", data);
-        return data.data.vehicleDataList;
-      }),
+      await getAllVehiclesStatistics().then(
+        (data) => data.data.vehicleDataList
+      ),
     refetchOnReconnect: false,
     refetchOnMount: false,
     refetchOnWindowFocus: false,
@@ -135,8 +133,6 @@ const Page: NextPage<Props> = () => {
 };
 
 const ItemTitle = ({ e }: { e: CarsType }) => {
-  console.log(e.details.accumulator?.last_swap);
-
   return (
     <div className="w-full h-full flex flex-col gap-2 p-3">
       <div className="flex justify-between">
