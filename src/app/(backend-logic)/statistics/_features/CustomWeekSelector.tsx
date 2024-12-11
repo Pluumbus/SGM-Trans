@@ -29,9 +29,23 @@ export const CustomWeekSelector = ({
   });
 
   const [weeks, setWeeks] = useState<WeekType[]>(data);
+  const [isPressed, setIsPressed] = useState<{
+    week_number: number;
+    active: boolean;
+  }>();
 
   useEffect(() => {
-    if (data) setWeeks(data);
+    if (data) {
+      const firstWeek = data.find(
+        (w) => w.week_number === Math.min(...data.map((w) => w.week_number))
+      );
+      setWeeks(data);
+      setIsPressed({ week_number: firstWeek.week_number, active: true });
+      setDateVal({
+        start: firstWeek.week_dates.start_date,
+        end: firstWeek.week_dates.end_date,
+      });
+    }
   }, [data]);
 
   if (isLoading) return <Spinner />;
@@ -47,15 +61,20 @@ export const CustomWeekSelector = ({
               ?.sort((a, b) => a.week_number - b.week_number)
               .map((e) => (
                 <Button
+                  key={e.week_number}
                   size="sm"
-                  variant="ghost"
+                  variant="shadow"
                   isIconOnly
-                  onPress={() =>
+                  isDisabled={
+                    isPressed.week_number === e.week_number && isPressed.active
+                  }
+                  onPress={() => {
+                    setIsPressed({ week_number: e.week_number, active: true });
                     setDateVal({
                       start: e.week_dates.start_date,
                       end: e.week_dates.end_date,
-                    })
-                  }
+                    });
+                  }}
                 >
                   {e.week_number}
                 </Button>

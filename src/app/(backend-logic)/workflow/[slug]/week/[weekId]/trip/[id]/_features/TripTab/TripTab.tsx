@@ -44,13 +44,6 @@ export const TripTab = ({
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
-
-  // const { mutate: getCargosMutation, isPending } = useMutation({
-  //   mutationKey: [`cargos-${currentTrip.id}`],
-  //   mutationFn: async () => await getCargos(currentTrip.id.toString()),
-  //   onSuccess: (data) => setCargos(data),
-  // });
-
   const { rowSelected, setRowSelected } = useSelectionStore();
   const config: UseTableConfig<CargoType> = {
     row: {
@@ -63,10 +56,6 @@ export const TripTab = ({
 
   const filterBy = () =>
     isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
-
-  // useEffect(() => {
-  //   getCargosMutation();
-  // }, []);
 
   useEffect(() => {
     if (data) {
@@ -172,7 +161,7 @@ export const TripTab = ({
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber currentTripId={trip.id} />
+        <UpdateTripNumber currentTripId={trip.trip_number} />
       )}
       {cargos.length > 0 && (
         <div className="flex justify-between">

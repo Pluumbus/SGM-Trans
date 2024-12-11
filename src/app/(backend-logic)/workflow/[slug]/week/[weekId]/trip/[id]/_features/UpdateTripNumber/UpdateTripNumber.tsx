@@ -33,11 +33,11 @@ export const UpdateTripNumber = ({
     }[]
   >([]);
   const [cargos, setCargos] = useState<CargoType[]>();
-  const [selectedTrip, setSelectedTrip] = useState();
+  const [selectedTrip, setSelectedTrip] = useState<number>();
 
   const { toast } = useToast();
 
-  const { data, isFetched, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["getAllCargos"],
     queryFn: async () => await getAllCargos(),
   });
@@ -155,19 +155,20 @@ export const UpdateTripNumber = ({
                   label="Выберите рейс"
                   selectedKey={selectedTrip}
                   onSelectionChange={(e) => {
-                    setSelectedTrip(e);
+                    setSelectedTrip(e as number);
                   }}
                 >
                   {tripsData
                     ?.filter((trip) => trip.id !== currentTripId)
+                    .filter((trip) => trip.status !== "Прибыл")
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
-                        textValue={`${e.driver.driver} | ${e.id}`}
-                        value={e.id}
+                        textValue={`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)}) | ${e.id}`}
+                        value={e.trip_number}
                         style={{ color: `${sumCargosColorForTrip(e, false)}` }}
                       >
-                        {`${e.driver.driver} | ${e.id} рейс`}{" "}
+                        {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)}) | ${e.trip_number} рейс`}{" "}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>
                     ))}

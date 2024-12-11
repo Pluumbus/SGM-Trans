@@ -1,3 +1,4 @@
+"use client";
 import { getTrailers } from "@/lib/references/drivers/feature/api";
 import { TrailersType } from "@/lib/references/drivers/feature/types";
 import {
@@ -20,6 +21,7 @@ import {
   useDeleteObject,
 } from "./Modals/AddTruckObjectsModal";
 import Image from "next/image";
+import supabase from "@/utils/supabase/client";
 
 export const TrailersList = () => {
   const { data: trailersData, isLoading } = useQuery({
@@ -35,6 +37,37 @@ export const TrailersList = () => {
     setTrailers(trailersData);
     setTempTrailers(trailersData);
   }, [trailersData]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`trailers-list/cars&drivers`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "trailers",
+        },
+        (payload) => {
+          if (payload.eventType === "DELETE") {
+            setTrailers((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+            setTempTrailers((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+          } else {
+            setTrailers((prev) => [...prev, payload.new as TrailersType]);
+            setTempTrailers((prev) => [...prev, payload.new as TrailersType]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempTrailers(

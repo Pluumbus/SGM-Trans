@@ -35,7 +35,7 @@ export const Quantity = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         }}
       >
         {QUANTITY_TYPE.map((e) => (
-          <AutocompleteItem key={e} textValue={e}>
+          <AutocompleteItem key={e} textValue={e} className="w-[8rem]">
             {e}
           </AutocompleteItem>
         ))}
