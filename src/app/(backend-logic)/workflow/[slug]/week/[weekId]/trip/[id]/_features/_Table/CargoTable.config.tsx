@@ -62,12 +62,13 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "receipt_address",
       header: () => (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1 items-center">
           <span>Адрес</span>
-          <span>получения</span>
+          <span>полу</span>
+          <span>чения</span>
         </div>
       ),
-      size: 30,
+      size: 10,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Composite"} compositeType="address" />
       ),
