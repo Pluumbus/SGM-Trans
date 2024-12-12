@@ -50,7 +50,7 @@ export const TransportationManager = ({
   }, [debouncedValue]);
 
   return (
-    <div className="min-w-[500px]">
+    <div className="min-w-[250px]">
       <TM state={state} type="Table" info={info} />
     </div>
   );

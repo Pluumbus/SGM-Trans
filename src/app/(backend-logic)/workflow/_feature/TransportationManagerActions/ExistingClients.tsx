@@ -4,8 +4,9 @@ import {
   AutocompleteProps,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { getClients, getClientsNames } from "../../cashbox/_features/api";
+import { getClientsNames } from "../../cashbox/_features/api";
 import { useEffect, useState } from "react";
+import { useDebounce } from "@/tool-kit/hooks";
 
 export const ExistingClients = ({
   state,
@@ -23,11 +24,16 @@ export const ExistingClients = ({
 
   const [value, setValue] = useState<string>(state[0]?.toString() || "");
 
-  useEffect(() => {
+  const { debounce } = useDebounce();
+  const updateState = () => {
     if (state[0]) {
       setValue(state[0].toString());
-      onChange && onChange();
+      onChange?.();
     }
+  };
+
+  useEffect(() => {
+    debounce(updateState, 3000);
     refetch();
   }, [state[0]]);
 

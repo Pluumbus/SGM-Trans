@@ -6,7 +6,7 @@ import { ReactNode } from "react";
 import { EditField } from "./EditField/EditField";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
-import { Checkbox, Spinner } from "@nextui-org/react";
+import { Checkbox, Spinner, Tooltip } from "@nextui-org/react";
 import { useSelectionStore } from "../store";
 
 export const getBaseColumnsConfig = () => {
@@ -59,25 +59,6 @@ export const getBaseColumnsConfig = () => {
       },
     },
 
-    // {
-    //   accessorKey: "id",
-    //   header: "ID",
-    //   size: 10,
-    //   filter: false,
-    //   cell: (info: Cell<CargoType, ReactNode>) => (
-    //     <span>{info?.getValue()?.toString()}</span>
-    //   ),
-    // },
-
-    // {
-    //   accessorKey: "created_at",
-    //   header: "Дата создания",
-    //   size: 20,
-    //   cell: (info: Cell<CargoType, ReactNode>) => (
-    //     <span>{new Date(info?.getValue() as string).toLocaleDateString()}</span>
-    //   ),
-    //   filter: false,
-    // },
     {
       accessorKey: "receipt_address",
       header: "Адрес получения",
@@ -177,7 +158,7 @@ export const getBaseColumnsConfig = () => {
       header: "Комментарии",
       size: 25,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} cl={"!min-w-[10rem]"} />
+        <EditField info={info} type={"Text"} cl={"!min-w-[6rem]"} />
       ),
       filter: false,
     },
@@ -248,8 +229,12 @@ export const getBaseColumnsConfig = () => {
 
     {
       accessorKey: "user_id",
-      header: "Менеджер SGM",
-      size: 25,
+      header: () => (
+        <div className="flex flex-col w-4">
+          <span>SGM</span>
+        </div>
+      ),
+      size: 10,
       cell: (info: Cell<CargoType, ReactNode>) => {
         const { data, isLoading } = useQuery({
           queryKey: [`get user ${info.getValue().toString()}`],
@@ -259,16 +244,27 @@ export const getBaseColumnsConfig = () => {
           return <Spinner />;
         }
         return (
-          <div>
-            <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
-          </div>
+          <Tooltip
+            content={
+              <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+            }
+          >
+            <div className="w-4">
+              <span>{`${data?.firstName[0].toUpperCase() || ""}. ${data?.lastName[0].toUpperCase() || ""}.`}</span>
+            </div>
+          </Tooltip>
         );
       },
       filter: false,
     },
     {
       accessorKey: "act_details",
-      header: "Выдача талона",
+      header: () => (
+        <div className="flex flex-col gap-1">
+          <span>Выдача</span>
+          <span>талона</span>
+        </div>
+      ),
       size: 15,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Composite"} compositeType="act_details" />
