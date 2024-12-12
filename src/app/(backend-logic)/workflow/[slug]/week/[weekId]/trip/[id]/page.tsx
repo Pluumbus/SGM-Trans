@@ -4,7 +4,14 @@ import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { getTripsByWeekId } from "../_api";
-import { Checkbox, Spinner, Tab, Tabs, useDisclosure } from "@nextui-org/react";
+import {
+  Checkbox,
+  Divider,
+  Spinner,
+  Tab,
+  Tabs,
+  useDisclosure,
+} from "@nextui-org/react";
 import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import { TripTab } from "./_features/TripTab";
@@ -18,6 +25,7 @@ import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../_api/types";
 import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
+import { getDayOfWeek } from "./_helpers";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -144,7 +152,7 @@ const Page: NextPage = () => {
           onSelectionChange={(key) => setSelectedTabId(key as string)}
         >
           {tripsData
-            .sort((a, b) => a.id - b.id)
+            .sort((a, b) => a.trip_number - b.trip_number)
             .map((trip) => (
               <Tab
                 key={trip.id}
@@ -179,15 +187,27 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
   return (
     <div className="grid grid-rows-2 min-w-[4.20rem]">
       <div className="grid grid-rows-3 !min-h-full !h-full ">
-        <div className="text-gray-500 truncate grid-rows-1">
+        <div className="grid-rows-1">
           <span>{trip.status}</span>
-        </div>
-        <div className="text-gray-500 truncate grid-rows-1 break-words">
-          <span>{trip.driver?.state_number}</span>
         </div>
         <div className="font-bold truncate grid-rows-1">
           <span>{trip.trip_number}</span>
         </div>
+
+        <div className=" grid-rows-1 break-words">
+          <span>{trip.driver.driver.split(" ")[0]}</span>
+        </div>
+
+        <div className=" grid-rows-1 break-words">
+          <span>{trip.driver.state_number}</span>
+        </div>
+        <div className=" grid-rows-1 break-words">
+          <span>
+            {trip.date_in &&
+              trip.date_in.slice(0, 5) + "  " + getDayOfWeek(trip.date_in)}
+          </span>
+        </div>
+        <Divider />
       </div>
       <TabCities city_to={trip.city_to} />
     </div>
@@ -198,7 +218,7 @@ const TabCities = ({ city_to }: { city_to: string[] }) => {
   return (
     <div className="flex flex-col">
       {city_to.map((city, index) => (
-        <span key={index}>
+        <span className="text-gray-500 truncate" key={index}>
           {city.slice(0, city.includes("-") || city.length <= 5 ? 3 : 4)}
           {city && (index < city_to.length - 1 ? "., " : ".")}
         </span>

@@ -14,7 +14,7 @@ import { useUser } from "@clerk/nextjs";
 export const Drivers = (props: Omit<AutocompleteProps, "children">) => {
   const { isLoaded, isSignedIn } = useUser();
   const { data, isLoading } = useQuery({
-    queryKey: ["getDriversWithCars"],
+    queryKey: ["GetDrivers"],
     queryFn: getDrivers,
     enabled: !!isSignedIn,
   });

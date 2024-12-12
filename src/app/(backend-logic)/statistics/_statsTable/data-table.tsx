@@ -38,10 +38,12 @@ export function DataTable() {
   });
   const [filteredData, setFilteredData] = useState<StatsUserList[]>([]);
   const [dateVal, setDateVal] = useState({
-    start: parseDate(
-      `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
-    ).toString(),
-    end: today(getLocalTimeZone()).toString(),
+    // start: parseDate(
+    //   `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
+    // ).toString(),
+    // end: today(getLocalTimeZone()).toString(),
+    start: "",
+    end: "",
   });
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -62,17 +64,6 @@ export function DataTable() {
     },
   });
   const handleSetTimeRangeFilter = () => {
-    // const startDate = new Date(
-    //   dateVal.start.year,
-    //   dateVal.start.month - 1,
-    //   dateVal.start.day - 1
-    // ).toISOString();
-    // const endDate = new Date(
-    //   dateVal.end.year,
-    //   dateVal.end.month - 1,
-    //   dateVal.end.day + 1
-    // ).toISOString();
-
     const sumAmountsForDateRange = (user: StatsUserList) => {
       let bidSumArr = [];
       let totalBase = 0;
@@ -115,12 +106,9 @@ export function DataTable() {
       handleSetTimeRangeFilter();
     }
   }, [dateVal, data, isFetched]);
+
   if (isLoading) {
-    return (
-      <div className="flex justify-center mt-60">
-        <Spinner />
-      </div>
-    );
+    return <Spinner />;
   }
 
   return (

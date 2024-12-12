@@ -21,7 +21,9 @@ import { updateTripDriver } from "../../../_api/requests";
 export const TripInfoDriver = ({
   currentTripData,
   tripId,
+  tripsData,
 }: {
+  tripsData: TripType[];
   currentTripData: TripType;
   tripId: number;
 }) => {
@@ -37,12 +39,12 @@ export const TripInfoDriver = ({
   const { isOpen, onOpen, onOpenChange: onOpenModalChange } = useDisclosure();
 
   const { data: driversData, isLoading: driversLoading } = useQuery({
-    queryKey: ["getAllDrivers"],
+    queryKey: ["GetDrivers"],
     queryFn: getDrivers,
   });
 
   const { data: carData, isLoading: carLoading } = useQuery({
-    queryKey: ["getAllCars"],
+    queryKey: ["GetCars"],
     queryFn: async () => await getCars(),
   });
 
@@ -62,6 +64,7 @@ export const TripInfoDriver = ({
       });
     },
   });
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSecondaryInputCar((prev) => ({
@@ -73,6 +76,12 @@ export const TripInfoDriver = ({
         secondaryInputCar.car + " - " + secondaryInputCar.state_number
       );
   };
+  //#TODO: Если надо будет убирать водителей которые уже участвуют в рейсах
+  // const res = driversData
+  //   ?.filter((e) => e.car_type === "truck")
+  //   .filter((d) => !tripsData.some((t) => d.name === t.driver.driver));
+  // console.log(res);
+
   return (
     <div>
       <div className="flex flex-col">

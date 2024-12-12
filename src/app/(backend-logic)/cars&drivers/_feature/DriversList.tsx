@@ -7,8 +7,6 @@ import {
   ListboxItem,
   useDisclosure,
   Spinner,
-  Autocomplete,
-  AutocompleteItem,
   Input,
   CardHeader,
 } from "@nextui-org/react";
@@ -21,6 +19,7 @@ import {
   useDeleteObject,
 } from "./Modals/AddTruckObjectsModal";
 import Image from "next/image";
+import supabase from "@/utils/supabase/client";
 
 export const DriversList = () => {
   const { data: driversData, isLoading } = useQuery({
@@ -37,6 +36,37 @@ export const DriversList = () => {
     setDrivers(driver);
     setTempDrivers(driver);
   }, [driversData]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`drivers-list/cars&drivers`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "drivers",
+        },
+        (payload) => {
+          if (payload.eventType === "DELETE") {
+            setDrivers((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+            setTempDrivers((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+          } else {
+            setDrivers((prev) => [...prev, payload.new as DriversType]);
+            setTempDrivers((prev) => [...prev, payload.new as DriversType]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempDrivers(

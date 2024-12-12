@@ -10,6 +10,7 @@ import {
   useDisclosure,
   Autocomplete,
   AutocompleteItem,
+  Spinner,
 } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -33,11 +34,11 @@ export const UpdateTripNumber = ({
     }[]
   >([]);
   const [cargos, setCargos] = useState<CargoType[]>();
-  const [selectedTrip, setSelectedTrip] = useState();
+  const [selectedTrip, setSelectedTrip] = useState<number>();
 
   const { toast } = useToast();
 
-  const { data, isFetched, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["getAllCargos"],
     queryFn: async () => await getAllCargos(),
   });
@@ -105,7 +106,7 @@ export const UpdateTripNumber = ({
             : 10;
 
     if (isText) {
-      return weightCalc + volumeCalc > 6 ? <b>ПЕРЕПОЛНЕН</b> : <></>;
+      return weightCalc + volumeCalc > 6 ? <b> ПЕРЕПОЛНЕН</b> : <></>;
     }
 
     return weightCalc + volumeCalc <= 2
@@ -117,6 +118,7 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
 
+  if (!tripsData) return <Spinner />;
   return (
     <div className="mt-4">
       <Button
@@ -155,19 +157,24 @@ export const UpdateTripNumber = ({
                   label="Выберите рейс"
                   selectedKey={selectedTrip}
                   onSelectionChange={(e) => {
-                    setSelectedTrip(e);
+                    setSelectedTrip(e as number);
                   }}
                 >
                   {tripsData
                     ?.filter((trip) => trip.id !== currentTripId)
+                    .filter((trip) => trip.status !== "Прибыл")
+                    .sort((a, b) => a.trip_number - b.trip_number)
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
-                        textValue={`${e.driver.driver} | ${e.id}`}
-                        value={e.id}
-                        style={{ color: `${sumCargosColorForTrip(e, false)}` }}
+                        textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
+                        value={e.trip_number}
+                        style={{
+                          border: ` 2px solid ${sumCargosColorForTrip(e, false)}`,
+                        }}
                       >
-                        {`${e.driver.driver} | ${e.id} рейс`}{" "}
+                        <b>{`${e.trip_number}`}</b> |{" "}
+                        {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>
                     ))}

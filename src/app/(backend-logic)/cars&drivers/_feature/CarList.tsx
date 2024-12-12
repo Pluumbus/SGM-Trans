@@ -20,6 +20,7 @@ import {
   useDeleteObject,
 } from "./Modals/AddTruckObjectsModal";
 import Image from "next/image";
+import supabase from "@/utils/supabase/client";
 
 export const CarList = () => {
   const { data: carsData, isLoading } = useQuery({
@@ -38,6 +39,37 @@ export const CarList = () => {
       setTempCars(cars);
     }
   }, [carsData]);
+
+  useEffect(() => {
+    const cn = supabase
+      .channel(`cars-list/cars&drivers`)
+      .on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "cars",
+        },
+        (payload) => {
+          if (payload.eventType === "DELETE") {
+            setCars((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+            setTempCars((prev) => {
+              return prev.filter((d) => d.id !== payload.old.id);
+            });
+          } else {
+            setCars((prev) => [...prev, payload.new as CarsType]);
+            setTempCars((prev) => [...prev, payload.new as CarsType]);
+          }
+        }
+      )
+      .subscribe();
+
+    return () => {
+      cn.unsubscribe();
+    };
+  }, []);
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempCars(

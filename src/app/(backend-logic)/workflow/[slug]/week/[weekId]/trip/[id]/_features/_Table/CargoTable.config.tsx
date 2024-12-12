@@ -183,28 +183,6 @@ export const getBaseColumnsConfig = () => {
       filter: true,
     },
     {
-      accessorKey: "cargo_name",
-      header: "Название груза",
-      size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Text"} />
-      ),
-      filter: false,
-    },
-    {
-      accessorKey: "transportation_manager",
-      header: "Менеджер по перевозкам",
-      size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField
-          info={info}
-          type={"Composite"}
-          compositeType="transportation_manager"
-        />
-      ),
-      filter: false,
-    },
-    {
       accessorKey: "is_documents",
       header: () => (
         <div className="flex flex-col items-center w-[2rem]">
@@ -220,17 +198,41 @@ export const getBaseColumnsConfig = () => {
       ),
       filter: false,
     },
-    // {
-    //   accessorKey: "status",
-    //   header: "Статус",
-    //   size: 20,
-    //   cell: (info: Cell<CargoType, ReactNode>) => (
-    //     <div className="py-1">
-    //       <EditField info={info} type={"Composite"} compositeType="status" />
-    //     </div>
-    //   ),
-    //   filter: false,
-    // },
+    {
+      accessorKey: "cargo_name",
+      header: "Название груза",
+      size: 25,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField info={info} type={"Text"} />
+      ),
+      filter: false,
+    },
+
+    {
+      accessorKey: "transportation_manager",
+      header: "Менеджер по перевозкам",
+      size: 25,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <EditField
+          info={info}
+          type={"Composite"}
+          compositeType="transportation_manager"
+        />
+      ),
+      filter: false,
+    },
+
+    {
+      accessorKey: "status",
+      header: "Статус",
+      size: 20,
+      cell: (info: Cell<CargoType, ReactNode>) => (
+        <div className="py-1">
+          <EditField info={info} type={"Composite"} compositeType="status" />
+        </div>
+      ),
+      filter: false,
+    },
 
     {
       accessorKey: "user_id",

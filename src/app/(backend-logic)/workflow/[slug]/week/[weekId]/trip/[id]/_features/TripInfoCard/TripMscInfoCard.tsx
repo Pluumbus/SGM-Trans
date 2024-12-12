@@ -95,27 +95,25 @@ export const TripInfoMscCard = ({
               )}
             </span>
           </div>
-          <RoleBasedWrapper allowedRoles={["Логист Москва", "Админ"]}>
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" color="default">
-                  <IoMdSettings />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                {dateItmes.map((stat: string) => (
-                  <DropdownItem
-                    key={stat}
-                    onClick={() => {
-                      setDateVal(stat);
-                    }}
-                  >
-                    {stat}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-          </RoleBasedWrapper>
+          <Dropdown>
+            <DropdownTrigger>
+              <Button isIconOnly size="sm" color="default">
+                <IoMdSettings />
+              </Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              {dateItmes.map((stat: string) => (
+                <DropdownItem
+                  key={stat}
+                  onClick={() => {
+                    setDateVal(stat);
+                  }}
+                >
+                  {stat}
+                </DropdownItem>
+              ))}
+            </DropdownMenu>
+          </Dropdown>
         </div>
       </CardBody>
     </Card>

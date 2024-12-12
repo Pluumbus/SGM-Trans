@@ -118,8 +118,8 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           }}
         >
           <div className="flex flex-col h-full">
-            <span>Добавить</span>
-            <span>SNT</span>
+            <span>Редакт</span>
+            <span>ировать</span>
           </div>
         </Button>
       </div>

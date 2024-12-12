@@ -18,8 +18,6 @@ import { IoMdSettings } from "react-icons/io";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { updateTripStatus } from "../../../_api/requests";
-import { useCheckRole } from "@/components/RoleManagment/useRole";
-import { daysOfWeek } from "../../_helpers";
 import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";
@@ -36,8 +34,6 @@ export const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
-
-  const accessRole = useCheckRole(["Логист Москва", "Админ"]);
 
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
@@ -90,13 +86,38 @@ export const TripInfoCard = ({
             tempId={currentTripData?.trip_number}
           />
           <TripInfoDriver
+            tripsData={tripsData}
             currentTripData={currentTripData}
             tripId={currentTripData?.id}
           />
 
           {
             <div>
-              {accessRole ? (
+              <div className="flex justify-between">
+                <span>Статус:</span>
+                <b>{statusVal}</b>
+                <Dropdown>
+                  <DropdownTrigger>
+                    <Button isIconOnly size="sm" color="default">
+                      <IoMdSettings />
+                    </Button>
+                  </DropdownTrigger>
+                  <DropdownMenu>
+                    {statusItems.map((stat: string) => (
+                      <DropdownItem
+                        key={stat}
+                        onClick={() => {
+                          setStatusVal(stat);
+                          setStatusMutation();
+                        }}
+                      >
+                        {stat}
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              {/* {accessRole ? (
                 <div className="flex justify-between">
                   <span>Статус:</span>
                   <b>{statusVal}</b>
@@ -150,7 +171,7 @@ export const TripInfoCard = ({
                     </DropdownMenu>
                   </Dropdown>
                 </div>
-              )}
+              )} */}
             </div>
           }
           <TripInfoMscCard

@@ -2,6 +2,7 @@ import { toast } from "@/components/ui/use-toast";
 import { useConfirmContext } from "@/tool-kit/hooks";
 import {
   Button,
+  Divider,
   Input,
   Modal,
   ModalBody,
@@ -11,7 +12,13 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { deleteObj, setCar, setDriver, setTrailer } from "../../_api/requests";
+import {
+  deleteObj,
+  setCar,
+  setCarGazell,
+  setDriver,
+  setTrailer,
+} from "../../_api/requests";
 import { useState } from "react";
 
 export const AddTruckObjectsModal = ({
@@ -26,6 +33,10 @@ export const AddTruckObjectsModal = ({
   const [mutateObj, setMutateObj] = useState({
     name: "",
     state_number: "",
+    driver_name: "",
+    passport_number: "",
+    passport_date: "",
+    passport_issued: "",
   });
 
   const { mutate } = useMutation({
@@ -34,7 +45,9 @@ export const AddTruckObjectsModal = ({
         ? await setDriver(mutateObj.name)
         : type == ModalTitleItems[1]
           ? await setCar(mutateObj)
-          : await setTrailer(mutateObj);
+          : type == ModalTitleItems[2]
+            ? await setTrailer(mutateObj)
+            : await setCarGazell(mutateObj);
     },
     onSuccess: () => {
       toast({ title: "Успешно добавлен(а)" });
@@ -109,6 +122,52 @@ export const AddTruckObjectsModal = ({
                     </div>
                   </div>
                 )}
+                {modalTitle == ModalTitleItems[3] && (
+                  <div>
+                    <p>Введите данные</p>
+                    <div className="flex flex-col gap-4 mt-4">
+                      <Input
+                        name="name"
+                        variant="bordered"
+                        placeholder="Газель NEXT"
+                        onChange={handleInputChange}
+                      />
+                      <Input
+                        name="state_number"
+                        variant="bordered"
+                        placeholder="0754AM 977"
+                        onChange={handleInputChange}
+                      />
+                      <Divider />
+                      <Input
+                        name="driver_name"
+                        variant="bordered"
+                        placeholder="Иванов Иван Иванович"
+                        onChange={handleInputChange}
+                      />
+                      <div className="flex gap-3">
+                        <Input
+                          name="passport_number"
+                          variant="bordered"
+                          placeholder="Номер паспорта"
+                          onChange={handleInputChange}
+                        />
+                        <Input
+                          name="passport_date"
+                          variant="bordered"
+                          placeholder="Дата выдачи"
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <Input
+                        name="passport_issued"
+                        variant="bordered"
+                        placeholder="Кем выдан"
+                        onChange={handleInputChange}
+                      />
+                    </div>
+                  </div>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -136,6 +195,7 @@ export const ModalTitleItems = [
   "Добавить водителя",
   "Добавить машину",
   "Добавить прицеп",
+  "Добавить газель",
 ];
 
 export const useDeleteObject = () => {
