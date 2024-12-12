@@ -70,15 +70,6 @@ export const WeekCard = () => {
     };
   }, []);
 
-  const CurrentWeekIndicator = ({ end_date, start_date }) => {
-    const today = new Date();
-
-    const start = new Date(start_date);
-    const end = new Date(end_date);
-
-    return today >= start && today <= end;
-  };
-
   if (isPending) {
     return <Spinner />;
   }
@@ -108,6 +99,15 @@ export const WeekCard = () => {
       </div>
     </div>
   );
+};
+
+export const CurrentWeekIndicator = ({ end_date, start_date }) => {
+  const today = new Date();
+
+  const start = new Date(start_date);
+  const end = new Date(end_date);
+
+  return today >= start && today <= end;
 };
 
 export const CreateTripInsideWeek = ({
@@ -171,6 +171,7 @@ export const CreateTripInsideWeek = ({
   });
 
   const onSubmit = (e) => {
+    console.log(formState);
     e.preventDefault();
     if (
       formState.driver &&
@@ -287,15 +288,6 @@ export const CreateTripInsideWeek = ({
                       </span>
                     )}
                   </div>
-                  {formState.city_to.map((city, index) => (
-                    <Cities
-                      key={index + 1}
-                      isReadOnly={!isMSK}
-                      label={`Город получатель ${index + 1}`}
-                      selectedKey={city}
-                      onSelectionChange={(e) => handleCityToChange(index, e)}
-                    />
-                  ))}
                 </>
               ) : (
                 <>
@@ -328,41 +320,26 @@ export const CreateTripInsideWeek = ({
                       />
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    {formState.city_to.map((city, index) => (
-                      <Cities
-                        key={index + 1}
-                        isReadOnly={!isMSK}
-                        label={`Город получатель ${index + 1}`}
-                        selectedKey={city}
-                        onSelectionChange={(e) => handleCityToChange(index, e)}
-                      />
-                    ))}
-                  </div>
                 </>
               )}
-
-              {/* {formState.city_from.map((city, index) => (
+              {formState.city_from.map((city, index) => (
                 <Cities
                   key={index + 2}
                   label={`Город отправитель ${index + 1}`}
                   selectedKey={city}
-                  isReadOnly={isMSK}
+                  // isReadOnly={isMSK}
                   onSelectionChange={(e) => handleCityToChange(index, e, false)}
                 />
-              ))} */}
-
-              {/* <div className="grid grid-cols-2 gap-2">
-                {formState.city_to.map((city, index) => (
-                  <Cities
-                    key={index + 1}
-                    isReadOnly={!isMSK}
-                    label={`Город получатель ${index + 1}`}
-                    selectedKey={city}
-                    onSelectionChange={(e) => handleCityToChange(index, e)}
-                  />
-                ))}
-              </div> */}
+              ))}
+              {formState.city_to.map((city, index) => (
+                <Cities
+                  key={index + 1}
+                  // isReadOnly={!isMSK}
+                  label={`Город получатель ${index + 1}`}
+                  selectedKey={city}
+                  onSelectionChange={(e) => handleCityToChange(index, e)}
+                />
+              ))}
             </ModalBody>
             <Divider />
             <ModalFooter className="flex justify-between">

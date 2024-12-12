@@ -2,7 +2,8 @@ export const COLORS = {
   red: "#C41E3A",
   green: "#63c145",
   orange: "#fabb39",
-  yellow: "#f0e248",
+  // yellow: "#f0e248",
+  yellow: "#E3B505",
 } as const;
 
 export const MANAGER_COLORS = {

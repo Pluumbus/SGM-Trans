@@ -10,6 +10,7 @@ import {
   useDisclosure,
   Autocomplete,
   AutocompleteItem,
+  Spinner,
 } from "@nextui-org/react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
@@ -105,7 +106,7 @@ export const UpdateTripNumber = ({
             : 10;
 
     if (isText) {
-      return weightCalc + volumeCalc > 6 ? <b>ПЕРЕПОЛНЕН</b> : <></>;
+      return weightCalc + volumeCalc > 6 ? <b> ПЕРЕПОЛНЕН</b> : <></>;
     }
 
     return weightCalc + volumeCalc <= 2
@@ -117,6 +118,7 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
 
+  if (!tripsData) return <Spinner />;
   return (
     <div className="mt-4">
       <Button
@@ -161,14 +163,18 @@ export const UpdateTripNumber = ({
                   {tripsData
                     ?.filter((trip) => trip.id !== currentTripId)
                     .filter((trip) => trip.status !== "Прибыл")
+                    .sort((a, b) => a.trip_number - b.trip_number)
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
-                        textValue={`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)}) | ${e.id}`}
+                        textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         value={e.trip_number}
-                        style={{ color: `${sumCargosColorForTrip(e, false)}` }}
+                        style={{
+                          border: ` 2px solid ${sumCargosColorForTrip(e, false)}`,
+                        }}
                       >
-                        {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)}) | ${e.trip_number} рейс`}{" "}
+                        <b>{`${e.trip_number}`}</b> |{" "}
+                        {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>
                     ))}

@@ -76,10 +76,12 @@ export const TripInfoDriver = ({
         secondaryInputCar.car + " - " + secondaryInputCar.state_number
       );
   };
-  const res = driversData
-    ?.filter((e) => e.car_type === "truck")
-    .filter((d) => !tripsData.some((t) => d.name === t.driver.driver));
-  console.log(res);
+  //#TODO: Если надо будет убирать водителей которые уже участвуют в рейсах
+  // const res = driversData
+  //   ?.filter((e) => e.car_type === "truck")
+  //   .filter((d) => !tripsData.some((t) => d.name === t.driver.driver));
+  // console.log(res);
+
   return (
     <div>
       <div className="flex flex-col">
