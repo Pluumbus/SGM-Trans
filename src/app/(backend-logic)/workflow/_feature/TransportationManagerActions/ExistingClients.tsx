@@ -2,6 +2,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteProps,
+  Tooltip,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { getClientsNames } from "../../cashbox/_features/api";
@@ -26,15 +27,14 @@ export const ExistingClients = ({
 
   const { debounce } = useDebounce();
   const updateState = () => {
-    if (state[0]) {
-      setValue(state[0].toString());
-      onChange?.();
-    }
+    setValue(state[0].toString());
+    onChange && onChange();
   };
 
   useEffect(() => {
-    debounce(updateState, 3000);
-    refetch();
+    if (state[0]) {
+      debounce(updateState, 3000);
+    }
   }, [state[0]]);
 
   return (
@@ -54,26 +54,26 @@ export const ExistingClients = ({
             value={e.id}
             key={e.id}
             textValue={
-              e.client.full_name.first_name +
-              " " +
-              e.client.full_name.last_name +
-              " " +
-              e.client.company_name +
-              " " +
-              e.client.phone_number
+              e.client.full_name.first_name + " " + e.client.company_name
             }
           >
-            <span>
-              {e.client.full_name.first_name +
-                " " +
-                e.client.full_name.last_name +
-                " " +
-                e.client.company_name +
-                " " +
-                e.client.phone_number}
-            </span>
+            <Tooltip content={<span>{str(e)}</span>}>
+              <span>{shortStr(e)}</span>
+            </Tooltip>
           </AutocompleteItem>
         ))}
     </Autocomplete>
   );
 };
+const shortStr = (e): string => e.client.company_name;
+
+const str = (e): string =>
+  `${
+    e.client.full_name.first_name +
+    " " +
+    e.client.full_name.last_name +
+    " " +
+    e.client.company_name +
+    " " +
+    e.client.phone_number
+  }`;

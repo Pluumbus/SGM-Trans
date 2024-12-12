@@ -9,6 +9,7 @@ import { Status } from "./Status";
 import { PrintAct } from "./PrintAct";
 import { ClientBin } from "./ClientBin";
 import { TransportationManager } from "./TransportationManager";
+import { Address } from "./Address";
 
 export const Composite = ({
   info,
@@ -22,6 +23,7 @@ export const Composite = ({
     | "amount"
     | "client_bin"
     | "status"
+    | "address"
     | "act_details"
     | "transportation_manager";
 }) => {
@@ -32,6 +34,8 @@ export const Composite = ({
       return <TransportationManager info={info} />;
     case "unloading_point":
       return <UnloadingPoint info={info} />;
+    case "address":
+      return <Address info={info} />;
     case "quantity":
       return <Quantity info={info} />;
     case "driver":
