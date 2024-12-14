@@ -9,13 +9,11 @@ import {
   ModalHeader,
   Textarea,
 } from "@nextui-org/react";
-import { CargoType } from "../types";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { createClient } from "./api";
 import { useToast } from "@/components/ui/use-toast";
 import { useConfirmContext } from "@/tool-kit/hooks";
-import { str } from "./TM";
 import { CashboxType } from "../../cashbox/types";
 import { useEffect } from "react";
 

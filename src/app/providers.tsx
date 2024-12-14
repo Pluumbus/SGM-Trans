@@ -6,6 +6,7 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { ThemeProviderProps } from "next-themes/dist/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RowsPerPageProvider } from "@/tool-kit/providers/rowsPerPageProvider";
+import { AnimationsProvider } from "@/tool-kit/ui/Effects";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -41,7 +42,9 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <RowsPerPageProvider>
         <NextUIProvider navigate={router.push} locale="ru">
-          <NextThemesProvider {...themeProps}>{children}</NextThemesProvider>
+          <NextThemesProvider {...themeProps}>
+            <AnimationsProvider>{children}</AnimationsProvider>
+          </NextThemesProvider>
         </NextUIProvider>
       </RowsPerPageProvider>
     </QueryClientProvider>

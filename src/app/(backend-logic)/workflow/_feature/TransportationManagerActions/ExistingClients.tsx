@@ -2,10 +2,12 @@ import {
   Autocomplete,
   AutocompleteItem,
   AutocompleteProps,
+  Tooltip,
 } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { getClients, getClientsNames } from "../../cashbox/_features/api";
+import { getClientsNames } from "../../cashbox/_features/api";
 import { useEffect, useState } from "react";
+import { useDebounce } from "@/tool-kit/hooks";
 
 export const ExistingClients = ({
   state,
@@ -23,12 +25,16 @@ export const ExistingClients = ({
 
   const [value, setValue] = useState<string>(state[0]?.toString() || "");
 
+  const { debounce } = useDebounce();
+  const updateState = () => {
+    setValue(state[0].toString());
+    onChange && onChange();
+  };
+
   useEffect(() => {
     if (state[0]) {
-      setValue(state[0].toString());
-      onChange && onChange();
+      debounce(updateState, 3000);
     }
-    refetch();
   }, [state[0]]);
 
   return (
@@ -48,26 +54,26 @@ export const ExistingClients = ({
             value={e.id}
             key={e.id}
             textValue={
-              e.client.full_name.first_name +
-              " " +
-              e.client.full_name.last_name +
-              " " +
-              e.client.company_name +
-              " " +
-              e.client.phone_number
+              e.client.full_name.first_name + " " + e.client.company_name
             }
           >
-            <span>
-              {e.client.full_name.first_name +
-                " " +
-                e.client.full_name.last_name +
-                " " +
-                e.client.company_name +
-                " " +
-                e.client.phone_number}
-            </span>
+            <Tooltip content={<span>{str(e)}</span>}>
+              <span>{shortStr(e)}</span>
+            </Tooltip>
           </AutocompleteItem>
         ))}
     </Autocomplete>
   );
 };
+const shortStr = (e): string => e.client.company_name;
+
+const str = (e): string =>
+  `${
+    e.client.full_name.first_name +
+    " " +
+    e.client.full_name.last_name +
+    " " +
+    e.client.company_name +
+    " " +
+    e.client.phone_number
+  }`;

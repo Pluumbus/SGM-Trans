@@ -12,7 +12,7 @@ export const ChangeMileage = ({ car }: { car: CarsType }) => {
     car.details.temp_can_mileage || ""
   );
 
-  const debounce = useDebounce();
+  const { debounce } = useDebounce();
   const { mutate } = useMutation({
     mutationFn: async ({ car, value }: { car: CarsType; value: string }) =>
       changeMileage(car, value),

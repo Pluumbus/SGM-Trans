@@ -13,6 +13,7 @@ import {
   ModalHeader,
   Spinner,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
@@ -23,6 +24,7 @@ import { setUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
 import { FaCircleXmark } from "react-icons/fa6";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { PrintButton } from "@/components/ActPrinter/actGen";
+import { IoCheckmark } from "react-icons/io5";
 
 type Type = CargoType["act_details"];
 
@@ -95,7 +97,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   }
 
   return (
-    <div className="flex flex-col gap-2 w-[10rem]">
+    <div className="flex flex-col gap-2 w-[2rem]">
       <div className="flex flex-col gap-2 w-full items-center">
         {useCheckRole(["Менеджер"]) ? (
           <Checkbox
@@ -114,13 +116,17 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         ) : conditionIsReadyToGiveAct ? (
           <span>Одобрено Кассой</span>
         ) : (
-          <Button
-            onClick={() => {
-              isReadyToGive();
-            }}
-          >
-            <span>Одобрить</span>
-          </Button>
+          <Tooltip content={<span>Одобрить?</span>}>
+            <Button
+              onClick={() => {
+                isReadyToGive();
+              }}
+              isIconOnly
+              variant="light"
+            >
+              <IoCheckmark size={20} />
+            </Button>
+          </Tooltip>
         )}
         {conditionIsReadyToGiveAct && (
           <div className="w-full">

@@ -48,7 +48,11 @@ export const TM = ({
           {type == "Table" &&
             (!isLoading ? (
               <Link
-                href={`https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`}
+                href={
+                  data
+                    ? `https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`
+                    : ""
+                }
                 target="_blank"
               >
                 <Button isIconOnly color="success">

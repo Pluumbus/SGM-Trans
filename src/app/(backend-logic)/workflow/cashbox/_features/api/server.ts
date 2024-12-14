@@ -25,6 +25,7 @@ export const getClientsNames = async () => {
 
   return data as { id: CashboxType["id"]; client: CashboxType["client"] }[];
 };
+
 export const getClient = async (id: number) => {
   const { data, error } = await (await getSupabaseServer())
     .from("cashbox")

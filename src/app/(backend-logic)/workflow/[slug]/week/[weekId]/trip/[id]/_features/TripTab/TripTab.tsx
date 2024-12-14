@@ -25,6 +25,7 @@ import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripC
 import { Button } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
+import { DeleteCargo } from "../DeleteCargo";
 
 export const TripTab = ({
   trip,
@@ -86,7 +87,14 @@ export const TripTab = ({
         },
         (payload) => {
           if (payload.eventType !== "UPDATE") {
-            setCargos((prev) => [...prev, payload.new as CargoType]);
+            setCargos((prev) => {
+              setRowSelected((prevv) => [
+                ...prevv,
+                { number: (payload.new as CargoType)!.id, isSelected: false },
+              ]);
+
+              return [...prev, payload.new as CargoType];
+            });
           } else {
             setCargos((prev) => {
               const res = prev
@@ -95,7 +103,7 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => e.trip_id == trip.id);
+                .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
               return res;
             });
@@ -121,29 +129,31 @@ export const TripTab = ({
 
   return (
     <>
-      <Button
-        variant="ghost"
-        onClick={() => {
-          const formattedText = cargos
-            .filter((e) => e.client_bin.xin || e.client_bin.tempText)
-            .map((e) => {
-              const snts = e.client_bin.snts
-                .filter((el) => el !== "KZ-SNT-")
-                .join("");
+      {cargos.length > 0 && (
+        <Button
+          variant="ghost"
+          onClick={() => {
+            const formattedText = cargos
+              .filter((e) => e.client_bin.xin || e.client_bin.tempText)
+              .map((e) => {
+                const snts = e.client_bin.snts
+                  .filter((el) => el !== "KZ-SNT-")
+                  .join("");
 
-              return `${e.client_bin.tempText || ""}\nБИН: ${e.client_bin.xin || ""}\n${snts}`.trim();
-            })
-            .join("\n\n");
+                return `${e.client_bin.tempText || ""}\nБИН: ${e.client_bin.xin || ""}\n${snts}`.trim();
+              })
+              .join("\n\n");
 
-          copy(formattedText);
-          toast({
-            title: "Скопировано в буфер обмена",
-            description: `Информация о ${cargos.length} клиент(ах) была скопирована`,
-          });
-        }}
-      >
-        Скопировать всех клиентов
-      </Button>
+            copy(formattedText);
+            toast({
+              title: "Скопировано в буфер обмена",
+              description: `Информация о ${cargos.length} клиент(ах) была скопирована`,
+            });
+          }}
+        >
+          Скопировать всех клиентов
+        </Button>
+      )}
       <UTable
         tBodyProps={{
           emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,

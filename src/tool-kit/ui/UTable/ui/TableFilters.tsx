@@ -17,7 +17,7 @@ export const TableFilters = ({ headers }: any) => {
 const FilterInput = ({ header }: { header: any }) => {
   const [state, setState] = useState<string>(""); // для того чтобы убрать баг с задержкой ввода
 
-  const debounce = useDebounce();
+  const { debounce } = useDebounce();
 
   const onChange = (value: string) => {
     setState(value);

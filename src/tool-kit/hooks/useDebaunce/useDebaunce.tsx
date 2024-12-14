@@ -1,33 +1,37 @@
 import { useCallback, useEffect, useRef } from "react";
 
-type UseDebounceFunction = () => (fn: () => void, delay: number) => void;
+type UseDebounceFunction = () => {
+  debounce: (fn: () => void, delay: number) => void;
+  cancel: () => void;
+};
 
 export const useDebounce: UseDebounceFunction = () => {
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout>>();
 
-  let fun: Function | undefined = undefined;
-
-  /** @param fn - function to delay @param delay - number in ms to delay the function */
-  const useFn = (fn, delay) => {
-    if (debounceTimerRef.current !== undefined) {
+  /** Executes the function after a delay */
+  const debounce = (fn: () => void, delay: number) => {
+    if (debounceTimerRef.current) {
       clearTimeout(debounceTimerRef.current);
     }
 
     debounceTimerRef.current = setTimeout(() => {
       fn();
     }, delay);
-
-    fun = fn;
-
-    return fn;
   };
+
+  /** Cancels the execution of the debounced function */
+  const cancel = () => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = undefined;
+    }
+  };
+
   useEffect(() => {
     return () => {
-      if (debounceTimerRef.current !== undefined) {
-        clearTimeout(debounceTimerRef.current);
-      }
+      cancel();
     };
-  }, [fun]);
+  }, []);
 
-  return useFn;
+  return { debounce, cancel };
 };

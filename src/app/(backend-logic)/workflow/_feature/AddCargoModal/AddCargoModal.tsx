@@ -4,7 +4,6 @@ import { CargoType } from "../types";
 import { Body, Footer } from "./ModalParts";
 import { useCargoMutation, useValdiateForm } from "./helpers";
 import { addCargoOnSubmit } from "./helpers";
-import { TripType } from "../TripCard/TripCard";
 
 export const CargoModal = ({
   isOpenCargo,

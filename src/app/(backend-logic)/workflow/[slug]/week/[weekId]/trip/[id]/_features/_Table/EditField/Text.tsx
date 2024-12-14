@@ -27,7 +27,7 @@ export const Text = ({
       await editCargo(
         info.column.columnDef.accessorKey,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
   });
@@ -35,7 +35,7 @@ export const Text = ({
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(state);
-    }, 500);
+    }, 800);
 
     return () => {
       clearTimeout(handler);
@@ -49,7 +49,7 @@ export const Text = ({
   }, [debouncedValue]);
 
   return (
-    <div className={`max-h-fit min-w-20 h-full flex items-end ${cl}`}>
+    <div className={`max-h-[120px] min-w-20 h-full flex items-end ${cl}`}>
       <Textarea
         aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
         variant="underlined"

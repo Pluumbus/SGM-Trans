@@ -15,12 +15,13 @@ export const UnloadingPoint = ({
   const [values, setValues] = useCompositeStates<Type>(info);
 
   return (
-    <div className="flex flex-col gap-2 w-[16rem]">
+    <div className="flex flex-col gap-2 w-[8rem]">
       <div className={`flex gap-2 ${!values.withDelivery && "flex-col"}`}>
         <Cities
           variant="underlined"
           aria-label="Cities lib"
           selectedKey={values.city}
+          isClearable={false}
           onSelectionChange={(e) => {
             setValues((prev) => ({
               ...prev,

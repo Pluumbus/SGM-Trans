@@ -23,6 +23,7 @@ export const EditField = ({
     | "amount"
     | "client_bin"
     | "status"
+    | "address"
     | "act_details"
     | "transportation_manager";
 }) => {
