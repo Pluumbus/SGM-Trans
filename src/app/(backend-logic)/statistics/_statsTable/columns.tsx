@@ -1,4 +1,6 @@
 "use client";
+import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
+import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
 import { StatsUserList } from "@/lib/references/stats/types";
 import { useNumberState } from "@/tool-kit/hooks";
 import { Avatar } from "@nextui-org/react";
@@ -26,6 +28,10 @@ export const columns: ColumnDef<StatsUserList>[] = [
     header: "Сумма заявок за неделю",
   },
   {
+    accessorKey: "prizeSum",
+    header: "Премия за неделю",
+  },
+  {
     accessorKey: "amount",
     header: "Общая сумма тг.",
     cell: ({ row }) => {
@@ -41,6 +47,7 @@ export const columns: ColumnDef<StatsUserList>[] = [
     accessorKey: "bidSum",
     header: "Общая сумма заявок",
   },
+
   {
     accessorKey: "role",
     header: "Роль",

@@ -30,6 +30,7 @@ import { StatsUserList } from "@/lib/references/stats/types";
 import { getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
+import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
@@ -38,10 +39,6 @@ export function DataTable() {
   });
   const [filteredData, setFilteredData] = useState<StatsUserList[]>([]);
   const [dateVal, setDateVal] = useState({
-    // start: parseDate(
-    //   `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
-    // ).toString(),
-    // end: today(getLocalTimeZone()).toString(),
     start: "",
     end: "",
   });
@@ -66,9 +63,8 @@ export function DataTable() {
   const handleSetTimeRangeFilter = () => {
     const sumAmountsForDateRange = (user: StatsUserList) => {
       let bidSumArr = [];
-      let totalBase = 0;
-
-      totalBase = user.created_at.reduce((sum, date, index) => {
+      let total = 0;
+      total = user.created_at.reduce((sum, date, index) => {
         if (
           isWithinInterval(date, { start: dateVal.start, end: dateVal.end })
         ) {
@@ -77,18 +73,23 @@ export function DataTable() {
         }
         return sum;
       }, 0);
-      const total = getSeparatedNumber(totalBase, ",");
       return { total, bidSumArr };
     };
 
     const filtered = data
       .map((user) => {
         const { total, bidSumArr } = sumAmountsForDateRange(user);
+        const bidPrize =
+          bidSumArr.length > 25 && (bidSumArr.length - 25) * 1000;
         return {
           ...user,
-          totalAmountInRange: total,
+          totalAmountInRange: getSeparatedNumber(total, ","),
           totalBidsInRange: bidSumArr.length,
           bidSum: user.value.length,
+          prizeSum: getSeparatedNumber(
+            calculateCurrentPrize(total) + bidPrize,
+            ","
+          ),
         };
       })
       .filter(

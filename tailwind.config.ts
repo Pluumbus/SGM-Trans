@@ -18,6 +18,14 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        playfair: ['"Playfair Display"', "serif"],
+        cinzel: ['"Cinzel"', "serif"],
+        greatVibes: ['"Great Vibes"', "cursive"], // Изящный стиль
+        dancingScript: ['"Dancing Script"', "cursive"], // Лёгкая праздничная стилистика
+        cormorant: ['"Cormorant Garamond"', "serif"], // Официальный стиль
+        libre: ['"Libre Baskerville"', "serif"], // Элегантный и строгий
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

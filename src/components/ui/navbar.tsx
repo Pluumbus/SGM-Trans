@@ -4,7 +4,7 @@ import Link from "next/link";
 import logo from "../../app/_imgs/logo.png";
 import Image from "next/image";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { ProfileButton } from "@/components/ui/profileButton";
+import { ProfileButton } from "@/components/ui/ProfileButton/profileButton";
 import React from "react";
 import { useRole } from "../RoleManagment/useRole";
 import RoleBasedWrapper from "../RoleManagment/RoleBasedWrapper";

@@ -49,7 +49,6 @@ export const CustomWeekSelector = ({
   }, [data]);
 
   if (isLoading) return <Spinner />;
-
   return (
     <div>
       <Card>
