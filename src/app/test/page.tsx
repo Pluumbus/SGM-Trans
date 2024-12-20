@@ -12,7 +12,7 @@ const Page: NextPage<Props> = ({}) => {
       <Button
         onClick={() => {
           triggerAnimation("fireworks", {
-            premia: {
+            prize: {
               amount: 1111000000,
             },
           });

@@ -1,3 +1,4 @@
+"use client";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { CardContent } from "@/components/ui/card";
 import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
@@ -10,45 +11,30 @@ import {
   Image,
   Input,
 } from "@nextui-org/react";
+import { InputCards } from "./InputCards";
+import { useQuery } from "@tanstack/react-query";
+import { getAllCargos } from "../../workflow/[slug]/week/[weekId]/trip/_api";
+import { useRef } from "react";
+import { AvatarProfile } from "./Avatar";
 
-export const TopMenu = () => {
+export const TopProfile = () => {
   const { user } = useUser();
+
+  const { data } = useQuery({
+    queryKey: ["getAllCargos"],
+    queryFn: async () => await getAllCargos(),
+  });
+
+  const userCargos = data?.filter((c) => c.user_id == user?.id);
+
   return (
     <div>
       <span className="text-2xl ">Личный кабинет</span>
-      <Card className="p-6 mt-4">
+      <Card className="p-6 mt-4 w-2/3">
         <CardBody>
-          <div className="flex gap-16">
-            <div className="w-[12rem] h-[12rem]">
-              <Avatar
-                src={user?.imageUrl}
-                size="lg"
-                className="w-[12rem] h-[12rem]"
-              />
-            </div>
-            <div className="flex flex-col gap-3">
-              <div className="flex gap-5">
-                <Input
-                  value={user?.firstName}
-                  variant="faded"
-                  label="Имя"
-                  labelPlacement="outside"
-                />
-                <Input
-                  value={user?.lastName}
-                  variant="faded"
-                  label="Фамилия"
-                  labelPlacement="outside"
-                />
-              </div>
-              <Input
-                value={user?.publicMetadata?.role as string}
-                isReadOnly={true}
-                label="Должность"
-                labelPlacement="outside"
-                variant="faded"
-              />
-            </div>
+          <div className="flex gap-16  ">
+            <AvatarProfile />
+            <InputCards />
             <RoleBasedWrapper allowedRoles={["Админ", "Логист"]}>
               <Card>
                 <div className="flex">
@@ -70,7 +56,7 @@ export const TopMenu = () => {
                   <div className="flex flex-col p-3 items-center mt-12">
                     <span>Грузы</span>
                     <Divider />
-                    <span>{0}</span>
+                    <span>{userCargos ? userCargos.length : 0}</span>
                   </div>
                 </div>
               </Card>

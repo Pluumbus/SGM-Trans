@@ -31,6 +31,7 @@ import { getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
+import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
@@ -60,6 +61,15 @@ export function DataTable() {
       columnVisibility,
     },
   });
+
+  const findMaxValue = (data) => {
+    return data.reduce(
+      (max, item) =>
+        item.totalAmountInRange > max ? item.totalAmountInRange : max,
+      0
+    );
+  };
+
   const handleSetTimeRangeFilter = () => {
     const sumAmountsForDateRange = (user: StatsUserList) => {
       let bidSumArr = [];
@@ -80,16 +90,24 @@ export function DataTable() {
       .map((user) => {
         const { total, bidSumArr } = sumAmountsForDateRange(user);
         const bidPrize =
-          bidSumArr.length > 25 && (bidSumArr.length - 25) * 1000;
+          calculateCurrentPrize(total) + bidSumArr.length > 25 &&
+          (bidSumArr.length - 25) * 1000;
+
+        // const currentPrizeSum =
+        //   bidSumArr.length > 25 ? calculateCurrentPrize(total) + bidPrize : 0;
+
+        const amount = user.value.reduce((acc, item) => {
+          return acc + item;
+        }, 0);
+
         return {
           ...user,
-          totalAmountInRange: getSeparatedNumber(total, ","),
+          amount: getSeparatedNumber(amount),
+          totalAmountInRange: total,
           totalBidsInRange: bidSumArr.length,
           bidSum: user.value.length,
-          prizeSum: getSeparatedNumber(
-            calculateCurrentPrize(total) + bidPrize,
-            ","
-          ),
+          prizeSum: bidPrize,
+          currentWeek: { start: dateVal.start, end: dateVal.end },
         };
       })
       .filter(
@@ -99,7 +117,27 @@ export function DataTable() {
           user.role == "Логист Москва"
       )
       .sort((a, b) => b.bidSum - a.bidSum);
-    setFilteredData(filtered);
+
+    const leaderUserSum = findMaxValue(filtered);
+
+    const totalPrize = filtered.reduce((acc, curr) => {
+      return acc + curr.totalAmountInRange;
+    }, 0);
+    console.log(totalPrize);
+    const newData = filtered.map((item) => {
+      return {
+        ...item,
+        totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
+        prizeSum: getSeparatedNumber(
+          calculateCurrentPrize(totalPrize) > 0
+            ? calculateCurrentPrize(totalPrize) + item.prizeSum
+            : 0
+        ),
+        leadUserSum:
+          item.totalAmountInRange == leaderUserSum ? leaderUserSum : 0,
+      };
+    });
+    setFilteredData(newData);
   };
 
   useEffect(() => {

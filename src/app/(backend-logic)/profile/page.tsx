@@ -11,9 +11,10 @@ import { Button } from "@nextui-org/react";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { UsersDataTable } from "./_UsersTable/data-table";
-import { TopMenu } from "./_TopProfile/TopMenu";
+import { NextPage } from "next";
+import { TopProfile } from "./_TopProfile/TopProfile";
 
-const ProfilePage = () => {
+const Page: NextPage = () => {
   // const queryClient = new QueryClient();
   // queryClient.prefetchQuery({
   //   queryKey: ["Get users for admin panel"],
@@ -22,8 +23,7 @@ const ProfilePage = () => {
 
   return (
     <div>
-      <TopMenu />
-
+      <TopProfile />
       {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
       <RoleBasedWrapper allowedRoles={["Админ"]}>
         <UsersDataTable />
@@ -36,4 +36,4 @@ const ProfilePage = () => {
   );
 };
 
-export default ProfilePage;
+export default Page;

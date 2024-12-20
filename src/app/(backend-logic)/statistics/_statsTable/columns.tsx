@@ -1,8 +1,7 @@
 "use client";
-import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
-import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
 import { StatsUserList } from "@/lib/references/stats/types";
-import { useNumberState } from "@/tool-kit/hooks";
+import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
+import { CrownText } from "@/tool-kit/ui";
 import { Avatar } from "@nextui-org/react";
 import { ColumnDef } from "@tanstack/react-table";
 
@@ -10,11 +9,16 @@ export const columns: ColumnDef<StatsUserList>[] = [
   {
     accessorKey: "user_id",
     header: "Пользователь",
-    cell: ({ row }) => {
+    cell: (info) => {
+      const { row } = info;
       return (
         <div>
           <Avatar src={row.original.avatar} />
-          {row.original.userName}
+          {row.original.leadUserSum !== 0 ? (
+            <CrownText text={row.original.userName} w={28} h={28} />
+          ) : (
+            row.original.userName
+          )}
         </div>
       );
     },
@@ -29,19 +33,12 @@ export const columns: ColumnDef<StatsUserList>[] = [
   },
   {
     accessorKey: "prizeSum",
+    id: "prizeSum",
     header: "Премия за неделю",
   },
   {
     accessorKey: "amount",
     header: "Общая сумма тг.",
-    cell: ({ row }) => {
-      let salesSum = 0;
-      row.original.value.forEach((sale) => {
-        salesSum += Number(sale);
-      });
-      let output = useNumberState({ initValue: salesSum, separator: "," });
-      return output.value;
-    },
   },
   {
     accessorKey: "bidSum",
@@ -50,7 +47,6 @@ export const columns: ColumnDef<StatsUserList>[] = [
 
   {
     accessorKey: "role",
-    header: "Роль",
     cell: ({ column }) => {
       column.setFilterValue("Логист");
       column.toggleVisibility(false);

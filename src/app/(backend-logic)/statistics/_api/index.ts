@@ -6,7 +6,9 @@ import { User } from "@clerk/nextjs/server";
 
 export const getStatsUserList = async () => {
   // TODO: отметить грузы opacity:0.7 у которых is_deleted == true
-  const users = (await (await getClerkClient()).users.getUserList()).data;
+  const users = (
+    await (await getClerkClient()).users.getUserList({ limit: 99 })
+  ).data;
   const userList = users.map((user: User) => ({
     user_id: user.id,
     userName: user.fullName || "Имя отсутствует",

@@ -17,6 +17,7 @@ import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { UsersList } from "@/lib/references/clerkUserType/types";
 import { FaCoins } from "react-icons/fa6";
+import { CrownText } from "@/tool-kit/ui";
 export function Chart({ cargos }: { cargos: CargoType[] }) {
   // const mCargos = useMemo(() => cargos, [cargos.length]);
 
@@ -175,6 +176,10 @@ const CustomBar = ({
       setState(data);
     }
   }, [data]);
+  const leadUser = state.reduce(
+    (max, item) => (item.count > max ? item.count : max),
+    0
+  );
   return (
     <Card className="flex flex-col gap-2 w-full">
       <CardHeader>
@@ -203,7 +208,11 @@ const CustomBar = ({
               <div key={`cargo-statistics-${i}`}>
                 <div className="flex justify-between w-full">
                   <span className="w-[10%] text-lg font-semibold">
-                    {e.user}
+                    {e.count === leadUser ? (
+                      <CrownText text={e.user} />
+                    ) : (
+                      e.user
+                    )}
                   </span>
                   <div className="w-[75%]">
                     <div

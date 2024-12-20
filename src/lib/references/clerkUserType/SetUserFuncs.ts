@@ -22,6 +22,20 @@ export const setUserData = async ({
   });
 };
 
+export const setUserName = async ({
+  userId,
+  fistName,
+  lastName,
+}: {
+  userId: string;
+  fistName: string;
+  lastName: string;
+}) => {
+  await (
+    await getClerkClient()
+  ).users.updateUser(userId, { firstName: fistName, lastName: lastName });
+};
+
 export const setUserRole = async ({
   userId,
   publicMetadata: { role },

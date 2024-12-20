@@ -5,4 +5,7 @@ export type StatsUserList = {
   avatar: string;
   role: string;
   created_at: Date[];
+  prizeSum?: any;
+  leadUserSum?: number;
+  currentWeek?: { start: string; end: string };
 };

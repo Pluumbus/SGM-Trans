@@ -104,11 +104,16 @@ export const getAllVehiclesStatistics =
     const allVehiclesUuid = vehiclesTree.objects.map(
       (vehicle) => vehicle.terminal_id
     );
+    // const allVehiclesUuid = vehiclesTree.objects.map((vehicle) => vehicle.uuid); Variant with string array - car uuid
 
-    const res = await getSingleVehicleStatistics(allVehiclesUuid).then(
-      (data) => data
-    );
-    console.log("getSingleVehicleStatistics(allVehiclesUuid)", res);
+    // console.log(
+    //   "allVehiclesUuid",
+    //   allVehiclesUuid,
+    //   "timeBegin",
+    //   Date.now() - 86400000,
+    //   "timeEnd",
+    //   Date.now()
+    // );
 
     return await getSingleVehicleStatistics(allVehiclesUuid);
   };
@@ -119,11 +124,8 @@ export const getSingleVehicleStatistics = async (vUuid: number[]) => {
   // const timeBegin = new Date("2024-09-01T00:00:00Z").getTime() - 86400000;
   // const timeEnd = 1735689599000; // (2024-12-31 23:59:59 UTC in milliseconds).
 
+  console.log(vUuid, timeBegin, timeEnd);
   const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
-
-  console.log(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
-  );
 
   return await fetchFromAPI(
     `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
