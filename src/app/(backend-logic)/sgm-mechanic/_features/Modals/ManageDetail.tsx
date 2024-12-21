@@ -235,7 +235,7 @@ export const ManageDetail = () => {
           <ModalBody>{renderModalContent()}</ModalBody>
           <Divider />
           <ModalFooter>
-            <Button color="danger" variant="flat" onClick={onClose}>
+            <Button color="danger" variant="flat" onPress={onClose}>
               Закрыть
             </Button>
             <Button color="success" type="submit">
