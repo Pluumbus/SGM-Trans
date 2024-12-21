@@ -1,16 +1,18 @@
+"use client";
+import { toast } from "@/components/ui/use-toast";
 import { useUser } from "@clerk/nextjs";
 import { Avatar } from "@nextui-org/react";
 import { useRef } from "react";
 
 export const AvatarProfile = () => {
   const { user } = useUser();
-
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      console.log(file.name);
+      user.setProfileImage({ file: file });
+      toast({ title: "Аватар профиля изменён" });
     }
   };
   const handleAvatarClick = () => {
@@ -18,12 +20,12 @@ export const AvatarProfile = () => {
   };
   return (
     <div className="w-[12rem] h-[12rem] ">
-      <div className="relative w-full h-auto group">
+      <div className="relative w-full h-full group">
         <Avatar
           alt="sgm-avatar"
           src={user?.imageUrl}
           size="lg"
-          className="target w-full h-auto shadow-md transition duration-300 group-hover:opacity-75 group-hover:scale-105 cursor-pointer"
+          className="target w-full h-full shadow-md transition duration-300 group-hover:opacity-75 group-hover:scale-105 cursor-pointer"
           //   onClick={handleAvatarClick}
         />
         <span

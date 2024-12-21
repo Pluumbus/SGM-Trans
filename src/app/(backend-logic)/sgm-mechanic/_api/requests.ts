@@ -98,36 +98,42 @@ export const getAllVehiclesStates = async () => {
 
   return allVehiclesData;
 };
-export const getAllVehiclesStatistics =
-  async (): Promise<ReportStatisticsType> => {
-    const vehiclesTree = await getVehiclesTree();
-    const allVehiclesUuid = vehiclesTree.objects.map(
-      (vehicle) => vehicle.terminal_id
+export const getAllVehiclesStatistics = async (timeBegin: number) => {
+  const vehiclesTree = await getVehiclesTree();
+  const allVehiclesUuid = vehiclesTree.objects.map(async (vehicle) => {
+    const sVehStat = await getSingleVehicleStatistics(
+      timeBegin,
+      vehicle.terminal_id
     );
-    // const allVehiclesUuid = vehiclesTree.objects.map((vehicle) => vehicle.uuid); Variant with string array - car uuid
+    return sVehStat;
+  });
+  // const allVehiclesUuid = vehiclesTree.objects.map((vehicle) => vehicle.uuid); Variant with string array - car uuid
 
-    // console.log(
-    //   "allVehiclesUuid",
-    //   allVehiclesUuid,
-    //   "timeBegin",
-    //   Date.now() - 86400000,
-    //   "timeEnd",
-    //   Date.now()
-    // );
+  // console.log(
+  //   "allVehiclesUuid",
+  //   allVehiclesUuid,
+  //   "timeBegin",
+  //   Date.now() - 86400000,
+  //   "timeEnd",
+  //   Date.now()
+  // );
+  return allVehiclesUuid;
+  // return await getSingleVehicleStatistics(allVehiclesUuid);
+};
 
-    return await getSingleVehicleStatistics(allVehiclesUuid);
-  };
-
-export const getSingleVehicleStatistics = async (vUuid: number[]) => {
-  const timeBegin = Date.now() - 86400000;
+export const getSingleVehicleStatistics = async (
+  timeBegin: number,
+  vUuid: number
+) => {
+  // const timeBegin = Date.now() - 86400000;
   const timeEnd = Date.now();
   // const timeBegin = new Date("2024-09-01T00:00:00Z").getTime() - 86400000;
   // const timeEnd = 1735689599000; // (2024-12-31 23:59:59 UTC in milliseconds).
 
-  console.log(vUuid, timeBegin, timeEnd);
-  const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
+  // console.log(vUuid, timeBegin, timeEnd);
+  // const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
 
   return await fetchFromAPI(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
+    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${vUuid}`
   );
 };

@@ -14,7 +14,6 @@ import {
 import { InputCards } from "./InputCards";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCargos } from "../../workflow/[slug]/week/[weekId]/trip/_api";
-import { useRef } from "react";
 import { AvatarProfile } from "./Avatar";
 
 export const TopProfile = () => {

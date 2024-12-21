@@ -5,7 +5,7 @@ import { useConfirmContext } from "@/tool-kit/hooks";
 import { useUser } from "@clerk/nextjs";
 import { Button, Input } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
-import { ChangeEventHandler, useState } from "react";
+import { useState } from "react";
 
 export const InputCards = () => {
   const { user } = useUser();
@@ -35,6 +35,7 @@ export const InputCards = () => {
   });
   const handleSetName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    console.log(name, value);
     setName((prev) => ({
       ...prev,
       [name]: value,
@@ -44,7 +45,12 @@ export const InputCards = () => {
     openModal({
       action: async () => mutate(),
       title: "Подтвердите действие",
-      description: `Вы уверены, что хотите изменить ${user?.firstName + " " + user?.lastName} на ${name.firstname + " " + name.lastname || user?.firstName + name.lastname || user?.lastName}.`,
+      description: `Вы уверены, что хотите изменить ${user?.firstName + " " + user?.lastName} на ${
+        (name.firstname === "" ? user?.firstName : name.firstname) +
+        " " +
+        (name.lastname === "" ? user?.lastName : name.lastname)
+      }
+        .`,
       buttonName: "Подтвердить",
       isLoading: isPending,
     });
@@ -71,9 +77,9 @@ export const InputCards = () => {
           onChange={handleSetName}
         />
       </div>
-      {(name.firstname !== user?.firstName ||
-        name.lastname !== user?.lastName) &&
-        (name.firstname || name.lastname) !== "" && (
+      {(name?.firstname !== user?.firstName ||
+        name?.lastname !== user?.lastName) &&
+        (name?.firstname !== "" || name?.lastname !== "") && (
           <Button variant="shadow" color="success" onPress={handleChangeName}>
             Изменить
           </Button>
@@ -81,7 +87,6 @@ export const InputCards = () => {
       <Input
         value={user?.publicMetadata?.role as string}
         isReadOnly
-        // isDisabled
         label="Должность"
         labelPlacement="outside"
         variant="faded"

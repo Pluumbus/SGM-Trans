@@ -1,7 +1,6 @@
 "use server";
 
 import getClerkClient from "@/utils/clerk/clerk";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export const setUserData = async ({
   userId,
