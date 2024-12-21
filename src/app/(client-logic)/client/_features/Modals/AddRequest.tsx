@@ -39,7 +39,7 @@ export const AddRequest = ({ disclosure }: AddRequestProps) => {
 
   const [withDelivery] = watch(["unloading_point.withDelivery"]);
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: addClientRequest,
     onSuccess: () => {
       toast({
@@ -47,8 +47,8 @@ export const AddRequest = ({ disclosure }: AddRequestProps) => {
         description: "В течении двух рабочих дней с вами свяжется наш логист",
         duration: 3000,
       });
-      reset();
-      disclosure.onOpenChange();
+      // reset();
+      // disclosure.onOpenChange();
     },
     onError: (error) => {
       toast({
@@ -82,13 +82,12 @@ export const AddRequest = ({ disclosure }: AddRequestProps) => {
       });
       return;
     }
-    console.log("data.unloading_point", data.unloading_point);
 
     const unlPoint = data.unloading_point?.city
       ? {
           city: data.unloading_point.city,
           withDelivery: data.unloading_point.withDelivery || false,
-          deliveryAddress: data.unloading_point.withDelivery || "",
+          deliveryAddress: data.unloading_point.deliveryAddress || "",
         }
       : {
           city: "",
@@ -187,9 +186,9 @@ export const AddRequest = ({ disclosure }: AddRequestProps) => {
 
             {withDelivery && (
               <Input
-                {...register("unloading_point.deliveryAddress")}
                 label={`Адрес доставки`}
                 className="col-span-2"
+                {...register("unloading_point.deliveryAddress")}
               />
             )}
 

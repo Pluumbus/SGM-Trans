@@ -120,12 +120,16 @@ export const getSingleVehicleStatistics = async (vUuid: number[]) => {
   // const timeEnd = 1735689599000; // (2024-12-31 23:59:59 UTC in milliseconds).
 
   const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
+  const tmp = [1734528537, 1734614937];
 
   console.log(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
+    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`
+  );
+  console.log(
+    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(",")}]`
   );
 
   return await fetchFromAPI(
-    `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can,canmnt,ccan]&vehicles=${encodedVUuid}`
+    `/ls/api/v1/reports/statistics?timeBegin=1734528537&timeEnd=1734614937&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`
   );
 };
