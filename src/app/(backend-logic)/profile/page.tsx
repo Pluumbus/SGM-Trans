@@ -25,9 +25,9 @@ const Page: NextPage = () => {
     <div>
       <TopProfile />
       {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
-      <RoleBasedWrapper allowedRoles={["Админ"]}>
+      {/* <RoleBasedWrapper allowedRoles={["Админ"]}>
         <UsersDataTable />
-      </RoleBasedWrapper>
+      </RoleBasedWrapper> */}
       {/* </HydrationBoundary> */}
       <Button color="danger">
         <SignOutButton>Выход</SignOutButton>
