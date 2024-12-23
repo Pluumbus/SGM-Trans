@@ -35,7 +35,7 @@ import { columns } from "./columns";
 import { roleNamesList } from "@/components/RoleManagment/useRole";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
-export function UsersDataTable() {
+export const UsersDataTable = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),
@@ -165,4 +165,4 @@ export function UsersDataTable() {
       </div>
     </div>
   );
-}
+};
