@@ -49,7 +49,6 @@ export const CustomWeekSelector = ({
   }, [data]);
 
   if (isLoading) return <Spinner />;
-
   return (
     <div>
       <Card>
@@ -66,7 +65,7 @@ export const CustomWeekSelector = ({
                   variant="shadow"
                   isIconOnly
                   isDisabled={
-                    isPressed.week_number === e.week_number && isPressed.active
+                    isPressed?.week_number === e.week_number && isPressed.active
                   }
                   onPress={() => {
                     setIsPressed({ week_number: e.week_number, active: true });

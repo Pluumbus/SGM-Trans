@@ -1,7 +1,6 @@
 "use server";
 
 import getClerkClient from "@/utils/clerk/clerk";
-import { clerkClient } from "@clerk/nextjs/server";
 
 export const setUserData = async ({
   userId,
@@ -20,6 +19,20 @@ export const setUserData = async ({
   ).users.updateUser(userId, {
     publicMetadata: { role, balance, time, prevTime },
   });
+};
+
+export const setUserName = async ({
+  userId,
+  fistName,
+  lastName,
+}: {
+  userId: string;
+  fistName: string;
+  lastName: string;
+}) => {
+  await (
+    await getClerkClient()
+  ).users.updateUser(userId, { firstName: fistName, lastName: lastName });
 };
 
 export const setUserRole = async ({

@@ -30,6 +30,8 @@ import { StatsUserList } from "@/lib/references/stats/types";
 import { getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
+import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
+import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({
@@ -38,10 +40,6 @@ export function DataTable() {
   });
   const [filteredData, setFilteredData] = useState<StatsUserList[]>([]);
   const [dateVal, setDateVal] = useState({
-    // start: parseDate(
-    //   `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-01`
-    // ).toString(),
-    // end: today(getLocalTimeZone()).toString(),
     start: "",
     end: "",
   });
@@ -63,12 +61,20 @@ export function DataTable() {
       columnVisibility,
     },
   });
+
+  const findMaxValue = (data) => {
+    return data.reduce(
+      (max, item) =>
+        item.totalAmountInRange > max ? item.totalAmountInRange : max,
+      0
+    );
+  };
+
   const handleSetTimeRangeFilter = () => {
     const sumAmountsForDateRange = (user: StatsUserList) => {
       let bidSumArr = [];
-      let totalBase = 0;
-
-      totalBase = user.created_at.reduce((sum, date, index) => {
+      let total = 0;
+      total = user.created_at.reduce((sum, date, index) => {
         if (
           isWithinInterval(date, { start: dateVal.start, end: dateVal.end })
         ) {
@@ -77,18 +83,31 @@ export function DataTable() {
         }
         return sum;
       }, 0);
-      const total = getSeparatedNumber(totalBase, ",");
       return { total, bidSumArr };
     };
 
     const filtered = data
       .map((user) => {
         const { total, bidSumArr } = sumAmountsForDateRange(user);
+        const bidPrize =
+          calculateCurrentPrize(total) + bidSumArr.length > 25 &&
+          (bidSumArr.length - 25) * 1000;
+
+        // const currentPrizeSum =
+        //   bidSumArr.length > 25 ? calculateCurrentPrize(total) + bidPrize : 0;
+
+        const amount = user.value.reduce((acc, item) => {
+          return acc + item;
+        }, 0);
+
         return {
           ...user,
+          amount: getSeparatedNumber(amount),
           totalAmountInRange: total,
           totalBidsInRange: bidSumArr.length,
           bidSum: user.value.length,
+          prizeSum: bidPrize,
+          currentWeek: { start: dateVal.start, end: dateVal.end },
         };
       })
       .filter(
@@ -98,7 +117,27 @@ export function DataTable() {
           user.role == "Логист Москва"
       )
       .sort((a, b) => b.bidSum - a.bidSum);
-    setFilteredData(filtered);
+
+    const leaderUserSum = findMaxValue(filtered);
+
+    const totalPrize = filtered.reduce((acc, curr) => {
+      return acc + curr.totalAmountInRange;
+    }, 0);
+    console.log(totalPrize);
+    const newData = filtered.map((item) => {
+      return {
+        ...item,
+        totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
+        prizeSum: getSeparatedNumber(
+          calculateCurrentPrize(totalPrize) > 0
+            ? calculateCurrentPrize(totalPrize) + item.prizeSum
+            : 0
+        ),
+        leadUserSum:
+          item.totalAmountInRange == leaderUserSum ? leaderUserSum : 0,
+      };
+    });
+    setFilteredData(newData);
   };
 
   useEffect(() => {
