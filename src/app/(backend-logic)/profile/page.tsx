@@ -10,9 +10,9 @@ import { SignOutButton } from "@clerk/nextjs";
 import { Button } from "@nextui-org/react";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
-import { UsersDataTable } from "./_UsersTable/data-table";
 import { NextPage } from "next";
 import { TopProfile } from "./_TopProfile/TopProfile";
+import { UsersDataTable } from "./_UsersTable/data-table";
 
 const Page: NextPage = () => {
   // const queryClient = new QueryClient();
