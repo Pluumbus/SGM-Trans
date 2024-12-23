@@ -40,7 +40,6 @@ export function UsersDataTable() {
     queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),
   });
-
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
   );

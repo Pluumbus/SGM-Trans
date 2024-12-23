@@ -19,6 +19,7 @@ import {
   ModalBody,
   Autocomplete,
   AutocompleteItem,
+  ModalHeader,
 } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { UsersList } from "../../../../lib/references/clerkUserType/types";
@@ -70,6 +71,9 @@ export const columns: ColumnDef<UsersList>[] = [
   {
     accessorKey: "balance",
     header: "Баланс",
+    cell: ({ row }) => {
+      return row.original.balance || 0;
+    },
   },
   {
     accessorKey: "time",
@@ -107,7 +111,7 @@ export const columns: ColumnDef<UsersList>[] = [
       const [isOpenRole, setIsOpenRole] = useState(false);
       const [isOpenBalance, setIsOpenBalance] = useState(false);
       const [role, setRole] = useState(row.original.role);
-      const [balance, setBalance] = useState(row.original.balance);
+      const [balance, setBalance] = useState(row.original.balance || 0);
       const [userId, setUserId] = useState("");
       const { toast } = useToast();
 
@@ -171,23 +175,38 @@ export const columns: ColumnDef<UsersList>[] = [
 
           <Modal isOpen={isOpenRole} onOpenChange={() => setIsOpenRole(false)}>
             <ModalContent>
+              <ModalHeader>
+                Изменить роль для {row.original.userName}
+              </ModalHeader>
               <ModalBody>
                 <form
                   onSubmit={(e) => handleSetRole(e, row.original.id)}
-                  className="flex"
+                  className="flex flex-col gap-4"
                 >
                   <Autocomplete
                     label="Введите роль"
-                    className="max-w-xs w-2/4 max-h-xs h-2/4"
+                    className="max-w-xs  max-h-xs h-2/4"
                     onInputChange={onInputChange}
                   >
                     {roleNamesList.map((role: string) => (
                       <AutocompleteItem key={role}>{role}</AutocompleteItem>
                     ))}
                   </Autocomplete>
-                  <div className="max-w-xs ml-5">
-                    <Button type="submit" isIconOnly size="lg" variant="light">
-                      <BiSend />
+                  <div className="flex justify-between">
+                    <Button
+                      color="danger"
+                      variant="light"
+                      onPress={() => setIsOpenRole(false)}
+                    >
+                      Закрыть
+                    </Button>
+                    <Button
+                      type="submit"
+                      color="success"
+                      variant="light"
+                      onPress={() => setIsOpenRole(false)}
+                    >
+                      Подтвердить
                     </Button>
                   </div>
                 </form>
@@ -200,20 +219,36 @@ export const columns: ColumnDef<UsersList>[] = [
             onOpenChange={() => setIsOpenBalance(false)}
           >
             <ModalContent>
+              <ModalHeader>
+                Изменить баланс для {row.original.userName}
+              </ModalHeader>
               <ModalBody>
                 <form
                   onSubmit={(e) => handleSetRole(e, row.original.id)}
-                  className="w-2/3 flex"
+                  className="flex flex-col gap-4 "
                 >
                   <Input
                     type="text"
                     placeholder="Введите баланс"
                     value={String(balance)}
                     onChange={(e) => setBalance(Number(e.target.value) || 0)}
+                    className="w-1/2"
                   />
-                  <div className="max-w-xs ml-5">
-                    <Button type="submit" isIconOnly variant="light">
-                      <BiSend />
+                  <div className="flex justify-between">
+                    <Button
+                      variant="light"
+                      color="danger"
+                      onPress={() => setIsOpenBalance(false)}
+                    >
+                      Закрыть
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="light"
+                      color="success"
+                      onPress={() => setIsOpenBalance(false)}
+                    >
+                      Подтвердить
                     </Button>
                   </div>
                 </form>
