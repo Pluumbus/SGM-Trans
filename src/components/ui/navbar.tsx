@@ -81,6 +81,12 @@ const Navbar = () => {
               >
                 Статистика
               </Link>
+              <Link
+                href={PATHS.requestsForLogist}
+                className="mr-5 cursor-pointer hover:text-gray-900"
+              >
+                Заявки от клиентов
+              </Link>
             </RoleBasedWrapper>
           </nav>
           /* <NavigationMenu>

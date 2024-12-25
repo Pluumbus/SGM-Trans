@@ -10,9 +10,13 @@ export type ClientRequestType = {
   comments: string;
   created_at: string;
   cargo_name: string;
-  status?: ClientRequestStatus;
+  status: ClientRequestStatus;
   logist_id?: string;
   phone_number: string;
+};
+
+export type ClientRequestTypeDTO = ClientRequestType & {
+  user_id: string;
 };
 
 type ClientRequestStatus =

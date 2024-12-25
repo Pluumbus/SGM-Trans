@@ -12,4 +12,5 @@ export const PATHS = {
   cars_drivers: `/cars&drivers`,
   sgm_mechanic: `/sgm-mechanic`,
   statistics: `/statistics`,
+  requestsForLogist: `/requests`,
 };

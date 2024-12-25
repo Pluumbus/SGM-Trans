@@ -25,6 +25,8 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
       jwtToken = await refreshJWTToken();
       return fetchFromAPI(endpoint, options);
     }
+    console.log(await response);
+
     throw new Error(`Error: ${response.status}`);
   }
 
@@ -33,7 +35,7 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
 
 const getJWTToken = async () => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1.`,
+    `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1`,
     {
       method: "POST",
 

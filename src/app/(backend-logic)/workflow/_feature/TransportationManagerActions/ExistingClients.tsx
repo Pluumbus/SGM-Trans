@@ -33,7 +33,7 @@ export const ExistingClients = ({
 
   useEffect(() => {
     if (state[0]) {
-      debounce(updateState, 3000);
+      debounce(updateState, 100);
     }
   }, [state[0]]);
 
