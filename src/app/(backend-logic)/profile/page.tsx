@@ -12,8 +12,7 @@ import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { NextPage } from "next";
 import { TopProfile } from "./feature/_TopProfile/TopProfile";
-import { UsersDataTable } from "./_UsersTable/data-table";
-
+import { UsersDataTable } from "./UsersTable/data-table";
 const Page: NextPage = () => {
   // const queryClient = new QueryClient();
   // queryClient.prefetchQuery({
