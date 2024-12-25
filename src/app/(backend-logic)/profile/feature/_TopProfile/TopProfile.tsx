@@ -1,7 +1,7 @@
 "use client";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { CardContent } from "@/components/ui/card";
-import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
+import { ProfilePrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/Prize";
 import { useUser } from "@clerk/nextjs";
 import {
   Avatar,
@@ -13,7 +13,7 @@ import {
 } from "@nextui-org/react";
 import { InputCards } from "./InputCards";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCargos } from "../../workflow/[slug]/week/[weekId]/trip/_api";
+import { getAllCargos } from "../../../workflow/[slug]/week/[weekId]/trip/_api";
 import { AvatarProfile } from "./Avatar";
 
 export const TopProfile = () => {

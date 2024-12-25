@@ -30,8 +30,7 @@ import { StatsUserList } from "@/lib/references/stats/types";
 import { getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
-import { calculateCurrentPrize } from "@/components/ui/ProfileButton/Prize/PrizeFormula";
-import { ProfilePrize } from "@/components/ui/ProfileButton/Prize/Prize";
+import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
 
 export function DataTable() {
   const { data, isLoading, isFetched } = useQuery({

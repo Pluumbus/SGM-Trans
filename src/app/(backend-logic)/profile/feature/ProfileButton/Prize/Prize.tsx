@@ -109,12 +109,7 @@ export const ProfilePrize = ({
       ) : (
         <span className="text-xs text-zinc-400">
           Премия:{" "}
-          <b>
-            {getSeparatedNumber(
-              calculateCurrentPrize(prize) + cargosPrize,
-              ","
-            )}
-          </b>
+          {getSeparatedNumber(calculateCurrentPrize(prize) + cargosPrize, ",")}
         </span>
       )}
     </div>
