@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import { PhoneVerification } from "./_features/Modals/PhoneVerification";
 
 interface Props {}
 

@@ -25,7 +25,6 @@ import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripC
 import { Button } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
-import { DeleteCargo } from "../DeleteCargo";
 
 export const TripTab = ({
   trip,

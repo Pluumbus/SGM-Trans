@@ -1,4 +1,10 @@
-import { Button, Spinner, Tooltip, useDisclosure } from "@nextui-org/react";
+import {
+  Button,
+  Input,
+  Spinner,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
 import { TMModal } from "./TMModal";
 import { ExistingClients } from "./ExistingClients";
@@ -29,53 +35,91 @@ export const TM = ({
     queryKey: [`manager info`, state[0]],
     queryFn: async ({ queryKey }) => await getClient(Number(queryKey[1])),
   });
-
+  const newData = data || [];
   return (
     <>
       <div
         className={`gap-2 col-span-2 grid grid-cols-6 ${type == "Table" ? "items-end" : "items-center"}`}
       >
-        <div className="col-span-5">
-          <ExistingClients
-            state={state}
-            onChange={onChange}
-            props={{
-              variant: type == "Table" ? "underlined" : "flat",
-            }}
-          />
-        </div>
-        <div className="flex flex-col gap-2 col-span-1">
-          {type == "Table" &&
-            (!isLoading ? (
-              <Link
-                href={
-                  data
-                    ? `https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`
-                    : ""
-                }
-                target="_blank"
-              >
-                <Button isIconOnly color="success">
+        {type == "Table" ? (
+          <div className="flex flex-col w-[15rem]">
+            {/* <Input
+              isReadOnly
+              variant="underlined"
+              className="w-full"
+              value={
+                data[0].client.full_name.first_name +
+                " " +
+                data[0].client.company_name +
+                " " +
+                (data[0].client.phone_number || "")
+              }
+            /> */}
+            <Input
+              isReadOnly
+              variant="underlined"
+              className="w-full"
+              value={newData[0]?.client?.full_name?.first_name || "Без имени"}
+            />
+            <Input
+              isReadOnly
+              variant="underlined"
+              className="w-full"
+              value={newData[0]?.client?.company_name || "Без компании"}
+            />
+            <div className="flex">
+              <Input
+                isReadOnly
+                variant="underlined"
+                className="w-full"
+                value={newData[0]?.client?.phone_number || "Без номера"}
+              />
+              {!isLoading ? (
+                <Link
+                  href={
+                    data
+                      ? `https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`
+                      : ""
+                  }
+                  target="_blank"
+                >
+                  <Button isIconOnly color="success" variant="light">
+                    <FaWhatsapp size={20} />
+                  </Button>
+                </Link>
+              ) : (
+                <Button isIconOnly isLoading variant="flat">
                   <FaWhatsapp size={20} />
                 </Button>
-              </Link>
-            ) : (
-              <Button isIconOnly isLoading>
-                <FaWhatsapp size={20} />
-              </Button>
-            ))}
-          <Tooltip content="Добавить Клиента">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                disclosure.onOpenChange();
-              }}
-              isIconOnly
-            >
-              <FaPlus />
-            </Button>
-          </Tooltip>
-        </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          <>
+            <div className="col-span-5">
+              <ExistingClients
+                state={state}
+                onChange={onChange}
+                props={{
+                  variant: "flat",
+                }}
+              />
+            </div>
+            <div className="flex flex-col gap-2 col-span-1">
+              <Tooltip content="Добавить Клиента">
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    disclosure.onOpenChange();
+                  }}
+                  isIconOnly
+                >
+                  <FaPlus />
+                </Button>
+              </Tooltip>
+            </div>
+          </>
+        )}
       </div>
       <TMModal disclosure={disclosure} state={state} />
     </>
