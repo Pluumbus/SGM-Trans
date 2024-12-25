@@ -12,6 +12,7 @@ import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { NextPage } from "next";
 import { TopProfile } from "./feature/_TopProfile/TopProfile";
+import { UsersDataTable } from "./_UsersTable/data-table";
 
 const Page: NextPage = () => {
   // const queryClient = new QueryClient();
@@ -24,9 +25,9 @@ const Page: NextPage = () => {
     <div>
       <TopProfile />
       {/* <HydrationBoundary state={dehydrate(queryClient)}> */}
-      {/* <RoleBasedWrapper allowedRoles={["Админ"]}>
+      <RoleBasedWrapper allowedRoles={["Админ"]}>
         <UsersDataTable />
-      </RoleBasedWrapper> */}
+      </RoleBasedWrapper>
       {/* </HydrationBoundary> */}
       <Button color="danger">
         <SignOutButton>Выход</SignOutButton>
