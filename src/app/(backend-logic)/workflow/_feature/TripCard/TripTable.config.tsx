@@ -31,11 +31,8 @@ export const getBaseTripColumnsConfig = () => {
           }
           return (
             <div>
-              {driverData.driver +
-                " | " +
-                driverData.car +
-                " - " +
-                driverData.state_number}
+              {driverData.driver + " | " + driverData.car ||
+                "" + " - " + driverData.state_number}
             </div>
           );
         },
