@@ -220,7 +220,7 @@ const GlobalActModal = ({
             color="success"
             onPress={() => {
               setBalanceMutation(
-                Number(user.publicMetadata.balance) - logistSum
+                Number(user.publicMetadata.balance) - logistSum,
               );
             }}
           >

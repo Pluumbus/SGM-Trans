@@ -3,7 +3,7 @@ import { FilterFn } from "@tanstack/react-table";
 export const customArrayFilter: FilterFn<any> = (
   row,
   columnId,
-  filterValueObj
+  filterValueObj,
 ) => {
   const { filterValue, filterBy } = filterValueObj || {};
 

@@ -107,7 +107,7 @@ export const Timer = () => {
     displaySeconds,
     "секунда",
     "секунды",
-    "секунд"
+    "секунд",
   );
 
   const handleRefreshTimer = () => {

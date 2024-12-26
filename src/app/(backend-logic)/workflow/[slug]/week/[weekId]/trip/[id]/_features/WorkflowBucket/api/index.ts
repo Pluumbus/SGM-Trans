@@ -7,7 +7,7 @@ export const uploadFileToDb = async (
   weekId: string,
   fCreated_at: string,
   fileId: string,
-  path: string
+  path: string,
 ) => {
   const supabase = await getSupabaseServer();
 
@@ -81,7 +81,7 @@ export const deleteFileFromDb = async (weekId: string, path: string) => {
   const currentDocs = oldData?.docs?.doc || [];
 
   const updatedDocs = currentDocs.filter(
-    (doc: { pathName: string }) => !doc.pathName.includes(path)
+    (doc: { pathName: string }) => !doc.pathName.includes(path),
   );
 
   const { error: updateError } = await supabase

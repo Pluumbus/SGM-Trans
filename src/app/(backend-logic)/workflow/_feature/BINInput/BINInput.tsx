@@ -28,7 +28,7 @@ export const BINInput = ({ inputProps, onChange }: Props) => {
     queryKey: ["get BINS"],
     queryFn: async () =>
       await getAllCargos("client_bin").then((data) =>
-        data.map((e) => e.client_bin.xin.trim())
+        data.map((e) => e.client_bin.xin.trim()),
       ),
   });
 
@@ -51,7 +51,7 @@ export const BINInput = ({ inputProps, onChange }: Props) => {
       case "ArrowDown":
         event.preventDefault();
         setHighlightedIndex((prev) =>
-          prev < filteredData.length - 1 ? prev + 1 : prev
+          prev < filteredData.length - 1 ? prev + 1 : prev,
         );
         break;
 

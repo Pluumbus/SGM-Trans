@@ -162,7 +162,7 @@ const Fireworks = () => {
     (_, i) => ({
       id: i,
       group: Math.floor(i / itemsPerGroup),
-    })
+    }),
   );
 
   return (

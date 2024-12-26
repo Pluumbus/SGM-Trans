@@ -13,7 +13,7 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [estDate, setEstDate] = useState<DateValue>(
     values
       ? parseDate(formatDate(new Date(values?.toString())?.toISOString()))
-      : today(getLocalTimeZone()).add({ days: 7 })
+      : today(getLocalTimeZone()).add({ days: 7 }),
   );
 
   return (

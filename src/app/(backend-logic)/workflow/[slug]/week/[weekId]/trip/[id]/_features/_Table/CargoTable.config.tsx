@@ -50,7 +50,7 @@ export const getBaseColumnsConfig = () => {
               const updatedSelection = rowSelected?.map((item) =>
                 item.number === info.row.original.id
                   ? { ...item, isSelected: !item.isSelected }
-                  : item
+                  : item,
               );
               setRowSelected(updatedSelection);
             }}

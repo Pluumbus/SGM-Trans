@@ -12,6 +12,7 @@ import { getJustWeeks } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { useEffect, useState } from "react";
 import { WeekType } from "../../workflow/_feature/types";
 import React from "react";
+import { currentWeekIndicator } from "../../workflow/_feature/WeekCard/WeekCard";
 
 export const CustomWeekSelector = ({
   setDateVal,
@@ -36,14 +37,12 @@ export const CustomWeekSelector = ({
 
   useEffect(() => {
     if (data) {
-      const firstWeek = data.find(
-        (w) => w.week_number === Math.min(...data.map((w) => w.week_number))
-      );
+      const currentWeek = data.find((w) => currentWeekIndicator(w.week_dates));
       setWeeks(data);
-      setIsPressed({ week_number: firstWeek.week_number, active: true });
+      setIsPressed({ week_number: currentWeek.week_number, active: true });
       setDateVal({
-        start: firstWeek.week_dates.start_date,
-        end: firstWeek.week_dates.end_date,
+        start: currentWeek.week_dates.start_date,
+        end: currentWeek.week_dates.end_date,
       });
     }
   }, [data]);
@@ -66,6 +65,11 @@ export const CustomWeekSelector = ({
                   isIconOnly
                   isDisabled={
                     isPressed?.week_number === e.week_number && isPressed.active
+                  }
+                  color={
+                    isPressed.week_number === e.week_number
+                      ? "primary"
+                      : "default"
                   }
                   onPress={() => {
                     setIsPressed({ week_number: e.week_number, active: true });

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 "use server";
 
 import { createClerkClient } from "@clerk/nextjs/server";

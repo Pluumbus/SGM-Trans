@@ -36,7 +36,7 @@ export const GazellList = () => {
   useEffect(() => {
     if (data)
       setGazellData(
-        data.filter((e) => e.car_type === "gazell" && e.name !== "Наемник")
+        data.filter((e) => e.car_type === "gazell" && e.name !== "Наемник"),
       );
   }, [data]);
 
@@ -85,7 +85,7 @@ export const GazellList = () => {
         dataToCopy.passport_data.issued +
         "\n" +
         "Дата: " +
-        dataToCopy.passport_data.date
+        dataToCopy.passport_data.date,
     );
     toast({
       title: `Данные водителя успешно скопированы в буфер обмена`,

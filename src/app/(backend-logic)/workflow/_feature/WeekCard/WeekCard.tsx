@@ -88,7 +88,7 @@ export const WeekCard = () => {
                 title={`Неделя ${week.week_number}`}
                 subtitle={<SummaryOfTrip week={week} />}
                 className={
-                  CurrentWeekIndicator(week.week_dates) ? "bg-blue-100" : ""
+                  currentWeekIndicator(week.week_dates) ? "bg-blue-100" : ""
                 }
               >
                 <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
@@ -425,7 +425,7 @@ const SummaryOfTrip = ({
   );
 };
 
-export const WeekRangesOverlapping = ({
+export const weekRangesOverlapping = ({
   start_date1,
   end_date1,
   start_date2,
@@ -439,7 +439,7 @@ export const WeekRangesOverlapping = ({
   return start1 <= end2 && start2 <= end1;
 };
 
-export const CurrentWeekIndicator = ({ end_date, start_date }) => {
+export const currentWeekIndicator = ({ end_date, start_date }) => {
   const today = new Date();
 
   const start = new Date(start_date);

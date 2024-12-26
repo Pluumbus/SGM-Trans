@@ -59,7 +59,7 @@ export const DriversList = () => {
             setDrivers((prev) => [...prev, payload.new as DriversType]);
             setTempDrivers((prev) => [...prev, payload.new as DriversType]);
           }
-        }
+        },
       )
       .subscribe();
 
@@ -70,7 +70,7 @@ export const DriversList = () => {
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempDrivers(
-      drivers.filter((d) => d.name.includes(e.target.value.toUpperCase()))
+      drivers.filter((d) => d.name.includes(e.target.value.toUpperCase())),
     );
   };
 

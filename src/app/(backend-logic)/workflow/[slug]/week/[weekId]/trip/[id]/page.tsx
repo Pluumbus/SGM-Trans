@@ -50,7 +50,7 @@ const Page: NextPage = () => {
         return main;
       });
       setSelectedTabId(
-        data.find((e) => e.trip_number == Number(id)).id.toString()
+        data.find((e) => e.trip_number == Number(id)).id.toString(),
       );
 
       setTripsData(processedData);
@@ -79,11 +79,11 @@ const Page: NextPage = () => {
           else
             setTripsData((prev) => {
               const updatedTrips = prev.map((trip) =>
-                trip.id === updatedTrip.id ? updatedTrip : trip
+                trip.id === updatedTrip.id ? updatedTrip : trip,
               );
               return updatedTrips;
             });
-        }
+        },
       )
       .subscribe();
 
@@ -109,11 +109,11 @@ const Page: NextPage = () => {
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities)
-      )
+        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities),
+      ),
     );
     const newTripsData = tripsData.map((trip) =>
-      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
+      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip,
     ) as TripType[];
 
     setTripsData(newTripsData);
