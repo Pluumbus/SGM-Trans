@@ -20,7 +20,7 @@ const Page: NextPage<Props> = ({}) => {
           isHoverable
           shadow="none"
           className="rounded-[0.6rem] border"
-          onClick={() => {
+          onPress={() => {
             push("/client");
           }}
         >
@@ -33,7 +33,7 @@ const Page: NextPage<Props> = ({}) => {
           isHoverable
           shadow="none"
           className="rounded-[0.6rem] border"
-          onClick={() => {
+          onPress={() => {
             push("/workflow/ru");
           }}
         >

@@ -30,7 +30,6 @@
     "cyrillic-to-latin": "^2.0.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^11.2.10",
-    
     "handlebars": "^4.7.8",
     "lodash": "^4.17.21",
     "lucide-react": "^0.437.0",
