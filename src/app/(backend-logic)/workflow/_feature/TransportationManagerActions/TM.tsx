@@ -11,6 +11,7 @@ import { Cell } from "@tanstack/react-table";
 import { CargoType } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { getClient } from "../../cashbox/_features/api";
+import { WhatsAppButton } from "@/components";
 
 export const TM = ({
   state,
@@ -47,18 +48,9 @@ export const TM = ({
         <div className="flex flex-col gap-2 col-span-1">
           {type == "Table" &&
             (!isLoading ? (
-              <Link
-                href={
-                  data
-                    ? `https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`
-                    : ""
-                }
-                target="_blank"
-              >
-                <Button isIconOnly color="success">
-                  <FaWhatsapp size={20} />
-                </Button>
-              </Link>
+              <WhatsAppButton
+                phoneNumber={data[0]?.client?.phone_number || ""}
+              />
             ) : (
               <Button isIconOnly isLoading>
                 <FaWhatsapp size={20} />

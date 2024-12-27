@@ -1,10 +1,15 @@
-"use client";
+"use server";
 
 import { ClientRequestTypeDTO } from "@/app/(client-logic)/client/types";
-import supabase from "@/utils/supabase/client";
+import getSupabaseServer from "@/utils/supabase/server";
+import { currentUser } from "@clerk/nextjs/server";
 
 export const getRequests = async (): Promise<ClientRequestTypeDTO[]> => {
-  const { data, error } = await supabase.from("requests").select("*");
+  const user = await currentUser();
+  const { data, error } = await (await getSupabaseServer())
+    .from("requests")
+    .select("*")
+    .or(`logist_id.eq.${user.id},logist_id.eq.""`);
 
   if (error) {
     throw new Error();

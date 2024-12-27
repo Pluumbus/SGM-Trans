@@ -23,7 +23,9 @@ export function useLocalStorage<T>({
   initialData,
   identifier,
 }: useLocalStorageProps<T>) {
-  const [data, setData] = useState<T>(initialData);
+  const [data, setData] = useState<T>(
+    (window.localStorage.getItem(identifier) as T) || initialData
+  );
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,7 +39,7 @@ export function useLocalStorage<T>({
   useEffect(() => {
     window.localStorage.setItem(
       identifier,
-      typeof data != "string" ? JSON.stringify(data) : data,
+      typeof data != "string" ? JSON.stringify(data) : data
     );
   }, [data, identifier]);
 

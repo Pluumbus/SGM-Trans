@@ -10,17 +10,25 @@ export type ClientRequestType = {
   comments: string;
   created_at: string;
   cargo_name: string;
-  status: ClientRequestStatus;
+  status: ClientRequestStatusType;
   logist_id?: string;
   phone_number: string;
 };
 
 export type ClientRequestTypeDTO = ClientRequestType & {
   user_id: string;
+  id: number;
 };
 
-type ClientRequestStatus =
+type ClientRequestStatusType =
   | "Создана"
   | "В рассмотрении логистом"
   | "Заявка одобрена"
   | "Заявка отклонена";
+
+export enum ClientRequestStatus {
+  CREATED = "Создана",
+  IN_REVIEW = "В рассмотрении логистом",
+  APPROVED = "Заявка одобрена",
+  REJECTED = "Заявка отклонена",
+}

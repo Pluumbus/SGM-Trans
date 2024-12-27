@@ -77,8 +77,6 @@ export const ProfileButton = () => {
     };
   }, []);
 
-  console.log(cargos);
-
   if (isLoading) return <Spinner />;
 
   return (
