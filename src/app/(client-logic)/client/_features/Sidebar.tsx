@@ -5,7 +5,7 @@ import React, { ReactNode } from "react";
 import { FaPlus, FaHome, FaUser, FaTruck } from "react-icons/fa";
 import logo from "@/app/_imgs/logo.png";
 import { SignInButton, SignedIn, SignedOut } from "@clerk/nextjs";
-import { ProfileButton } from "@/components/ui/profileButton";
+import { ProfileButton } from "@/app/(backend-logic)/profile/feature/ProfileButton/profileButton";
 import { PATHS } from "@/lib/consts";
 
 import { Button, Card, CardBody, useDisclosure } from "@nextui-org/react";

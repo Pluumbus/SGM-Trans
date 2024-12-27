@@ -159,7 +159,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
   });
   const handleAddAxis = () => {
     mutate({
-      car: data.car.car,
+      car: data.car,
       section: "axis",
       updatedDetail: emptyAxis,
     });
@@ -168,7 +168,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
     openModal({
       action: async () =>
         mutate({
-          car: data.car.car,
+          car: data.car,
           section: "deleteAxis",
           updatedDetail: { index: i },
         }),
@@ -180,8 +180,8 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
   return (
     <>
       {axis.map((e, i) => (
-        <>
-          <div key={i + 5} className="w-full overflow-hidden relative">
+        <div key={`axis key ${i + 2}`}>
+          <div className="w-full overflow-hidden relative">
             {axis.length > 1 && (
               <div className="w-full flex justify-end">
                 <Button
@@ -189,7 +189,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
                   size="sm"
                   variant="light"
                   color="danger"
-                  onClick={() => {
+                  onPress={() => {
                     handleDeleteAxis(i);
                   }}
                 >
@@ -216,7 +216,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
                 fullWidth
                 variant="light"
                 color="success"
-                onClick={() => {
+                onPress={() => {
                   handleAddAxis();
                 }}
               >
@@ -224,7 +224,7 @@ const Axis = ({ axis }: { axis: CarDetailsType["vehicle_axis"] }) => {
               </Button>
             )}
           </div>
-        </>
+        </div>
       ))}
     </>
   );

@@ -9,7 +9,7 @@ import { Counter } from "../ui/Counter";
 import { useRef } from "react";
 import { FireworkEffectType } from "../EffectsContext";
 
-export const FireworkEffect = ({ premia, coinProps }: FireworkEffectType) => {
+export const FireworkEffect = ({ prize, coinProps }: FireworkEffectType) => {
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const playSound = () => {
@@ -113,8 +113,8 @@ export const FireworkEffect = ({ premia, coinProps }: FireworkEffectType) => {
                 <Card className="bg-black bg-opacity-20">
                   <CardBody className="flex justify-center items-center w-full">
                     <div className="flex gap-2">
-                      <span>{premia?.text || "Премия: "}</span>
-                      <Counter from={0} to={premia?.amount || 5000000} />
+                      <span>{prize?.text || "Премия: "}</span>
+                      <Counter from={0} to={prize?.amount} />
                     </div>
                   </CardBody>
                   <CardFooter>

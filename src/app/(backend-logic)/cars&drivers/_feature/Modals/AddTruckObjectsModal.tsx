@@ -205,7 +205,7 @@ export const useDeleteObject = () => {
     mutationFn: async ({ id, table }: { id: number; table: string }) =>
       await deleteObj(id, table),
     onSuccess: () => {
-      toast({ title: "Объект успешно удалён" });
+      toast({ title: `Объект успешно удалён` });
     },
     onError: () => {
       toast({ title: "Ошибка", description: "Попробуйте позже" });

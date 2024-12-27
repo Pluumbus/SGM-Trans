@@ -10,11 +10,11 @@ import {
 import { allCities } from "./citiesRef";
 
 export const Cities = (
-  autocompleteProps: Omit<AutocompleteProps, "children">,
+  autocompleteProps: Omit<AutocompleteProps, "children">
 ) => {
   return (
     <div className="max-w-80">
-      <Autocomplete label="Выберите город" {...autocompleteProps}>
+      <Autocomplete placeholder="Выберите город" {...autocompleteProps}>
         {allCities.map((name) => (
           <AutocompleteItem key={name} value={name} textValue={`${name}`}>
             {name}

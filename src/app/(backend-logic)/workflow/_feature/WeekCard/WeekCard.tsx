@@ -101,15 +101,6 @@ export const WeekCard = () => {
   );
 };
 
-export const CurrentWeekIndicator = ({ end_date, start_date }) => {
-  const today = new Date();
-
-  const start = new Date(start_date);
-  const end = new Date(end_date);
-
-  return today >= start && today <= end;
-};
-
 export const CreateTripInsideWeek = ({
   weekId,
   inTrip = false,
@@ -221,7 +212,7 @@ export const CreateTripInsideWeek = ({
     }));
     setFormState((prev) => ({
       ...prev,
-      car: tripCar.car + " - " + tripCar.state_number,
+      car: tripCar?.car + " - " + tripCar?.state_number,
     }));
     // if (tripCar.car !== "" && tripCar.state_number !== "")
     //   setTripCar(tripCar.car + " - " + tripCar.state_number);
@@ -252,11 +243,11 @@ export const CreateTripInsideWeek = ({
           <form onSubmit={onSubmit}>
             <ModalHeader>Добавить путь</ModalHeader>
             <Divider />
-            <ModalBody className={!isHire ? "grid grid-cols-2 gap-2" : "flex"}>
+            <ModalBody>
               {/* <ModalBody className="flex"> */}
               {!isHire ? (
-                <>
-                  <div className="flex flex-col">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
                     <Drivers
                       selectedKey={formState.driver}
                       onSelectionChange={(e) => {
@@ -288,11 +279,32 @@ export const CreateTripInsideWeek = ({
                       </span>
                     )}
                   </div>
-                </>
+                  {formState.city_from.map((city, index) => (
+                    <Cities
+                      key={index + 2}
+                      label={`Город отправитель ${index + 1}`}
+                      selectedKey={city}
+                      // isReadOnly={isMSK}
+                      onSelectionChange={(e) =>
+                        handleCityToChange(index, e, false)
+                      }
+                    />
+                  ))}
+                  {formState.city_to.map((city, index) => (
+                    <Cities
+                      key={index + 1}
+                      // isReadOnly={!isMSK}
+                      label={`Город получатель ${index + 1}`}
+                      selectedKey={city}
+                      onSelectionChange={(e) => handleCityToChange(index, e)}
+                    />
+                  ))}
+                </div>
               ) : (
-                <>
+                <div className="flex flex-col gap-4">
                   <div className="flex gap-2">
                     <div>
+                      {" "}
                       <Input
                         variant="bordered"
                         placeholder="Иванов Иван"
@@ -320,9 +332,32 @@ export const CreateTripInsideWeek = ({
                       />
                     </div>
                   </div>
-                </>
+                  <div className="grid grid-cols-2 gap-2">
+                    {" "}
+                    {formState.city_from.map((city, index) => (
+                      <Cities
+                        key={index + 2}
+                        label={`Город отправитель ${index + 1}`}
+                        selectedKey={city}
+                        // isReadOnly={isMSK}
+                        onSelectionChange={(e) =>
+                          handleCityToChange(index, e, false)
+                        }
+                      />
+                    ))}
+                    {formState.city_to.map((city, index) => (
+                      <Cities
+                        key={index + 1}
+                        // isReadOnly={!isMSK}
+                        label={`Город получатель ${index + 1}`}
+                        selectedKey={city}
+                        onSelectionChange={(e) => handleCityToChange(index, e)}
+                      />
+                    ))}
+                  </div>
+                </div>
               )}
-              {formState.city_from.map((city, index) => (
+              {/* {formState.city_from.map((city, index) => (
                 <Cities
                   key={index + 2}
                   label={`Город отправитель ${index + 1}`}
@@ -339,7 +374,7 @@ export const CreateTripInsideWeek = ({
                   selectedKey={city}
                   onSelectionChange={(e) => handleCityToChange(index, e)}
                 />
-              ))}
+              ))} */}
             </ModalBody>
             <Divider />
             <ModalFooter className="flex justify-between">
@@ -388,4 +423,27 @@ const SummaryOfTrip = ({
       </span>
     </div>
   );
+};
+
+export const WeekRangesOverlapping = ({
+  start_date1,
+  end_date1,
+  start_date2,
+  end_date2,
+}) => {
+  const start1 = new Date(start_date1);
+  const end1 = new Date(end_date1);
+  const start2 = new Date(start_date2);
+  const end2 = new Date(end_date2);
+
+  return start1 <= end2 && start2 <= end1;
+};
+
+export const CurrentWeekIndicator = ({ end_date, start_date }) => {
+  const today = new Date();
+
+  const start = new Date(start_date);
+  const end = new Date(end_date);
+
+  return today >= start && today <= end;
 };
