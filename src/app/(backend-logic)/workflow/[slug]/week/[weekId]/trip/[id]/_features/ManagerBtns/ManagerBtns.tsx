@@ -12,7 +12,7 @@ import {
 export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
     (cargo) =>
-      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК"
+      cargo.amount?.type === "Б/нал" || cargo.amount?.type === "Б/нал в МСК",
   );
   const actClientData = filteredCargos.map((crg) => {
     return {

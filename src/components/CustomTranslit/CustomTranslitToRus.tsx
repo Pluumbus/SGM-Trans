@@ -71,7 +71,7 @@ export function reverseTransliterate(fileName: string): string {
 
   // Сортируем ключи словаря по длине в обратном порядке, чтобы сначала заменить длинные сочетания (например, shch)
   const keys = Object.keys(customTransliterateMap).sort(
-    (a, b) => b.length - a.length
+    (a, b) => b.length - a.length,
   );
 
   keys.forEach((latin) => {

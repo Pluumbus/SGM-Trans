@@ -62,7 +62,7 @@ export const CarList = () => {
             setCars((prev) => [...prev, payload.new as CarsType]);
             setTempCars((prev) => [...prev, payload.new as CarsType]);
           }
-        }
+        },
       )
       .subscribe();
 
@@ -73,7 +73,7 @@ export const CarList = () => {
 
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempCars(
-      cars.filter((c) => c.state_number.includes(e.target.value.toUpperCase()))
+      cars.filter((c) => c.state_number.includes(e.target.value.toUpperCase())),
     );
   };
 
@@ -103,7 +103,7 @@ export const CarList = () => {
                 confirmDeleteObject(
                   car.id,
                   "cars",
-                  car.car + " | " + car.state_number
+                  car.car + " | " + car.state_number,
                 )
               }
             >

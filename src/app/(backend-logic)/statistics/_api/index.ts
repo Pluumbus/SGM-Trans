@@ -38,7 +38,7 @@ export const getStatsUserList = async () => {
 
       if (existingUser!.value) {
         existingUser!.value.push(
-          Number((amount.value as string).replace(/[\s,]/g, ""))
+          Number((amount.value as string).replace(/[\s,]/g, "")),
         );
       } else
         existingUser!.value = [

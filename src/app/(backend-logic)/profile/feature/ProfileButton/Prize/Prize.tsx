@@ -9,8 +9,8 @@ import { useAnimations } from "@/tool-kit/ui/Effects";
 
 import { calculateCurrentPrize } from "./PrizeFormula";
 import {
-  CurrentWeekIndicator,
-  WeekRangesOverlapping,
+  currentWeekIndicator,
+  weekRangesOverlapping,
 } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
 
 export const ProfilePrize = ({
@@ -125,13 +125,13 @@ export const getCargosIdAmountFromCurrentWeek = (
     return data
       ?.filter((i) =>
         dateVal
-          ? WeekRangesOverlapping({
+          ? weekRangesOverlapping({
               start_date1: dateVal.start,
               end_date1: dateVal.end,
               start_date2: i.week_dates.start_date,
               end_date2: i.week_date.end_date,
             })
-          : CurrentWeekIndicator(i.week_dates)
+          : currentWeekIndicator(i.week_dates)
       )
       ?.filter((item) =>
         item.trips.some((trip) =>
@@ -154,13 +154,13 @@ export const getCargosIdAmountFromCurrentWeek = (
   return data
     ?.filter((i) =>
       dateVal
-        ? WeekRangesOverlapping({
+        ? weekRangesOverlapping({
             start_date1: dateVal.start,
             end_date1: dateVal.end,
             start_date2: i.week_dates.start_date,
             end_date2: i.week_date.end_date,
           })
-        : CurrentWeekIndicator(i.week_dates)
+        : currentWeekIndicator(i.week_dates)
     )
     .flatMap((item) =>
       item.trips

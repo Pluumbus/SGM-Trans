@@ -60,7 +60,7 @@ export const TrailersList = () => {
             setTrailers((prev) => [...prev, payload.new as TrailersType]);
             setTempTrailers((prev) => [...prev, payload.new as TrailersType]);
           }
-        }
+        },
       )
       .subscribe();
 
@@ -72,8 +72,8 @@ export const TrailersList = () => {
   const handleFilterData = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempTrailers(
       trailers.filter((c) =>
-        c.state_number.includes(e.target.value.toUpperCase())
-      )
+        c.state_number.includes(e.target.value.toUpperCase()),
+      ),
     );
   };
 
@@ -102,7 +102,7 @@ export const TrailersList = () => {
                 confirmDeleteObject(
                   tr.id,
                   "trailers",
-                  tr.trailer + " | " + tr.state_number
+                  tr.trailer + " | " + tr.state_number,
                 )
               }
             >

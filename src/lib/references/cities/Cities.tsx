@@ -10,7 +10,7 @@ import {
 import { allCities } from "./citiesRef";
 
 export const Cities = (
-  autocompleteProps: Omit<AutocompleteProps, "children">
+  autocompleteProps: Omit<AutocompleteProps, "children">,
 ) => {
   return (
     <div className="max-w-80">

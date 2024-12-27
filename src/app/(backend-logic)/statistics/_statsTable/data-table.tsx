@@ -115,7 +115,7 @@ export function DataTable() {
           user.role === "Логист Дистант" ||
           user.role == "Логист Москва"
       )
-      .sort((a, b) => b.bidSum - a.bidSum);
+      .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
 
     const leaderUserSum = findMaxValue(filtered);
 
