@@ -6,10 +6,10 @@ import { useState } from "react";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>
+  config: RowConfigProps<T>,
 ) => {
   const [highlightedRows, setHighlightedRows] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
 
   const toggleHighlight = (rowId: string) => {
@@ -28,7 +28,7 @@ export const renderRows = <T,>(
       className={cx(
         config.setClassNameOnRow && config?.setClassNameOnRow(row),
         i % 2 == 0 ? "bg-orange-100" : "bg-slate-100",
-        highlightedRows.has(row.id) && "bg-orange-300"
+        highlightedRows.has(row.id) && "bg-orange-300",
       )}
       onContextMenu={(e) => {
         e.preventDefault();

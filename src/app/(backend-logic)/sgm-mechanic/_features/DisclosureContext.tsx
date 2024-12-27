@@ -46,7 +46,7 @@ export interface DisclosureContextType extends UseDisclosureProps {
 }
 
 const DisclosureContext = createContext<DisclosureContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const DisclosureProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -73,7 +73,7 @@ export const useDisclosureContext = (): DisclosureContextType => {
   const context = useContext(DisclosureContext);
   if (!context) {
     throw new Error(
-      "useDisclosureContext must be used within a DisclosureProvider"
+      "useDisclosureContext must be used within a DisclosureProvider",
     );
   }
   return context;

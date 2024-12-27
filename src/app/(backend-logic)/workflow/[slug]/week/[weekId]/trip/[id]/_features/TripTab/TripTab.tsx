@@ -63,7 +63,7 @@ export const TripTab = ({
         data.map((e) => ({
           number: e.id,
           isSelected: false,
-        }))
+        })),
       );
 
       setCargos(filterBy());
@@ -100,7 +100,7 @@ export const TripTab = ({
                 .map((e) =>
                   e.id === payload.old.id
                     ? (payload.new as CargoType)
-                    : (e as CargoType)
+                    : (e as CargoType),
                 )
                 .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
@@ -114,7 +114,7 @@ export const TripTab = ({
 
             setRowSelected(rowsToSelect);
           }
-        }
+        },
       )
       .subscribe();
 
@@ -161,7 +161,7 @@ export const TripTab = ({
         }}
         data={cargos.sort((a, b) =>
           // a.client_bin.tempText.localeCompare(b.client_bin.tempText)
-          a.unloading_point.city.localeCompare(b.unloading_point.city)
+          a.unloading_point.city.localeCompare(b.unloading_point.city),
         )}
         isPagiantion={false}
         columns={columns}

@@ -9,7 +9,7 @@ import { useDebounce } from "@/tool-kit/hooks";
 
 export const ChangeMileage = ({ car }: { car: CarsType }) => {
   const [mileage, setMileage] = useState<string>(
-    car.details.temp_can_mileage || ""
+    car.details.temp_can_mileage || "",
   );
 
   const { debounce } = useDebounce();

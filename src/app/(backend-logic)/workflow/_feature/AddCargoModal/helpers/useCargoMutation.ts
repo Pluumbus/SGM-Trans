@@ -6,7 +6,7 @@ import { CargoType } from "../../types";
 
 export const useCargoMutation = (
   onOpenChangeCargo: () => void,
-  reset: UseFormReset<CargoType>
+  reset: UseFormReset<CargoType>,
 ) => {
   const { toast } = useToast();
   return useMutation({

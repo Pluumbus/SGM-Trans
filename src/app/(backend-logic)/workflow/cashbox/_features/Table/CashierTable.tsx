@@ -21,7 +21,8 @@ export const CashierTable = () => {
           info.original?.cargos &&
           info.original?.cargos?.some(
             (e) =>
-              e?.amount?.type == "Б/нал в МСК" || e?.amount?.type == "Нал в МСК"
+              e?.amount?.type == "Б/нал в МСК" ||
+              e?.amount?.type == "Нал в МСК",
           )
         ) {
           return "bg-primary-100";
@@ -70,11 +71,11 @@ export const CashierTable = () => {
           else
             setClients((prev) => {
               const updatedClients = prev.map((client) =>
-                client.id === updatedClient.id ? updatedClient : client
+                client.id === updatedClient.id ? updatedClient : client,
               );
               return updatedClients;
             });
-        }
+        },
       )
       .subscribe();
 
@@ -144,6 +145,6 @@ const getMSKClients = (data: CashboxType[]) =>
       Array.isArray(e.cargos) &&
       e.cargos.some(
         (el) =>
-          el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
-      )
+          el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК",
+      ),
   );

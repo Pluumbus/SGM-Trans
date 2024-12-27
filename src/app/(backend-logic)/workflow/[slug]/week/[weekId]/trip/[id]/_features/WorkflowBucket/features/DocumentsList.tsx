@@ -36,7 +36,7 @@ export const DocumentsList = ({ weekId }: { weekId: string }) => {
         (payload) => {
           const newDoc = payload.new as WeekType;
           setFiles(newDoc.docs.doc);
-        }
+        },
       )
       .subscribe();
 
@@ -48,7 +48,7 @@ export const DocumentsList = ({ weekId }: { weekId: string }) => {
     setFilter(e.target.value);
   };
   const filteredFiles = files?.filter((item) =>
-    item.originalName.toLowerCase().includes(filter.toLowerCase())
+    item.originalName.toLowerCase().includes(filter.toLowerCase()),
   );
   console.log(filteredFiles);
   return (

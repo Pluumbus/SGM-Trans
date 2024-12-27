@@ -76,11 +76,11 @@ const Page: NextPage<Props> = () => {
           const updatedTrip = payload.new as CarsType;
           setCars((prev) => {
             const updatedTrips = prev.map((e) =>
-              e.id === updatedTrip.id ? updatedTrip : e
+              e.id === updatedTrip.id ? updatedTrip : e,
             );
             return updatedTrips;
           });
-        }
+        },
       )
       .subscribe();
 
@@ -122,7 +122,7 @@ const Page: NextPage<Props> = () => {
                   omnicommData: omnicommCars?.find(
                     (el) =>
                       el.name !== "D" &&
-                      el.vehicleID.toString() == e.omnicomm_uuid
+                      el.vehicleID.toString() == e.omnicomm_uuid,
                   ) as VehicleReportStatisticsType,
                 }}
               />
@@ -162,7 +162,7 @@ const ItemTitle = ({ e }: { e: CarsType }) => {
               <span>
                 {getSeparatedNumber(
                   Number(e.details.temp_can_mileage) -
-                    Number(el.mileage.last_mileage)
+                    Number(el.mileage.last_mileage),
                 )}
               </span>
             </div>

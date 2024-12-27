@@ -28,7 +28,7 @@ export const TransportationManager = ({
         // @ts-ignore
         info.column.columnDef!.accessorKey,
         debouncedValue,
-        info.row.original.id
+        info.row.original.id,
       );
     },
   });

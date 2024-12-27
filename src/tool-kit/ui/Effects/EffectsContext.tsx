@@ -22,23 +22,23 @@ interface AnimationsContextType {
   animationProps: AnimationPropsMap;
   triggerAnimation: (
     animation?: AnimationType,
-    props?: FireworkEffectType
+    props?: FireworkEffectType,
   ) => void;
 }
 
 const AnimationsContext = createContext<AnimationsContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export const AnimationsProvider = ({ children }: { children: ReactNode }) => {
   const [activeAnimation, setActiveAnimation] = useState<AnimationType | null>(
-    null
+    null,
   );
   const [animationProps, setAnimationProps] = useState<AnimationPropsMap>({});
 
   const triggerAnimation = (
     animation?: AnimationType,
-    props?: FireworkEffectType
+    props?: FireworkEffectType,
   ) => {
     const anim = animation || "fireworks";
     setActiveAnimation(anim);

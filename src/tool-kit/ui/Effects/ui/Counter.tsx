@@ -24,7 +24,7 @@ export const Counter: React.FC<CounterProps> = ({ from, to }) => {
           }
         });
       },
-      { threshold: 1 }
+      { threshold: 1 },
     );
 
     observer.observe(node);

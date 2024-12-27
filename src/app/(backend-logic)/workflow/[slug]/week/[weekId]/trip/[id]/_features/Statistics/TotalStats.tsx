@@ -13,7 +13,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               const value = parseFloat(cargo.weight.replace(",", "."));
               return isNaN(value) ? sum : sum + value;
             }, 0)
-            .toFixed(3)
+            .toFixed(3),
         )
       : 0;
 
@@ -25,7 +25,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               const value = parseFloat(cargo.volume.replace(",", "."));
               return isNaN(value) ? sum : sum + value;
             }, 0)
-            .toFixed(1)
+            .toFixed(1),
         )
       : 0;
 
@@ -66,7 +66,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
             Array.isArray(client.snts) &&
             client.snts.some(
               (snt) =>
-                snt.startsWith("KZ-SNT-") && snt.length > "KZ-SNT-".length
+                snt.startsWith("KZ-SNT-") && snt.length > "KZ-SNT-".length,
             );
           return isModified ? count + client.snts.length : count;
         }, 0) - 1

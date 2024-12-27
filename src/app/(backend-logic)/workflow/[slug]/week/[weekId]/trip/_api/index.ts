@@ -21,7 +21,7 @@ export const getUserById = async (userId: string) => {
 
 export const getCargos = async (
   trip_id: string,
-  wDeleted: boolean = false
+  wDeleted: boolean = false,
 ): Promise<CargoType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
@@ -38,7 +38,7 @@ export const getCargos = async (
 };
 
 export const getAllCargos = async (
-  field?: string | string[]
+  field?: string | string[],
 ): Promise<CargoType[]> => {
   const server = getSupabaseServer();
 
@@ -69,7 +69,7 @@ export const GetWeeksTripsCargos = async () => {
 };
 
 export const getCargosByTripId = async (
-  trip_id: number | string
+  trip_id: number | string,
 ): Promise<CargoType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
@@ -85,7 +85,7 @@ export const getCargosByTripId = async (
 };
 
 export const getTripsByWeekId = async (
-  weekId: string
+  weekId: string,
 ): Promise<TripAndWeeksIdType[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)
@@ -101,7 +101,7 @@ export const getTripsByWeekId = async (
 };
 
 export const getWeeks = async (
-  type: WeekTableType = "ru"
+  type: WeekTableType = "ru",
 ): Promise<(WeekType & { trips: TripType[] })[]> => {
   const server = getSupabaseServer();
   const { data, error } = await (await server)

@@ -32,7 +32,7 @@ export const changeMileage = async (car: CarsType, mileage: string) => {
 export const swapAccumulators = async (
   car: CarsType & {
     omnicommData: VehicleReportStatisticsType;
-  }
+  },
 ) => {
   const { details } = car;
   const updatedDetails: CarDetailsType = {
@@ -99,7 +99,7 @@ export const updateDetailToCar = async ({
   switch (section) {
     case "detail":
       updatedCarDetails.details = updatedCarDetails.details.map((detail) =>
-        detail.name === updatedDetail.name ? updatedDetail : detail
+        detail.name === updatedDetail.name ? updatedDetail : detail,
       );
       break;
 
@@ -107,7 +107,7 @@ export const updateDetailToCar = async ({
       updatedCarDetails.accumulator = {
         ...updatedCarDetails.accumulator,
         accumulators: updatedCarDetails.accumulator.accumulators.map((acc) =>
-          acc.location === updatedDetail.location ? updatedDetail : acc
+          acc.location === updatedDetail.location ? updatedDetail : acc,
         ),
       };
       break;
@@ -128,7 +128,7 @@ export const updateDetailToCar = async ({
             };
           }
           return axis;
-        }
+        },
       );
       break;
 
@@ -148,7 +148,7 @@ export const updateDetailToCar = async ({
             };
           }
           return axis;
-        }
+        },
       );
       break;
 
@@ -160,7 +160,7 @@ export const updateDetailToCar = async ({
       break;
     case "deleteAxis":
       updatedCarDetails.vehicle_axis = updatedCarDetails.vehicle_axis.filter(
-        (axis, index) => index !== updatedDetail.index
+        (axis, index) => index !== updatedDetail.index,
       );
       break;
     default:

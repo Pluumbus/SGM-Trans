@@ -4,7 +4,7 @@ import { CargoType } from "../../types";
 export const addCargoOnSubmit = (
   data: CargoType,
   mutate: UseMutateFunction<void, Error, CargoType, unknown>,
-  trip_id: number
+  trip_id: number,
 ) => {
   const unlPoint = data.unloading_point?.city
     ? data.unloading_point

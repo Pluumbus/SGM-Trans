@@ -64,10 +64,10 @@ export const ManageDetail = () => {
             ? Number(getValues().inputMileage) +
                 Number(
                   parseFloat(
-                    data.car.details?.temp_can_mileage.toString()
-                  ).toFixed(2)
+                    data.car.details?.temp_can_mileage.toString(),
+                  ).toFixed(2),
                 )
-            : 0
+            : 0,
         );
       } else {
         return data.car.details?.temp_can_mileage
@@ -143,8 +143,8 @@ export const ManageDetail = () => {
                     formatDate(
                       field.value
                         ? new Date(field.value?.toString())?.toISOString()
-                        : new Date().toISOString()
-                    )
+                        : new Date().toISOString(),
+                    ),
                   )}
                   onChange={(e) => {
                     field.onChange(e);
@@ -174,8 +174,8 @@ export const ManageDetail = () => {
                     formatDate(
                       field.value
                         ? new Date(field.value?.toString())?.toISOString()
-                        : new Date().toISOString()
-                    )
+                        : new Date().toISOString(),
+                    ),
                   )}
                   onChange={(e) => {
                     field.onChange(e);

@@ -68,7 +68,7 @@ const cyrillicToLatinMap: { [key: string]: string } = {
   Я: "Ya",
 };
 const latinToCyrillicReverseMap = Object.fromEntries(
-  Object.entries(cyrillicToLatinMap).map(([key, value]) => [value, key])
+  Object.entries(cyrillicToLatinMap).map(([key, value]) => [value, key]),
 );
 
 export function reverseTransliterate(text: string): string {

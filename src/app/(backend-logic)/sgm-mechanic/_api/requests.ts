@@ -17,19 +17,19 @@ const getSingleVehicleInfo = async (id: string): Promise<VehicleObject> => {
 };
 
 const getSingleVehicleFuelLevel = async (
-  id: string
+  id: string,
 ): Promise<VehicleObject> => {
   const timeBegin = 1712084400; // UNIX for 2024-01-01 00:00:00
   const timeEnd = 1722625200; // UNIX for 2024-08-02 00:00:00
 
   return await fetchFromAPI(
-    `/ls/api/v1/reports/fuellevel/${id}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`
+    `/ls/api/v1/reports/fuellevel/${id}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`,
   );
 };
 
 /** @param id - Это либо terminal ID или uuid машины */
 export const getVehicleReport = async (
-  id?: string | number
+  id?: string | number,
 ): Promise<TrackReport> => {
   const timeBegin = 1712084400; // UNIX for 2024-01-01 00:00:00
   const timeEnd = 1722625200; // UNIX for 2024-08-02 00:00:00
@@ -38,13 +38,13 @@ export const getVehicleReport = async (
   // для теста оставил tempID
 
   return await fetchFromAPI(
-    `/ls/api/v1/reports/track/${tempID}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`
+    `/ls/api/v1/reports/track/${tempID}?timeBegin=${timeBegin}&timeEnd=${timeEnd}`,
   );
 };
 
 /** @param id - Это либо terminal ID или uuid машины @returns current state of the vehicle */
 export const getVehicleCurrentState = async (
-  id?: string | number
+  id?: string | number,
 ): Promise<TrackReport> => {
   const tempID = id || 202010968;
 
@@ -61,7 +61,7 @@ export const getVehiclesFuelLevel = async () => {
         ...vehicle,
         details: singleVehicleInfo,
       };
-    })
+    }),
   );
 
   return allVehiclesData;
@@ -77,7 +77,7 @@ export const getVehiclesInfo = async () => {
         ...vehicle,
         details: singleVehicleInfo,
       };
-    })
+    }),
   );
 
   return allVehiclesData;
@@ -93,7 +93,7 @@ export const getAllVehiclesStates = async () => {
         ...vehicle,
         details: singleVehicleInfo,
       };
-    })
+    }),
   );
 
   return allVehiclesData;
@@ -102,11 +102,11 @@ export const getAllVehiclesStatistics =
   async (): Promise<ReportStatisticsType> => {
     const vehiclesTree = await getVehiclesTree();
     const allVehiclesUuid = vehiclesTree.objects.map(
-      (vehicle) => vehicle.terminal_id
+      (vehicle) => vehicle.terminal_id,
     );
 
     const res = await getSingleVehicleStatistics(allVehiclesUuid).then(
-      (data) => data
+      (data) => data,
     );
     console.log("getSingleVehicleStatistics(allVehiclesUuid)", res);
 
@@ -123,13 +123,13 @@ export const getSingleVehicleStatistics = async (vUuid: number[]) => {
   const tmp = [1734528537, 1734614937];
 
   console.log(
-    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`
+    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`,
   );
   console.log(
-    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(",")}]`
+    `/ls/api/v1/reports/statistics?timeBegin=${tmp[0]}&timeEnd=${tmp[1]}&dataGroups=[can, ccan]&vehicles=[${vUuid.join(",")}]`,
   );
 
   return await fetchFromAPI(
-    `/ls/api/v1/reports/statistics?timeBegin=1734528537&timeEnd=1734614937&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`
+    `/ls/api/v1/reports/statistics?timeBegin=1734528537&timeEnd=1734614937&dataGroups=[can, ccan]&vehicles=[${vUuid.join(", ")}]`,
   );
 };

@@ -17,7 +17,7 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
         Authorization: `JWT ${jwtToken}`,
         "Content-Type": "application/json",
       },
-    }
+    },
   );
 
   if (!response.ok) {
@@ -46,7 +46,7 @@ const getJWTToken = async () => {
         login: `imperiya`,
         password: `sgmkz2030`,
       }),
-    }
+    },
   );
   if (!response.ok) {
     const errorText = await response.text();
@@ -76,7 +76,7 @@ const refreshJWTToken = async () => {
         "Content-Type": "application/json",
       },
       // body: JSON.stringify({ refresh: refreshToken }),
-    }
+    },
   );
 
   if (!response.ok) {

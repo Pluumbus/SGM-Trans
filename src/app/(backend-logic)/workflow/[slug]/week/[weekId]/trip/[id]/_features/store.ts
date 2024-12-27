@@ -10,7 +10,7 @@ type SelectionStoreType = {
   setRowSelected: (
     updater:
       | RowSelectionType[]
-      | ((prev: RowSelectionType[]) => RowSelectionType[])
+      | ((prev: RowSelectionType[]) => RowSelectionType[]),
   ) => void;
 };
 
