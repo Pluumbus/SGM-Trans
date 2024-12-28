@@ -599,6 +599,18 @@
     "@react-aria/interactions" "3.22.5"
     "@react-aria/utils" "3.26.0"
 
+"@nextui-org/avatar@^2.2.5":
+  version "2.2.5"
+  resolved "https://registry.yarnpkg.com/@nextui-org/avatar/-/avatar-2.2.5.tgz#3137c4c89924aeed71d4bea5eb6a4319c8d0bff7"
+  integrity sha512-ugpwuH1M+eyWY+6Fb4OgGev1HweRrE61bA3rHxRzR3CcjWoe9g7JoQ04NbNNLUDp+aZuil/RWmgSfGUXEexZVQ==
+  dependencies:
+    "@nextui-org/react-utils" "2.1.2"
+    "@nextui-org/shared-utils" "2.1.2"
+    "@nextui-org/use-image" "2.1.1"
+    "@react-aria/focus" "3.19.0"
+    "@react-aria/interactions" "3.22.5"
+    "@react-aria/utils" "3.26.0"
+
 "@nextui-org/badge@2.2.3":
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/@nextui-org/badge/-/badge-2.2.3.tgz#667067c2bb76bf46f6a7b2e33677f0f892c43572"
