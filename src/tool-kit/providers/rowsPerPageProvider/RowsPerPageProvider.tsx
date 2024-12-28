@@ -1,6 +1,5 @@
 "use client";
-import { useLocalStorage } from "@/tool-kit/hooks";
-import { createContext, ReactNode } from "react";
+import { createContext, ReactNode, useState } from "react";
 
 export type RowsPerPageContextType = {
   rowsPerPage: number | string;
@@ -16,12 +15,7 @@ type RowsPerPageProviderProps = {
 };
 
 export const RowsPerPageProvider = ({ children }: RowsPerPageProviderProps) => {
-  const { data: rowsPerPage, setToLocalStorage } = useLocalStorage<
-    number | string
-  >({
-    initialData: 10,
-    identifier: "RowsPerPage",
-  });
+  const [rowsPerPage, setToLocalStorage] = useState<number | string>(10);
 
   const setRowsPerPage = (rowsPerPage: number | string) => {
     setToLocalStorage(rowsPerPage);

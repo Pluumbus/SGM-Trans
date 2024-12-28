@@ -24,7 +24,6 @@ import {
 } from "@/app/(client-logic)/client/types";
 import { useUser } from "@clerk/nextjs";
 import supabase from "@/utils/supabase/client";
-// import { useLocalStorage } from "@uidotdev/usehooks";
 
 type SortByType = 1 | 2 | 3;
 

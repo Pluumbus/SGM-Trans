@@ -16,7 +16,7 @@ import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import { TripTab } from "./_features/TripTab";
 import { NextPage } from "next";
-import { useLocalStorage } from "@/tool-kit/hooks";
+
 import React from "react";
 import { useRoleBasedSchema } from "@/components/RoleManagment/RoleBasedSchema";
 import { WeekType } from "@/app/(backend-logic)/workflow/_feature/types";
@@ -37,10 +37,7 @@ const Page: NextPage = () => {
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [week, setWeek] = useState<WeekType>();
 
-  const { data: isOnlyMycargos, setToLocalStorage } = useLocalStorage({
-    identifier: "show-only-my-cargos",
-    initialData: false,
-  });
+  const [isOnlyMycargos, setToLocalStorage] = useState(false);
   const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
     mutationKey: [`trips-${weekId}`],
     mutationFn: async () => await getTripsByWeekId(weekId),
@@ -50,7 +47,7 @@ const Page: NextPage = () => {
         return main;
       });
       setSelectedTabId(
-        data.find((e) => e.trip_number == Number(id)).id.toString(),
+        data.find((e) => e.trip_number == Number(id)).id.toString()
       );
 
       setTripsData(processedData);
@@ -79,11 +76,11 @@ const Page: NextPage = () => {
           else
             setTripsData((prev) => {
               const updatedTrips = prev.map((trip) =>
-                trip.id === updatedTrip.id ? updatedTrip : trip,
+                trip.id === updatedTrip.id ? updatedTrip : trip
               );
               return updatedTrips;
             });
-        },
+        }
       )
       .subscribe();
 
@@ -109,11 +106,11 @@ const Page: NextPage = () => {
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities),
-      ),
+        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities)
+      )
     );
     const newTripsData = tripsData.map((trip) =>
-      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip,
+      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];
 
     setTripsData(newTripsData);

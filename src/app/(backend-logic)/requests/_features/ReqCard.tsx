@@ -1,8 +1,5 @@
 "use client";
-import {
-  ClientRequestStatus,
-  ClientRequestTypeDTO,
-} from "@/app/(client-logic)/client/types";
+import { ClientRequestStatus } from "@/app/(client-logic)/client/types";
 import {
   Avatar,
   Card,

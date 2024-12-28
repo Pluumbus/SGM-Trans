@@ -1,12 +1,11 @@
-"use client";
-import { Card, CardBody } from "@nextui-org/react";
+import { PATHS } from "@/lib/consts";
+import { Card, CardBody } from "@nextui-org/card";
 import { NextPage } from "next";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const { push } = useRouter();
   return (
     <div className="flex flex-col justify-center items-center w-full h-screen">
       <div className="mb-10">
@@ -15,32 +14,30 @@ const Page: NextPage<Props> = ({}) => {
         </span>
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Card
-          isPressable
-          isHoverable
-          shadow="none"
-          className="rounded-[0.6rem] border"
-          onPress={() => {
-            push("/client");
-          }}
-        >
-          <CardBody className="flex justify-center items-center">
-            <span>Клиент</span>
-          </CardBody>
-        </Card>
-        <Card
-          isPressable
-          isHoverable
-          shadow="none"
-          className="rounded-[0.6rem] border"
-          onPress={() => {
-            push("/workflow/ru");
-          }}
-        >
-          <CardBody className="flex justify-center items-center">
-            <span>Сотрудник</span>
-          </CardBody>
-        </Card>
+        <Link href={PATHS.client}>
+          <Card
+            isPressable
+            isHoverable
+            shadow="none"
+            className="rounded-[0.6rem] border"
+          >
+            <CardBody className="flex justify-center items-center">
+              <span>Клиент</span>
+            </CardBody>
+          </Card>
+        </Link>
+        <Link href={PATHS.workflow_ru}>
+          <Card
+            isPressable
+            isHoverable
+            shadow="none"
+            className="rounded-[0.6rem] border"
+          >
+            <CardBody className="flex justify-center items-center">
+              <span>Сотрудник</span>
+            </CardBody>
+          </Card>
+        </Link>
       </div>
     </div>
   );
