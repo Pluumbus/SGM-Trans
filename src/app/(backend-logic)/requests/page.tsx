@@ -1,16 +1,10 @@
-"use client";
 import { NextPage } from "next";
-import { ReqList } from "./_features/ReqList";
-import { ReqListContextProvider } from "./_features/Context";
+import { ReqLs } from "./_features";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  return (
-    <ReqListContextProvider>
-      <ReqList />
-    </ReqListContextProvider>
-  );
+  return <ReqLs />;
 };
 
 export default Page;

@@ -24,14 +24,14 @@ import {
 } from "@/app/(client-logic)/client/types";
 import { useUser } from "@clerk/nextjs";
 import supabase from "@/utils/supabase/client";
-import { useLocalStorage } from "@uidotdev/usehooks";
+// import { useLocalStorage } from "@uidotdev/usehooks";
 
 type SortByType = 1 | 2 | 3;
 
 export const ReqList = () => {
   const [requests, setRequests] = useState<ClientRequestTypeDTO[]>([]);
   const [initialReqs, setInitReqs] = useState<ClientRequestTypeDTO[]>([]);
-  const [sortBy, setSortBy] = useLocalStorage<SortByType>("sortBy", 1);
+  const [sortBy, setSortBy] = useState<SortByType>(1);
   const [filterBy, setFilterBy] = useState<AllCitiesType | null>(null);
 
   const { mutate, isPending, isSuccess } = useMutation({

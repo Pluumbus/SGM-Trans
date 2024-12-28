@@ -21,7 +21,6 @@ export const ReqListItem = ({ info }: { info: ClientRequestTypeDTO }) => {
     <div className="h-fit w-full">
       <Card
         isHoverable
-        isPressable
         shadow="none"
         className={`border ${selectedReq?.id == info?.id && "bg-slate-200"} w-full`}
       >
