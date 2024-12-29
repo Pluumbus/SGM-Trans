@@ -138,9 +138,9 @@ export const CreateTripInsideWeek = ({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
         driver: {
-          car: formState.car.split(" - ")[0],
-          driver: formState.driver,
-          state_number: formState.car.split(" - ")[1],
+          car: formState.car.split(" - ")[0] || "",
+          driver: formState.driver || "",
+          state_number: formState.car.split(" - ")[1] || "",
         },
         week_id: weekId,
       });
@@ -162,7 +162,6 @@ export const CreateTripInsideWeek = ({
   });
 
   const onSubmit = (e) => {
-    console.log(formState);
     e.preventDefault();
     if (
       formState.driver &&
@@ -440,10 +439,10 @@ export const weekRangesOverlapping = ({
 };
 
 export const currentWeekIndicator = ({ end_date, start_date }) => {
-  const today = new Date();
+  const today = new Date().toLocaleDateString();
 
-  const start = new Date(start_date);
-  const end = new Date(end_date);
+  const start = new Date(start_date).toLocaleDateString();
+  const end = new Date(end_date).toLocaleDateString();
 
   return today >= start && today <= end;
 };
