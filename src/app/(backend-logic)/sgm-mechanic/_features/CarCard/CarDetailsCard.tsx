@@ -87,7 +87,7 @@ export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
           }}
         >
           <div className="w-full">
-            <ChangeMileage car={car} />
+            {/* <ChangeMileage car={car} /> */}
             <div className="w-full text-sm flex flex-col gap-2">
               <div className="grid grid-cols-2 gap-2 w-full">
                 {commonDetails.map((e, index) => (
@@ -339,7 +339,6 @@ const DetailSampleCard = ({
     () => currentMileage(data, fieldData),
     [data, fieldData]
   );
-
   return (
     <>
       <div className={v == "short" ? "flex gap-1" : "grid grid-cols-2"}>
@@ -351,7 +350,6 @@ const DetailSampleCard = ({
       <div className={v == "short" ? "flex gap-1" : "grid grid-cols-2"}>
         <span>{v == "short" ? "КМ: " : "Пробег: "} </span>
         <span className="font-semibold text-center">
-          {/* CAN {(data && data?.car?.omnicommData?.can?.distance) || 0} */}
           {currMileage}
           {v !== "short" && " км"}
         </span>
@@ -368,10 +366,10 @@ const currentMileage = (
     ? getSeparatedNumber(
         Number(
           parseFloat(
-            (data?.car.details?.temp_can_mileage
+            (data?.car.omnicommData[0].ccan?.spn245
               ? Number(
                   parseFloat(
-                    data?.car.details?.temp_can_mileage.toString()
+                    data?.car.omnicommData[0].ccan?.spn245.toString()
                   ).toFixed(2)
                 ) - Number(fieldData?.mileage?.last_mileage)
               : 0
@@ -380,6 +378,26 @@ const currentMileage = (
         )
       )
     : 0;
+// const currentMileage = (
+//   data: DisclosureContextType["data"],
+//   fieldData: FieldDataType
+// ) =>
+//   data
+//     ? getSeparatedNumber(
+//         Number(
+//           parseFloat(
+//             (data?.car.details?.temp_can_mileage
+//               ? Number(
+//                   parseFloat(
+//                     data?.car.details?.temp_can_mileage.toString()
+//                   ).toFixed(2)
+//                 ) - Number(fieldData?.mileage?.last_mileage)
+//               : 0
+//             ).toString()
+//           ).toFixed(2)
+//         )
+//       )
+//     : 0;
 
 const AccumCard = ({
   accumData,

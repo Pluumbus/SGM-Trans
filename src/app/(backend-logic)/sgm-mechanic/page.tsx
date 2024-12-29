@@ -31,10 +31,7 @@ import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { IoSwapVerticalOutline } from "react-icons/io5";
 import { FaX } from "react-icons/fa6";
 import { CarCard } from "./_features/CarCard";
-import {
-  CarsAndOmnicomm,
-  CarsWithOmnicommType,
-} from "./_features/CarCard/CarDetailsCard";
+import { CarsWithOmnicommType } from "./_features/CarCard/CarDetailsCard";
 
 interface Props {}
 
@@ -157,6 +154,7 @@ const Page: NextPage<Props> = () => {
 };
 
 const ItemTitle = ({ e }: { e }) => {
+  console.log(e);
   return (
     <div key={e.id} className="w-full h-full flex flex-col gap-2 p-3">
       <div className="flex justify-between">
@@ -168,18 +166,19 @@ const ItemTitle = ({ e }: { e }) => {
             <>
               <Divider orientation="vertical" className="h-auto min-h-6" />
               <span className="text-sm text-center font-semibold">
-                CAN {e.omnicommData[0].can?.distance || 0}&nbsp;км
+                CAN {getSeparatedNumber(e.omnicommData[0].ccan?.spn245) || 0}
+                &nbsp;км
               </span>
             </>
           )}
-          {e.details?.temp_can_mileage && (
+          {/* {e.details?.temp_can_mileage && (
             <>
               <Divider orientation="vertical" className="h-auto min-h-6" />
               <span className="text-sm text-center font-semibold">
                 {e.details.temp_can_mileage}&nbsp;км
               </span>
             </>
-          )}
+          )} */}
         </div>
       </div>
       <div className="flex gap-2 text-xs">
@@ -191,8 +190,10 @@ const ItemTitle = ({ e }: { e }) => {
               </span>
               <span>
                 {getSeparatedNumber(
-                  Number(e.details.temp_can_mileage) -
-                    Number(el.mileage.last_mileage)
+                  Number(el.mileage.next_mileage) !== 0
+                    ? Number(el.mileage.next_mileage) -
+                        Number(e.omnicommData && e.omnicommData[0].ccan?.spn245)
+                    : 0
                 )}
               </span>
             </div>
