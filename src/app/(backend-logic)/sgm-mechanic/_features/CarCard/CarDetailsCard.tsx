@@ -11,7 +11,7 @@ import {
 } from "@/lib/references/drivers/feature/types";
 import { Button, Card, CardBody, Divider } from "@nextui-org/react";
 import { DetailIcon } from "./DetailIcon";
-import { VehicleReportStatisticsType } from "../../_api/types";
+import { VehicleCan, VehicleReportStatisticsType } from "../../_api/types";
 import { ManageDetail } from "../Modals";
 import {
   DetailNameType,
@@ -37,7 +37,7 @@ export type FieldDataType =
 
 export type CarsWithOmnicommType = {
   car: CarsType & {
-    omnicommData: VehicleReportStatisticsType;
+    omnicommData: VehicleCan;
   };
 };
 
@@ -62,7 +62,7 @@ export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
       | CarDetailsType["vehicle_axis"][number]
       | WheelType["brake_shoe"]
       | WheelType["wheel"]
-      | CarDetailsType["accumulator"]["accumulators"][number],
+      | CarDetailsType["accumulator"]["accumulators"][number]
   ) => {
     setData((prev) => {
       const res = {
@@ -77,7 +77,7 @@ export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
     onOpenChange();
   };
   const id = useId();
-
+  console.log("car", car);
   return (
     <>
       <Card shadow="none">
@@ -107,13 +107,13 @@ export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
                     <div className="grid grid-cols-2">
                       <span className="text-danger-500">
                         {parseFloat(
-                          Number(e.mileage.last_mileage).toString(),
+                          Number(e.mileage.last_mileage).toString()
                         ).toFixed(2)}
                         км
                       </span>
                       <span className="text-success-500 text-center">
                         {parseFloat(
-                          Number(e.mileage.next_mileage).toString(),
+                          Number(e.mileage.next_mileage).toString()
                         ).toFixed(2)}
                         км
                       </span>
@@ -281,7 +281,7 @@ const Wheel = ({
 
   const handleOpen = (
     type: DetailNameType,
-    data: BreakShowType | WheelType["wheel"],
+    data: BreakShowType | WheelType["wheel"]
   ) => {
     const res = data;
     delete res?.name;
@@ -335,11 +335,9 @@ const DetailSampleCard = ({
 }) => {
   const { data } = useDisclosureContext();
 
-  console.log(data);
-
   const currMileage = useMemo(
     () => currentMileage(data, fieldData),
-    [data, fieldData],
+    [data, fieldData]
   );
 
   return (
@@ -353,6 +351,7 @@ const DetailSampleCard = ({
       <div className={v == "short" ? "flex gap-1" : "grid grid-cols-2"}>
         <span>{v == "short" ? "КМ: " : "Пробег: "} </span>
         <span className="font-semibold text-center">
+          {/* CAN {(data && data?.car?.omnicommData?.can?.distance) || 0} */}
           {currMileage}
           {v !== "short" && " км"}
         </span>
@@ -363,7 +362,7 @@ const DetailSampleCard = ({
 
 const currentMileage = (
   data: DisclosureContextType["data"],
-  fieldData: FieldDataType,
+  fieldData: FieldDataType
 ) =>
   data
     ? getSeparatedNumber(
@@ -372,13 +371,13 @@ const currentMileage = (
             (data?.car.details?.temp_can_mileage
               ? Number(
                   parseFloat(
-                    data?.car.details?.temp_can_mileage.toString(),
-                  ).toFixed(2),
+                    data?.car.details?.temp_can_mileage.toString()
+                  ).toFixed(2)
                 ) - Number(fieldData?.mileage?.last_mileage)
               : 0
-            ).toString(),
-          ).toFixed(2),
-        ),
+            ).toString()
+          ).toFixed(2)
+        )
       )
     : 0;
 

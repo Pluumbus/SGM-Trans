@@ -33,6 +33,53 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
   return response.json();
 };
 
+export const TestPostApi = async (
+  params: { timeBegin: number; timeEnd: number; Iids: number[] },
+  endpoint: string
+): Promise<any> => {
+  if (!jwtToken) {
+    jwtToken = await getJWTToken();
+  }
+
+  const makeRequest = async (token: string) => {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}${endpoint}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `JWT ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          vehicleIds: params.Iids,
+          timeBegin: params.timeBegin,
+          timeEnd: params.timeEnd,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      if (response.status === 401) {
+        return null; // Возвращаем null, чтобы обработать повторный вызов
+      }
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    return response.json();
+  };
+
+  let responseData = await makeRequest(jwtToken);
+
+  // Если токен недействителен, обновляем токен и повторяем запрос
+  if (responseData === null) {
+    jwtToken = await refreshJWTToken();
+    responseData = await makeRequest(jwtToken);
+  }
+  // console.log(responseData);
+
+  return responseData;
+};
+
 const getJWTToken = async () => {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_OMNICOMM_API_URL}/auth/login?jwt=1`,

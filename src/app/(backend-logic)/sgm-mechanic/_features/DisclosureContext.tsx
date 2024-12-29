@@ -13,7 +13,12 @@ import {
   CarsType,
   SingleDetailType,
 } from "@/lib/references/drivers/feature/types";
-import { VehicleReportStatisticsType } from "../_api/types";
+import {
+  ReportStatisticsType,
+  ResponseCanData,
+  VehicleCan,
+  VehicleReportStatisticsType,
+} from "../_api/types";
 
 export type DetailNameType =
   | "wheel"
@@ -28,7 +33,7 @@ export interface DisclosureContextType extends UseDisclosureProps {
   data: {
     detail: SingleDetailType;
     car?: CarsType & {
-      omnicommData: VehicleReportStatisticsType;
+      omnicommData: VehicleCan;
     };
 
     type: DetailNameType;
@@ -37,7 +42,7 @@ export interface DisclosureContextType extends UseDisclosureProps {
     SetStateAction<{
       detail: SingleDetailType;
       car?: CarsType & {
-        omnicommData: VehicleReportStatisticsType;
+        omnicommData: VehicleCan;
       };
 
       type: DetailNameType;
@@ -46,7 +51,7 @@ export interface DisclosureContextType extends UseDisclosureProps {
 }
 
 const DisclosureContext = createContext<DisclosureContextType | undefined>(
-  undefined,
+  undefined
 );
 
 export const DisclosureProvider: React.FC<{ children: React.ReactNode }> = ({
@@ -73,7 +78,7 @@ export const useDisclosureContext = (): DisclosureContextType => {
   const context = useContext(DisclosureContext);
   if (!context) {
     throw new Error(
-      "useDisclosureContext must be used within a DisclosureProvider",
+      "useDisclosureContext must be used within a DisclosureProvider"
     );
   }
   return context;
