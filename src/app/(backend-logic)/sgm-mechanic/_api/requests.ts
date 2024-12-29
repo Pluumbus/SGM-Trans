@@ -136,9 +136,9 @@ export const getSingleVehicleStatistics = async (vUuid: number[]) => {
 export const getAllVehiclesCan = async () =>
   // timeBegin: number
   {
-    const timeBegin =
-      Math.floor(new Date().getTime() / 1000) - 30 * 24 * 60 * 60;
-
+    // const timeBegin =
+    //   Math.floor(new Date().getTime() / 1000) - 30 * 24 * 60 * 60;
+    const timeBegin = Math.floor(Date.now() / 1000);
     const vehiclesTree = await getVehiclesTree();
     const allVehiclesUuid = await Promise.all(
       vehiclesTree.objects.map(async (vehicle) => {
