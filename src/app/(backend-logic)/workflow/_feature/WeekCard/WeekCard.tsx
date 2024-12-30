@@ -439,10 +439,10 @@ export const weekRangesOverlapping = ({
 };
 
 export const currentWeekIndicator = ({ end_date, start_date }) => {
-  const today = new Date().toLocaleDateString();
+  const today = new Date();
 
-  const start = new Date(start_date).toLocaleDateString();
-  const end = new Date(end_date).toLocaleDateString();
+  const start = new Date(start_date);
+  const end = new Date(end_date);
 
   return today >= start && today <= end;
 };
