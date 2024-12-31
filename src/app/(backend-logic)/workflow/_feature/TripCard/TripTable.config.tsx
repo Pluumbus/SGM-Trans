@@ -5,7 +5,7 @@ import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
 import { TripType } from "./TripCard";
 import { Button, useDisclosure } from "@nextui-org/react";
-import { CargoModal } from "../AddCargoModal/AddCargoModal";
+import { CargoModal } from "../AddCargoModal";
 import { WeekType } from "../types";
 
 export const getBaseTripColumnsConfig = () => {
@@ -77,23 +77,18 @@ const CreateCargo = ({
 }: {
   info: Cell<TripType & { weeks: WeekType }, ReactNode>;
 }) => {
-  const { isOpen: isOpenCargo, onOpenChange: onOpenChangeCargo } =
-    useDisclosure();
+  const disclosure = useDisclosure();
   return (
     <div className="flex items-center w-full h-full py-1">
       <Button
         variant="ghost"
-        onClick={() => {
-          onOpenChangeCargo();
+        onPress={() => {
+          disclosure.onOpenChange();
         }}
       >
         Добавить груз
       </Button>
-      <CargoModal
-        trip_id={info.row.original.id}
-        isOpenCargo={isOpenCargo}
-        onOpenChangeCargo={onOpenChangeCargo}
-      />
+      <CargoModal trip_id={info.row.original.id} disclosure={disclosure} />
     </div>
   );
 };

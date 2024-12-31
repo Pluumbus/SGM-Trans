@@ -89,7 +89,8 @@ const Page: NextPage = () => {
     };
   }, []);
 
-  const { isOpen, onOpenChange } = useDisclosure();
+  const disclosure = useDisclosure();
+  const { isOpen, onOpenChange } = disclosure;
 
   const columns = useMemo(() => useRoleBasedSchema(), []);
 
@@ -171,11 +172,7 @@ const Page: NextPage = () => {
           </Tab>
         </Tabs>
       </div>
-      <CargoModal
-        isOpenCargo={isOpen}
-        onOpenChangeCargo={onOpenChange}
-        trip_id={Number(selectedTabId)}
-      />
+      <CargoModal disclosure={disclosure} trip_id={Number(selectedTabId)} />
     </div>
   );
 };

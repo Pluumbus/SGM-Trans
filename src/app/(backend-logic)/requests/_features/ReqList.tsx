@@ -24,6 +24,8 @@ import {
 } from "@/app/(client-logic)/client/types";
 import { useUser } from "@clerk/nextjs";
 import supabase from "@/utils/supabase/client";
+import { CargoModal } from "../../workflow/_feature";
+import { CargoModalMode } from "../../workflow/_feature/AddCargoModal/CargoModal";
 
 type SortByType = 1 | 2 | 3;
 
@@ -47,7 +49,7 @@ export const ReqList = () => {
   }, []);
   const { user } = useUser();
 
-  const { selectedReq, setSelectedReq } = useReqItem();
+  const { selectedReq, setSelectedReq, disclosure } = useReqItem();
 
   const { debounce } = useDebounce();
 
@@ -213,6 +215,11 @@ export const ReqList = () => {
 
         <div className="w-1/2">{selectedReq?.id && <ReqFullInfoCard />}</div>
       </div>
+      <CargoModal
+        disclosure={disclosure}
+        prefilledData={selectedReq}
+        mode={CargoModalMode.FROM_REQUEST}
+      />
     </div>
   );
 };

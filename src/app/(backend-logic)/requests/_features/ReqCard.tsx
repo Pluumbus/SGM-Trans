@@ -24,7 +24,7 @@ import { IoCopyOutline } from "react-icons/io5";
 import { WhatsAppButton } from "@/components";
 
 export const ReqFullInfoCard = () => {
-  const { selectedReq: info } = useReqItem();
+  const { selectedReq: info, disclosure } = useReqItem();
   const { toast } = useToast();
   const { data, isLoading } = useQuery({
     queryKey: [`${info.logist_id}`],
@@ -184,10 +184,14 @@ export const ReqFullInfoCard = () => {
             color="success"
             variant="ghost"
             onPress={() => {
-              mutate({
-                reqId: info.id,
-                status: ClientRequestStatus.IN_REVIEW,
-              });
+              if (info.status == ClientRequestStatus.IN_REVIEW) {
+                disclosure.onOpenChange();
+              } else {
+                mutate({
+                  reqId: info.id,
+                  status: ClientRequestStatus.IN_REVIEW,
+                });
+              }
             }}
             isLoading={isPending}
           >
@@ -220,20 +224,6 @@ export const ReqFullInfoCard = () => {
       </CardFooter>
     </Card>
   );
-};
-
-const Status = ({ logistId }: { logistId: string }) => {
-  if (logistId !== "") {
-    const { data, isLoading } = useQuery({
-      queryKey: [`${logistId}`],
-      queryFn: async () => await getUserById(logistId),
-    });
-
-    if (isLoading) {
-      return <Skeleton className="w-[40px] h-[16px]" />;
-    }
-    return <span>В рассмотрении {data.firstName}</span>;
-  } else return <span>Создана клиентом</span>;
 };
 
 const UserInfo = ({ userId }: { userId: string }) => {

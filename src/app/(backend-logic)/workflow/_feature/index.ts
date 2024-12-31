@@ -1,1 +1,1 @@
-export { CargoModal } from "./AddCargoModal/AddCargoModal";
+export { CargoModal } from "./AddCargoModal/CargoModal";

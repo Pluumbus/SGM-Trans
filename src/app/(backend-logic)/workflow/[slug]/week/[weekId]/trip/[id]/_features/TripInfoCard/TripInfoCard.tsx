@@ -43,7 +43,7 @@ export const TripInfoCard = ({
         (user) =>
           user.role === "Логист" ||
           user.role === "Логист Дистант" ||
-          user.role === "Логист Москва",
+          user.role === "Логист Москва"
       );
       return filteredUsrs as UsersList[];
     },
@@ -61,14 +61,14 @@ export const TripInfoCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId),
+      (item) => item.id === Number(selectedTabId)
     );
     setCurrentTripData(currentTrip);
     setStatusVal(currentTrip?.status);
   }, [selectedTabId, tripsData]);
 
   const respUser = allUsers?.filter(
-    (user) => user.id === currentTripData?.user_id,
+    (user) => user.id === currentTripData?.user_id
   )[0]?.userName;
 
   const statusItems = ["Машина закрыта", "В пути", "Прибыл"];
@@ -180,7 +180,7 @@ export const TripInfoCard = ({
           />
 
           <div>
-            <Button color="success" onClick={onOpenChange}>
+            <Button color="success" onPress={onOpenChange}>
               Добавить груз
             </Button>
           </div>
