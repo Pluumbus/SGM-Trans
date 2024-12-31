@@ -5,10 +5,11 @@ import { Cell } from "@tanstack/react-table";
 import {
   Autocomplete,
   AutocompleteItem,
+  Input,
   Textarea,
   Tooltip,
 } from "@nextui-org/react";
-import { QUANTITY_TYPE, QuantityType } from "@/lib/references";
+import { QuantityType } from "@/lib/references";
 
 type Type = CargoType["quantity"];
 
@@ -29,24 +30,18 @@ export const Quantity = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         }}
       />
       <Tooltip content={values?.type}>
-        <Autocomplete
+        <Input
           variant="underlined"
           isClearable={false}
           aria-label="Quantity Autocomplete"
-          selectedKey={values?.type}
-          onSelectionChange={(e) => {
+          value={values?.type}
+          onChange={(e) => {
             setValues((prev) => ({
               ...prev,
-              type: e as QuantityType,
+              type: e.target.value as QuantityType,
             }));
           }}
-        >
-          {QUANTITY_TYPE.map((e) => (
-            <AutocompleteItem key={e} textValue={e}>
-              <Tooltip content={e}>{e.slice(0, 3)}</Tooltip>
-            </AutocompleteItem>
-          ))}
-        </Autocomplete>
+        />
       </Tooltip>
     </div>
   );

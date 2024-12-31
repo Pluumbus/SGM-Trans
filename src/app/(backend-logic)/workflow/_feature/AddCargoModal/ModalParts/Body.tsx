@@ -1,9 +1,4 @@
-import {
-  Cities,
-  PRICE_TYPE,
-  QUANTITY_TYPE,
-  QuantityType,
-} from "@/lib/references";
+import { Cities, PRICE_TYPE } from "@/lib/references";
 
 import {
   Autocomplete,
@@ -14,7 +9,7 @@ import {
   ModalBody,
   Textarea,
 } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Control,
   Controller,
@@ -158,19 +153,7 @@ export const Body = ({
           render={({ field }) => (
             <div className="flex gap-2 ">
               <Input label="Количество" {...register("quantity.value")} />
-              <Autocomplete
-                label="Коробки / палеты"
-                selectedKey={quantityType}
-                onSelectionChange={(e) => {
-                  setValue("quantity.type", e as QuantityType);
-                }}
-              >
-                {QUANTITY_TYPE.map((e) => (
-                  <AutocompleteItem key={e} textValue={e}>
-                    {e}
-                  </AutocompleteItem>
-                ))}
-              </Autocomplete>
+              <Input label="Коробки / палеты" {...register("quantity.type")} />
             </div>
           )}
         />
