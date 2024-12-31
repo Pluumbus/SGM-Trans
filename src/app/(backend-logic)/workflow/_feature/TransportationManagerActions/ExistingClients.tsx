@@ -27,8 +27,10 @@ export const ExistingClients = ({
 
   const { debounce } = useDebounce();
   const updateState = () => {
-    setValue(state[0].toString());
-    onChange && onChange();
+    refetch().then(() => {
+      setValue(state[0].toString());
+      onChange && onChange();
+    });
   };
 
   useEffect(() => {

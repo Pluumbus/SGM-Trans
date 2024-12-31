@@ -39,8 +39,13 @@ export const TMModal = ({ disclosure, state }: Props) => {
         title: "Вы успешно добавили клиента",
         description: `${getValues().full_name.first_name} ${getValues().full_name.last_name} c номером: ${getValues().phone_number}`,
       });
+      state[1](() => {
+        console.log((data[0] as CashboxType).id);
+
+        return (data[0] as CashboxType).id;
+      });
+
       disclosure.onOpenChange();
-      state[1]((data[0] as CashboxType).id);
     },
     onError: (err) => {
       toast({
@@ -126,7 +131,7 @@ export const TMModal = ({ disclosure, state }: Props) => {
               variant="flat"
               color="success"
               isLoading={isPending}
-              onClick={() => {
+              onPress={() => {
                 onSubmit();
               }}
             >
