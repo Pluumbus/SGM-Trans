@@ -4,7 +4,9 @@ import { ClientRequestTypeDTO } from "@/app/(client-logic)/client/types";
 import getSupabaseServer from "@/utils/supabase/server";
 import { currentUser } from "@clerk/nextjs/server";
 
-export const getRequests = async (): Promise<ClientRequestTypeDTO[]> => {
+export const getRequests = async (): Promise<
+  Array<ClientRequestTypeDTO & { trip_id: number }>
+> => {
   const user = await currentUser();
   const { data, error } = await (await getSupabaseServer())
     .from("requests")
@@ -14,5 +16,5 @@ export const getRequests = async (): Promise<ClientRequestTypeDTO[]> => {
   if (error) {
     throw new Error();
   }
-  return data as ClientRequestTypeDTO[];
+  return data as Array<ClientRequestTypeDTO & { trip_id: number }>;
 };

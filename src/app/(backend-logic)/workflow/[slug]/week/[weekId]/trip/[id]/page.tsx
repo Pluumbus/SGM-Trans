@@ -174,7 +174,11 @@ const Page: NextPage = () => {
             </Tab>
           </Tabs>
         </div>
-        <CargoModal disclosure={disclosure} trip_id={Number(selectedTabId)} />
+        <CargoModal
+          disclosure={disclosure}
+          trip_id={Number(selectedTabId)}
+          prefilledData={null}
+        />
       </div>
     </SelectionProvider>
   );

@@ -34,18 +34,9 @@ type Props = {
 export const Body = ({
   props: { register, watch, control, setValue },
 }: Props) => {
-  const [
-    withDelivery,
-    amountType,
-    quantityType,
-    amountValue,
-    transportationManager,
-  ] = watch([
+  const [withDelivery, amountType] = watch([
     "unloading_point.withDelivery",
     "amount.type",
-    "quantity.type",
-    "amount.value",
-    "transportation_manager",
   ]);
   const state = useState<number>(null);
 
@@ -59,7 +50,7 @@ export const Body = ({
 
   return (
     <ModalBody className="transition-all">
-      <div className="grid grid-cols-2 gap-2 w-full">
+      <div className="grid grid-cols-2 gap-2 w-full ">
         <div className="col-span-2 flex gap-2 h-full">
           <Textarea
             {...register("receipt_address")}
@@ -79,15 +70,45 @@ export const Body = ({
 
         <TM state={state} onChange={onChange} />
 
-        {withDelivery ? (
-          <div className="flex items-start">
-            <div className="flex gap-2 items-center">
+        <div className="grid grid-cols-2 col-span-2 space-y-2">
+          {withDelivery ? (
+            <div className="flex items-start col-span-2">
+              <div className="flex gap-2 items-center">
+                <Controller
+                  control={control}
+                  name="unloading_point.city"
+                  render={({ field }) => (
+                    <Cities
+                      selectedKey={field.value}
+                      label="В город"
+                      onSelectionChange={(e) => {
+                        setValue("unloading_point.city", e?.toString());
+                      }}
+                    />
+                  )}
+                />
+
+                <Controller
+                  control={control}
+                  name="unloading_point.withDelivery"
+                  render={({ field }) => (
+                    // @ts-ignore
+                    <Checkbox {...field} isSelected={withDelivery}>
+                      С&nbsp;доставкой
+                    </Checkbox>
+                  )}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="col-span-2">
               <Controller
                 control={control}
                 name="unloading_point.city"
                 render={({ field }) => (
                   <Cities
-                    selectedKey={field.value}
+                    selectedKey={field?.value}
+                    label="В город"
                     onSelectionChange={(e) => {
                       setValue("unloading_point.city", e?.toString());
                     }}
@@ -106,41 +127,16 @@ export const Body = ({
                 )}
               />
             </div>
-          </div>
-        ) : (
-          <>
-            <Controller
-              control={control}
-              name="unloading_point.city"
-              render={({ field }) => (
-                <Cities
-                  selectedKey={field?.value}
-                  onSelectionChange={(e) => {
-                    setValue("unloading_point.city", e?.toString());
-                  }}
-                />
-              )}
-            />
+          )}
 
-            <Controller
-              control={control}
-              name="unloading_point.withDelivery"
-              render={({ field }) => (
-                // @ts-ignore
-                <Checkbox {...field} isSelected={withDelivery}>
-                  С&nbsp;доставкой
-                </Checkbox>
-              )}
+          {withDelivery && (
+            <Input
+              className="col-span-2"
+              {...register("unloading_point.deliveryAddress")}
+              label={`Адрес доставки`}
             />
-          </>
-        )}
-
-        {withDelivery && (
-          <Textarea
-            {...register("unloading_point.deliveryAddress")}
-            label={`Адрес доставки`}
-          />
-        )}
+          )}
+        </div>
 
         <div className="flex gap-2">
           <Input {...register("weight")} label="Вес" />
@@ -170,7 +166,6 @@ export const Body = ({
                 inputProps={{
                   label: "Сумма оплаты (тг.)",
                 }}
-                {...register("amount.value")}
               />
 
               <Autocomplete

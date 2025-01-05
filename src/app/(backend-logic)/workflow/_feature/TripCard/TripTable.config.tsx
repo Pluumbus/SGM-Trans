@@ -88,7 +88,11 @@ const CreateCargo = ({
       >
         Добавить груз
       </Button>
-      <CargoModal trip_id={info.row.original.id} disclosure={disclosure} />
+      <CargoModal
+        trip_id={info.row.original.id}
+        disclosure={disclosure}
+        prefilledData={null}
+      />
     </div>
   );
 };

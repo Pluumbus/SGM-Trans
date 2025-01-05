@@ -13,8 +13,13 @@ import { getUserById } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { useQuery } from "@tanstack/react-query";
 import { ReqModal } from "./ReqModal";
 import { useReqItem } from "./Context";
+import { AdjustedRequestDTO } from "../types";
 
-export const ReqListItem = ({ info }: { info: ClientRequestTypeDTO }) => {
+export const ReqListItem = ({
+  info,
+}: {
+  info: AdjustedRequestDTO | ClientRequestTypeDTO;
+}) => {
   const disclosure = useDisclosure();
   const { setSelectedReq, selectedReq } = useReqItem();
   return (

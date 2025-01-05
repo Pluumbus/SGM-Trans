@@ -90,7 +90,7 @@ export const WeekCard = () => {
                 key={i + 1}
                 aria-label={`Accordion ${i}`}
                 title={`Неделя ${week.week_number}`}
-                subtitle={<SummaryOfTrip week={week} />}
+                subtitle={<SummaryOfTrip week={week} key={i + 2} />}
                 className={
                   currentWeekIndicator(week.week_dates) ? "bg-blue-100" : ""
                 }
@@ -421,7 +421,7 @@ const SummaryOfTrip = ({
         {week?.trips
           .sort((a, b) => a.trip_number - b.trip_number)
           .map((t, i) => (
-            <span>
+            <span key={`SummaryOfTrip: ${i}`}>
               {t.trip_number + (i === week?.trips?.length - 1 ? ". " : ", ")}
             </span>
           ))}{" "}
