@@ -161,7 +161,9 @@ const ItemTitle = ({ e }: { e }) => {
         <div className="flex w-full gap-2 items-center h-full subpixel-antialiased">
           <span className="font-semibold">{e.car}</span>
           <Divider orientation="vertical" className="h-auto min-h-6" />
-          <span className="text-sm text-center">{e.state_number}</span>
+          <span className="inline-block px-2 py-1 border-2 border-black rounded-md bg-white text-black font-bold text-sm text-center tracking-wider">
+            {e.state_number as string}
+          </span>
           {e.omnicommData && (
             <>
               <Divider orientation="vertical" className="h-auto min-h-6" />
