@@ -2,12 +2,14 @@ import { Button } from "@nextui-org/react";
 import { useMutation } from "@tanstack/react-query";
 import { deleteCargo } from "../../../_api/requests";
 import { useToast } from "@/components/ui/use-toast";
-import { useSelectionStore } from "../store";
 import { useConfirmContext, useDebounce } from "@/tool-kit/hooks";
+import { useSelectionContext } from "../Contexts";
 
 export const DeleteCargo = () => {
   const { toast } = useToast();
   const { openModal } = useConfirmContext();
+  const [rowSelected] = useSelectionContext();
+
   const { mutate, isPending } = useMutation({
     mutationFn: deleteCargo,
     onSuccess: () => {
@@ -39,7 +41,7 @@ export const DeleteCargo = () => {
       duration: 10000,
     });
   };
-  const { rowSelected } = useSelectionStore();
+
   return (
     <div>
       <Button

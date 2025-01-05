@@ -92,6 +92,8 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     }
   }, [values?.is_ready]);
 
+  const check = useCheckRole(["Менеджер"]);
+
   if (isPending) {
     return <Spinner />;
   }
@@ -99,7 +101,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className="flex flex-col gap-2 w-[2rem]">
       <div className="flex flex-col gap-2 w-full items-center">
-        {useCheckRole(["Менеджер"]) ? (
+        {check ? (
           <Checkbox
             isSelected={values.is_ready}
             onValueChange={(e) => {

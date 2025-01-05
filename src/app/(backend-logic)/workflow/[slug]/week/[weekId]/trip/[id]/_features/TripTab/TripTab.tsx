@@ -11,7 +11,6 @@ import {
 } from "@/tool-kit/ui/UTable/types";
 
 import { getCargos } from "../../../_api";
-import { useSelectionStore } from "../store";
 import supabase from "@/utils/supabase/client";
 import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
@@ -25,6 +24,8 @@ import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripC
 import { Button } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
+import { DeleteCargo } from "../DeleteCargo";
+import { useSelectionContext } from "../Contexts";
 
 export const TripTab = ({
   trip,
@@ -44,7 +45,7 @@ export const TripTab = ({
   });
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
-  const { rowSelected, setRowSelected } = useSelectionStore();
+  const [rowSelected, setRowSelected] = useSelectionContext();
   const config: UseTableConfig<CargoType> = {
     row: {
       setRowData(info) {},
@@ -170,7 +171,10 @@ export const TripTab = ({
       />
 
       {rowSelected?.some((e) => e.isSelected) && (
-        <UpdateTripNumber currentTripId={trip.trip_number} />
+        <div className="my-2 flex gap-2">
+          <UpdateTripNumber currentTripId={trip.trip_number} />
+          <DeleteCargo />
+        </div>
       )}
       {cargos.length > 0 && (
         <div className="flex justify-between">

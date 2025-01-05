@@ -7,14 +7,14 @@ import { EditField } from "./EditField/EditField";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
 import { Checkbox, Spinner, Tooltip } from "@nextui-org/react";
-import { useSelectionStore } from "../store";
+import { useSelectionContext } from "../Contexts";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
     {
       accessorKey: "CheckBox",
       header: () => {
-        const { rowSelected, setRowSelected } = useSelectionStore();
+        const [rowSelected, setRowSelected] = useSelectionContext();
         return (
           <div>
             <Checkbox
@@ -38,7 +38,7 @@ export const getBaseColumnsConfig = () => {
       size: 10,
       filter: false,
       cell: (info: Cell<CargoType, ReactNode>) => {
-        const { rowSelected, setRowSelected } = useSelectionStore();
+        const [rowSelected, setRowSelected] = useSelectionContext();
         return (
           <Checkbox
             isSelected={
@@ -50,7 +50,7 @@ export const getBaseColumnsConfig = () => {
               const updatedSelection = rowSelected?.map((item) =>
                 item.number === info.row.original.id
                   ? { ...item, isSelected: !item.isSelected }
-                  : item,
+                  : item
               );
               setRowSelected(updatedSelection);
             }}
