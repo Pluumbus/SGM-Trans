@@ -50,7 +50,7 @@ export const TripModal = ({
     <div>
       <div className="w-full flex justify-end">
         <Button
-          onClick={() => {
+          onPress={() => {
             onOpenChangeTrip();
           }}
         >
@@ -162,7 +162,7 @@ export const TripModal = ({
             <Button
               variant="light"
               color="danger"
-              onClick={() => {
+              onPress={() => {
                 onOpenChangeTrip();
               }}
             >
@@ -171,7 +171,7 @@ export const TripModal = ({
             <Button
               variant="flat"
               color="success"
-              onClick={() => {
+              onPress={() => {
                 addWeek();
               }}
             >
@@ -180,7 +180,7 @@ export const TripModal = ({
             <Button
               variant="solid"
               color="success"
-              onClick={() => {
+              onPress={() => {
                 onOpenChangeTrip();
                 onOpenChangeCargo();
               }}

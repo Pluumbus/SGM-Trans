@@ -74,7 +74,7 @@ export const ChangePaymentTerms = ({ info, disclosure }: PropsType) => {
           <Button
             color="danger"
             variant="light"
-            onClick={() => {
+            onPress={() => {
               disclosure.onOpenChange();
             }}
             isLoading={isPending}
@@ -83,7 +83,7 @@ export const ChangePaymentTerms = ({ info, disclosure }: PropsType) => {
           </Button>
           <Button
             color="success"
-            onClick={() => {
+            onPress={() => {
               mutate();
             }}
             isLoading={isPending}

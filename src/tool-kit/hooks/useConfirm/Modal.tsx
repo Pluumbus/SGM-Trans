@@ -59,7 +59,7 @@ export const ConfirmModal = ({
               variant="light"
               color="danger"
               isLoading={isLoading}
-              onClick={() => {
+              onPress={() => {
                 disclosure.onOpenChange();
               }}
             >
@@ -69,7 +69,7 @@ export const ConfirmModal = ({
               variant="ghost"
               color="success"
               isLoading={isLoading}
-              onClick={() => {
+              onPress={() => {
                 action().then(() => {
                   disclosure.onOpenChange();
                 });

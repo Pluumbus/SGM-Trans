@@ -34,7 +34,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     if (isOpen && !values.snts.every((e) => e.startsWith(SNT))) {
       setValues((prev) => {
         const res = prev.snts.map((e) =>
-          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e,
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
         );
 
         return {
@@ -113,13 +113,13 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         <Button
           variant="ghost"
           className="min-h-[2.7rem] w-1/4"
-          onClick={() => {
+          onPress={() => {
             onOpenChange();
           }}
         >
           <div className="flex flex-col h-full">
-            <span>Редакт</span>
-            <span>ировать</span>
+            <span>Добавить</span>
+            <span>СНТ</span>
           </div>
         </Button>
       </div>
@@ -223,7 +223,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 <Button
                   variant="faded"
                   color="success"
-                  onClick={() => {
+                  onPress={() => {
                     addSNT();
                   }}
                 >
@@ -238,7 +238,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <Button
                 variant="ghost"
                 color="danger"
-                onClick={() => {
+                onPress={() => {
                   onOpenChange();
                 }}
               >
@@ -247,7 +247,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <Button
                 variant="flat"
                 color="success"
-                onClick={() => {
+                onPress={() => {
                   onOpenChange();
                 }}
               >

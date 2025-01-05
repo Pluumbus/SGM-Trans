@@ -10,7 +10,7 @@ const Page: NextPage<Props> = ({}) => {
   return (
     <div className="flex gap-4">
       <Button
-        onClick={() => {
+        onPress={() => {
           triggerAnimation("fireworks", {
             prize: {
               amount: 1111000000,

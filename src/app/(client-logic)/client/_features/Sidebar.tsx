@@ -39,7 +39,7 @@ export const Sidebar = () => {
               className="flex items-center gap-3 py-2 rounded-[.5rem]"
               variant="ghost"
               // color="success"
-              onClick={() => {
+              onPress={() => {
                 addRequestDisclosure.onOpenChange();
               }}
             >

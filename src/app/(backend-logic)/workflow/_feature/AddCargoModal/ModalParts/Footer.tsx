@@ -12,7 +12,7 @@ export const Footer = ({
       <Button
         variant="light"
         color="danger"
-        onClick={() => {
+        onPress={() => {
           onOpenChangeCargo();
         }}
       >

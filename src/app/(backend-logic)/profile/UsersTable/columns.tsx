@@ -56,7 +56,7 @@ export const columns: ColumnDef<UsersList>[] = [
           <Button
             variant="light"
             className=""
-            onClick={() => {
+            onPress={() => {
               column.toggleSorting(column.getIsSorted() === "asc");
             }}
           >
@@ -160,13 +160,13 @@ export const columns: ColumnDef<UsersList>[] = [
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem>
-                <Button onClick={() => setIsOpenRole(true)} variant="light">
+                <Button onPress={() => setIsOpenRole(true)} variant="light">
                   Выдать роль
                 </Button>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem>
-                <Button onClick={() => setIsOpenBalance(true)} variant="light">
+                <Button onPress={() => setIsOpenBalance(true)} variant="light">
                   Обновить баланс
                 </Button>
               </DropdownMenuItem>

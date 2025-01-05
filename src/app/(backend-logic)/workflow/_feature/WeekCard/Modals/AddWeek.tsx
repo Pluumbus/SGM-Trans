@@ -33,7 +33,7 @@ export const AddWeek = () => {
     <div>
       <div className="w-full flex justify-end">
         <Button
-          onClick={() => {
+          onPress={() => {
             addWeek();
           }}
         >

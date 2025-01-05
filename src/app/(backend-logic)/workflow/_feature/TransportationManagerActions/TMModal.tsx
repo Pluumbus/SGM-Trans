@@ -121,7 +121,7 @@ export const TMModal = ({ disclosure, state }: Props) => {
               variant="light"
               color="danger"
               isLoading={isPending}
-              onClick={() => {
+              onPress={() => {
                 disclosure.onOpenChange();
               }}
             >

@@ -110,7 +110,7 @@ export const TM = ({
               <Tooltip content="Добавить Клиента">
                 <Button
                   variant="ghost"
-                  onClick={() => {
+                  onPress={() => {
                     disclosure.onOpenChange();
                   }}
                   isIconOnly

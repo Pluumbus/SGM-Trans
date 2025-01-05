@@ -23,7 +23,7 @@ export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       <Tooltip content={<span>{info.getValue() || ""}</span>}>
         <Button
           isIconOnly
-          onClick={() => {
+          onPress={() => {
             disclosure.onOpenChange();
           }}
           variant="light"
@@ -44,7 +44,7 @@ export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <Button
                 variant="light"
                 color="danger"
-                onClick={() => {
+                onPress={() => {
                   disclosure.onOpenChange();
                 }}
               >

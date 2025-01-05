@@ -123,7 +123,7 @@ export const AddPaymentToCargo = ({
       console.log("Работает updateBalance");
       return await changeClientBalance(
         info.row.original.id,
-        Number(currentBalance),
+        Number(currentBalance)
       );
     },
   });
@@ -147,7 +147,7 @@ export const AddPaymentToCargo = ({
 
       return await changeExactAmountPaidToCargo(
         info.row.original.cargos.find((e) => e.id == formState),
-        Number(paidAmount),
+        Number(paidAmount)
       );
     },
     onSuccess: () => {
@@ -267,7 +267,7 @@ export const AddPaymentToCargo = ({
             <Button
               color="danger"
               variant="light"
-              onClick={() => {
+              onPress={() => {
                 disclosure.onOpenChange();
               }}
               isLoading={isPending}
@@ -297,7 +297,7 @@ const AlreadyPaidBadge = ({
   formState: number;
 }) => {
   const tmp = getSeparatedNumber(
-    info.row.original.cargos.find((e) => e.id == formState)?.paid_amount,
+    info.row.original.cargos.find((e) => e.id == formState)?.paid_amount
   );
 
   return (

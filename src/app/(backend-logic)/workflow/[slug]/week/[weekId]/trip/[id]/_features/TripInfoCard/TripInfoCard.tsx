@@ -106,7 +106,7 @@ export const TripInfoCard = ({
                     {statusItems.map((stat: string) => (
                       <DropdownItem
                         key={stat}
-                        onClick={() => {
+                        onPress={() => {
                           setStatusVal(stat);
                           setStatusMutation();
                         }}

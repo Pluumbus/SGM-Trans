@@ -29,28 +29,28 @@ export const UPagination = <T,>({
     <div className="flex items-center gap-4 justify-center my-4">
       <div className="flex gap-2">
         <Button
-          onClick={() => tInstance.firstPage()}
+          onPress={() => tInstance.firstPage()}
           disabled={!tInstance.getCanPreviousPage()}
           isIconOnly
         >
           <MdKeyboardDoubleArrowLeft />
         </Button>
         <Button
-          onClick={() => tInstance.previousPage()}
+          onPress={() => tInstance.previousPage()}
           disabled={!tInstance.getCanPreviousPage()}
           isIconOnly
         >
           <MdKeyboardArrowLeft />
         </Button>
         <Button
-          onClick={() => tInstance.nextPage()}
+          onPress={() => tInstance.nextPage()}
           disabled={!tInstance.getCanNextPage()}
           isIconOnly
         >
           <MdKeyboardArrowRight />
         </Button>
         <Button
-          onClick={() => tInstance.lastPage()}
+          onPress={() => tInstance.lastPage()}
           disabled={!tInstance.getCanNextPage()}
           isIconOnly
         >
