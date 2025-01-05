@@ -277,8 +277,9 @@ const AutocompleteTrips = ({
   info: Cell<CashboxType, React.ReactNode>;
 }) => {
   const [formState, setFormState] = form;
+
   const { data, isLoading } = useQuery({
-    queryKey: [],
+    queryKey: [info.row.original.cargos.map((cargo) => cargo.id).join(", ")],
     queryFn: async () => {
       const res = info.row.original.cargos.map(
         async (e) => await getTripNumber(e.trip_id)
@@ -305,8 +306,8 @@ const AutocompleteTrips = ({
           )?.trip_number;
           return (
             <AutocompleteItem
-              key={`AutocompleteItem ${el.id} ${el.created_at}`}
               value={el.id}
+              key={el.id}
               textValue={`№${tripNumber} - ${number} тг`}
             >
               {`№${tripNumber} - ${number} тг`}

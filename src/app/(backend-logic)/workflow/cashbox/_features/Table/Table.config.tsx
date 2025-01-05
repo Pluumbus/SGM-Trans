@@ -9,6 +9,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Spinner,
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
@@ -21,6 +22,8 @@ import { PAYMENT_TERMS } from "./Modals/ChangePaymentTerms";
 import { customFilter } from "@/tool-kit/ui/UTable/helpers/customFilter";
 import { customArrayFilter } from "@/tool-kit/ui/UTable/helpers/customArrayfilter";
 import { Operations } from "./Modals";
+import { useQuery } from "@tanstack/react-query";
+import { getTripNumber } from "../api";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -196,7 +199,22 @@ const CargoItem = ({ cargo, info }) => {
   const paidAmount = getSeparatedNumber(Number(cargo?.paid_amount));
   const amountToPay = getSeparatedNumber(Number(cargo?.amount.value));
 
+  const { data, isLoading } = useQuery({
+    queryKey: [info.row.original.cargos.map((cargo) => cargo.id).join(", ")],
+    queryFn: async () => {
+      const res = info.row.original.cargos.map(
+        async (e) => await getTripNumber(e.trip_id)
+      );
+      const result = Promise.all(res);
+      return result;
+    },
+  });
+
   const disclosure = useDisclosure();
+
+  if (isLoading) {
+    return <Spinner />;
+  }
 
   return (
     <>
@@ -209,7 +227,7 @@ const CargoItem = ({ cargo, info }) => {
         <div
           className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${cargo?.paid_amount < Number(cargo?.amount.value) ? "text-red-700" : "text-green-600"}`}
         >
-          <span>№{cargo.trip_id}</span>
+          <span>№{data?.find((e) => e?.id == cargo.trip_id)?.trip_number}</span>
           <span>-</span>
           <span>{amountToPay} тг.</span>
         </div>
