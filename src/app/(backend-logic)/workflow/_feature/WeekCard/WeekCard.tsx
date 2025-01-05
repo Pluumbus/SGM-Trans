@@ -80,7 +80,11 @@ export const WeekCard = () => {
         <Accordion selectionMode="multiple">
           {weeks
             .toReversed()
-            .sort((a, b) => b.week_number - a.week_number)
+            .sort(
+              (a, b) =>
+                new Date(b.week_dates.end_date).getTime() -
+                new Date(a.week_dates.end_date).getTime()
+            )
             .map((week, i) => (
               <AccordionItem
                 key={i + 1}
@@ -414,11 +418,13 @@ const SummaryOfTrip = ({
       <Divider orientation="vertical" className="!min-h-4 !w-[1px]" />
       <span>
         Рейсов: {week?.trips?.length > 0 ? week?.trips?.length + " | " : 0}
-        {week?.trips.map((t, i) => (
-          <span>
-            {t.trip_number + (i === week?.trips?.length - 1 ? ". " : ", ")}
-          </span>
-        ))}{" "}
+        {week?.trips
+          .sort((a, b) => a.trip_number - b.trip_number)
+          .map((t, i) => (
+            <span>
+              {t.trip_number + (i === week?.trips?.length - 1 ? ". " : ", ")}
+            </span>
+          ))}{" "}
       </span>
     </div>
   );
