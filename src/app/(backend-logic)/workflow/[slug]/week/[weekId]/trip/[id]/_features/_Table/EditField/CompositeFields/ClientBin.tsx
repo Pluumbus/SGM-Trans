@@ -113,7 +113,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         <Button
           variant="ghost"
           className="min-h-[2.7rem] w-1/4"
-          onClick={() => {
+          onPress={() => {
             onOpenChange();
           }}
         >
@@ -223,7 +223,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 <Button
                   variant="faded"
                   color="success"
-                  onClick={() => {
+                  onPress={() => {
                     addSNT();
                   }}
                 >
@@ -238,7 +238,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <Button
                 variant="ghost"
                 color="danger"
-                onClick={() => {
+                onPress={() => {
                   onOpenChange();
                 }}
               >
@@ -247,7 +247,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <Button
                 variant="flat"
                 color="success"
-                onClick={() => {
+                onPress={() => {
                   onOpenChange();
                 }}
               >

@@ -154,7 +154,6 @@ const Page: NextPage<Props> = () => {
 };
 
 const ItemTitle = ({ e }: { e }) => {
-  console.log(e);
   return (
     <div key={e.id} className="w-full h-full flex flex-col gap-2 p-3">
       <div className="flex justify-between">

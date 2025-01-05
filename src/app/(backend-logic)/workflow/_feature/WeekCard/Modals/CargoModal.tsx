@@ -117,7 +117,7 @@ export const CargoModal = ({
             <Button
               variant="light"
               color="danger"
-              onClick={() => {
+              onPress={() => {
                 onOpenChangeCargo();
               }}
             >

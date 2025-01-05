@@ -25,7 +25,7 @@ export const DeleteCargo = () => {
       title: "Вы успешно удалили груз",
       description: (
         <Button
-          onClick={() => {
+          onPress={() => {
             cancel();
             toast({
               title: "Удаление отменено",
@@ -45,7 +45,7 @@ export const DeleteCargo = () => {
       <Button
         variant="bordered"
         color="danger"
-        onClick={() => {
+        onPress={() => {
           openModal({
             action: async () => hadnleDeleteCargos(),
             isLoading: isPending,

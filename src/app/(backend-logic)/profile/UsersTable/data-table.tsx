@@ -145,7 +145,7 @@ export const UsersDataTable = () => {
             <Button
               variant="light"
               size="sm"
-              onClick={() => table.previousPage()}
+              onPress={() => table.previousPage()}
               disabled={!table.getCanPreviousPage()}
             >
               <ArrowLeftIcon />
@@ -155,7 +155,7 @@ export const UsersDataTable = () => {
             <Button
               variant="light"
               size="sm"
-              onClick={() => table.nextPage()}
+              onPress={() => table.nextPage()}
               disabled={!table.getCanNextPage()}
             >
               <ArrowRightIcon />

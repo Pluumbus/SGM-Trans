@@ -36,7 +36,7 @@ export const PrintButton = ({ actData }: { actData: ActType }) => {
 
   return (
     <div>
-      <Button color="success" onClick={handlePrintClick}>
+      <Button color="success" onPress={handlePrintClick}>
         Печать
       </Button>
       {/* <Image src={logo} alt="" width={156} height={120} /> */}
@@ -76,7 +76,7 @@ export const PrintClientButton = ({
 
   return (
     <div>
-      <Button color="success" onClick={handlePrintClick}>
+      <Button color="success" onPress={handlePrintClick}>
         Печать для бухгалтера
       </Button>
     </div>
@@ -116,7 +116,7 @@ export const PrintWarehouseButton = ({
 
   return (
     <div>
-      <Button color="success" onClick={handlePrintClick}>
+      <Button color="success" onPress={handlePrintClick}>
         Печать для склада
       </Button>
     </div>

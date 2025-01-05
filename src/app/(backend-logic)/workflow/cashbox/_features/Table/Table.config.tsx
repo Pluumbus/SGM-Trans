@@ -66,7 +66,7 @@ export const useCashierColumnsConfig =
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const paidAmount = useNumberState({
             initValue: Number(
-              info.getValue() as CashboxType["current_balance"],
+              info.getValue() as CashboxType["current_balance"]
             ),
           });
           return <div>{paidAmount.value || ""}</div>;
@@ -129,7 +129,7 @@ export const useCashierColumnsConfig =
                   </DropdownTrigger>
                   <DropdownMenu aria-label="Dynamic Actions">
                     {actions.map((e) => (
-                      <DropdownItem key={e.label} onClick={e.onClick}>
+                      <DropdownItem key={e.label} onPress={e.onClick}>
                         {e.label}
                       </DropdownItem>
                     ))}

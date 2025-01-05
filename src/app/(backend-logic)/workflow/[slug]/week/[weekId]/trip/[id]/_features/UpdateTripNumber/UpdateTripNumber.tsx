@@ -80,11 +80,11 @@ export const UpdateTripNumber = ({
     const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
     const totalWeight = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.weight),
-      0,
+      0
     );
     const totalVolume = sorted?.reduce(
       (sum, cargo) => sum + parseFloat(cargo.volume),
-      0,
+      0
     );
 
     const weightCalc =
@@ -123,7 +123,7 @@ export const UpdateTripNumber = ({
     <div className="mt-4">
       <Button
         color="warning"
-        onClick={() => {
+        onPress={() => {
           onOpen();
         }}
       >
@@ -183,7 +183,7 @@ export const UpdateTripNumber = ({
               <ModalFooter>
                 <Button
                   color="primary"
-                  onClick={() => {
+                  onPress={() => {
                     mutate();
                   }}
                 >

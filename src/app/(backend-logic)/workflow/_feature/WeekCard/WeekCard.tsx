@@ -229,7 +229,7 @@ export const CreateTripInsideWeek = ({
         </div>
       ) : (
         <Button
-          onClick={() => {
+          onPress={() => {
             onOpenChangeTrip();
           }}
         >
@@ -407,7 +407,7 @@ const SummaryOfTrip = ({
   week: WeekType & { trips: TripType[] };
 }) => {
   return (
-    <div className="flex gap-2 items-center">
+    <div className="flex gap-2 items-center" key={week.id}>
       <span>
         {week?.week_dates?.start_date} - {week?.week_dates?.end_date}
       </span>

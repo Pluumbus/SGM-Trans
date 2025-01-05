@@ -30,7 +30,7 @@ export const TripInfoMscCard = ({
 
   useEffect(() => {
     const currentTrip = tripsData.find(
-      (item) => item.id === Number(selectedTabId),
+      (item) => item.id === Number(selectedTabId)
     );
     setDateValIn(currentTrip?.date_in);
     setDateValOut(currentTrip?.date_out);
@@ -51,7 +51,7 @@ export const TripInfoMscCard = ({
     const dateStr = new Date(
       date.year,
       date.month - 1,
-      date.day,
+      date.day
     ).toLocaleDateString();
 
     if (dateVal == dateItmes[0]) {
@@ -105,7 +105,7 @@ export const TripInfoMscCard = ({
               {dateItmes.map((stat: string) => (
                 <DropdownItem
                   key={stat}
-                  onClick={() => {
+                  onPress={() => {
                     setDateVal(stat);
                   }}
                 >

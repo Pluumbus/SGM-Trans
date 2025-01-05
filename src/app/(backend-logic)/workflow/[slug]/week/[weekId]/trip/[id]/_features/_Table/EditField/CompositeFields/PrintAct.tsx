@@ -118,7 +118,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         ) : (
           <Tooltip content={<span>Одобрить?</span>}>
             <Button
-              onClick={() => {
+              onPress={() => {
                 isReadyToGive();
               }}
               isIconOnly
@@ -220,7 +220,7 @@ const GlobalActModal = ({
             color="success"
             onPress={() => {
               setBalanceMutation(
-                Number(user.publicMetadata.balance) - logistSum,
+                Number(user.publicMetadata.balance) - logistSum
               );
             }}
           >

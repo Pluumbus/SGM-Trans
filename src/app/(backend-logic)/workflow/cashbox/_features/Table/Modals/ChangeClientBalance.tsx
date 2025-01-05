@@ -43,7 +43,7 @@ export const ChangeClientBalance = ({
     mutationFn: async () =>
       await changeClientBalance(
         info.row.original.id,
-        Number(info.row.original.current_balance) + formattedBalance.rawValue,
+        Number(info.row.original.current_balance) + formattedBalance.rawValue
       ),
     onSuccess: () => {
       toast({
@@ -95,7 +95,7 @@ export const ChangeClientBalance = ({
                 console.log("formattedBalance.value", formattedBalance.value);
                 console.log(
                   "formattedBalance.rawValue",
-                  formattedBalance.rawValue,
+                  formattedBalance.rawValue
                 );
               }}
             />
@@ -105,7 +105,7 @@ export const ChangeClientBalance = ({
             <Button
               color="danger"
               variant="light"
-              onClick={() => {
+              onPress={() => {
                 disclosure.onOpenChange();
               }}
               isLoading={isPending}
