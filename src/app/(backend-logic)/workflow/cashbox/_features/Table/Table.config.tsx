@@ -115,7 +115,7 @@ export const useCashierColumnsConfig =
         cell: (info: Cell<CashboxType, ReactNode>) => {
           const actions = useCashierActions(info);
           return (
-            <div key={"cashier actions"}>
+            <div key={`cashier actions ${info.id}`}>
               <div className="py-2">
                 <Dropdown>
                   <DropdownTrigger>
