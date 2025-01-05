@@ -56,7 +56,11 @@ export const CustomWeekSelector = ({
         <CardBody>
           <div className="max-w-[20rem] flex flex-wrap gap-2">
             {weeks
-              ?.sort((a, b) => a.week_number - b.week_number)
+              ?.sort(
+                (a, b) =>
+                  new Date(a.week_dates.end_date).getTime() -
+                  new Date(b.week_dates.end_date).getTime()
+              )
               .map((e) => (
                 <Button
                   key={e.week_number}

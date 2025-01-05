@@ -444,11 +444,32 @@ export const weekRangesOverlapping = ({
   return start1 <= end2 && start2 <= end1;
 };
 
+// export const currentWeekIndicator = ({ end_date, start_date }) => {
+//   const today = new Date();
+
+//   const start = new Date(start_date);
+//   const end = new Date(end_date);
+
+//   return today >= start && today <= end;
+// };
 export const currentWeekIndicator = ({ end_date, start_date }) => {
   const today = new Date();
+  const todayNormalized = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
 
-  const start = new Date(start_date);
-  const end = new Date(end_date);
+  const start = new Date(
+    new Date(start_date).getFullYear(),
+    new Date(start_date).getMonth(),
+    new Date(start_date).getDate()
+  );
+  const end = new Date(
+    new Date(end_date).getFullYear(),
+    new Date(end_date).getMonth(),
+    new Date(end_date).getDate()
+  );
 
-  return today >= start && today <= end;
+  return todayNormalized >= start && todayNormalized <= end;
 };

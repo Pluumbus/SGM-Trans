@@ -2,13 +2,14 @@ import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import React, { ReactNode } from "react";
 import { useCompositeStates } from "./helpers";
 import { Cell } from "@tanstack/react-table";
-import { Textarea } from "@nextui-org/react";
+import { Textarea, Tooltip } from "@nextui-org/react";
 import { DriversWithCars } from "@/lib/references";
 
 type Type = CargoType["driver"];
 
 export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
+  console.log(info.getValue());
   return (
     <div className="min-w-[10rem] flex flex-col justify-end h-full">
       <DriversWithCars
@@ -22,6 +23,7 @@ export const Driver = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           }));
         }}
       />
+
       {values?.id == "24" && (
         <Textarea
           variant="underlined"

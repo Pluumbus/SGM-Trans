@@ -12,6 +12,7 @@ import {
   currentWeekIndicator,
   weekRangesOverlapping,
 } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
+import { useUser } from "@clerk/nextjs";
 
 export const ProfilePrize = ({
   isNumberOnly,
@@ -26,7 +27,8 @@ export const ProfilePrize = ({
     queryKey: ["getCargosForPrize"],
     queryFn: async () => await GetWeeksTripsCargos(),
   });
-
+  const { user } = useUser();
+  const [animationTriggered, setAnimationTriggered] = useState(false);
   const [cargos, setCargos] = useState<{ id: number; amount: number }[]>();
   const [cargosPrize, setCargosPrize] = useState<number>();
   const [prize, setPrize] = useState<number>();
@@ -92,12 +94,20 @@ export const ProfilePrize = ({
     };
   }, []);
 
-  // calculateCurrentPrize(prize) + cargosPrize >= 0 &&
-  //   triggerAnimation("fireworks", {
-  //     prize: {
-  //       amount: calculateCurrentPrize(prize) + cargosPrize,
-  //     },
-  //   });
+  useEffect(() => {
+    const currentPrize = calculateCurrentPrize(prize);
+
+    if (currentPrize === 50000 && !animationTriggered) {
+      triggerAnimation("fireworks", {
+        prize: {
+          amount: currentPrize + cargosPrize,
+          text: user.firstName + " вы получили",
+        },
+      });
+
+      setAnimationTriggered(true);
+    }
+  }, [prize, cargosPrize, animationTriggered]);
 
   if (isLoading) return <Spinner />;
   return (

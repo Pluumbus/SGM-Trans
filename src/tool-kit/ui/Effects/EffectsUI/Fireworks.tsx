@@ -112,7 +112,7 @@ export const FireworkEffect = ({ prize, coinProps }: FireworkEffectType) => {
               >
                 <Card className="bg-black bg-opacity-20">
                   <CardBody className="flex justify-center items-center w-full">
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2 items-center">
                       <span>{prize?.text || "Премия: "}</span>
                       <Counter from={0} to={prize?.amount} />
                     </div>
@@ -162,7 +162,7 @@ const Fireworks = () => {
     (_, i) => ({
       id: i,
       group: Math.floor(i / itemsPerGroup),
-    }),
+    })
   );
 
   return (

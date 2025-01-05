@@ -196,26 +196,31 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 }));
               }}
             />
-            <div className="grid grid-cols-2 gap-4">
-              <Textarea
-                value={values?.snts[0]}
-                label="SNT 1"
-                onChange={(e) => {
-                  handleSntChange(e.target.value, 0);
-                }}
-                className="mb-2"
-              />
-              {values?.snts
-                ?.slice(1)
-                .map((snt, index) => (
-                  <Textarea
-                    key={index}
-                    value={snt}
-                    label={`SNT ${index + 2}`}
-                    onChange={(e) => handleSntChange(e.target.value, index + 1)}
-                    className="mb-2"
-                  />
-                ))}
+            {/* <div className="grid grid-cols-2 gap-4"> */}
+            <div className="flex flex-col">
+              <ScrollShadow className="h-[20rem]">
+                <Textarea
+                  value={values?.snts[0]}
+                  label="СНТ 1"
+                  onChange={(e) => {
+                    handleSntChange(e.target.value, 0);
+                  }}
+                  className="mb-2"
+                />
+                {values?.snts
+                  ?.slice(1)
+                  .map((snt, index) => (
+                    <Textarea
+                      key={index}
+                      value={snt}
+                      label={`СНТ ${index + 2}`}
+                      onChange={(e) =>
+                        handleSntChange(e.target.value, index + 1)
+                      }
+                      className="mb-2"
+                    />
+                  ))}
+              </ScrollShadow>
             </div>
             {!values.snts.some((e) => e == "") && (
               <>
