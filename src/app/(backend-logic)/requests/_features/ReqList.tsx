@@ -24,14 +24,15 @@ import {
 } from "@/app/(client-logic)/client/types";
 import { useUser } from "@clerk/nextjs";
 import supabase from "@/utils/supabase/client";
-import { CargoModal } from "../../workflow/_feature";
-import { CargoModalMode } from "../../workflow/_feature/AddCargoModal/CargoModal";
+import { AdjustedRequestDTO } from "../types";
 
 type SortByType = 1 | 2 | 3;
 
+type Requests = AdjustedRequestDTO | ClientRequestTypeDTO;
+
 export const ReqList = () => {
-  const [requests, setRequests] = useState<ClientRequestTypeDTO[]>([]);
-  const [initialReqs, setInitReqs] = useState<ClientRequestTypeDTO[]>([]);
+  const [requests, setRequests] = useState<Array<Requests>>([]);
+  const [initialReqs, setInitReqs] = useState<Array<Requests>>([]);
   const [sortBy, setSortBy] = useState<SortByType>(1);
   const [filterBy, setFilterBy] = useState<AllCitiesType | null>(null);
 
@@ -60,7 +61,9 @@ export const ReqList = () => {
       );
     }, 200);
   };
-  const handleSort = (dataToSortFrom?: ClientRequestTypeDTO[]) => {
+  const handleSort = (
+    dataToSortFrom?: Array<ClientRequestTypeDTO & { trip_id: number }>
+  ) => {
     switch (sortBy) {
       case 1:
         setRequests(
@@ -83,7 +86,9 @@ export const ReqList = () => {
         setSelectedReq(
           (dataToSortFrom || initialReqs).filter(
             (e) => e.status === ClientRequestStatus.IN_REVIEW
-          )[0]
+          )[0] as ClientRequestTypeDTO & {
+            trip_id: number;
+          }
         );
         break;
       case 3:
@@ -215,11 +220,6 @@ export const ReqList = () => {
 
         <div className="w-1/2">{selectedReq?.id && <ReqFullInfoCard />}</div>
       </div>
-      <CargoModal
-        disclosure={disclosure}
-        prefilledData={selectedReq}
-        mode={CargoModalMode.FROM_REQUEST}
-      />
     </div>
   );
 };

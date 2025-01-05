@@ -13,8 +13,14 @@ import { getUserById } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { useQuery } from "@tanstack/react-query";
 import { ReqModal } from "./ReqModal";
 import { useReqItem } from "./Context";
+import { AdjustedRequestDTO } from "../types";
+import { FaArrowRight } from "react-icons/fa6";
 
-export const ReqListItem = ({ info }: { info: ClientRequestTypeDTO }) => {
+export const ReqListItem = ({
+  info,
+}: {
+  info: AdjustedRequestDTO | ClientRequestTypeDTO;
+}) => {
   const disclosure = useDisclosure();
   const { setSelectedReq, selectedReq } = useReqItem();
   return (
@@ -32,9 +38,11 @@ export const ReqListItem = ({ info }: { info: ClientRequestTypeDTO }) => {
         >
           <div className="pr-2 flex flex-col gap-2">
             <div className="grid grid-cols-6 gap-4">
-              <div className="flex gap-2 items-center col-span-2">
-                <span>{info.cargo_name}</span>
-                <Divider orientation="vertical" />
+              <div className="grid grid-cols-2 gap-2 items-center col-span-2">
+                <div>
+                  <span>{info.cargo_name}</span>
+                  <Divider orientation="vertical" />
+                </div>
                 <div className="flex gap-2 text-gray-600">
                   <span>{info.volume} куб.</span>
                   <span>{info.weight} тонн</span>
@@ -47,17 +55,20 @@ export const ReqListItem = ({ info }: { info: ClientRequestTypeDTO }) => {
 
               <div className="flex gap-8 justify-between col-span-3">
                 <Divider orientation="vertical" />
+
                 <div className="flex gap-2 justify-start w-full">
                   <div className="flex gap-2">
                     <span className="text-gray-600">Из:</span>
                     <span>{info.departure}</span>
                   </div>
-                  <div className="flex gap-2">
-                    <span className="text-gray-600">В:</span>
-                    <span>{info.unloading_point.city}</span>
+                  <div className="flex gap-2 flex-col">
+                    <div className="flex gap-2">
+                      <span className="text-gray-600">В:</span>
+                      <span>{info.unloading_point.city}</span>
+                    </div>
                     {info.unloading_point.withDelivery && (
                       <div className="flex gap-2">
-                        <span className="text-gray-600">С доставкой: </span>
+                        <span className="text-gray-600">На адрес:</span>
                         <span>{info.unloading_point.deliveryAddress}</span>
                       </div>
                     )}

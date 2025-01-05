@@ -12,8 +12,8 @@ import {
   ModalHeader,
   Tooltip,
 } from "@nextui-org/react";
-import { useMutation } from "@tanstack/react-query";
-import React, { ReactNode, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import React, { Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 import { Cell } from "@tanstack/react-table";
 import { CashboxType } from "../../../types";
@@ -23,6 +23,7 @@ import {
   addOperations,
   changeClientBalance,
   changeExactAmountPaidToCargo,
+  getTripNumber,
 } from "../../api";
 import {
   useNumberState,
@@ -213,29 +214,11 @@ export const AddPaymentToCargo = ({
           <Divider />
           <ModalBody className="flex flex-col gap-2">
             <div className="flex gap-2">
-              <Autocomplete
-                defaultSelectedKey={cargo && cargo?.id}
-                label="Выберите груз"
-                selectedKey={formState?.toString() || null}
-                onSelectionChange={(e) => {
-                  console.log(e);
-
-                  setFormState(Number(e));
-                }}
-              >
-                {info.row.original.cargos?.map((el) => {
-                  const number = getSeparatedNumber(Number(el.amount.value));
-                  return (
-                    <AutocompleteItem
-                      key={el.id}
-                      value={el.id}
-                      textValue={`№${el.trip_id} - ${number} тг`}
-                    >
-                      {`№${el.trip_id} - ${number} тг`}
-                    </AutocompleteItem>
-                  );
-                })}
-              </Autocomplete>
+              <AutocompleteTrips
+                cargo={cargo}
+                form={[formState, setFormState]}
+                info={info}
+              />
               <Tooltip
                 content={"Использовать текущий баланс клиента"}
                 showArrow={true}
@@ -281,6 +264,57 @@ export const AddPaymentToCargo = ({
         </form>
       </ModalContent>
     </Modal>
+  );
+};
+
+const AutocompleteTrips = ({
+  cargo,
+  form,
+  info,
+}: {
+  cargo: CargoType;
+  form: [null | number, Dispatch<SetStateAction<Number | null>>];
+  info: Cell<CashboxType, React.ReactNode>;
+}) => {
+  const [formState, setFormState] = form;
+  const { data, isLoading } = useQuery({
+    queryKey: [],
+    queryFn: async () => {
+      const res = info.row.original.cargos.map(
+        async (e) => await getTripNumber(e.trip_id)
+      );
+      const result = Promise.all(res);
+      return result;
+    },
+  });
+  return (
+    <>
+      <Autocomplete
+        isLoading={isLoading}
+        defaultSelectedKey={cargo && cargo?.id}
+        label="Выберите груз"
+        selectedKey={formState?.toString() || null}
+        onSelectionChange={(e) => {
+          setFormState(Number(e));
+        }}
+      >
+        {info.row.original.cargos?.map((el) => {
+          const number = getSeparatedNumber(Number(el.amount.value));
+          const tripNumber = data?.find(
+            (e) => e?.id == el.trip_id
+          )?.trip_number;
+          return (
+            <AutocompleteItem
+              key={`AutocompleteItem ${el.id} ${el.created_at}`}
+              value={el.id}
+              textValue={`№${tripNumber} - ${number} тг`}
+            >
+              {`№${tripNumber} - ${number} тг`}
+            </AutocompleteItem>
+          );
+        })}
+      </Autocomplete>
+    </>
   );
 };
 

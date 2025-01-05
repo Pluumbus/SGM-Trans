@@ -9,20 +9,7 @@ import React from "react";
 import { useRole } from "../RoleManagment/useRole";
 import RoleBasedWrapper from "../RoleManagment/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
-import { Timer } from "../Timer/Timer";
 import { PATHS } from "@/lib/consts";
-
-import { Button, Divider } from "@nextui-org/react";
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  navigationMenuTriggerStyle,
-} from "./navigation-menu";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {

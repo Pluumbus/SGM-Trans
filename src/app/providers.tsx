@@ -42,7 +42,7 @@ export function Providers({ children, themeProps }: ProvidersProps) {
     <QueryClientProvider client={queryClient}>
       <RowsPerPageProvider>
         <NextUIProvider navigate={router.push} locale="ru">
-          <NextThemesProvider {...themeProps}>
+          <NextThemesProvider {...themeProps} defaultTheme="light">
             <AnimationsProvider>{children}</AnimationsProvider>
           </NextThemesProvider>
         </NextUIProvider>

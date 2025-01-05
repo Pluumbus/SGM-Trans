@@ -17,15 +17,15 @@ import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos, getTrips } from "../../../_api";
-import { useSelectionStore } from "../store";
 import { COLORS } from "@/lib/colors";
+import { useSelectionContext } from "../Contexts";
 
 export const UpdateTripNumber = ({
   currentTripId,
 }: {
   currentTripId: number;
 }) => {
-  const { rowSelected: selectedRows, setRowSelected } = useSelectionStore();
+  const [selectedRows, setRowSelected] = useSelectionContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
     {
@@ -120,7 +120,7 @@ export const UpdateTripNumber = ({
 
   if (!tripsData) return <Spinner />;
   return (
-    <div className="mt-4">
+    <div className="">
       <Button
         color="warning"
         onPress={() => {

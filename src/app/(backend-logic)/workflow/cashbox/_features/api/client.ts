@@ -15,9 +15,25 @@ export const changeClientBalance = async (clientId: number, value: number) => {
 
   return data;
 };
+export const getTripNumber = async (tripId: number) => {
+  const { data, error } = await supabase
+    .from("trips")
+    .select("trip_number, id")
+    .eq("id", Number(tripId))
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as {
+    trip_number: number;
+    id: number;
+  };
+};
 export const changeClientPaymentTerms = async (
   clientId: number,
-  value: number,
+  value: number
 ) => {
   const { data, error } = await supabase
     .from("cashbox")
@@ -33,7 +49,7 @@ export const changeClientPaymentTerms = async (
 
 export const changeExactAmountPaidToCargo = async (
   cargo: CargoType,
-  paidAmount: number,
+  paidAmount: number
 ) => {
   const { data, error } = await supabase
     .from("cargos")
@@ -50,7 +66,7 @@ export const changeExactAmountPaidToCargo = async (
 export const addOperations = async (
   prevOperations: CashboxType["operations"],
   clientId: CashboxType["id"],
-  newOperation: CashboxType["operations"][number],
+  newOperation: CashboxType["operations"][number]
 ) => {
   const uPrevOperations = !prevOperations ? [] : prevOperations;
   const { data, error } = await supabase
@@ -67,7 +83,7 @@ export const addOperations = async (
 
 export const addPaidAmountToCargo = async (
   cargo: CargoType,
-  paidAmount: number,
+  paidAmount: number
 ) => {
   const { data, error } = await supabase
     .from("cargos")
