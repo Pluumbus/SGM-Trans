@@ -92,11 +92,11 @@ export const UTable = <T,>({
   });
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col max-h-screen h-fit">
       <UTableTopContent tInstance={tInstance} />
       <div
         ref={scrollRef}
-        className="flex-grow overflow-auto h-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100"
+        className="flex-grow overflow-auto h-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi"
       >
         <Table
           aria-label={name}

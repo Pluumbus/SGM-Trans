@@ -1,26 +1,17 @@
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
-import {
-  Button,
-  Divider,
-  Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  Tooltip,
-  useDisclosure,
-} from "@nextui-org/react";
+import { useDisclosure } from "@nextui-org/react";
 import { Cell } from "@tanstack/react-table";
 import { ReactNode } from "react";
-import { FaMapLocation } from "react-icons/fa6";
+
 import { Text } from "../Text";
 
 export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const disclosure = useDisclosure();
   return (
     <div>
-      <Tooltip content={<span>{info.getValue() || ""}</span>}>
+      <Text info={info} />
+
+      {/* <Tooltip content={<span>{info.getValue() || ""}</span>}>
         <Button
           isIconOnly
           onPress={() => {
@@ -53,7 +44,7 @@ export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             </div>
           </ModalFooter>
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </div>
   );
 };

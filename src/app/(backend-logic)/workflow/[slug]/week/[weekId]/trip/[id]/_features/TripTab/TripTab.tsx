@@ -21,11 +21,12 @@ import {
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
-import { Button } from "@nextui-org/react";
+import { Button, Divider } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
 import { useSelectionContext } from "../Contexts";
+import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 
 export const TripTab = ({
   trip,
@@ -46,6 +47,7 @@ export const TripTab = ({
 
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [rowSelected, setRowSelected] = useSelectionContext();
+
   const config: UseTableConfig<CargoType> = {
     row: {
       setRowData(info) {},
@@ -127,6 +129,25 @@ export const TripTab = ({
   const { toast } = useToast();
   const [text, copy] = useCopyToClipboard();
 
+  const getSortedCargos = () => {
+    const priorityCities = ["Астана", "Алмата", "Караганда"];
+    return cargos.sort((a, b) => {
+      const cityA = a.unloading_point?.city || "";
+      const cityB = b.unloading_point?.city || "";
+
+      const indexA = priorityCities.indexOf(cityA);
+      const indexB = priorityCities.indexOf(cityB);
+
+      const finalIndexA = indexA === -1 ? Infinity : indexA;
+      const finalIndexB = indexB === -1 ? Infinity : indexB;
+
+      if (finalIndexA < finalIndexB) return -1;
+      if (finalIndexA > finalIndexB) return 1;
+
+      return cityA.localeCompare(cityB);
+    });
+  };
+
   return (
     <>
       {cargos.length > 0 && (
@@ -154,21 +175,26 @@ export const TripTab = ({
           Скопировать всех клиентов
         </Button>
       )}
-      <UTable
-        tBodyProps={{
-          emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-          isLoading: !isFetched,
-          loadingContent: <SgmSpinner />,
-        }}
-        data={cargos.sort((a, b) =>
-          // a.client_bin.tempText.localeCompare(b.client_bin.tempText)
-          a.unloading_point.city.localeCompare(b.unloading_point.city)
-        )}
-        isPagiantion={false}
-        columns={columns}
-        name={`Cargo Table ${trip.id}`}
-        config={config}
-      />
+      <div className="space-y-4">
+        {groupCargosByCity(getSortedCargos()).map((e) => (
+          <div className="">
+            <span className="text-2xl font-semibold pl-4">{e.city}</span>
+            <Divider />
+            <UTable
+              tBodyProps={{
+                emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
+                isLoading: !isFetched,
+                loadingContent: <SgmSpinner />,
+              }}
+              data={e.cargos}
+              isPagiantion={false}
+              columns={columns}
+              name={`Cargo Table ${trip.id}`}
+              config={config}
+            />
+          </div>
+        ))}
+      </div>
 
       {rowSelected?.some((e) => e.isSelected) && (
         <div className="my-2 flex gap-2">

@@ -1,5 +1,5 @@
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
 import { useCompositeStates } from "./helpers";
 import { Cell } from "@tanstack/react-table";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
@@ -16,9 +16,11 @@ import {
   ModalHeader,
   ScrollShadow,
   Textarea,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 import { useToast } from "@/components/ui/use-toast";
+import { FaPlus, FaUpload } from "react-icons/fa6";
 
 type Type = CargoType["client_bin"];
 
@@ -70,6 +72,21 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   };
 
   const [copiedText, copyToClipboard] = useCopyToClipboard();
+
+  const handleInsertSNT = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+
+      const crgs = text.split("\n").map((e) => e.trim());
+      setValues((prev) => ({
+        ...prev,
+        snts: [...crgs],
+      }));
+      toast({
+        title: `Вы внесли ${crgs.length} СНТ`,
+      });
+    } catch (error) {}
+  };
   const { toast } = useToast();
 
   const copyXIN = () => {
@@ -96,11 +113,10 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   return (
     <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
-      <div className={`flex w-full items-end `}>
+      <div className={`flex w-full items-end`}>
         <Textarea
           variant="underlined"
           ariz-label="Инфо клиента"
-          className="w-3/4"
           value={values?.tempText}
           onChange={(e) => {
             setValues((prev) => ({
@@ -108,22 +124,43 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               tempText: e.target.value || "",
             }));
           }}
-        />
-        {/* <div className="flex items-end"> */}
-        <Button
-          variant="ghost"
-          className="min-h-[2.7rem] w-1/4"
-          onPress={() => {
-            onOpenChange();
+          classNames={{
+            input: "font-bold",
           }}
-        >
-          <div className="flex flex-col h-full">
-            <span>Добавить</span>
-            <span>СНТ</span>
-          </div>
-        </Button>
+        />
+        <div className="flex flex-col">
+          <Tooltip
+            content={
+              <span>
+                Нажмите чтобы <span className="font-semibold">выгрузить</span>{" "}
+                все скопированные <span className="font-semibold">СНТ</span>
+              </span>
+            }
+            showArrow
+          >
+            <Button
+              variant="flat"
+              color="success"
+              onPress={() => {
+                handleInsertSNT();
+              }}
+              isIconOnly
+            >
+              <FaUpload />
+            </Button>
+          </Tooltip>
+          <Button
+            variant="light"
+            onPress={() => {
+              onOpenChange();
+            }}
+            isIconOnly
+          >
+            <FaPlus />
+          </Button>
+        </div>
       </div>
-      {/* </div> */}
+
       <div
         onClick={() => {
           copyXIN();

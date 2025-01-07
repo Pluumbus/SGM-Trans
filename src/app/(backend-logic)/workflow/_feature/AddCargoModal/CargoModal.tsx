@@ -46,9 +46,6 @@ export const CargoModal = ({
 
   const validate = useValdiateForm();
 
-  console.log("prefilledData.trip_id", prefilledData?.trip_id);
-  console.log("trip_id", trip_id);
-
   useEffect(() => {
     if (prefilledData && mode == CargoModalMode.FROM_REQUEST) {
       setValue("receipt_address", `Город ${prefilledData.departure}`, {

@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getClientsNames } from "../../cashbox/_features/api";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/tool-kit/hooks";
+import { CashboxType } from "../../cashbox/types";
 
 export const ExistingClients = ({
   state,
@@ -67,7 +68,8 @@ export const ExistingClients = ({
     </Autocomplete>
   );
 };
-const shortStr = (e): string => e.client.company_name;
+const shortStr = (e: { client: CashboxType["client"] }): string =>
+  `${e.client.full_name.first_name} ${e.client.full_name.last_name} | ${e.client.company_name}`;
 
 const str = (e): string =>
   `${

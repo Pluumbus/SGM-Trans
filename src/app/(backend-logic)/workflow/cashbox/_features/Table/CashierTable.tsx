@@ -6,10 +6,19 @@ import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { getClients } from "../api";
-import { Card, CardBody, Checkbox, Spinner } from "@nextui-org/react";
+import {
+  Button,
+  Card,
+  CardBody,
+  Checkbox,
+  Spinner,
+  useDisclosure,
+} from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import supabase from "@/utils/supabase/client";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
+import { TMModal } from "../../../_feature/TransportationManagerActions/TMModal";
+import { FaPlus } from "react-icons/fa6";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
@@ -21,8 +30,7 @@ export const CashierTable = () => {
           info.original?.cargos &&
           info.original?.cargos?.some(
             (e) =>
-              e?.amount?.type == "Б/нал в МСК" ||
-              e?.amount?.type == "Нал в МСК",
+              e?.amount?.type == "Б/нал в МСК" || e?.amount?.type == "Нал в МСК"
           )
         ) {
           return "bg-primary-100";
@@ -71,11 +79,11 @@ export const CashierTable = () => {
           else
             setClients((prev) => {
               const updatedClients = prev.map((client) =>
-                client.id === updatedClient.id ? updatedClient : client,
+                client.id === updatedClient.id ? updatedClient : client
               );
               return updatedClients;
             });
-        },
+        }
       )
       .subscribe();
 
@@ -127,14 +135,35 @@ export const CashierTable = () => {
 };
 
 const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
+  const disclosure = useDisclosure();
+  const state = useState<number>();
   const sum = data
     ?.flatMap((e) => e.cargos)
-    ?.reduce((total, el) => total + Number(el?.amount?.value || 0), 0);
+    ?.reduce(
+      (total, el) =>
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
+      0
+    );
 
   return (
-    <div className="flex gap-2">
-      <span>Общая сумма кассы:</span>
-      <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
+    <div className="flex gap-8 items-center">
+      <div className="flex gap-2 items-center">
+        <span>Общая сумма кассы:</span>
+        <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
+      </div>
+      <div>
+        <Button
+          color="success"
+          variant="flat"
+          onPress={() => {
+            disclosure.onOpenChange();
+          }}
+        >
+          <span>Добавить плательщика</span>
+          <FaPlus />
+        </Button>
+      </div>
+      <TMModal disclosure={disclosure} state={state} />
     </div>
   );
 };
@@ -145,6 +174,6 @@ const getMSKClients = (data: CashboxType[]) =>
       Array.isArray(e.cargos) &&
       e.cargos.some(
         (el) =>
-          el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК",
-      ),
+          el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
+      )
   );

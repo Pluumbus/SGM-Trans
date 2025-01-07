@@ -27,6 +27,7 @@ import { WeekTableType } from "../../[slug]/week/[weekId]/trip/_api/types";
 import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
 import { Cars } from "@/lib/references/drivers/Cars";
+import { WeekStats } from "./Modals/WeekStats";
 
 export const WeekCard = () => {
   const { slug } = useParams();
@@ -95,7 +96,13 @@ export const WeekCard = () => {
                   currentWeekIndicator(week.week_dates) ? "bg-blue-100" : ""
                 }
               >
-                <CreateTripInsideWeek key={i + 5} weekId={week.id.toString()} />
+                <div className="flex gap-2 items-center">
+                  <CreateTripInsideWeek
+                    key={i + 5}
+                    weekId={week.id.toString()}
+                  />
+                  <WeekStats weekId={week.id} />
+                </div>
                 <TripCard weekId={week.id.toString()} setWeeks={setWeeks} />
               </AccordionItem>
             ))}

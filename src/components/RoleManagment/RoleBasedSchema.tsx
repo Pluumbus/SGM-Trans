@@ -6,7 +6,7 @@ import { getBaseColumnsConfig } from "@/app/(backend-logic)/workflow/[slug]/week
 
 const excludeNeededItems = (
   base: UseTableColumnsSchema<CargoType>[],
-  exclude: string[],
+  exclude: string[]
 ) => {
   return base.filter((e) => !exclude.includes(e.accessorKey));
 };
