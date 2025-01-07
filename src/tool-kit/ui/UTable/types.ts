@@ -6,11 +6,16 @@ import {
   FilterFn,
   Row,
 } from "@tanstack/react-table";
-import { Dispatch, ReactNode, SetStateAction } from "react";
+import { Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 export type DataType<T> = Record<string, T>;
 
 export type ColumnType<T> = ColumnDef<DataType<T>>;
+
+export enum TABLE_COLORS {
+  PINK = "bg-pink-400",
+  GREEN = "bg-success",
+}
 
 export type RowConfigProps<T> = {
   setRowData?: (info: Row<T>) => void;

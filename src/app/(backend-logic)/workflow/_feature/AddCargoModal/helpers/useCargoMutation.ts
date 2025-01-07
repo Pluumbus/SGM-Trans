@@ -15,13 +15,13 @@ export const useCargoMutation = (
   return useMutation({
     mutationFn: addCargo,
     onSuccess: () => {
+      reset();
       toast({
         title: "Успех",
         description: "Вы успешно добавили груз",
       });
       onOpenChangeCargo();
       tripDisclosure && tripDisclosure.onOpenChange();
-      reset();
     },
     onError: () => {
       toast({

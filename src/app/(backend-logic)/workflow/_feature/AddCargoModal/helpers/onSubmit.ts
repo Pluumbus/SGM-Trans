@@ -6,8 +6,6 @@ export const addCargoOnSubmit = (
   mutate: UseMutateFunction<void, Error, CargoType, unknown>,
   trip_id: number
 ) => {
-  console.log("trip_id", trip_id);
-
   const unlPoint = data.unloading_point?.city
     ? data.unloading_point
     : {

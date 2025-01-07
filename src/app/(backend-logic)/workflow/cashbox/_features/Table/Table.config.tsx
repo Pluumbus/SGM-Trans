@@ -1,7 +1,7 @@
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { CashboxType } from "../../types";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { ReactNode, useId } from "react";
 import { CiSettings } from "react-icons/ci";
 import {
   Button,
@@ -170,26 +170,58 @@ const FullName = ({
     </div>
   );
 
+  const id = useId();
+
+  if (value.comment) {
+    return (
+      <>
+        <Tooltip
+          content={<TooltipContent />}
+          showArrow
+          placement="left"
+          key={id}
+          closeDelay={0}
+        >
+          <div
+            className="flex flex-col gap-1 py-2 cursor-pointer"
+            onClick={() => {
+              disclosure.onOpenChange();
+            }}
+          >
+            <div className="flex gap-2 font-semibold">
+              <span>{value.full_name.first_name}</span>
+              <span>{value.full_name.last_name}</span>
+              <span>{value.full_name.middle_name || ""}</span>
+            </div>
+
+            {value.company_name && (
+              <span className="font-semibold">{value.company_name}</span>
+            )}
+          </div>
+        </Tooltip>
+        <Operations disclosure={disclosure} operations={operations} />
+      </>
+    );
+  }
+
   return (
     <>
-      <Tooltip content={<TooltipContent />} showArrow placement="left">
-        <div
-          className="flex flex-col gap-1 py-2 cursor-pointer"
-          onClick={() => {
-            disclosure.onOpenChange();
-          }}
-        >
-          <div className="flex gap-2 font-semibold">
-            <span>{value.full_name.first_name}</span>
-            <span>{value.full_name.last_name}</span>
-            <span>{value.full_name.middle_name || ""}</span>
-          </div>
-
-          {value.company_name && (
-            <span className="font-semibold">{value.company_name}</span>
-          )}
+      <div
+        className="flex flex-col gap-1 py-2 cursor-pointer"
+        onClick={() => {
+          disclosure.onOpenChange();
+        }}
+      >
+        <div className="flex gap-2 font-semibold">
+          <span>{value.full_name.first_name}</span>
+          <span>{value.full_name.last_name}</span>
+          <span>{value.full_name.middle_name || ""}</span>
         </div>
-      </Tooltip>
+
+        {value.company_name && (
+          <span className="font-semibold">{value.company_name}</span>
+        )}
+      </div>
       <Operations disclosure={disclosure} operations={operations} />
     </>
   );

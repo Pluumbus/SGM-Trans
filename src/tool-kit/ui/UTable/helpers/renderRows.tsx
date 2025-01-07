@@ -6,10 +6,10 @@ import { useState } from "react";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>,
+  config: RowConfigProps<T>
 ) => {
   const [highlightedRows, setHighlightedRows] = useState<Set<string>>(
-    new Set(),
+    new Set()
   );
 
   const toggleHighlight = (rowId: string) => {
@@ -28,7 +28,7 @@ export const renderRows = <T,>(
       className={cx(
         config.setClassNameOnRow && config?.setClassNameOnRow(row),
         i % 2 == 0 ? "bg-orange-100" : "bg-slate-100",
-        highlightedRows.has(row.id) && "bg-orange-300",
+        highlightedRows.has(row.id) && "bg-orange-300"
       )}
       onContextMenu={(e) => {
         e.preventDefault();
@@ -39,14 +39,14 @@ export const renderRows = <T,>(
       {row.getVisibleCells().map((cell) => (
         <TableCell
           key={cell.id}
-          className="border-r-1 border-e-gray-200 py-0 h-full"
+          className={cx(`border-r-1 border-e-gray-200 py-0 h-full`)}
           onClick={() => {
-            if (cell.column.columnDef.accessorKey !== "action") {
+            if (cell.column.columnDef!.accessorKey !== "action") {
               config.setRowData && config.setRowData(row);
             }
           }}
         >
-          {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          <div>{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
         </TableCell>
       ))}
     </TableRow>

@@ -54,7 +54,12 @@ export const getBaseColumnsConfig = () => {
               );
               setRowSelected(updatedSelection);
             }}
-          />
+            className="flex flex-col-reverse items-center justify-center"
+          >
+            <span className="text-center w-full font-semibold">
+              {Number(info.row.id) + 1}
+            </span>
+          </Checkbox>
         );
       },
     },
@@ -64,8 +69,7 @@ export const getBaseColumnsConfig = () => {
       header: () => (
         <div className="flex flex-col gap-1 items-center">
           <span>Адрес</span>
-          <span>полу</span>
-          <span>чения</span>
+          <span>получения</span>
         </div>
       ),
       size: 10,
@@ -178,7 +182,7 @@ export const getBaseColumnsConfig = () => {
           info={info}
           type={"Composite"}
           compositeType="client_bin"
-          cl="!min-w-[10rem]"
+          cl="!min-w-[10rem] "
         />
       ),
       filter: true,

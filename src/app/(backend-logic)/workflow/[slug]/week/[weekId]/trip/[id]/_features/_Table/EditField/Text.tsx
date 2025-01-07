@@ -27,7 +27,7 @@ export const Text = ({
       await editCargo(
         info.column.columnDef.accessorKey,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
   });
