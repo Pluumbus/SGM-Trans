@@ -83,7 +83,7 @@ export const CargoModal = ({
 
   return (
     <>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="2xl">
+      <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" >
         <ModalContent>
           <form
             onSubmit={handleSubmit((data) => {

@@ -138,6 +138,16 @@ export const CreateTripInsideWeek = ({
   }>();
   const { mutate } = useMutation({
     mutationFn: async () => {
+      console.log({
+        city_from: formState.city_from,
+        city_to: formState.city_to.filter((city) => city !== ""),
+        driver: {
+          car: formState.car.split(" - ")[0] || "",
+          driver: formState.driver || "",
+          state_number: formState.car.split(" - ")[1] || "",
+        },
+        week_id: Number(weekId),
+      })
       await supabase.from("trips").insert({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
@@ -146,7 +156,7 @@ export const CreateTripInsideWeek = ({
           driver: formState.driver || "",
           state_number: formState.car.split(" - ")[1] || "",
         },
-        week_id: weekId,
+        week_id: Number(weekId),
       });
     },
     onSuccess: () => {

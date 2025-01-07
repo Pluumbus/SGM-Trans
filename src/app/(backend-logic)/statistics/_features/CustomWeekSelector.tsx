@@ -38,6 +38,7 @@ export const CustomWeekSelector = ({
   useEffect(() => {
     if (data) {
       const currentWeek = data.find((w) => currentWeekIndicator(w.week_dates));
+      console.log(currentWeek)
       setWeeks(data);
       setIsPressed({ week_number: currentWeek.week_number, active: true });
       setDateVal({

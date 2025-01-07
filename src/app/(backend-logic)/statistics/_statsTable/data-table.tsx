@@ -122,7 +122,6 @@ export function DataTable() {
     const totalPrize = filtered.reduce((acc, curr) => {
       return acc + curr.totalAmountInRange;
     }, 0);
-    console.log(totalPrize);
     const newData = filtered.map((item) => {
       return {
         ...item,

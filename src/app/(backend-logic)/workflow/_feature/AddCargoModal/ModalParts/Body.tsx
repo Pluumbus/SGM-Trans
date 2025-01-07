@@ -139,7 +139,7 @@ export const Body = ({
         </div>
 
         <div className="flex gap-2">
-          <Input {...register("weight")} label="Вес" />
+          <Input {...register("weight")} label="Вес (тонн)" />
           <Input {...register("volume")} label="Объем" />
         </div>
 

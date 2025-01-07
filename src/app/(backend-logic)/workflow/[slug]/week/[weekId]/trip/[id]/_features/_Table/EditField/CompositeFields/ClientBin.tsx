@@ -212,7 +212,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                   .map((snt, index) => (
                     <Textarea
                       key={index}
-                      value={snt}
+                      // value={snt}
                       label={`СНТ ${index + 2}`}
                       onChange={(e) =>
                         handleSntChange(e.target.value, index + 1)

@@ -11,7 +11,6 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
-import { DriversType } from "@/lib/references/drivers/feature/types";
 
 export const DriversWithCars = (
   autocompleteProps: Omit<AutocompleteProps, "children">
@@ -23,16 +22,15 @@ export const DriversWithCars = (
     enabled: !!isSignedIn,
   });
 
-  const sortedData = data?.filter((driver) => driver.car_type === "gazell");
   return (
     <div>
       <Autocomplete
         label="Выберите водителя"
-        isLoading={isLoading || !sortedData}
+        isLoading={isLoading || !data}
         {...autocompleteProps}
       >
         {data &&
-          sortedData.map((e, i) => (
+          data.map((e, i) => (
             <AutocompleteItem
               key={e.id}
               value={e.id}
