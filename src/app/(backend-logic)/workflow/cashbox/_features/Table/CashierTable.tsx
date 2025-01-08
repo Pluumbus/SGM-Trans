@@ -19,6 +19,7 @@ import supabase from "@/utils/supabase/client";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { TMModal } from "../../../_feature/TransportationManagerActions/TMModal";
 import { FaPlus } from "react-icons/fa6";
+import { CargoType } from "../../../_feature/types";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
@@ -119,7 +120,7 @@ export const CashierTable = () => {
           Показать только клиентов которые оплачивают в МСК
         </Checkbox>
       </div>
-      <CashoboxSummary data={clients} />
+      <CashoboxSummary data={clients} isMSKOnly={isMSKOnly} />
       <UTable
         props={{
           isCompact: false,
@@ -134,9 +135,22 @@ export const CashierTable = () => {
   );
 };
 
-const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
+const CashoboxSummary = ({
+  data,
+  isMSKOnly,
+}: {
+  data: CashboxType[];
+  isMSKOnly: boolean;
+}) => {
   const disclosure = useDisclosure();
   const state = useState<number>();
+  const mskSum = getMSKClients(data)
+    ?.flatMap((e) => e.cargos)
+    ?.reduce(
+      (total, el) =>
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
+      0
+    );
   const sum = data
     ?.flatMap((e) => e.cargos)
     ?.reduce(
@@ -149,7 +163,9 @@ const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
     <div className="flex gap-8 items-center">
       <div className="flex gap-2 items-center">
         <span>Общая сумма кассы:</span>
-        <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
+        <span className="font-semibold">
+          {getSeparatedNumber(isMSKOnly ? mskSum : sum)} тг
+        </span>
       </div>
       <div>
         <Button
