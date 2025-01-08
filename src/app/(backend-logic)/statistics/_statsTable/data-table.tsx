@@ -46,6 +46,8 @@ export function DataTable() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
+  console.log(data);
+
   const table = useReactTable({
     data: filteredData,
     columns,
@@ -88,12 +90,10 @@ export function DataTable() {
     const filtered = data
       .map((user) => {
         const { total, bidSumArr } = sumAmountsForDateRange(user);
+
         const bidPrize =
           calculateCurrentPrize(total) + bidSumArr.length > 25 &&
           (bidSumArr.length - 25) * 1000;
-
-        // const currentPrizeSum =
-        //   bidSumArr.length > 25 ? calculateCurrentPrize(total) + bidPrize : 0;
 
         const amount = user.value.reduce((acc, item) => {
           return acc + item;

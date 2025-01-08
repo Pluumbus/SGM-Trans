@@ -132,7 +132,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           <Tooltip
             content={
               <span>
-                Нажмите чтобы <span className="font-semibold">выгрузить</span>{" "}
+                Нажмите чтобы <span className="font-semibold">загрузить</span>{" "}
                 все скопированные <span className="font-semibold">СНТ</span>
               </span>
             }
@@ -244,19 +244,15 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                   }}
                   className="mb-2"
                 />
-                {values?.snts
-                  ?.slice(1)
-                  .map((snt, index) => (
-                    <Textarea
-                      key={index}
-                      // value={snt}
-                      label={`СНТ ${index + 2}`}
-                      onChange={(e) =>
-                        handleSntChange(e.target.value, index + 1)
-                      }
-                      className="mb-2"
-                    />
-                  ))}
+                {values?.snts?.slice(1).map((snt, index) => (
+                  <Textarea
+                    key={index}
+                    // value={snt}
+                    label={`СНТ ${index + 2}`}
+                    onChange={(e) => handleSntChange(e.target.value, index + 1)}
+                    className="mb-2"
+                  />
+                ))}
               </ScrollShadow>
             </div>
             {!values.snts.some((e) => e == "") && (

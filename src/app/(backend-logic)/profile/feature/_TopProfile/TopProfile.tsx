@@ -1,6 +1,5 @@
 "use client";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
-import { CardContent } from "@/components/ui/card";
 import { ProfilePrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/Prize";
 import { useUser } from "@clerk/nextjs";
 import {
@@ -15,6 +14,10 @@ import { InputCards } from "./InputCards";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCargos } from "../../../workflow/[slug]/week/[weekId]/trip/_api";
 import { AvatarProfile } from "./Avatar";
+import {
+  currentWeekIndicator,
+  isDateInCurrentWeek,
+} from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
 
 export const TopProfile = () => {
   const { user } = useUser();
@@ -24,8 +27,10 @@ export const TopProfile = () => {
     queryFn: async () => await getAllCargos(),
   });
 
-  const userCargos = data?.filter((c) => c.user_id == user?.id);
-console.log(data?.reduce((sum, obj) => sum + (Number(obj.amount.value) || 0), 0))
+  const userCargos = data
+    ?.filter((c) => c.user_id == user?.id!)
+    .filter((c) => isDateInCurrentWeek(c.created_at));
+
   return (
     <div>
       <span className="text-2xl ">Личный кабинет</span>

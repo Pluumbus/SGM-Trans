@@ -18,11 +18,9 @@ export const getStatsUserList = async () => {
     created_at: [],
   }));
 
-  const server = getSupabaseServer();
-
-  const { data, error } = await (await server)
+  const { data, error } = await (await getSupabaseServer())
     .from("cargos")
-    .select(`amount,user_id,created_at`);
+    .select(`amount,user_id,created_at,trip_id`);
 
   if (error) {
     throw new Error(error.message);
@@ -38,7 +36,7 @@ export const getStatsUserList = async () => {
 
       if (existingUser!.value) {
         existingUser!.value.push(
-          Number((amount.value as string).replace(/[\s,]/g, "")),
+          Number((amount.value as string).replace(/[\s,]/g, ""))
         );
       } else
         existingUser!.value = [

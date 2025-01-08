@@ -154,7 +154,7 @@ export const CreateTripInsideWeek = ({
           state_number: formState.car.split(" - ")[1] || "",
         },
         week_id: Number(weekId),
-      })
+      });
       await supabase.from("trips").insert({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
@@ -489,4 +489,34 @@ export const currentWeekIndicator = ({ end_date, start_date }) => {
   );
 
   return todayNormalized >= start && todayNormalized <= end;
+};
+
+export const isDateInCurrentWeek = (dateString: string): boolean => {
+  const today = new Date();
+  const todayNormalized = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+
+  // Получаем первый и последний день текущей недели
+  const dayOfWeek = today.getDay(); // День недели (0 - воскресенье, 1 - понедельник, ...)
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Смещение для понедельника
+  const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek; // Смещение для воскресенья
+
+  const startOfWeek = new Date(todayNormalized);
+  startOfWeek.setDate(todayNormalized.getDate() + diffToMonday);
+
+  const endOfWeek = new Date(todayNormalized);
+  endOfWeek.setDate(todayNormalized.getDate() + diffToSunday);
+
+  // Преобразуем переданную дату
+  const inputDate = new Date(
+    new Date(dateString).getFullYear(),
+    new Date(dateString).getMonth(),
+    new Date(dateString).getDate()
+  );
+
+  // Проверяем, входит ли дата в текущую неделю
+  return inputDate >= startOfWeek && inputDate <= endOfWeek;
 };
