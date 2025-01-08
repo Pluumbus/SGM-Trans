@@ -175,7 +175,7 @@ export const getBaseColumnsConfig = () => {
 
     {
       accessorKey: "client_bin",
-      header: "БИН клиента",
+      header: "Получатель",
       size: 20,
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField

@@ -15,14 +15,9 @@ import React from "react";
 import { currentWeekIndicator } from "../../workflow/_feature/WeekCard/WeekCard";
 
 export const CustomWeekSelector = ({
-  setDateVal,
+  setWeekNum,
 }: {
-  setDateVal: React.Dispatch<
-    React.SetStateAction<{
-      start: string;
-      end: string;
-    }>
-  >;
+  setWeekNum: React.Dispatch<React.SetStateAction<number>>;
 }) => {
   const { data, isLoading } = useQuery({
     queryKey: ["GetWeeksForStatistics"],
@@ -38,13 +33,9 @@ export const CustomWeekSelector = ({
   useEffect(() => {
     if (data) {
       const currentWeek = data.find((w) => currentWeekIndicator(w.week_dates));
-      console.log(currentWeek)
       setWeeks(data);
       setIsPressed({ week_number: currentWeek.week_number, active: true });
-      setDateVal({
-        start: currentWeek.week_dates.start_date,
-        end: currentWeek.week_dates.end_date,
-      });
+      setWeekNum(currentWeek.week_number);
     }
   }, [data]);
 
@@ -78,10 +69,7 @@ export const CustomWeekSelector = ({
                   }
                   onPress={() => {
                     setIsPressed({ week_number: e.week_number, active: true });
-                    setDateVal({
-                      start: e.week_dates.start_date,
-                      end: e.week_dates.end_date,
-                    });
+                    setWeekNum(e.week_number)
                   }}
                 >
                   {e.week_number}

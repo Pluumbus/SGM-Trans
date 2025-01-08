@@ -37,11 +37,11 @@ export const columns: ColumnDef<StatsUserList>[] = [
     header: "Премия за неделю",
   },
   {
-    accessorKey: "amount",
+    accessorKey: "totalAmount",
     header: "Общая сумма тг.",
   },
   {
-    accessorKey: "bidSum",
+    accessorKey: "totalBids",
     header: "Общая сумма заявок",
   },
 

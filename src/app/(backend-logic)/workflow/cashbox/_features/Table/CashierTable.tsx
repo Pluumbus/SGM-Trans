@@ -145,11 +145,13 @@ const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
       0
     );
 
+
   return (
     <div className="flex gap-8 items-center">
       <div className="flex gap-2 items-center">
-        <span>Общая сумма кассы:</span>
+        <span>Общая сумма кассы :</span>
         <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
+  
       </div>
       <div>
         <Button

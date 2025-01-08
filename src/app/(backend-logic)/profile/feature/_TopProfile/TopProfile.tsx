@@ -25,7 +25,6 @@ export const TopProfile = () => {
   });
 
   const userCargos = data?.filter((c) => c.user_id == user?.id);
-console.log(data?.reduce((sum, obj) => sum + (Number(obj.amount.value) || 0), 0))
   return (
     <div>
       <span className="text-2xl ">Личный кабинет</span>
