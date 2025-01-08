@@ -4,7 +4,7 @@ import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useCashierColumnsConfig } from "./Table.config";
 import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getClients } from "../api";
 import {
   Button,
@@ -119,7 +119,7 @@ export const CashierTable = () => {
           Показать только клиентов которые оплачивают в МСК
         </Checkbox>
       </div>
-      <CashoboxSummary data={clients} />
+      <CashoboxSummary data={clients} isMSKOnly={isMSKOnly} />
       <UTable
         props={{
           isCompact: false,
@@ -134,9 +134,22 @@ export const CashierTable = () => {
   );
 };
 
-const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
+const CashoboxSummary = ({
+  data,
+  isMSKOnly,
+}: {
+  data: CashboxType[];
+  isMSKOnly: boolean;
+}) => {
   const disclosure = useDisclosure();
   const state = useState<number>();
+  const mskSum = getMSKClients(data)
+    ?.flatMap((e) => e.cargos)
+    ?.reduce(
+      (total, el) =>
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
+      0
+    );
   const sum = data
     ?.flatMap((e) => e.cargos)
     ?.reduce(
@@ -145,13 +158,13 @@ const CashoboxSummary = ({ data }: { data: CashboxType[] }) => {
       0
     );
 
-
   return (
     <div className="flex gap-8 items-center">
       <div className="flex gap-2 items-center">
-        <span>Общая сумма кассы :</span>
-        <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
-  
+        <span>Общая сумма кассы:</span>
+        <span className="font-semibold">
+          {getSeparatedNumber(isMSKOnly ? mskSum : sum)} тг
+        </span>
       </div>
       <div>
         <Button
