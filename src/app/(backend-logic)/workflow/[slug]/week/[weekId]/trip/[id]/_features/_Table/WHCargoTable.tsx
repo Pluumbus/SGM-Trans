@@ -76,7 +76,7 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
     };
   }, []);
 
-  if (!whCargos || whCargos.length == 0 || cargos.length == 0) {
+  if (cargos.length == 0) {
     return null;
   }
 
