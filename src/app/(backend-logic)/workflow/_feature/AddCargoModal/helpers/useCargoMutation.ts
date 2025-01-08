@@ -4,6 +4,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { UseFormReset } from "react-hook-form";
 import { CargoType } from "../../types";
 import { useDisclosure } from "@nextui-org/react";
+import { editWHCargo } from "../../../[slug]/week/[weekId]/trip/[id]/_features/_Table/EditField/api";
 
 export const useCargoMutation = (
   onOpenChangeCargo: () => void,

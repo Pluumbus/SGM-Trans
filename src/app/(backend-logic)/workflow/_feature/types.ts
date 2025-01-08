@@ -51,6 +51,7 @@ export type CargoType = {
   paid_amount: number;
   request_id: number | null;
   is_deleted: boolean;
+  wh_id: number | null;
   // delete_info: {
   //   is_deleted: boolean;
   //   user_id: string;
