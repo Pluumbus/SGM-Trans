@@ -3,7 +3,8 @@ import { ReactNode, useState, useEffect } from "react";
 import { Textarea } from "@nextui-org/react";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { useMutation } from "@tanstack/react-query";
-import { editCargo } from "./api";
+import { editCargo, editWHCargo } from "./api";
+import { useTableMode } from "../TableMode.context";
 
 export const Text = ({
   info,
@@ -22,6 +23,15 @@ export const Text = ({
 
   const [debouncedValue, setDebouncedValue] = useState<string>(state);
 
+  const { mutate: mutateWHCargo } = useMutation({
+    mutationFn: async () => {
+      await editWHCargo(
+        info.column.columnDef.accessorKey,
+        debouncedValue,
+        info.row.original.id
+      );
+    },
+  });
   const { mutate } = useMutation({
     mutationFn: async () => {
       await editCargo(
@@ -31,6 +41,8 @@ export const Text = ({
       );
     },
   });
+
+  const { tableMode } = useTableMode();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -44,7 +56,7 @@ export const Text = ({
 
   useEffect(() => {
     if (debouncedValue !== info.getValue()?.toString()) {
-      mutate();
+      tableMode == "wh-cargo" ? mutateWHCargo() : mutate();
     }
   }, [debouncedValue]);
 

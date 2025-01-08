@@ -1,6 +1,6 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { editCargo } from "../api";
+import { editCargo, editWHCargo } from "../api";
 import { Cell } from "@tanstack/react-table";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
@@ -12,6 +12,8 @@ import {
   useState,
 } from "react";
 import { isEqual } from "lodash";
+import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
+import { useTableMode } from "../../TableMode.context";
 
 export const useEditCargo = <T>({
   info,
@@ -27,7 +29,25 @@ export const useEditCargo = <T>({
       await editCargo(
         info.column.columnDef!.accessorKey,
         value,
-        info.row.original.id,
+        info.row.original.id
+      ),
+  });
+
+const useEditWHCargo = <T>({
+  info,
+  value,
+  setValues,
+}: {
+  info: Cell<WHCargoType, ReactNode>;
+  value: T;
+  setValues: Dispatch<SetStateAction<T>>;
+}) =>
+  useMutation({
+    mutationFn: async () =>
+      await editWHCargo(
+        info.column.columnDef!.accessorKey,
+        value,
+        info.row.original.id
       ),
   });
 
@@ -48,7 +68,7 @@ export const useDebouncedState = <T>(value: T, delay: number): T => {
 };
 
 export const useCompositeStates = <T>(
-  info: Cell<CargoType, ReactNode>,
+  info: Cell<CargoType, ReactNode>
 ): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
 
@@ -60,6 +80,13 @@ export const useCompositeStates = <T>(
 
   const debouncedValue = useDebouncedState(values, 500);
 
+  const { tableMode } = useTableMode();
+
+  const { mutate: editWhCargo } = useEditWHCargo({
+    info,
+    value: values,
+    setValues,
+  });
   const { mutate } = useEditCargo({
     info,
     value: values,
@@ -68,7 +95,7 @@ export const useCompositeStates = <T>(
 
   useEffect(() => {
     if (!isEqual(debouncedValue, info.getValue() as T)) {
-      mutate();
+      tableMode == "wh-cargo" ? editWhCargo() : mutate();
     }
   }, [debouncedValue]);
 

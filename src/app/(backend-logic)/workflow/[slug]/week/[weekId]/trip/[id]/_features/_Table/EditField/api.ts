@@ -4,12 +4,27 @@ import supabase from "@/utils/supabase/client";
 export const editCargo = async (
   column: string,
   value: string | any,
-  cargoId,
+  cargoId
 ) => {
   const { data, error } = await supabase
     .from("cargos")
     .update({ [column]: value })
     .eq("id", Number(cargoId));
+
+  if (error) {
+    throw new Error();
+  }
+  return data;
+};
+export const editWHCargo = async (
+  column: string,
+  value: string | any,
+  whCargoId: string | number
+) => {
+  const { data, error } = await supabase
+    .from("wh_cargos")
+    .update({ [column]: value })
+    .eq("id", Number(whCargoId));
 
   if (error) {
     throw new Error();

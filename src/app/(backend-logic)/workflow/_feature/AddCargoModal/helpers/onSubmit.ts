@@ -13,6 +13,7 @@ export const addCargoOnSubmit = (
         withDelivery: false,
         deliveryAddress: "",
       };
+
   mutate({
     ...data,
     trip_id: Number(trip_id),

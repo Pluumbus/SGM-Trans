@@ -3,7 +3,8 @@ import { ReactNode, useState, useEffect } from "react";
 import { Checkbox } from "@nextui-org/react";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { useMutation } from "@tanstack/react-query";
-import { editCargo } from "./api";
+import { editCargo, editWHCargo } from "./api";
+import { useTableMode } from "../TableMode.context";
 
 export const CheckboxField = ({
   info,
@@ -24,7 +25,7 @@ export const CheckboxField = ({
       await editCargo(
         info.column.columnDef.accessorKey as string,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
 
@@ -32,6 +33,18 @@ export const CheckboxField = ({
       console.error("Failed to update cargo:", error);
     },
   });
+
+  const { mutate: mutateWHCargo } = useMutation({
+    mutationFn: async () => {
+      await editWHCargo(
+        info.column.columnDef.accessorKey,
+        debouncedValue,
+        info.row.original.id
+      );
+    },
+  });
+
+  const { tableMode } = useTableMode();
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -45,7 +58,7 @@ export const CheckboxField = ({
 
   useEffect(() => {
     if (debouncedValue !== (info.getValue() as boolean)) {
-      mutate();
+      tableMode == "cargo" ? mutate() : mutateWHCargo();
     }
   }, [debouncedValue]);
 
