@@ -5,6 +5,7 @@ import { Cell } from "@tanstack/react-table";
 import { Checkbox, Textarea, Tooltip } from "@nextui-org/react";
 import { Cities } from "@/lib/references";
 import { cx } from "class-variance-authority";
+import { useTableMode } from "../../TableMode.context";
 
 type Type = CargoType["unloading_point"];
 
@@ -14,9 +15,11 @@ export const UnloadingPoint = ({
   info: Cell<CargoType, ReactNode>;
 }) => {
   const [values, setValues] = useCompositeStates<Type>(info);
+  const { tableMode } = useTableMode();
+  const isWH = tableMode == "wh-cargo";
 
   return (
-    <div className={cx("flex flex-col gap-2 w-[8rem]")}>
+    <div className={cx("flex flex-col gap-2 ", isWH ? "w-full" : "w-[8rem]")}>
       <div className={`flex gap-2 ${!values.withDelivery && "flex-col"}`}>
         <Cities
           variant="underlined"

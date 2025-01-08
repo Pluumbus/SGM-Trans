@@ -6,9 +6,11 @@ import { getBaseColumnsConfig } from "@/app/(backend-logic)/workflow/[slug]/week
 
 const excludeNeededItems = (
   base: UseTableColumnsSchema<CargoType>[],
-  exclude: string[]
+  exclude: string[],
+  isWH?: boolean
 ) => {
-  return base.filter((e) => !exclude.includes(e.accessorKey));
+  const exc = isWH ? ["action", ...exclude] : exclude;
+  return base.filter((e) => !exc.includes(e.accessorKey));
 };
 
 const GlobalLogistSchema = () => {
@@ -18,6 +20,22 @@ const GlobalLogistSchema = () => {
 const MngSchema = () => {
   const excl = [""];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
+};
+export const WHSchema = () => {
+  const excl = [
+    "amount",
+    "is_act_ready",
+    "receipt_address",
+    "is_unpalletizing",
+    "loading_scheme",
+    "driver",
+    "CheckBox",
+    "transportation_manager",
+    "status",
+    "act_details",
+    "client_bin",
+  ];
+  return excludeNeededItems(getBaseColumnsConfig(), excl, false);
 };
 const GlobalWareHouseManagerSchema = () => {
   const excl = [
@@ -50,6 +68,6 @@ export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
     case "Менеджер":
       return MngSchema();
     default:
-      return getBaseColumnsConfig();
+      return excludeNeededItems(getBaseColumnsConfig(), [""], true);
   }
 };

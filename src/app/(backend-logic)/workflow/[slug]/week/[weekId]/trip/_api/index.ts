@@ -8,6 +8,7 @@ import {
   WeekType,
 } from "@/app/(backend-logic)/workflow/_feature/types";
 import { TripAndWeeksIdType, WeekTableType } from "./types";
+import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
 
 export const getUserById = async (userId: string) => {
   const user = await (await clerkClient()).users.getUser(userId);
@@ -19,6 +20,22 @@ export const getUserById = async (userId: string) => {
   };
 };
 
+export const getWHCargos = async (
+  trip_id: string,
+  wDeleted: boolean = false
+): Promise<WHCargoType[]> => {
+  const server = getSupabaseServer();
+  const { data, error } = await (await server)
+    .from("wh_cargos")
+    .select("*")
+    .eq("trip_id", trip_id);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data as WHCargoType[];
+};
 export const getCargos = async (
   trip_id: string,
   wDeleted: boolean = false

@@ -34,9 +34,10 @@ type Props = {
 export const Body = ({
   props: { register, watch, control, setValue },
 }: Props) => {
-  const [withDelivery, amountType] = watch([
+  const [withDelivery, amountType, is_documents] = watch([
     "unloading_point.withDelivery",
     "amount.type",
+    "is_documents",
   ]);
   const state = useState<number>(null);
 
@@ -197,16 +198,16 @@ export const Body = ({
             </Checkbox>
           )}
         />
-        <Controller
-          control={control}
-          name="is_documents"
-          render={({ field }) => (
-            // @ts-ignore
-            <Checkbox {...field} type="checkbox">
-              Наличие документов
-            </Checkbox>
-          )}
-        />
+
+        <Checkbox
+          type="checkbox"
+          isSelected={is_documents}
+          onValueChange={(e) => {
+            setValue("is_documents", e);
+          }}
+        >
+          Наличие документов
+        </Checkbox>
 
         <div className="col-span-2">
           <Textarea

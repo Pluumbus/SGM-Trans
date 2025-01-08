@@ -7,6 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  useDisclosure,
 } from "@nextui-org/react";
 
 import { toast } from "@/components/ui/use-toast";
@@ -22,6 +23,8 @@ import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";
 import { TripInfoMscCard } from "./TripMscInfoCard";
+import { WHAddCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -72,52 +75,30 @@ export const TripInfoCard = ({
   )[0]?.userName;
 
   const statusItems = ["Машина закрыта", "В пути", "Прибыл"];
-  return (
-    <Card className="bg-gray-200 w-[28rem]">
-      <CardBody>
-        <div className="flex flex-col gap-2">
-          <TripInfoResponsibleUser
-            tripId={currentTripData?.id}
-            respUser={respUser}
-            allUsers={allUsers}
-          />
-          <TripInfoNum
-            id={Number(selectedTabId)}
-            tempId={currentTripData?.trip_number}
-          />
-          <TripInfoDriver
-            tripsData={tripsData}
-            currentTripData={currentTripData}
-            tripId={currentTripData?.id}
-          />
 
-          {
-            <div>
-              <div className="flex justify-between">
-                <span>Статус:</span>
-                <b>{statusVal}</b>
-                <Dropdown>
-                  <DropdownTrigger>
-                    <Button isIconOnly size="sm" color="default">
-                      <IoMdSettings />
-                    </Button>
-                  </DropdownTrigger>
-                  <DropdownMenu>
-                    {statusItems.map((stat: string) => (
-                      <DropdownItem
-                        key={stat}
-                        onPress={() => {
-                          setStatusVal(stat);
-                          setStatusMutation();
-                        }}
-                      >
-                        {stat}
-                      </DropdownItem>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-              {/* {accessRole ? (
+  const disclosure = useDisclosure();
+  return (
+    <>
+      <Card className="bg-gray-200 w-[28rem]">
+        <CardBody>
+          <div className="flex flex-col gap-2">
+            <TripInfoResponsibleUser
+              tripId={currentTripData?.id}
+              respUser={respUser}
+              allUsers={allUsers}
+            />
+            <TripInfoNum
+              id={Number(selectedTabId)}
+              tempId={currentTripData?.trip_number}
+            />
+            <TripInfoDriver
+              tripsData={tripsData}
+              currentTripData={currentTripData}
+              tripId={currentTripData?.id}
+            />
+
+            {
+              <div>
                 <div className="flex justify-between">
                   <span>Статус:</span>
                   <b>{statusVal}</b>
@@ -131,7 +112,7 @@ export const TripInfoCard = ({
                       {statusItems.map((stat: string) => (
                         <DropdownItem
                           key={stat}
-                          onClick={() => {
+                          onPress={() => {
                             setStatusVal(stat);
                             setStatusMutation();
                           }}
@@ -142,50 +123,34 @@ export const TripInfoCard = ({
                     </DropdownMenu>
                   </Dropdown>
                 </div>
-              ) : (
-                <div className="flex justify-between">
-                  <span>
-                    {statusItems.includes(statusVal)
-                      ? "Статус:"
-                      : "День недели:"}
-                  </span>
-                  <b>{statusVal}</b>
-                  <Dropdown isDisabled={!daysOfWeek.includes(statusVal)}>
-                    <DropdownTrigger>
-                      <Button isIconOnly size="sm" color="default">
-                        <IoMdSettings />
-                      </Button>
-                    </DropdownTrigger>
-                    <DropdownMenu>
-                      {daysOfWeek.map((stat: string) => (
-                        <DropdownItem
-                          key={stat}
-                          onClick={() => {
-                            setStatusVal(stat);
-                            setStatusMutation();
-                          }}
-                        >
-                          {stat}
-                        </DropdownItem>
-                      ))}
-                    </DropdownMenu>
-                  </Dropdown>
-                </div>
-              )} */}
-            </div>
-          }
-          <TripInfoMscCard
-            selectedTabId={selectedTabId}
-            tripsData={tripsData}
-          />
+              </div>
+            }
+            <TripInfoMscCard
+              selectedTabId={selectedTabId}
+              tripsData={tripsData}
+            />
 
-          <div>
-            <Button color="success" onPress={onOpenChange}>
-              Добавить груз
-            </Button>
+            <div>
+              <RoleBasedWrapper
+                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
+              >
+                <Button color="success" onPress={disclosure.onOpenChange}>
+                  Добавить груз
+                </Button>
+              </RoleBasedWrapper>
+              <RoleBasedWrapper
+                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
+                exclude
+              >
+                <Button color="success" onPress={onOpenChange}>
+                  Добавить груз
+                </Button>
+              </RoleBasedWrapper>
+            </div>
           </div>
-        </div>
-      </CardBody>
-    </Card>
+        </CardBody>
+      </Card>
+      <WHAddCargoModal disclosure={disclosure} trip_id={currentTripData?.id} />
+    </>
   );
 };

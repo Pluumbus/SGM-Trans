@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
+import { Role } from "./useRole";
 
 const RoleBasedWrapper: React.FC<{
-  allowedRoles: string[];
+  allowedRoles: Role[];
   children: React.ReactNode;
-}> = ({ allowedRoles, children }) => {
+  exclude?: boolean;
+}> = ({ allowedRoles, children, exclude }) => {
   const [hasAccess, setHasAccess] = useState(false);
   const { user, isLoaded } = useUser();
 
@@ -15,7 +17,11 @@ const RoleBasedWrapper: React.FC<{
       try {
         const userRole =
           isLoaded && (user?.publicMetadata.role as string | "Пользователь");
-        if (allowedRoles.includes(userRole)) {
+        if (
+          exclude
+            ? allowedRoles.filter((e) => !e.includes(userRole))
+            : allowedRoles.includes(userRole)
+        ) {
           setHasAccess(true);
         }
       } catch (error) {

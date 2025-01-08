@@ -27,6 +27,8 @@ import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
 import { useSelectionContext } from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
+import { WHCargoTable } from "../_Table/WHCargoTable";
+import { getSchema } from "@/utils/supabase/getSchema";
 
 export const TripTab = ({
   trip,
@@ -84,7 +86,7 @@ export const TripTab = ({
         "postgres_changes",
         {
           event: "*",
-          schema: "public",
+          schema: getSchema(),
           table: "cargos",
         },
         (payload) => {
@@ -175,6 +177,10 @@ export const TripTab = ({
           Скопировать всех клиентов
         </Button>
       )}
+      <div className="my-8">
+        <WHCargoTable trip={trip} />
+      </div>
+
       <div className="space-y-4">
         {groupCargosByCity(getSortedCargos()).map((e) => (
           <div className="">

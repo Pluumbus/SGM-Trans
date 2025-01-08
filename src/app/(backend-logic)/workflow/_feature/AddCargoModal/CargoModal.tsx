@@ -13,6 +13,12 @@ import { addCargoOnSubmit } from "./helpers";
 import { ClientRequestTypeDTO } from "@/app/(client-logic)/client/types";
 import { AdjustedRequestDTO } from "@/app/(backend-logic)/requests/types";
 import { useEffect, useState } from "react";
+import {
+  getLocalTimeZone,
+  now,
+  parseDate,
+  today,
+} from "@internationalized/date";
 
 export enum CargoModalMode {
   FROM_REQUEST = "FROM_REQUEST",
@@ -24,7 +30,7 @@ type CargoModalPropsType = {
   tripDisclosure?: ReturnType<typeof useDisclosure>;
   mode?: CargoModalMode;
   trip_id?: number;
-  prefilledData?: AdjustedRequestDTO;
+  prefilledData?: AdjustedRequestDTO | CargoType;
 };
 
 export const CargoModal = ({
@@ -75,12 +81,48 @@ export const CargoModal = ({
       setValue("request_id", prefilledData.id, {
         shouldValidate: true,
       });
+    } else if (prefilledData && mode == CargoModalMode.FROM_TABLE) {
+      setValue("receipt_address", "Склад Москва", {
+        shouldValidate: true,
+      });
+      setValue("volume", prefilledData.volume, {
+        shouldValidate: true,
+      });
+      setValue("weight", prefilledData.weight, {
+        shouldValidate: true,
+      });
+      setValue("unloading_point", prefilledData.unloading_point, {
+        shouldValidate: true,
+      });
+      setValue("is_documents", prefilledData.is_documents, {
+        shouldValidate: true,
+      });
+      setValue("comments", prefilledData.comments, {
+        shouldValidate: true,
+      });
+      setValue("quantity", prefilledData.quantity, {
+        shouldValidate: true,
+      });
+      setValue("status", today(getLocalTimeZone()), {
+        shouldValidate: true,
+      });
+      setValue("cargo_name", prefilledData.cargo_name, {
+        shouldValidate: true,
+      });
+      setValue("wh_id", prefilledData.id, {
+        shouldValidate: true,
+      });
     }
   }, [prefilledData]);
 
   return (
     <>
-      <Modal disableAnimation isOpen={isOpen} onOpenChange={onOpenChange} size="2xl" >
+      <Modal
+        disableAnimation
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        size="2xl"
+      >
         <ModalContent>
           <form
             onSubmit={handleSubmit((data) => {

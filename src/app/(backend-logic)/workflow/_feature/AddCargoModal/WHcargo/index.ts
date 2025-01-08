@@ -1,0 +1,1 @@
+export { WHAddCargoModal } from "./Modal";

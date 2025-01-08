@@ -6,8 +6,15 @@ import { ReactNode } from "react";
 import { EditField } from "./EditField/EditField";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
-import { Checkbox, Spinner, Tooltip } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  Spinner,
+  Tooltip,
+  useDisclosure,
+} from "@nextui-org/react";
 import { useSelectionContext } from "../Contexts";
+import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -190,11 +197,13 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "is_documents",
       header: () => (
-        <div className="flex flex-col items-center w-[2rem]">
-          <span>Нали</span>
-          <span>чие</span>
-          <span>доку</span>
-          <span>ментов</span>
+        <div className="w-full flex justify-center">
+          <div className="flex flex-col items-center w-[2rem]">
+            <span>Нали</span>
+            <span>чие</span>
+            <span>доку</span>
+            <span>ментов</span>
+          </div>
         </div>
       ),
       size: 15,
@@ -281,6 +290,35 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => (
         <EditField info={info} type={"Composite"} compositeType="act_details" />
       ),
+
+      filter: false,
+    },
+    {
+      accessorKey: "action",
+      header: "",
+      size: 15,
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        const disclosure = useDisclosure();
+        return (
+          <>
+            <Button
+              variant="flat"
+              color="success"
+              fullWidth
+              onPress={() => {
+                disclosure.onOpenChange();
+              }}
+            >
+              Создать груз
+            </Button>
+            <CargoModal
+              disclosure={disclosure}
+              trip_id={info.row.original.trip_id}
+              prefilledData={info.row.original}
+            />
+          </>
+        );
+      },
 
       filter: false,
     },
