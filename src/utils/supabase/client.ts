@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { getSchema } from "./getSchema";
 
 declare global {
   interface Window {
@@ -28,6 +29,9 @@ function createClerkSupabaseClient() {
           headers,
         });
       },
+    },
+    db: {
+      schema: getSchema(),
     },
   });
 }

@@ -4,7 +4,7 @@ import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useCashierColumnsConfig } from "./Table.config";
 import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { getClients } from "../api";
 import {
   Button,
@@ -19,7 +19,6 @@ import supabase from "@/utils/supabase/client";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { TMModal } from "../../../_feature/TransportationManagerActions/TMModal";
 import { FaPlus } from "react-icons/fa6";
-import { CargoType } from "../../../_feature/types";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
