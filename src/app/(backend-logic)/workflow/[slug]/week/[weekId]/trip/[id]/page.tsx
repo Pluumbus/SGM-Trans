@@ -218,9 +218,9 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
 const TabCities = ({ city_to }: { city_to: string[] }) => {
   return (
     <div className="flex flex-col">
-      {city_to.map((city, index) => (
+      {city_to?.map((city, index) => (
         <span className="text-gray-500 truncate" key={index}>
-          {city.slice(0, city.includes("-") || city.length <= 5 ? 3 : 4)}
+          {city?.slice(0, city.includes("-") || city.length <= 5 ? 3 : 4)}
           {city && (index < city_to.length - 1 ? "., " : ".")}
         </span>
       ))}
