@@ -1,11 +1,11 @@
 export type StatsUserList = {
   user_id: string;
-  value: number[];
+  value?: number[];
   userName: string;
   avatar: string;
   role: string;
-  created_at: Date[];
+  created_at?: Date[];
   prizeSum?: any;
   leadUserSum?: number;
-  currentWeek?: { start: string; end: string };
+  currentWeek?: number;
 };

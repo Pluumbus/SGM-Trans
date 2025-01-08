@@ -38,7 +38,9 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
         (user) =>
           user.role === "Логист" ||
           user.role === "Логист Дистант" ||
-          user.role === "Логист Москва",
+          user.role === "Логист Москва" ||
+          user.role === "Зав. Склад Москва" ||
+          user.role === "Зав. Склад",
       );
       return filteredUsrs as UsersList[];
     },

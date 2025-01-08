@@ -111,15 +111,9 @@ export const getAllVehiclesStatistics =
   };
 
 export const getSingleVehicleStatistics = async (vUuid: number[]) => {
-  // const timeBegin = Math.floor(new Date().getTime() / 1000) - 30 * 24 * 60 * 60;
-  // const timeEnd = Math.floor(Date.now() / 1000);
   const timeBegin = Math.floor(Date.now() / 1000) - 24 * 60 * 60;
   const timeEnd = Math.floor(Date.now() / 1000);
 
-  // const encodedVUuid = encodeURIComponent(`[${vUuid.join(",")}]`);
-  // console.log(
-  //   `/ls/api/v1/reports/consolidatedReport?vehicleIds=[${vUuid}]&timeBegin=${timeBegin}&timeEnd=${timeEnd}`
-  // );
   // return await fetchFromAPI(
   //   `/ls/api/v1/reports/consolidatedReport?vehicleIds=[${vUuid}]&timeBegin=${timeBegin}&timeEnd=${timeEnd}`
   // );
@@ -159,9 +153,6 @@ export const getSingleVehicleCan = async (
 ): Promise<ResponseCanData> => {
   const timeEnd = Math.floor(Date.now() / 1000);
 
-  // console.log(
-  //   `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can, ccan]&vehicles=[${vUuid}]`
-  // );
   return await fetchFromAPI(
     `/ls/api/v1/reports/statistics?timeBegin=${timeBegin}&timeEnd=${timeEnd}&dataGroups=[can, ccan]&vehicles=[${vUuid}]`
   );

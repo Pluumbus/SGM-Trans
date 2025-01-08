@@ -26,7 +26,7 @@ const GlobalWareHouseManagerSchema = () => {
     "is_unpalletizing",
     "loading_scheme",
     "driver",
-    "client_bin",
+    "transportation_manager",
   ];
   return excludeNeededItems(getBaseColumnsConfig(), excl);
 };

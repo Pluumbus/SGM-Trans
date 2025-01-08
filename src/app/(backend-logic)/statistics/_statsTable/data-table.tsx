@@ -27,7 +27,7 @@ import { columns } from "./columns";
 import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
 import { isWithinInterval } from "date-fns";
 import { StatsUserList } from "@/lib/references/stats/types";
-import { getStatsUserList } from "../_api";
+import { AllCargosByWeek, getAllCargosByWeek, getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
@@ -37,11 +37,19 @@ export function DataTable() {
     queryKey: ["Get users for general statistics"],
     queryFn: async () => await getStatsUserList(),
   });
-  const [filteredData, setFilteredData] = useState<StatsUserList[]>([]);
+
+  const { data: joinData, isFetched: isJoinFetched } = useQuery({
+    queryKey: ["getTablesJoinDataAndUsersList"],
+    queryFn: async () => await getAllCargosByWeek(),
+  });
+
+  const [tableData, setTableData] = useState<StatsUserList[]>([]);
   const [dateVal, setDateVal] = useState({
     start: "",
     end: "",
   });
+
+  const [weekNum, setWeekNum] = useState<number>();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -49,7 +57,7 @@ export function DataTable() {
   console.log(data);
 
   const table = useReactTable({
-    data: filteredData,
+    data: tableData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -71,58 +79,71 @@ export function DataTable() {
     );
   };
 
-  const handleSetTimeRangeFilter = () => {
-    const sumAmountsForDateRange = (user: StatsUserList) => {
-      let bidSumArr = [];
-      let total = 0;
-      total = user.created_at.reduce((sum, date, index) => {
-        if (
-          isWithinInterval(date, { start: dateVal.start, end: dateVal.end })
-        ) {
-          bidSumArr.push(user.value[index]);
-          return sum + Number(user.value[index]);
-        }
-        return sum;
-      }, 0);
-      return { total, bidSumArr };
+  const handleSetWeekFilter = () => {
+    const sumUsersCargos = (
+      data: AllCargosByWeek[],
+      users: StatsUserList[]
+    ) => {
+      return users
+        .filter(
+          (user) =>
+            user.role === "Логист" ||
+            user.role === "Логист Дистант" ||
+            user.role === "Логист Москва" ||
+            user.role === "Супер Логист"
+        )
+        .map((user) => {
+          let totalAmountInRange = 0;
+          let totalBidsInRange = 0;
+          let totalAmount = 0;
+          let totalBids = 0;
+
+          data
+            .filter((d) => d.week_number === weekNum)
+            .forEach((week) => {
+              week.trips.forEach((trip) => {
+                trip.cargos.forEach((cargo) => {
+                  if (cargo.user_id === user.user_id) {
+                    totalAmountInRange += Number(cargo.amount.value);
+                    totalBidsInRange += 1;
+                  }
+                });
+              });
+            });
+          data.forEach((week) => {
+            week.trips.forEach((trip) => {
+              trip.cargos.forEach((cargo) => {
+                if (cargo.user_id === user.user_id) {
+                  totalAmount += Number(cargo.amount.value);
+                  totalBids += 1;
+                }
+              });
+            });
+          });
+          const bidPrize =
+            calculateCurrentPrize(totalAmountInRange) + totalBidsInRange > 25 &&
+            (totalBidsInRange - 25) * 1000;
+          return {
+            ...user,
+            totalAmountInRange,
+            totalBidsInRange,
+            bidPrize,
+            totalAmount,
+            totalBids,
+          };
+        })
+        .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
     };
 
-    const filtered = data
-      .map((user) => {
-        const { total, bidSumArr } = sumAmountsForDateRange(user);
+    const rawTableData = sumUsersCargos(joinData.data, joinData.userList);
 
-        const bidPrize =
-          calculateCurrentPrize(total) + bidSumArr.length > 25 &&
-          (bidSumArr.length - 25) * 1000;
+    const leaderUserSum = findMaxValue(rawTableData);
 
-        const amount = user.value.reduce((acc, item) => {
-          return acc + item;
-        }, 0);
-
-        return {
-          ...user,
-          amount: getSeparatedNumber(amount),
-          totalAmountInRange: total,
-          totalBidsInRange: bidSumArr.length,
-          bidSum: user.value.length,
-          prizeSum: bidPrize,
-          currentWeek: { start: dateVal.start, end: dateVal.end },
-        };
-      })
-      .filter(
-        (user) =>
-          user.role == "Логист" ||
-          user.role === "Логист Дистант" ||
-          user.role == "Логист Москва"
-      )
-      .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
-
-    const leaderUserSum = findMaxValue(filtered);
-
-    const totalPrize = filtered.reduce((acc, curr) => {
+    const totalPrize = rawTableData.reduce((acc, curr) => {
       return acc + curr.totalAmountInRange;
     }, 0);
-    const newData = filtered.map((item) => {
+
+    const newData = rawTableData.map((item) => {
       return {
         ...item,
         totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
@@ -135,14 +156,17 @@ export function DataTable() {
           item.totalAmountInRange == leaderUserSum ? leaderUserSum : 0,
       };
     });
-    setFilteredData(newData);
+    setTableData(newData);
+
+    console.log("totalPrize", calculateCurrentPrize(totalPrize));
+    console.log(newData);
   };
 
   useEffect(() => {
-    if (isFetched && data) {
-      handleSetTimeRangeFilter();
+    if (isJoinFetched && joinData) {
+      handleSetWeekFilter();
     }
-  }, [dateVal, data, isFetched]);
+  }, [weekNum, joinData, isJoinFetched]);
 
   if (isLoading) {
     return <Spinner />;
@@ -209,7 +233,7 @@ export function DataTable() {
             onChange={setDateVal}
             maxValue={today(getLocalTimeZone())}
           /> */}
-          <CustomWeekSelector setDateVal={setDateVal} />
+          <CustomWeekSelector setWeekNum={setWeekNum} />
         </div>
       </div>
     </div>

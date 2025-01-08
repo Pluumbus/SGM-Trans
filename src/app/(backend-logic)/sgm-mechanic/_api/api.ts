@@ -70,12 +70,10 @@ export const TestPostApi = async (
 
   let responseData = await makeRequest(jwtToken);
 
-  // Если токен недействителен, обновляем токен и повторяем запрос
   if (responseData === null) {
     jwtToken = await refreshJWTToken();
     responseData = await makeRequest(jwtToken);
   }
-  // console.log(responseData);
 
   return responseData;
 };
