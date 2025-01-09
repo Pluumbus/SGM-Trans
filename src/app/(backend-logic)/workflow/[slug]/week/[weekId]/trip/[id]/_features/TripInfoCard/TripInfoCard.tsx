@@ -39,8 +39,7 @@ export const TripInfoCard = ({
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
 
-
-  const checkRole = useCheckRole(["Зав.Склада", "Зав.Склада Москва"])
+  const checkRole = useCheckRole(["Зав.Склада", "Зав.Склада Москва"]);
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {
@@ -134,12 +133,21 @@ export const TripInfoCard = ({
             />
 
             <div>
-              {checkRole ?  <Button color="success" onPress={disclosure.onOpenChange}>
+              <RoleBasedWrapper
+                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
+              >
+                <Button color="success" onPress={disclosure.onOpenChange}>
                   Добавить груз
-                </Button> : <Button color="success" onPress={onOpenChange}>
+                </Button>
+              </RoleBasedWrapper>
+              <RoleBasedWrapper
+                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
+                exclude
+              >
+                <Button color="success" onPress={onOpenChange}>
                   Добавить груз
-                </Button>}
-              
+                </Button>
+              </RoleBasedWrapper>
             </div>
           </div>
         </CardBody>

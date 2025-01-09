@@ -15,11 +15,11 @@ const excludeNeededItems = (
 
 const GlobalLogistSchema = () => {
   const excl = [""];
-  return excludeNeededItems(getBaseColumnsConfig(), excl);
+  return excludeNeededItems(getBaseColumnsConfig(), excl, true);
 };
 const MngSchema = () => {
   const excl = [""];
-  return excludeNeededItems(getBaseColumnsConfig(), excl);
+  return excludeNeededItems(getBaseColumnsConfig(), excl, true);
 };
 export const WHSchema = () => {
   const excl = [
@@ -46,17 +46,19 @@ const GlobalWareHouseManagerSchema = () => {
     "driver",
     "transportation_manager",
   ];
-  return excludeNeededItems(getBaseColumnsConfig(), excl);
+  return excludeNeededItems(getBaseColumnsConfig(), excl, true);
 };
 const CashierSchema = () => {
   const excl = [""];
-  return excludeNeededItems(getBaseColumnsConfig(), excl);
+  return excludeNeededItems(getBaseColumnsConfig(), excl, true);
 };
 export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
   const role = useRole();
   switch (role) {
     // case "Админ":
+    //   return CashierSchema();
     //   return GlobalWareHouseManagerSchema();
+
     case "Логист":
       return GlobalLogistSchema();
     case "Зав.Склада":
