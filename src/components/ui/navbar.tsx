@@ -77,7 +77,7 @@ const Navbar = () => {
                   Заявки от клиентов
                 </Link>
               )}
-              <DevToggle />
+              {/* <DevToggle /> */}
             </RoleBasedWrapper>
           </nav>
           /* <NavigationMenu>
