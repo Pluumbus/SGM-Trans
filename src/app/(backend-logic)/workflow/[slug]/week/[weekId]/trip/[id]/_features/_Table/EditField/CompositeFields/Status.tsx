@@ -61,7 +61,7 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               variant="light"
               color="danger"
               onPress={() => {
-                disclosure.onOpenChange;
+                disclosure.onOpenChange();
               }}
             >
               Отмена
@@ -70,7 +70,7 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               variant="flat"
               color="success"
               onPress={() => {
-                disclosure.onOpenChange;
+                disclosure.onOpenChange();
               }}
             >
               Сохранить
