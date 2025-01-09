@@ -10,6 +10,7 @@ import { useRole } from "../RoleManagment/useRole";
 import RoleBasedWrapper from "../RoleManagment/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
 import { PATHS } from "@/lib/consts";
+import DevToggle from "./TestMode";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
@@ -76,6 +77,7 @@ const Navbar = () => {
                   Заявки от клиентов
                 </Link>
               )}
+              <DevToggle />
             </RoleBasedWrapper>
           </nav>
           /* <NavigationMenu>

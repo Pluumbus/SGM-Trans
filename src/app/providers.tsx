@@ -7,6 +7,7 @@ import { ThemeProviderProps } from "next-themes/dist/types";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RowsPerPageProvider } from "@/tool-kit/providers/rowsPerPageProvider";
 import { AnimationsProvider } from "@/tool-kit/ui/Effects";
+import { useEffect } from "react";
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -37,6 +38,35 @@ function getQueryClient() {
 export function Providers({ children, themeProps }: ProvidersProps) {
   const router = useRouter();
   const queryClient = getQueryClient();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.search === "?dev") {
+      const originalPush = router.push;
+      router.push = async (url, as, options) => {
+        let modifiedUrl = url;
+        if (typeof url === "string") {
+          if (url.includes("?")) {
+            if (!url.includes("dev")) {
+              modifiedUrl = `${url}&dev`;
+            }
+          } else {
+            modifiedUrl = `${url}?dev`;
+          }
+        } else if (typeof url === "object" && url !== null) {
+          url.query = url.query || {};
+
+          if (!("dev" in url.query)) {
+            url.query.dev = "";
+          }
+          modifiedUrl = url;
+        }
+
+        console.log("modifiedUrl: ", modifiedUrl);
+
+        return originalPush(modifiedUrl, as, options);
+      };
+    }
+  }, [router]);
 
   return (
     <QueryClientProvider client={queryClient}>
