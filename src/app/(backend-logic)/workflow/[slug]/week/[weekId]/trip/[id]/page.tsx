@@ -104,13 +104,14 @@ const Page: NextPage = () => {
     const newCities =
       uniqueData.length <= 5 ? uniqueData.slice(0, 3) : uniqueData.slice(0, 4);
 
-    newCities.unshift(mainCity);
+    uniqueData.unshift(mainCity);
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = newCities)
+        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = uniqueData)
       )
     );
+    console.log("newCurrentTripCities", newCurrentTripCities);
     const newTripsData = tripsData.map((trip) =>
       trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];

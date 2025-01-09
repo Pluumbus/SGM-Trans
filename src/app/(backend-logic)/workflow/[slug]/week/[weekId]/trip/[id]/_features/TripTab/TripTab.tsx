@@ -41,7 +41,7 @@ export const TripTab = ({
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[]) => void;
 }) => {
-  const { data, isFetched } = useQuery({
+  const { data, isFetched, isLoading } = useQuery({
     queryKey: [`cargo-${trip.id}`],
     queryFn: async () => await getCargos(trip.id.toString()),
     enabled: !!trip.id,
@@ -183,13 +183,13 @@ export const TripTab = ({
 
       <div className="space-y-4">
         {groupCargosByCity(getSortedCargos()).map((e) => (
-          <div className="">
+          <div>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
             <UTable
               tBodyProps={{
                 emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                isLoading: !isFetched,
+                isLoading: isLoading,
                 loadingContent: <SgmSpinner />,
               }}
               data={e.cargos}

@@ -12,8 +12,6 @@ const RoleBasedWrapper: React.FC<{
   const [hasAccess, setHasAccess] = useState(false);
   const { user, isLoaded } = useUser();
 
-  console.log("exclude", exclude);
-
   useEffect(() => {
     const checkUserRole = () => {
       try {
