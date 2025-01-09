@@ -50,7 +50,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const addSNT = () => {
     setValues((prev) => ({
       ...prev,
-      snts: [...prev?.snts, "KZ-SNT-"],
+      snts: [...prev?.snts, ""],
     }));
   };
 
@@ -66,7 +66,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     if (value.length >= 47 && index === values.snts.length - 1) {
       setValues((prev) => ({
         ...prev,
-        snts: [...prev.snts, "KZ-SNT-"],
+        snts: [...prev.snts, ""],
       }));
     }
   };
@@ -186,7 +186,6 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           >
             {values.snts.map((e, i) => (
               <>
-                {/* @TODO: В будущем сделать копировать в буфер по клику */}
                 <Card
                   shadow="none"
                   className="w-full !overflow-visible pl-1 bg-transparent"
@@ -244,15 +243,19 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                   }}
                   className="mb-2"
                 />
-                {values?.snts?.slice(1).map((snt, index) => (
-                  <Textarea
-                    key={index}
-                    // value={snt}
-                    label={`СНТ ${index + 2}`}
-                    onChange={(e) => handleSntChange(e.target.value, index + 1)}
-                    className="mb-2"
-                  />
-                ))}
+                {values?.snts
+                  ?.slice(1)
+                  .map((snt, index) => (
+                    <Textarea
+                      key={index}
+                      value={snt}
+                      label={`СНТ ${index + 2}`}
+                      onChange={(e) =>
+                        handleSntChange(e.target.value, index + 1)
+                      }
+                      className="mb-2"
+                    />
+                  ))}
               </ScrollShadow>
             </div>
             {!values.snts.some((e) => e == "") && (

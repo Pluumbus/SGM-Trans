@@ -35,7 +35,6 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     queryFn: async () => await getUserList(),
   });
 
-  console.log(allUsers);
   const groupCargosByUser = (data) => {
     const grouped = {};
 
