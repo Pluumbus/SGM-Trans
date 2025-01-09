@@ -25,6 +25,7 @@ import { TripInfoNum } from "./TripInfoNum";
 import { TripInfoMscCard } from "./TripMscInfoCard";
 import { WHAddCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
+import { useCheckRole } from "@/components/RoleManagment/useRole";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -38,6 +39,8 @@ export const TripInfoCard = ({
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
 
+
+  const checkRole = useCheckRole(["Зав.Склада", "Зав.Склада Москва"])
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {
@@ -131,21 +134,12 @@ export const TripInfoCard = ({
             />
 
             <div>
-              <RoleBasedWrapper
-                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
-              >
-                <Button color="success" onPress={disclosure.onOpenChange}>
+              {checkRole ?  <Button color="success" onPress={disclosure.onOpenChange}>
                   Добавить груз
-                </Button>
-              </RoleBasedWrapper>
-              <RoleBasedWrapper
-                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
-                exclude
-              >
-                <Button color="success" onPress={onOpenChange}>
+                </Button> : <Button color="success" onPress={onOpenChange}>
                   Добавить груз
-                </Button>
-              </RoleBasedWrapper>
+                </Button>}
+              
             </div>
           </div>
         </CardBody>
