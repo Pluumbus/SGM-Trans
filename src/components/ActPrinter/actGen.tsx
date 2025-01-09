@@ -2,10 +2,11 @@
 import React from "react";
 import Handlebars from "handlebars";
 import { bodyHtmlTemp, stylesTemp } from "./act";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import { clientBodyHtmlTemp, clientStylesTemp } from "./clientAct";
 import { wrhBodyHtmlTemp, wrhStylesTemp } from "./wareHouseAct";
 import { ActType, ClientsActType, WareHouseActType } from "./types";
+import { FaDownload } from "react-icons/fa";
 
 export const PrintButton = ({ actData }: { actData: ActType }) => {
   const handlePrintClick = () => {
@@ -36,9 +37,16 @@ export const PrintButton = ({ actData }: { actData: ActType }) => {
 
   return (
     <div>
-      <Button color="success" onPress={handlePrintClick}>
-        Печать
-      </Button>
+      <Tooltip content={<span>Скачать Акт выдачи</span>}>
+        <Button
+          color="success"
+          variant="flat"
+          isIconOnly
+          onPress={handlePrintClick}
+        >
+          <FaDownload />
+        </Button>
+      </Tooltip>
       {/* <Image src={logo} alt="" width={156} height={120} /> */}
     </div>
   );

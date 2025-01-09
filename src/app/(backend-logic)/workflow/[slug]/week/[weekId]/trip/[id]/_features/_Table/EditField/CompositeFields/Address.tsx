@@ -8,7 +8,7 @@ import { Text } from "../Text";
 export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const disclosure = useDisclosure();
   return (
-    <div>
+    <div className="min-w-40">
       <Text info={info} />
 
       {/* <Tooltip content={<span>{info.getValue() || ""}</span>}>

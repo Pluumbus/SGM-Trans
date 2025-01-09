@@ -21,7 +21,7 @@ import { toast, useToast } from "@/components/ui/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { getUserById } from "../../../../../_api";
 import { setUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
-import { FaCircleXmark } from "react-icons/fa6";
+import { FaCircleXmark, FaDownload } from "react-icons/fa6";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { PrintButton } from "@/components/ActPrinter/actGen";
 import { IoCheckmark } from "react-icons/io5";
@@ -101,21 +101,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className="flex flex-col gap-2 w-[2rem]">
       <div className="flex flex-col gap-2 w-full items-center">
-        {check ? (
-          <Checkbox
-            isSelected={values.is_ready}
-            onValueChange={(e) => {
-              setValues({
-                user_id: user.id,
-                is_ready: e,
-              });
-            }}
-          >
-            {givingActText}
-          </Checkbox>
-        ) : values.is_ready ? (
-          <Checkbox isSelected={true}>{givingActText}</Checkbox>
-        ) : conditionIsReadyToGiveAct ? (
+        {check ? null : values.is_ready ? null : conditionIsReadyToGiveAct ? (
           <span>Одобрено Кассой</span>
         ) : (
           <Tooltip content={<span>Одобрить?</span>}>
