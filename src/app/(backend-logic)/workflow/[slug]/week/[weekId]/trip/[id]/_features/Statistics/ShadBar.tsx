@@ -32,20 +32,10 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   // });
   const { data: allUsers, isLoading } = useQuery({
     queryKey: ["getUsersList"],
-    queryFn: async () => {
-      const users = await getUserList();
-      // const filteredUsrs = users.filter(
-      //   (user) =>
-      //     user.role === "Логист" ||
-      //     user.role === "Логист Дистант" ||
-      //     user.role === "Логист Москва" ||
-      //     user.role === "Зав. Склад Москва" ||
-      //     user.role === "Зав. Склад",
-      // );
-      return users as UsersList[];
-    },
+    queryFn: async () => await getUserList(),
   });
 
+  console.log(allUsers);
   const groupCargosByUser = (data) => {
     const grouped = {};
 

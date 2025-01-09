@@ -4,7 +4,13 @@ import { COLORS } from "@/lib/colors";
 import { useNumberState } from "@/tool-kit/hooks";
 import { Card, CardBody } from "@nextui-org/react";
 
-export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
+export const TotalStats = ({
+  cargos,
+  onTop = false,
+}: {
+  cargos: CargoType[];
+  onTop?;
+}) => {
   const totalWeight =
     cargos && cargos.length > 0
       ? parseFloat(
@@ -13,7 +19,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               const value = parseFloat(cargo.weight.replace(",", "."));
               return isNaN(value) ? sum : sum + value;
             }, 0)
-            .toFixed(3),
+            .toFixed(3)
         )
       : 0;
 
@@ -25,7 +31,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               const value = parseFloat(cargo.volume.replace(",", "."));
               return isNaN(value) ? sum : sum + value;
             }, 0)
-            .toFixed(1),
+            .toFixed(1)
         )
       : 0;
 
@@ -66,7 +72,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
             Array.isArray(client.snts) &&
             client.snts.some(
               (snt) =>
-                snt.startsWith("KZ-SNT-") && snt.length > "KZ-SNT-".length,
+                snt.startsWith("KZ-SNT-") && snt.length > "KZ-SNT-".length
             );
           return isModified ? count + client.snts.length : count;
         }, 0) - 1
@@ -75,7 +81,7 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
     <div>
       <Card className="mb-3">
         <CardBody>
-          <div className="flex justify-around">
+          <div className={!onTop ? "flex justify-around" : "grid gap-4"}>
             <span>
               Общий вес:{" "}
               <b
@@ -126,15 +132,17 @@ export const TotalStats = ({ cargos }: { cargos: CargoType[] }) => {
               тг
             </span>
           </div>
-          <div className="flex justify-around">
-            <span>
-              Кол-во клиентов: <b>{totalClientsCount}</b> / с документами:{" "}
-              <b>{totalDocumentsCount}</b>
-            </span>
-            <span>
-              Кол-во полученных СНТ: <b>{totalDocumentsAcceptedCount + 1}</b>
-            </span>
-          </div>
+          {!onTop && (
+            <div className="flex justify-around">
+              <span>
+                Кол-во клиентов: <b>{totalClientsCount}</b> / с документами:{" "}
+                <b>{totalDocumentsCount}</b>
+              </span>
+              <span>
+                Кол-во полученных СНТ: <b>{totalDocumentsAcceptedCount + 1}</b>
+              </span>
+            </div>
+          )}
         </CardBody>
       </Card>
     </div>

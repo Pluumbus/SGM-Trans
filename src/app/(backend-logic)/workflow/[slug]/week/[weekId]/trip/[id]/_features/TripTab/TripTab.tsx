@@ -39,7 +39,7 @@ export const TripTab = ({
   trip: TripType;
   columns: UseTableColumnsSchema<CargoType>[];
   isOnlyMycargos: boolean;
-  onCargosUpdate: (cities: string[]) => void;
+  onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
   const { data, isFetched, isLoading } = useQuery({
     queryKey: [`cargo-${trip.id}`],
@@ -76,7 +76,10 @@ export const TripTab = ({
   }, [data, isOnlyMycargos]);
 
   useEffect(() => {
-    onCargosUpdate(data?.map((cargo) => cargo.unloading_point.city));
+    onCargosUpdate(
+      data?.map((cargo) => cargo.unloading_point.city),
+      data
+    );
   }, [data]);
 
   useEffect(() => {

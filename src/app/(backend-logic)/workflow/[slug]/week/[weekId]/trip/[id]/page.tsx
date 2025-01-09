@@ -19,7 +19,10 @@ import { NextPage } from "next";
 
 import React from "react";
 import { useRoleBasedSchema } from "@/components/RoleManagment/RoleBasedSchema";
-import { WeekType } from "@/app/(backend-logic)/workflow/_feature/types";
+import {
+  CargoType,
+  WeekType,
+} from "@/app/(backend-logic)/workflow/_feature/types";
 import { CreateTripInsideWeek } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
 import supabase from "@/utils/supabase/client";
 import { TripInfoCard } from "./_features/TripInfoCard";
@@ -27,6 +30,7 @@ import { TripAndWeeksIdType } from "../_api/types";
 import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
 import { getDayOfWeek } from "./_helpers";
 import { SelectionProvider } from "./_features/Contexts";
+import { TotalStats } from "./_features/Statistics/TotalStats";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -36,6 +40,7 @@ const Page: NextPage = () => {
 
   const [selectedTabId, setSelectedTabId] = useState(id);
   const [tripsData, setTripsData] = useState<TripType[]>([]);
+  const [cargos, setCargos] = useState<CargoType[]>();
   const [week, setWeek] = useState<WeekType>();
 
   const [isOnlyMycargos, setToLocalStorage] = useState(false);
@@ -95,7 +100,12 @@ const Page: NextPage = () => {
 
   const columns = useRoleBasedSchema();
 
-  const handleCargosUpdate = (cities: string[], tripid: number) => {
+  const handleCargosUpdate = (
+    cities: string[],
+    tripid: number,
+    cargos: CargoType[]
+  ) => {
+    setCargos(cargos);
     const uniqueData = Array.from(new Set(cities));
 
     const mainCity = tripsData.filter((trip) => trip.id === tripid)[0]
@@ -111,7 +121,6 @@ const Page: NextPage = () => {
         (tripsData.filter((trip) => trip.id === tripid)[0].city_to = uniqueData)
       )
     );
-    console.log("newCurrentTripCities", newCurrentTripCities);
     const newTripsData = tripsData.map((trip) =>
       trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];
@@ -131,6 +140,9 @@ const Page: NextPage = () => {
             selectedTabId={selectedTabId}
             tripsData={tripsData}
           />
+          <div className="mr-[16rem]">
+            <TotalStats cargos={cargos} onTop={true} />
+          </div>
           <WorkflowBucket />
         </div>
         <div className="flex flex-col ">
@@ -164,8 +176,8 @@ const Page: NextPage = () => {
                     trip={trip}
                     columns={columns}
                     isOnlyMycargos={isOnlyMycargos}
-                    onCargosUpdate={(cities) =>
-                      handleCargosUpdate(cities, trip.id)
+                    onCargosUpdate={(cities, cargos) =>
+                      handleCargosUpdate(cities, trip.id, cargos)
                     }
                   />
                 </Tab>
