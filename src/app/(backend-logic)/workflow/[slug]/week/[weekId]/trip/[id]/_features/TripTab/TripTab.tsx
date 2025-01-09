@@ -152,7 +152,9 @@ export const TripTab = ({
       return cityA.localeCompare(cityB);
     });
   };
-
+  const citiesData = groupCargosByCity(getSortedCargos());
+  console.log(citiesData);
+  if (!citiesData) return <SgmSpinner />;
   return (
     <>
       {cargos.length > 0 && (
@@ -185,7 +187,7 @@ export const TripTab = ({
       </div>
 
       <div className="space-y-4">
-        {groupCargosByCity(getSortedCargos()).map((e) => (
+        {citiesData.map((e) => (
           <div>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />

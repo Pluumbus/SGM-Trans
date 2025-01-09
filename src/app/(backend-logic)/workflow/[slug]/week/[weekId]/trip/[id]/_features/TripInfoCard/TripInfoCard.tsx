@@ -26,6 +26,7 @@ import { TripInfoMscCard } from "./TripMscInfoCard";
 import { WHAddCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
+import { TripInfoValueRate } from "./TripInfoValueRate";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -93,6 +94,7 @@ export const TripInfoCard = ({
               id={Number(selectedTabId)}
               tempId={currentTripData?.trip_number}
             />
+            <TripInfoValueRate />
             <TripInfoDriver
               tripsData={tripsData}
               currentTripData={currentTripData}
