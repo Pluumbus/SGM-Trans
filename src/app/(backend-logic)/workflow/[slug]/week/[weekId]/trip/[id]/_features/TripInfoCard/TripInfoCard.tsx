@@ -132,17 +132,21 @@ export const TripInfoCard = ({
               tripsData={tripsData}
             />
 
-            <div>
+            <div className="flex gap-2">
               <RoleBasedWrapper
-                allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
+                allowedRoles={["Зав.Склада", "Зав.Склада Москва", "Админ"]}
               >
-                <Button color="success" onPress={disclosure.onOpenChange}>
-                  Добавить груз
+                <Button
+                  color="success"
+                  onPress={disclosure.onOpenChange}
+                  variant="flat"
+                >
+                  Добавить груз от лица Зав Склада
                 </Button>
               </RoleBasedWrapper>
               <RoleBasedWrapper
                 allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
-                exclude
+                exclude={true}
               >
                 <Button color="success" onPress={onOpenChange}>
                   Добавить груз
