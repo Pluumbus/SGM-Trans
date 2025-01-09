@@ -28,6 +28,6 @@ export const addCargoOnSubmit = (
     status: data.status?.year
       ? // @ts-ignore
         `${data.status.year}-${data.status.month}-${data.status.day}`
-      : `${new Date().toISOString().split("T")[0]}`,
+      : null,
   });
 };

@@ -32,15 +32,14 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   return (
     <>
-      <Button
-        isIconOnly
-        onPress={() => {
+      <div
+        className="cursor-pointer"
+        onClick={() => {
           disclosure.onOpenChange();
         }}
-        variant="light"
       >
-        <FaCalendar />
-      </Button>
+        {info.getValue() || "-"}
+      </div>
       <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
         <ModalContent>
           <ModalHeader>Изменить дату поступления на склад</ModalHeader>

@@ -9,7 +9,7 @@ export const Address = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const disclosure = useDisclosure();
   return (
     <div className="min-w-40 my-2">
-      <Text info={info} cl="max-h-40" />
+      <Text info={info} />
 
       {/* <Tooltip content={<span>{info.getValue() || ""}</span>}>
         <Button

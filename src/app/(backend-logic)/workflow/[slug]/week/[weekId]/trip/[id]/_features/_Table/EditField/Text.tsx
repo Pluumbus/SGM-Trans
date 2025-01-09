@@ -61,9 +61,7 @@ export const Text = ({
   }, [debouncedValue]);
 
   return (
-    <div
-      className={`max-h-[120px] min-w-20 w-full h-full flex items-end ${cl}`}
-    >
+    <div className={`min-w-20 w-full flex items-end ${cl}`}>
       <Textarea
         aria-label={`text ${info.column.columnDef.accessorKey.toString()}`}
         variant="underlined"
