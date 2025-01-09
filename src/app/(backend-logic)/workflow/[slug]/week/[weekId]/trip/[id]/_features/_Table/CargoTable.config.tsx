@@ -81,7 +81,9 @@ export const getBaseColumnsConfig = () => {
       ),
       size: 10,
       cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Composite"} compositeType="address" />
+        <div className="my-1">
+          <EditField info={info} type={"Composite"} compositeType="address" />
+        </div>
       ),
       filter: false,
     },
