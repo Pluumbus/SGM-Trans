@@ -32,20 +32,10 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   // });
   const { data: allUsers, isLoading } = useQuery({
     queryKey: ["getUsersList"],
-    queryFn: async () => {
-      const users = await getUserList();
-      const filteredUsrs = users.filter(
-        (user) =>
-          user.role === "Логист" ||
-          user.role === "Логист Дистант" ||
-          user.role === "Логист Москва" ||
-          user.role === "Зав. Склад Москва" ||
-          user.role === "Зав. Склад",
-      );
-      return filteredUsrs as UsersList[];
-    },
+    queryFn: async () => await getUserList(),
   });
 
+  console.log(allUsers);
   const groupCargosByUser = (data) => {
     const grouped = {};
 
@@ -80,7 +70,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
       count: groupedData[user].count,
       totalAmount: groupedData[user].amount,
       percentageOfAll: Math.round(
-        (groupedData[user].count / cargos.length) * 100,
+        (groupedData[user].count / cargos.length) * 100
       ),
       maxCount: maxCount,
       percentage: Math.round((groupedData[user].count / maxCount) * 100),
@@ -88,7 +78,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   };
 
   const [colors, setColors] = useState(
-    getRandomRainbowColors(chartData?.length),
+    getRandomRainbowColors(chartData?.length)
   );
 
   useEffect(() => {
@@ -101,7 +91,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           .filter((e) => e.count === e.maxCount)
           .map((e) => e.user);
         const leadingAmountManagers = dataToSet.reduce((max, current) =>
-          current.totalAmount > max.totalAmount ? current : max,
+          current.totalAmount > max.totalAmount ? current : max
         ).user;
         setLeadingCountManager(leadingCountManagers);
         setLeadingAmountManager(leadingAmountManagers);
@@ -180,7 +170,7 @@ const CustomBar = ({
   }, [data]);
   const leadUser = state.reduce(
     (max, item) => (item.count > max ? item.count : max),
-    0,
+    0
   );
   return (
     <Card className="flex flex-col gap-2 w-full">

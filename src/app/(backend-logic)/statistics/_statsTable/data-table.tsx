@@ -24,8 +24,6 @@ import React, { useEffect, useState } from "react";
 import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
-import { today, getLocalTimeZone, parseDate } from "@internationalized/date";
-import { isWithinInterval } from "date-fns";
 import { StatsUserList } from "@/lib/references/stats/types";
 import { AllCargosByWeek, getAllCargosByWeek, getStatsUserList } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
@@ -33,28 +31,21 @@ import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
 
 export function DataTable() {
-  const { data, isLoading, isFetched } = useQuery({
-    queryKey: ["Get users for general statistics"],
-    queryFn: async () => await getStatsUserList(),
-  });
-
-  const { data: joinData, isFetched: isJoinFetched } = useQuery({
+  const {
+    data: joinData,
+    isFetched: isJoinFetched,
+    isLoading,
+  } = useQuery({
     queryKey: ["getTablesJoinDataAndUsersList"],
     queryFn: async () => await getAllCargosByWeek(),
   });
 
   const [tableData, setTableData] = useState<StatsUserList[]>([]);
-  const [dateVal, setDateVal] = useState({
-    start: "",
-    end: "",
-  });
 
   const [weekNum, setWeekNum] = useState<number>();
 
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
-
-  console.log(data);
 
   const table = useReactTable({
     data: tableData,
