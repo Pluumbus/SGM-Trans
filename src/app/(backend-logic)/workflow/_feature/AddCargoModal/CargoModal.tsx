@@ -103,7 +103,7 @@ export const CargoModal = ({
       setValue("quantity", prefilledData.quantity, {
         shouldValidate: true,
       });
-      setValue("status", today(getLocalTimeZone()), {
+      setValue("status", prefilledData.status, {
         shouldValidate: true,
       });
       setValue("cargo_name", prefilledData.cargo_name, {

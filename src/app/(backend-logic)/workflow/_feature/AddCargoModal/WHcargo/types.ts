@@ -3,6 +3,8 @@ import { CargoType } from "../../types";
 export type WHCargoType = Pick<
   CargoType,
   | "id"
+  | "receipt_address"
+  | "client_bin"
   | "created_at"
   | "weight"
   | "volume"
