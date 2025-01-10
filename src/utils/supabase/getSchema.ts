@@ -1,4 +1,5 @@
-export const getSchema = () => {
+export const getSchema = (): "dev" | "public" => {
+  return "public";
   if (typeof window !== "undefined") {
     return window.location.hostname === "localhost" ? "dev" : "public";
   }

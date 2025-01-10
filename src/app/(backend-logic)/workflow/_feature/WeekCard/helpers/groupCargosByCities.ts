@@ -14,7 +14,7 @@ export const groupCargosByCity = (
   const cityMap: Record<string, CargoType[]> = {};
 
   if (isGetCitiesFromTheWeekType(data)) {
-    data?.forEach((item) => {
+    data?.map((item) => {
       item.cargos.forEach((cargo) => {
         const city = cargo?.unloading_point?.city || "";
         if (!cityMap[city]) {
@@ -24,7 +24,7 @@ export const groupCargosByCity = (
       });
     });
   } else {
-    data?.forEach((cargo) => {
+    data?.map((cargo) => {
       const city = cargo?.unloading_point?.city || "";
       if (!cityMap[city]) {
         cityMap[city] = [];

@@ -56,7 +56,7 @@ export const getVWSofCargos = (
   let totalWeight = 0;
   let totalAmount = 0;
 
-  data.forEach((cargo) => {
+  data.map((cargo) => {
     const volumeNum = parseFloat(String(cargo.volume).replace(",", ".")) || 0;
     const weightNum = parseFloat(String(cargo.weight).replace(",", ".")) || 0;
     const amountNum =
