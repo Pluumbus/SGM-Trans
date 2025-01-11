@@ -28,6 +28,7 @@ import { FiPlus } from "react-icons/fi";
 import { TripType } from "../TripCard/TripCard";
 import { Cars } from "@/lib/references/drivers/Cars";
 import { WeekStats } from "./Modals/WeekStats";
+import { getSchema } from "@/utils/supabase/getSchema";
 
 export const WeekCard = () => {
   const { slug } = useParams();
@@ -53,7 +54,7 @@ export const WeekCard = () => {
         "postgres_changes",
         {
           event: "*",
-          schema: "public",
+          schema: getSchema(),
           table: "weeks",
           filter: `table_type=eq.${slug}`,
         },
@@ -377,24 +378,6 @@ export const CreateTripInsideWeek = ({
                   </div>
                 </div>
               )}
-              {/* {formState.city_from.map((city, index) => (
-                <Cities
-                  key={index + 2}
-                  label={`Город отправитель ${index + 1}`}
-                  selectedKey={city}
-                  // isReadOnly={isMSK}
-                  onSelectionChange={(e) => handleCityToChange(index, e, false)}
-                />
-              ))}
-              {formState.city_to.map((city, index) => (
-                <Cities
-                  key={index + 1}
-                  // isReadOnly={!isMSK}
-                  label={`Город получатель ${index + 1}`}
-                  selectedKey={city}
-                  onSelectionChange={(e) => handleCityToChange(index, e)}
-                />
-              ))} */}
             </ModalBody>
             <Divider />
             <ModalFooter className="flex justify-between">

@@ -137,10 +137,11 @@ export function DataTable() {
     const newData = rawTableData.map((item) => {
       return {
         ...item,
+        totalAmount: getSeparatedNumber(item.totalAmount),
         totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
         prizeSum: getSeparatedNumber(
           calculateCurrentPrize(totalPrize) > 0
-            ? calculateCurrentPrize(totalPrize) + item.prizeSum
+            ? calculateCurrentPrize(totalPrize) + item.bidPrize
             : 0
         ),
         leadUserSum:
@@ -148,9 +149,6 @@ export function DataTable() {
       };
     });
     setTableData(newData);
-
-    console.log("totalPrize", calculateCurrentPrize(totalPrize));
-    console.log(newData);
   };
 
   useEffect(() => {

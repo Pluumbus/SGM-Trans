@@ -3,7 +3,7 @@ import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
 import { Button, Spinner, user } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { useAnimations } from "@/tool-kit/ui/Effects";
 
@@ -13,45 +13,78 @@ import {
   weekRangesOverlapping,
 } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
 import { useUser } from "@clerk/nextjs";
+import { debounce } from "lodash";
 
 export const ProfilePrize = ({
   isNumberOnly,
   userId,
+  weekNum,
   dateVal,
 }: {
   isNumberOnly: boolean;
   userId?: string;
+  weekNum?: number;
   dateVal?: { start; end };
 }) => {
-  const { data: sortedCargosData, isLoading } = useQuery({
+  const {
+    data: sortedCargosData,
+    isLoading,
+    isFetched,
+  } = useQuery({
     queryKey: ["getCargosForPrize"],
     queryFn: async () => await GetWeeksTripsCargos(),
   });
   const { user } = useUser();
   const [animationTriggered, setAnimationTriggered] = useState(false);
   const [cargos, setCargos] = useState<{ id: number; amount: number }[]>();
-  const [cargosPrize, setCargosPrize] = useState<number>();
+  const [cargosPrize, setCargosPrize] = useState<{
+    cargosPrize: number;
+    cargosCount;
+  }>();
   const [prize, setPrize] = useState<number>();
 
   const { triggerAnimation } = useAnimations();
 
+  console.log(weekNum);
+  const handleSetWeekFilter = () => {
+    console.log("TRIGGER CARGOS");
+    const userCargos = getCargosIdAmountFromCurrentWeek(
+      sortedCargosData,
+      weekNum,
+      userId
+    );
+
+    const cargosPrizeData = {
+      cargosPrize: userCargos.length > 25 ? (userCargos.length - 25) * 1000 : 0,
+      cargosCount: userCargos.length,
+    };
+    const totalPrize = calculateCurrentPrize(
+      cargos.reduce((acc, cur) => acc + cur.amount, 0)
+    );
+    setCargosPrize(() => cargosPrizeData);
+    setPrize(() => totalPrize);
+    console.log(totalPrize);
+  };
+
+  const debouncedSetWeekFilter = useCallback(
+    debounce(handleSetWeekFilter, 300),
+    [handleSetWeekFilter]
+  );
+
   useEffect(() => {
-    if (sortedCargosData && !cargos) {
-      setCargos(getCargosIdAmountFromCurrentWeek(sortedCargosData));
-    }
-    if (cargos) {
-      const userCargos = getCargosIdAmountFromCurrentWeek(
+    if (sortedCargosData && isFetched) {
+      debouncedSetWeekFilter();
+      const newCargos = getCargosIdAmountFromCurrentWeek(
         sortedCargosData,
-        userId
+        weekNum
       );
-      setCargosPrize(
-        userCargos.length > 25 ? (userCargos.length - 25) * 1000 : 0
-      );
-
-      setPrize(cargos.reduce((acc, cur) => acc + cur.amount, 0));
+      console.log(newCargos);
+      setCargos(() => newCargos);
     }
-  }, [sortedCargosData, cargos]);
-
+    return () => {
+      debouncedSetWeekFilter.cancel();
+    };
+  }, [weekNum, sortedCargosData]);
   useEffect(() => {
     const cn = supabase
       .channel(`profile-prizes`)
@@ -95,12 +128,10 @@ export const ProfilePrize = ({
   }, []);
 
   useEffect(() => {
-    const currentPrize = calculateCurrentPrize(prize);
-
-    if (currentPrize === 50000 && !animationTriggered) {
+    if (prize === 50000 && !animationTriggered) {
       triggerAnimation("fireworks", {
         prize: {
-          amount: currentPrize + cargosPrize,
+          amount: prize + cargosPrize.cargosPrize,
           text: user.firstName + " вы получили",
         },
       });
@@ -113,13 +144,19 @@ export const ProfilePrize = ({
   return (
     <div>
       {isNumberOnly ? (
-        <span>
-          {getSeparatedNumber(calculateCurrentPrize(prize) + cargosPrize, ",")}
-        </span>
+        <div className="flex flex-col">
+          {" "}
+          <span>
+            Сумма:{" "}
+            <b>{getSeparatedNumber(prize + cargosPrize?.cargosPrize, ",")}</b>
+          </span>
+          <span>
+            Грузы: <b>{cargosPrize?.cargosCount}</b>
+          </span>
+        </div>
       ) : (
         <span className="text-xs text-zinc-400">
-          Премия:{" "}
-          {getSeparatedNumber(calculateCurrentPrize(prize) + cargosPrize, ",")}
+          Премия: {getSeparatedNumber(prize + cargosPrize?.cargosPrize, ",")}
         </span>
       )}
     </div>
@@ -128,20 +165,15 @@ export const ProfilePrize = ({
 
 export const getCargosIdAmountFromCurrentWeek = (
   data: any[],
-  userId?,
+  weekNum?: number,
+  userId?: string,
   dateVal?: { start; end }
 ) => {
+  console.log("weekTest", weekNum);
   if (userId) {
     return data
       ?.filter((i) =>
-        dateVal
-          ? weekRangesOverlapping({
-              start_date1: dateVal.start,
-              end_date1: dateVal.end,
-              start_date2: i.week_dates.start_date,
-              end_date2: i.week_date.end_date,
-            })
-          : currentWeekIndicator(i.week_dates)
+        weekNum ? i.week_number === weekNum : currentWeekIndicator(i.week_dates)
       )
       ?.filter((item) =>
         item.trips.some((trip) =>
@@ -163,14 +195,7 @@ export const getCargosIdAmountFromCurrentWeek = (
   }
   return data
     ?.filter((i) =>
-      dateVal
-        ? weekRangesOverlapping({
-            start_date1: dateVal.start,
-            end_date1: dateVal.end,
-            start_date2: i.week_dates.start_date,
-            end_date2: i.week_date.end_date,
-          })
-        : currentWeekIndicator(i.week_dates)
+      weekNum ? i.week_number === weekNum : currentWeekIndicator(i.week_dates)
     )
     .flatMap((item) =>
       item.trips

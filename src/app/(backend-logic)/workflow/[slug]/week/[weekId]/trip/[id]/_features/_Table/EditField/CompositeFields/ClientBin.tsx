@@ -236,7 +236,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             <div className="flex flex-col">
               <ScrollShadow className="h-[20rem]">
                 <Textarea
-                  value={values?.snts[0] || ""}
+                  value={values?.snts && values.snts[0]}
                   label="СНТ 1"
                   onChange={(e) => {
                     handleSntChange(e.target.value, 0);
@@ -258,7 +258,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                   ))}
               </ScrollShadow>
             </div>
-            {!values?.snts.some((e) => e == "") && (
+            {!values?.snts?.some((e) => e == "") && (
               <>
                 <Divider />
                 <Button

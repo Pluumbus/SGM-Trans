@@ -18,18 +18,17 @@ import {
   currentWeekIndicator,
   isDateInCurrentWeek,
 } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
+import { CustomWeekSelector } from "@/app/(backend-logic)/statistics/_features/CustomWeekSelector";
+import { useState } from "react";
 
 export const TopProfile = () => {
   const { user } = useUser();
+  const [weekNum, setWeekNum] = useState();
 
   const { data } = useQuery({
     queryKey: ["getAllCargos"],
     queryFn: async () => await getAllCargos(),
   });
-
-  const userCargos = data
-    ?.filter((c) => c.user_id == user?.id!)
-    .filter((c) => isDateInCurrentWeek(c.created_at));
 
   return (
     <div>
@@ -40,27 +39,33 @@ export const TopProfile = () => {
             <AvatarProfile />
             <InputCards />
             <RoleBasedWrapper allowedRoles={["Админ", "Логист"]}>
-              <Card>
-                <div className="flex">
-                  <div className="flex flex-col p-3 items-center mt-12">
+              <Card className="w-1/3">
+                <div className="flex flex-col">
+                  {/* <div className="flex flex-col p-3 items-center">
                     <span>Баланс</span>
                     <Divider />
                     <span>
                       {(user?.publicMetadata?.balance as number) || 0}
                     </span>
-                  </div>
-                  <div className="flex flex-col p-3 items-center">
-                    <span className="text-4xl font-bold uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-blue-500 font-cinzel">
-                      Премия
-                    </span>
-                    <Divider />
-                    <ProfilePrize isNumberOnly={true} userId={user?.id} />
-                  </div>
+                  </div> */}
+                  <div className="flex gap-7 p-3 ">
+                    <div className="w-2/4">
+                      <CustomWeekSelector setWeekNum={setWeekNum} />
+                    </div>
 
-                  <div className="flex flex-col p-3 items-center mt-12">
-                    <span>Грузы</span>
-                    <Divider />
-                    <span>{userCargos ? userCargos.length : 0}</span>
+                    <div>
+                      <span className="text-4xl font-bold uppercase tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-blue-500 font-cinzel">
+                        Премия
+                      </span>
+                      <Divider />
+                      <div className="flex flex-col items-center ">
+                        <ProfilePrize
+                          isNumberOnly={true}
+                          userId={user?.id}
+                          weekNum={weekNum}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </Card>

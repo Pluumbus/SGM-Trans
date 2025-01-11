@@ -48,7 +48,6 @@ export const Body = ({
   const onChangeBIN = (str: string) => {
     setValue("client_bin.xin", str);
   };
-
   return (
     <ModalBody className="transition-all">
       <div className="grid grid-cols-2 gap-2 w-full ">
@@ -65,7 +64,7 @@ export const Body = ({
               {...register("client_bin.tempText")}
               label={`Клиент\n\n(получатель груза)`}
             />
-            <BINInput onChange={onChangeBIN} />
+            <BINInput {...register("client_bin.xin")} onChange={onChangeBIN} />
           </div>
         </div>
 

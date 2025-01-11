@@ -31,6 +31,7 @@ import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
 import { getDayOfWeek } from "./_helpers";
 import { SelectionProvider } from "./_features/Contexts";
 import { TotalStats } from "./_features/Statistics/TotalStats";
+import { getSchema } from "@/utils/supabase/getSchema";
 
 const Page: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -71,7 +72,7 @@ const Page: NextPage = () => {
         "postgres_changes",
         {
           event: "*",
-          schema: "public",
+          schema: getSchema(),
           table: "trips",
         },
         (payload) => {
