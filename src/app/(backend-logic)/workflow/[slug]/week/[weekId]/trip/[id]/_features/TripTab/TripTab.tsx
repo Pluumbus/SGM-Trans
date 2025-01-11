@@ -17,6 +17,7 @@ import { useUser } from "@clerk/nextjs";
 import React from "react";
 import {
   MngrClientButton,
+  MngrMscButton,
   MngrWrhButton,
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
@@ -225,6 +226,7 @@ export const TripTab = ({
       {cargos?.length > 0 && (
         <div className="flex justify-between">
           <MngrClientButton cargos={cargos} />
+          <MngrMscButton cargos={cargos} />
           <MngrWrhButton cargos={cargos} />
         </div>
       )}

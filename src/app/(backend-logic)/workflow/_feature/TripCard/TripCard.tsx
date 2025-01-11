@@ -25,6 +25,7 @@ export type TripType = {
   date_in: string;
   date_out: string;
   trip_number: number;
+  exchange_rate: string;
 };
 
 export const TripCard = ({
@@ -57,7 +58,7 @@ export const TripCard = ({
     row: {
       setRowData(info) {
         router.push(
-          `${pathname}/week/${weekId}/trip/${info.original.trip_number}`,
+          `${pathname}/week/${weekId}/trip/${info.original.trip_number}`
         );
       },
       setClassNameOnRow: (info) => "cursor-pointer",
@@ -78,19 +79,19 @@ export const TripCard = ({
               if (week.id === payload.new!.week_id) {
                 const newTrip = payload.new as TripType;
                 const updatedTrips = week.trips.some(
-                  (trip) => trip.id === newTrip.id,
+                  (trip) => trip.id === newTrip.id
                 )
                   ? week.trips.map((trip) =>
-                      trip.id === newTrip.id ? newTrip : trip,
+                      trip.id === newTrip.id ? newTrip : trip
                     )
                   : [...week.trips, newTrip];
 
                 return { ...week, trips: updatedTrips };
               }
               return week;
-            }),
+            })
           );
-        },
+        }
       )
       .subscribe();
 
