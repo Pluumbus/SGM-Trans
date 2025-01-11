@@ -92,11 +92,11 @@ export const UTable = <T,>({
   });
 
   return (
-    <div className="flex flex-col max-h-screen h-fit">
+    <div className="flex flex-col h-fit">
       <UTableTopContent tInstance={tInstance} />
       <div
         ref={scrollRef}
-        className="flex-grow overflow-auto h-full scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi"
+        className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi"
       >
         <Table
           aria-label={name}
@@ -104,7 +104,7 @@ export const UTable = <T,>({
           isStriped={true}
           {...props}
           isHeaderSticky={true}
-          className="h-full"
+          className="h-full max-h-screen"
         >
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
           <TableBody {...tBodyProps}>
