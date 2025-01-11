@@ -69,9 +69,6 @@ export const CargoModal = ({
       setValue("comments", prefilledData.comments, {
         shouldValidate: true,
       });
-      setValue("client_bin", prefilledData.client_bin, {
-        shouldValidate: true,
-      });
       setValue("volume", prefilledData.volume, {
         shouldValidate: true,
       });
@@ -82,13 +79,20 @@ export const CargoModal = ({
         shouldValidate: true,
       });
     } else if (prefilledData && mode == CargoModalMode.FROM_TABLE) {
-      setValue("receipt_address", "Склад Москва", {
-        shouldValidate: true,
-      });
+      setValue(
+        "receipt_address",
+        (prefilledData as CargoType).receipt_address || "Склад Москва",
+        {
+          shouldValidate: true,
+        }
+      );
       setValue("volume", prefilledData.volume, {
         shouldValidate: true,
       });
       setValue("weight", prefilledData.weight, {
+        shouldValidate: true,
+      });
+      setValue("client_bin", prefilledData.client_bin, {
         shouldValidate: true,
       });
       setValue("unloading_point", prefilledData.unloading_point, {
@@ -103,7 +107,7 @@ export const CargoModal = ({
       setValue("quantity", prefilledData.quantity, {
         shouldValidate: true,
       });
-      setValue("status", today(getLocalTimeZone()), {
+      setValue("status", prefilledData.status, {
         shouldValidate: true,
       });
       setValue("cargo_name", prefilledData.cargo_name, {
@@ -122,6 +126,7 @@ export const CargoModal = ({
         isOpen={isOpen}
         onOpenChange={onOpenChange}
         size="2xl"
+        isDismissable={false}
       >
         <ModalContent>
           <form

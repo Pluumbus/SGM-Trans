@@ -17,6 +17,7 @@ import { Cities } from "@/lib/references";
 import { useMutation } from "@tanstack/react-query";
 import { addWHCargo } from "./api";
 import { useToast } from "@/components/ui/use-toast";
+import { BINInput } from "../../BINInput/BINInput";
 
 export const WHAddCargoModal = ({
   disclosure,
@@ -48,6 +49,9 @@ export const WHAddCargoModal = ({
       });
     },
   });
+  const onChangeBIN = (str: string) => {
+    setValue("client_bin.xin", str);
+  };
   return (
     <Modal
       isOpen={disclosure.isOpen}
@@ -68,6 +72,19 @@ export const WHAddCargoModal = ({
           <Divider />
           <ModalBody>
             <div className="grid grid-cols-2 gap-2 w-full ">
+              <Textarea
+                {...register("receipt_address")}
+                label="Адрес получения груза"
+                className=" "
+                minRows={4}
+              />
+              <div className="flex flex-col gap-2">
+                <Input
+                  {...register("client_bin.tempText")}
+                  label={`Клиент\n\n(получатель груза)`}
+                />
+                <BINInput onChange={onChangeBIN} />
+              </div>
               <div className="grid grid-cols-2 col-span-2 space-y-2">
                 {withDelivery ? (
                   <div className="grid grid-cols-2 col-span-2 gap-2 items-center">

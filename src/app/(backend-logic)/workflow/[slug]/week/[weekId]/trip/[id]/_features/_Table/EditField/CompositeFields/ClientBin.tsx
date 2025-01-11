@@ -28,12 +28,12 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const SNT = "KZ-SNT-";
   const [values, setValues] = useCompositeStates<Type>(info);
   const checkEmptySNT = () =>
-    values.snts.every((e) => e.trim() == SNT || e.trim() == "");
+    values?.snts?.every((e) => e.trim() == SNT || e.trim() == "");
 
   const { onOpenChange, isOpen } = useDisclosure();
 
   useEffect(() => {
-    if (isOpen && !values.snts.every((e) => e.startsWith(SNT))) {
+    if (isOpen && !values.snts?.every((e) => e.startsWith(SNT))) {
       setValues((prev) => {
         const res = prev.snts.map((e) =>
           !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
@@ -168,11 +168,11 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       >
         <div className="w-full flex gap-2 items-center p-2 hover:opacity-75">
           <span className="text-[0.7rem]">БИН / ИИН:</span>
-          <span className="font-semibold">{values.xin}</span>
+          <span className="font-semibold">{values?.xin}</span>
         </div>
         <Divider orientation="horizontal" className="col-span-2" />
       </div>
-      {values.snts.length > 0 && values.snts[0] !== SNT && (
+      {values?.snts?.length > 0 && values?.snts[0] !== SNT && (
         <ScrollShadow
           className="w-full max-h-[150px]"
           hideScrollBar
@@ -184,7 +184,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               copySnts();
             }}
           >
-            {values.snts.map((e, i) => (
+            {values?.snts.map((e, i) => (
               <>
                 <Card
                   shadow="none"
@@ -236,7 +236,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             <div className="flex flex-col">
               <ScrollShadow className="h-[20rem]">
                 <Textarea
-                  value={values?.snts[0]}
+                  value={values?.snts && values.snts[0]}
                   label="СНТ 1"
                   onChange={(e) => {
                     handleSntChange(e.target.value, 0);
@@ -258,7 +258,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                   ))}
               </ScrollShadow>
             </div>
-            {!values.snts.some((e) => e == "") && (
+            {!values?.snts?.some((e) => e == "") && (
               <>
                 <Divider />
                 <Button

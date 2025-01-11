@@ -25,15 +25,11 @@ export const WHSchema = () => {
   const excl = [
     "amount",
     "is_act_ready",
-    "receipt_address",
     "is_unpalletizing",
     "loading_scheme",
-    "driver",
     "CheckBox",
     "transportation_manager",
-    "status",
     "act_details",
-    "client_bin",
   ];
   return excludeNeededItems(getBaseColumnsConfig(), excl, false);
 };

@@ -94,14 +94,12 @@ export const TripTab = ({
         },
         (payload) => {
           if (payload.eventType !== "UPDATE") {
-            setCargos((prev) => {
-              setRowSelected((prevv) => [
-                ...prevv,
-                { number: (payload.new as CargoType)!.id, isSelected: false },
-              ]);
-
-              return [...prev, payload.new as CargoType];
-            });
+            const newCargo = payload.new as CargoType;
+            setCargos((prev) => [...prev, newCargo]);
+            setRowSelected((prev) => [
+              ...prev,
+              { number: newCargo.id, isSelected: false },
+            ]);
           } else {
             setCargos((prev) => {
               const res = prev

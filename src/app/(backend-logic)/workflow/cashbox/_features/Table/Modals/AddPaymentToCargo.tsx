@@ -201,7 +201,11 @@ export const AddPaymentToCargo = ({
   };
 
   return (
-    <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
+    <Modal
+      isOpen={disclosure.isOpen}
+      onOpenChange={disclosure.onOpenChange}
+      isDismissable={false}
+    >
       <ModalContent>
         <form
           onSubmit={(e) => {
