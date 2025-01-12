@@ -44,7 +44,6 @@ export const ProfilePrize = ({
   const [prize, setPrize] = useState<number>();
 
   const { triggerAnimation } = useAnimations();
-  console.log(weekNum);
   const handleSetWeekFilter = useCallback(() => {
     const userCargos = getCargosIdAmountFromCurrentWeek(
       sortedCargosData,
@@ -63,8 +62,6 @@ export const ProfilePrize = ({
     setCargosPrize(calculateCargosForUsers(userCargos, userId));
     setCargos(newCargos);
     setPrize(isKzUser(userId) ? totalPrize : 0);
-
-    console.log("Updated prize:", totalPrize);
   }, [sortedCargosData, weekNum, userId]);
 
   useEffect(() => {
@@ -128,7 +125,6 @@ export const ProfilePrize = ({
     }
   }, [prize, cargosPrize, animationTriggered]);
 
-  console.log(cargosPrize, prize);
   if (isLoading) return <Spinner />;
   return (
     <div>
@@ -189,12 +185,10 @@ export const getCargosIdAmountFromCurrentWeek = (
       item.trips
         .filter((trip) => trip.cargos.length > 0)
         .flatMap((trip) =>
-          trip.cargos
-            .filter((f) => f.user_id !== "user_2lbRuSPuMM4kR1SgCOyb61ADYO2")
-            .map((cargo) => ({
-              id: cargo.id,
-              amount: Number(cargo.amount.value),
-            }))
+          trip.cargos.map((cargo) => ({
+            id: cargo.id,
+            amount: Number(cargo.amount.value),
+          }))
         )
     );
 };
