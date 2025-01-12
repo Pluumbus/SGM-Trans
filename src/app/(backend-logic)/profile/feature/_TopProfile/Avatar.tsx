@@ -19,12 +19,12 @@ export const AvatarProfile = () => {
     fileInputRef.current?.click();
   };
   return (
-    <div className="w-[12rem] h-[12rem] ">
+    <div className="w-[16rem] h-[12rem] ">
       <div className="relative w-full h-full group">
         <Avatar
           alt="sgm-avatar"
           src={user?.imageUrl}
-          size="lg"
+          size="md"
           className="target w-full h-full shadow-md transition duration-300 group-hover:opacity-75 group-hover:scale-105 cursor-pointer"
           //   onClick={handleAvatarClick}
         />

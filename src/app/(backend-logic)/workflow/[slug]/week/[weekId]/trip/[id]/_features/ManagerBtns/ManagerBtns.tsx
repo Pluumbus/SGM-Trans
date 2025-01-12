@@ -63,12 +63,11 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
 };
 
 export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["getDriversWithGazellCars"],
     queryFn: getDriversWithCars,
   });
   const actMscData = cargos.map((crg) => {
-    console.log(crg.driver);
     return {
       client_bin: crg.client_bin.tempText,
       receipt_address: crg.receipt_address,

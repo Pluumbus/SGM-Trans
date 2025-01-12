@@ -39,7 +39,7 @@ export const TopProfile = () => {
             <AvatarProfile />
             <InputCards />
             <RoleBasedWrapper allowedRoles={["Админ", "Логист"]}>
-              <Card className="w-1/3">
+              <Card className="w-2/3">
                 <div className="flex flex-col">
                   {/* <div className="flex flex-col p-3 items-center">
                     <span>Баланс</span>
