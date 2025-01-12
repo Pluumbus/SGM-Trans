@@ -5,8 +5,9 @@ import { bodyHtmlTemp, stylesTemp } from "./act";
 import { Button, Tooltip } from "@nextui-org/react";
 import { clientBodyHtmlTemp, clientStylesTemp } from "./clientAct";
 import { wrhBodyHtmlTemp, wrhStylesTemp } from "./wareHouseAct";
-import { ActType, ClientsActType, WareHouseActType } from "./types";
+import { ActType, ClientsActType, MscActType, WareHouseActType } from "./types";
 import { FaDownload } from "react-icons/fa";
+import { mscBodyHtmlTemp } from "./mscAct";
 
 export const PrintButton = ({ actData }: { actData: ActType }) => {
   const handlePrintClick = () => {
@@ -126,6 +127,46 @@ export const PrintWarehouseButton = ({
     <div>
       <Button color="success" onPress={handlePrintClick}>
         Печать для склада
+      </Button>
+    </div>
+  );
+};
+
+export const PrintMscButton = ({
+  actMscData,
+}: {
+  actMscData: MscActType[];
+}) => {
+  const handlePrintClick = () => {
+    const compiledTemplate = Handlebars.compile(mscBodyHtmlTemp);
+
+    const printWindow = window.open("", "", "width=800,height=600");
+    if (printWindow) {
+      const htmlContent = compiledTemplate({ items: actMscData });
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Печать</title>
+            <style>
+              ${wrhStylesTemp}
+            </style>
+          </head>
+          <body>
+            ${htmlContent}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+  };
+
+  return (
+    <div>
+      <Button color="success" onPress={handlePrintClick}>
+        Задание на погрузку печать
       </Button>
     </div>
   );
