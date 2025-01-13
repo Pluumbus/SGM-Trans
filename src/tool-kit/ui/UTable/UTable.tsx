@@ -37,12 +37,6 @@ export const UTable = <T,>({
     }
   }, [data]);
 
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-    }
-  }, [mdata]);
-
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {
       if (e.filterFn) {
@@ -94,10 +88,7 @@ export const UTable = <T,>({
   return (
     <div className="flex flex-col h-fit">
       <UTableTopContent tInstance={tInstance} />
-      <div
-        ref={scrollRef}
-        className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi"
-      >
+      <div className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi">
         <Table
           aria-label={name}
           isCompact={true}
