@@ -25,7 +25,7 @@ import { Spinner } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
 import { columns } from "./columns";
 import { StatsUserList } from "@/lib/references/stats/types";
-import { AllCargosByWeek, getAllCargosByWeek, getStatsUserList } from "../_api";
+import { AllCargosByWeek, getAllCargosByWeek } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
@@ -79,10 +79,11 @@ export function DataTable() {
         users
           // .filter(
           //   (user) =>
-          //     user.role === "Логист" ||
+          //     user.role === "Логист Кз" ||
           //     user.role === "Логист Дистант" ||
           //     user.role === "Логист Москва" ||
-          //     user.role === "Супер Логист"
+          //     user.role === "Супер Логист" ||
+          //     user.role === "Админ"
           // )
           .map((user) => {
             let totalAmountInRange = 0;
@@ -112,6 +113,7 @@ export function DataTable() {
                 });
               });
             });
+
             const bidPrize =
               calculateCurrentPrize(totalAmountInRange) + totalBidsInRange >
                 25 && (totalBidsInRange - 25) * 1000;
@@ -150,7 +152,7 @@ export function DataTable() {
           item.totalAmountInRange == leaderUserSum ? leaderUserSum : 0,
       };
     });
-    setTableData(newData);
+    setTableData(newData as StatsUserList[]);
   };
 
   useEffect(() => {

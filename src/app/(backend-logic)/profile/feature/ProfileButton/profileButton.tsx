@@ -21,8 +21,9 @@ export const ProfileButton = () => {
           <Divider />
           <span className="text-xs text-zinc-400">Баланс: {balance}</span>
           <RoleBasedWrapper
-            allowedRoles={["Логист", "Логист Москва", "Супер Логист", "Админ"]}
+            allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
           >
+            <Divider />
             <ProfilePrize isNumberOnly={false} userId={user?.id} />
           </RoleBasedWrapper>
         </div>

@@ -4,6 +4,7 @@ import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CrownText } from "@/tool-kit/ui";
 import { Avatar } from "@nextui-org/react";
 import { ColumnDef } from "@tanstack/react-table";
+import { isKzUser } from "../../profile/feature/ProfileButton/Prize/Prize";
 
 export const columns: ColumnDef<StatsUserList>[] = [
   {
@@ -35,6 +36,23 @@ export const columns: ColumnDef<StatsUserList>[] = [
     accessorKey: "prizeSum",
     id: "prizeSum",
     header: "Премия за неделю",
+    cell: ({ cell }) => {
+      const { row } = cell;
+      if (row.original.user_id === "user_2q43LAICTieWjrQavnXs5wNbQsc") {
+        return row.original.totalBidsInRange * 100;
+      }
+      if (row.original.role === "Логист Москва") {
+        if (row.original.user_id === "user_2q4308qq9oDBR0iOG6TGOMhavUx") {
+          return (
+            (Number(row.original.totalAmountInRange.replace(/,/g, "")) * 3) /
+            100
+          );
+        }
+        return 0;
+      } else {
+        return row.original.prizeSum;
+      }
+    },
   },
   {
     accessorKey: "totalAmount",
