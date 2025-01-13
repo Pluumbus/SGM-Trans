@@ -65,7 +65,7 @@ export const bodyHtmlTemp = ` <div class="container">
         <header>
             <div class="company-info">
                 <b>ТОО «SGM - Trans»</b>
-                <p>г. Астана, ул. Пушкина, 39</p>
+                <p>г. Астана, ул. Циолковского 11</p>
                 <p>тел.: 8 (7172) 48-43-41</p>
                 <p><a href="http://www.sgm-trans.com/">www.sgm-trans.com</a></p>
 
@@ -83,7 +83,6 @@ export const bodyHtmlTemp = ` <div class="container">
                 <th>Компания-получатель</th>
                     <th>Наименование груза</th>
                     <th>Количество мест</th>
-                    <th>Стоимость перевозки</th>
                     <th>ФИО получателя</th>
                     <th>Подпись получателя</th>
                 </tr>
@@ -91,8 +90,6 @@ export const bodyHtmlTemp = ` <div class="container">
                     <td>{{ client_bin}} </td>
                     <td>{{ cargo_name }}</td>
                     <td>{{ quantity }}</td>
-                    <td>{{ amount }}</td>
-                   
                     <td></td>
                 </tr>
             </table>

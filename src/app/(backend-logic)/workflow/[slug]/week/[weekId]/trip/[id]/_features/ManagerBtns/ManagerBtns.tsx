@@ -1,52 +1,66 @@
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { CargoType } from "../../../../../../../_feature/types";
 import {
-  PrintClientButton,
+  PrintAccountantButton,
   PrintMscButton,
   PrintWarehouseButton,
 } from "@/components/ActPrinter/actGen";
 import {
-  ClientsActType,
+  AccountantActType,
   MscActType,
   WareHouseActType,
 } from "@/components/ActPrinter/types";
 import { getDriversWithCars } from "@/lib/references/drivers/feature/api";
 import { useQuery } from "@tanstack/react-query";
+import {
+  getClient,
+  getClientsNames,
+} from "@/app/(backend-logic)/workflow/cashbox/_features/api/server";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
-export const MngrClientButton = ({ cargos }: { cargos: CargoType[] }) => {
+export const MngrAccButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
     (cargo) => cargo.amount?.type === "Б/нал"
   );
-  const actClientData = filteredCargos.map((crg) => {
+  const actAccountantData = filteredCargos.map((crg) => {
     return {
       amount: crg.amount.value,
       client_bin: crg.client_bin.tempText,
-      transportation_manager: crg.client_bin.tempText,
-      unloading_point:
-        crg.unloading_point.city +
-        " " +
-        (crg.unloading_point.deliveryAddress || ""),
-    } as ClientsActType;
+      unloading_point: crg.unloading_point.city,
+      receipt_address: crg.receipt_address,
+    } as AccountantActType;
   });
   return (
     <div>
       <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
-        <PrintClientButton actClientData={actClientData} />
+        <PrintAccountantButton actAccountantData={actAccountantData} />
       </RoleBasedWrapper>
     </div>
   );
 };
 
 export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
+  const { data } = useQuery({
+    queryKey: ["GetClientForAutocomplete"],
+    queryFn: async () => await getClientsNames(),
+  });
+  const { data: userData } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => getUserList(),
+  });
   const actWrhData = cargos.map((crg) => {
+    const tm = data?.filter((d) => d.id === crg.transportation_manager)[0];
     return {
       client_bin: crg.client_bin.tempText,
-      transportation_manager: crg.client_bin.tempText,
+      transportation_manager:
+        tm?.client.full_name.first_name + " " + tm?.client.phone_number,
       unloading_point:
         crg.unloading_point.city +
         " " +
         (crg.unloading_point.deliveryAddress || ""),
       cargo_name: crg.cargo_name,
+      is_unpalletizing: crg.is_unpalletizing ? "Да" : "Нет",
+      sgm_manager: userData?.filter((u) => u.id === crg.user_id)[0]?.userName,
       weight: crg.weight,
       volume: crg.volume,
       quantity: crg.quantity.value,

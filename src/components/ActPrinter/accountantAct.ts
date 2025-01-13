@@ -1,4 +1,4 @@
-export const clientStylesTemp = `body {
+export const accountantStylesTemp = `body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
@@ -65,15 +65,29 @@ li .label {
 }
 `;
 
-export const clientBodyHtmlTemp = `
+export const accountantBodyHtmlTemp = `
     <div class="container">
         <section class="cargo-info">
-            <ul>
-                <li><span class="label">Компания-получатель:</span> {{ client_bin }}</li>
-                <li><span class="label">Плательщик:</span> {{ transportation_manager }}</li>
-                <li><span class="label">Адрес разгрузки:</span> {{ unloading_point }}</li>
-                <li><span class="label">Стоимость перевозки:</span> {{ amount }}</li>
-            </ul>
+            <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Адрес получения</th>
+                        <th>Город разгрузки</th>
+                        <th>Сумма</th>
+                        <th>Компания-получатель</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {{#each items}}
+                        <tr>
+                        <td>{{ receipt_address }}</td>
+                        <td>{{ unloading_point }}</td>
+                        <td>{{ amount }}</td>
+                        <td>{{ client_bin }}</td>
+                        </tr>
+                    {{/each}}
+                </tbody>
+            </table>
         </section>
     </div>
 `;

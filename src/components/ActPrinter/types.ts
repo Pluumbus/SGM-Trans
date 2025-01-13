@@ -6,11 +6,11 @@ export type ActType = {
   date: string;
 };
 
-export type ClientsActType = {
+export type AccountantActType = {
   amount: string;
-  transportation_manager: string;
   client_bin: string;
   unloading_point: string;
+  receipt_address: string;
 };
 
 export type WareHouseActType = {
@@ -21,7 +21,9 @@ export type WareHouseActType = {
   quantity: string;
   client_bin: string;
   transportation_manager: string;
+  is_unpalletizing: string;
   comments: string;
+  sgm_manager: string;
 };
 
 export type MscActType = {

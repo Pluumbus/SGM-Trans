@@ -3,11 +3,16 @@ import React from "react";
 import Handlebars from "handlebars";
 import { bodyHtmlTemp, stylesTemp } from "./act";
 import { Button, Tooltip } from "@nextui-org/react";
-import { clientBodyHtmlTemp, clientStylesTemp } from "./clientAct";
 import { wrhBodyHtmlTemp, wrhStylesTemp } from "./wareHouseAct";
-import { ActType, ClientsActType, MscActType, WareHouseActType } from "./types";
+import {
+  AccountantActType,
+  ActType,
+  MscActType,
+  WareHouseActType,
+} from "./types";
 import { FaDownload } from "react-icons/fa";
 import { mscBodyHtmlTemp } from "./mscAct";
+import { accountantBodyHtmlTemp, accountantStylesTemp } from "./accountantAct";
 
 export const PrintButton = ({ actData }: { actData: ActType }) => {
   const handlePrintClick = () => {
@@ -53,27 +58,29 @@ export const PrintButton = ({ actData }: { actData: ActType }) => {
   );
 };
 
-export const PrintClientButton = ({
-  actClientData,
+export const PrintAccountantButton = ({
+  actAccountantData,
 }: {
-  actClientData: ClientsActType[];
+  actAccountantData: AccountantActType[];
 }) => {
   const handlePrintClick = () => {
-    const compiledTemplate = Handlebars.compile(clientBodyHtmlTemp);
+    const compiledTemplate = Handlebars.compile(accountantBodyHtmlTemp);
 
     const printWindow = window.open("", "", "width=800,height=600");
     if (printWindow) {
+      const htmlContent = compiledTemplate({ items: actAccountantData });
+
       printWindow.document.open();
       printWindow.document.write(`
         <html>
           <head>
             <title>Печать</title>
             <style>
-              ${clientStylesTemp}
+              ${accountantStylesTemp}
             </style>
           </head>
           <body>
-            ${actClientData.map((client) => compiledTemplate(client))}
+            ${htmlContent}
           </body>
         </html>
       `);
