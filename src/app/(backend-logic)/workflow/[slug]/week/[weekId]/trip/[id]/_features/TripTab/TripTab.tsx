@@ -2,7 +2,7 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
@@ -41,9 +41,10 @@ export const TripTab = ({
   onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
   const { isOnlyMyCargos } = useCargosVisibility();
+
   const { mutate, isPending } = useMutation({
     mutationKey: [`cargo-${trip.id}`],
-    mutationFn: async () => await getCargos(trip.id.toString()),
+    mutationFn: getCargos,
     onSuccess: (data) => {
       setCargos(data);
     },
@@ -59,9 +60,6 @@ export const TripTab = ({
   };
 
   const { user } = useUser();
-  useEffect(() => {
-    mutate();
-  }, []);
 
   useEffect(() => {
     if (cargos) {
@@ -75,11 +73,17 @@ export const TripTab = ({
   }, [cargos]);
 
   useEffect(() => {
-    onCargosUpdate(
-      cargos?.map((cargo) => cargo.unloading_point.city),
-      cargos
-    );
+    if (cargos) {
+      onCargosUpdate(
+        cargos.map((cargo) => cargo.unloading_point.city),
+        cargos
+      );
+    }
   }, [cargos]);
+
+  useEffect(() => {
+    mutate(trip.id.toString());
+  }, []);
 
   useEffect(() => {
     const cn = supabase
@@ -135,8 +139,9 @@ export const TripTab = ({
   const getSortedCargos = useCallback(() => {
     const priorityCities = ["Астана", "Алмата", "Караганда"];
     const crgs = isOnlyMyCargos
-      ? cargos.filter((e) => e.user_id == user.id.toString())
+      ? cargos?.filter((e) => e.user_id == user.id.toString())
       : cargos;
+
     return crgs?.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
       const cityB = b.unloading_point?.city || "";
@@ -152,9 +157,11 @@ export const TripTab = ({
 
       return cityA.localeCompare(cityB);
     });
-  }, [isOnlyMyCargos]);
+  }, [cargos, isOnlyMyCargos]);
+
   const citiesData = groupCargosByCity(getSortedCargos());
-  if (isPending)
+
+  if (isPending || !citiesData)
     return (
       <div className="flex justify-center items-center">
         <SgmSpinner />
@@ -192,7 +199,7 @@ export const TripTab = ({
       </div>
 
       <div className="space-y-4">
-        {citiesData.map((e) => (
+        {citiesData?.map((e) => (
           <div>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
