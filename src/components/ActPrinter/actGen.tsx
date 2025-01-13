@@ -138,3 +138,43 @@ export const PrintWarehouseButton = ({
     </div>
   );
 };
+
+export const PrintMscButton = ({
+  actMscData,
+}: {
+  actMscData: MscActType[];
+}) => {
+  const handlePrintClick = () => {
+    const compiledTemplate = Handlebars.compile(mscBodyHtmlTemp);
+
+    const printWindow = window.open("", "", "width=800,height=600");
+    if (printWindow) {
+      const htmlContent = compiledTemplate({ items: actMscData });
+      printWindow.document.open();
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>Печать</title>
+            <style>
+              ${wrhStylesTemp}
+            </style>
+          </head>
+          <body>
+            ${htmlContent}
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.focus();
+      printWindow.print();
+    }
+  };
+
+  return (
+    <div>
+      <Button color="success" onPress={handlePrintClick}>
+        Задание на погрузку печать
+      </Button>
+    </div>
+  );
+};
