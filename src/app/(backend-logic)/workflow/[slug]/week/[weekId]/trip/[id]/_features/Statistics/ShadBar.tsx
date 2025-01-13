@@ -100,7 +100,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
     };
 
     fetch();
-  }, [cargos.length]);
+  }, [cargos?.length]);
 
   return (
     <Card>
@@ -111,7 +111,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
         <TotalStats cargos={cargos} />
         <CustomBar
           data={chartData}
-          cargoCount={cargos.length}
+          cargoCount={cargos?.length}
           colors={colors}
           isPending={isLoading}
         />
