@@ -32,7 +32,9 @@ export const MngrAccButton = ({ cargos }: { cargos: CargoType[] }) => {
   });
   return (
     <div>
-      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
+      <RoleBasedWrapper
+        allowedRoles={["Менеджер", "Админ", "Логист Москва", "Супер Логист"]}
+      >
         <PrintAccountantButton actAccountantData={actAccountantData} />
       </RoleBasedWrapper>
     </div>
@@ -62,7 +64,9 @@ export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
   });
   return (
     <div>
-      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
+      <RoleBasedWrapper
+        allowedRoles={["Менеджер", "Админ", "Логист Москва", "Супер Логист"]}
+      >
         <PrintMscButton actMscData={actMscData} />
       </RoleBasedWrapper>
     </div>
@@ -99,7 +103,9 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
   });
   return (
     <div>
-      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
+      <RoleBasedWrapper
+        allowedRoles={["Менеджер", "Админ", "Логист Москва", "Супер Логист"]}
+      >
         <PrintWarehouseButton actWrhData={actWrhData} />
       </RoleBasedWrapper>
     </div>

@@ -6,6 +6,7 @@ import Link from "next/link";
 import React from "react";
 import { ProfilePrize } from "./Prize/Prize";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
+import { Divide } from "lucide-react";
 
 export const ProfileButton = () => {
   const { user } = useUser();
@@ -15,11 +16,13 @@ export const ProfileButton = () => {
     <div>
       <Link href={PATHS.profile} className="flex gap-4 items-center">
         <Avatar src={user?.imageUrl} />
-        <div className="flex flex-col">
+        <div className="flex flex-col ">
           <span className="text-sm">Личный кабинет</span>
+          <Divider />
           <span className="text-xs text-zinc-400">Баланс: {balance}</span>
-          <RoleBasedWrapper allowedRoles={["Логист", "Админ"]}>
-            <Divider />
+          <RoleBasedWrapper
+            allowedRoles={["Логист", "Логист Москва", "Супер Логист", "Админ"]}
+          >
             <ProfilePrize isNumberOnly={false} userId={user?.id} />
           </RoleBasedWrapper>
         </div>

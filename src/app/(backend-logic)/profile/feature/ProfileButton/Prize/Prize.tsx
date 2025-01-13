@@ -140,7 +140,7 @@ export const ProfilePrize = ({
           </span>
         </div>
       ) : (
-        <span className="text-xs text-zinc-400">
+        <span className="text-xs text-zinc-400 ">
           Премия: {getSeparatedNumber(prize + cargosPrize?.cargosPrize, ",")}
         </span>
       )}
