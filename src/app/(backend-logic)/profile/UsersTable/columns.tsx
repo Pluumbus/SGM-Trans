@@ -72,9 +72,9 @@ export const columns: ColumnDef<UsersList>[] = [
   {
     accessorKey: "balance",
     header: "Баланс",
-    cell: ({ row }) => (
-      <span>{getSeparatedNumber(Number(row.original.balance || 0)) || 0}</span>
-    ),
+    cell: ({ row }) => {
+      return getSeparatedNumber(row.original.balance) || 0;
+    },
   },
   {
     accessorKey: "time",
