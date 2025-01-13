@@ -2,7 +2,7 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
@@ -40,13 +40,8 @@ export const TripTab = ({
   columns: UseTableColumnsSchema<CargoType>[];
   onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
-  // const { data, isFetched, isLoading } = useQuery({
-  //   queryKey: [`cargo-${trip.id}`],
-  //   queryFn: async () => await getCargos(trip.id.toString()),
-  //   enabled: !!trip.id,
-  // });
-  const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
-  const { mutate, isPending, isSuccess } = useMutation({
+  const { isOnlyMyCargos } = useCargosVisibility();
+  const { mutate, isPending } = useMutation({
     mutationKey: [`cargo-${trip.id}`],
     mutationFn: async () => await getCargos(trip.id.toString()),
     onSuccess: (data) => {
@@ -64,11 +59,9 @@ export const TripTab = ({
   };
 
   const { user } = useUser();
-
-  const filterBy = () =>
-    isOnlyMyCargos
-      ? cargos.filter((e) => e.user_id == user.id.toString())
-      : cargos;
+  useEffect(() => {
+    mutate();
+  }, []);
 
   useEffect(() => {
     if (cargos) {
@@ -78,10 +71,8 @@ export const TripTab = ({
           isSelected: false,
         }))
       );
-
-      setCargos(filterBy());
     }
-  }, [cargos, isOnlyMyCargos]);
+  }, [cargos]);
 
   useEffect(() => {
     onCargosUpdate(
@@ -91,9 +82,6 @@ export const TripTab = ({
   }, [cargos]);
 
   useEffect(() => {
-    mutate();
-  }, []);
-  useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${trip.id}-${user?.id!}`)
       .on(
@@ -102,6 +90,7 @@ export const TripTab = ({
           event: "*",
           schema: getSchema(),
           table: "cargos",
+          filter: `trip_id=eq.${trip.id}`,
         },
         (payload) => {
           if (payload.eventType !== "UPDATE") {
@@ -119,7 +108,7 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => e.trip_id == trip.id && !e.is_deleted);
+                .filter((e) => !e.is_deleted);
 
               return res;
             });
@@ -141,11 +130,14 @@ export const TripTab = ({
   }, []);
 
   const { toast } = useToast();
-  const [text, copy] = useCopyToClipboard();
+  const [_, copy] = useCopyToClipboard();
 
-  const getSortedCargos = () => {
+  const getSortedCargos = useCallback(() => {
     const priorityCities = ["Астана", "Алмата", "Караганда"];
-    return cargos?.sort((a, b) => {
+    const crgs = isOnlyMyCargos
+      ? cargos.filter((e) => e.user_id == user.id.toString())
+      : cargos;
+    return crgs?.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
       const cityB = b.unloading_point?.city || "";
 
@@ -160,7 +152,7 @@ export const TripTab = ({
 
       return cityA.localeCompare(cityB);
     });
-  };
+  }, [isOnlyMyCargos]);
   const citiesData = groupCargosByCity(getSortedCargos());
   if (isPending)
     return (
