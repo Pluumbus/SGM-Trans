@@ -29,7 +29,12 @@ import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../_api/types";
 import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
 import { getDayOfWeek } from "./_helpers";
-import { SelectionProvider } from "./_features/Contexts";
+import {
+  CargosVisibility,
+  CargosVisibilityProvider,
+  SelectionProvider,
+  useCargosVisibility,
+} from "./_features/Contexts";
 import { TotalStats } from "./_features/Statistics/TotalStats";
 import { getSchema } from "@/utils/supabase/getSchema";
 
@@ -133,68 +138,77 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
   return (
-    <SelectionProvider>
-      <div>
-        <div className="flex justify-between ">
-          <TripInfoCard
-            onOpenChange={onOpenChange}
-            selectedTabId={selectedTabId}
-            tripsData={tripsData}
-          />
-          <div className="mr-[16rem]">
-            <TotalStats cargos={cargos} onTop={true} />
+    <CargosVisibilityProvider>
+      <SelectionProvider>
+        <div>
+          <div className="flex justify-between ">
+            <TripInfoCard
+              onOpenChange={onOpenChange}
+              selectedTabId={selectedTabId}
+              tripsData={tripsData}
+            />
+            <div className="mr-[16rem]">
+              <TotalStats cargos={cargos} onTop={true} />
+            </div>
+            <WorkflowBucket />
           </div>
-          <WorkflowBucket />
-        </div>
-        <div className="flex flex-col ">
-          <div className="flex flex-col justify-center items-center mb-2">
-            <span className="text-xl">Рейсы недели №{week?.week_number}</span>
-            <Checkbox
-              isSelected={isOnlyMycargos}
-              onChange={() => {
-                setToLocalStorage(!isOnlyMycargos);
-              }}
-            >
-              Показать только мои грузы
-            </Checkbox>
-          </div>
+          <div className="flex flex-col ">
+            <TabVisibility week={week} />
 
-          <Tabs
-            className="flex justify-center"
-            aria-label="Trips"
-            defaultSelectedKey={selectedTabId}
-            onSelectionChange={(key) => setSelectedTabId(key as string)}
-          >
-            {tripsData
-              .sort((a, b) => a.trip_number - b.trip_number)
-              .map((trip) => (
-                <Tab
-                  key={trip.id}
-                  className="!min-h-full !h-full"
-                  title={<TabTitle trip={trip} />}
-                >
-                  <TripTab
-                    trip={trip}
-                    columns={columns}
-                    isOnlyMycargos={isOnlyMycargos}
-                    onCargosUpdate={(cities, cargos) =>
-                      handleCargosUpdate(cities, trip.id, cargos)
-                    }
-                  />
-                </Tab>
-              ))}
-            <Tab isDisabled>
-              <CreateTripInsideWeek weekId={weekId} inTrip={true} />
-            </Tab>
-          </Tabs>
+            <Tabs
+              className="flex justify-center"
+              aria-label="Trips"
+              defaultSelectedKey={selectedTabId}
+              onSelectionChange={(key) => setSelectedTabId(key as string)}
+            >
+              {tripsData
+                .sort((a, b) => a.trip_number - b.trip_number)
+                .map((trip) => (
+                  <Tab
+                    key={trip.id}
+                    className="!min-h-full !h-full"
+                    title={<TabTitle trip={trip} />}
+                  >
+                    <TripTab
+                      trip={trip}
+                      columns={columns}
+                      onCargosUpdate={(cities, cargos) =>
+                        handleCargosUpdate(cities, trip.id, cargos)
+                      }
+                    />
+                  </Tab>
+                ))}
+              <Tab isDisabled>
+                <CreateTripInsideWeek weekId={weekId} inTrip={true} />
+              </Tab>
+            </Tabs>
+          </div>
+          <CargoModal
+            disclosure={disclosure}
+            trip_id={Number(selectedTabId)}
+            prefilledData={null}
+          />
         </div>
-        <CargoModal
-          disclosure={disclosure}
-          trip_id={Number(selectedTabId)}
-          prefilledData={null}
-        />
-      </div>
-    </SelectionProvider>
+      </SelectionProvider>
+    </CargosVisibilityProvider>
+  );
+};
+
+const TabVisibility = ({ week }: { week: WeekType }) => {
+  const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
+
+  return (
+    <div className="flex flex-col justify-center items-center mb-2">
+      <span className="text-xl">Рейсы недели №{week?.week_number}</span>
+      <Checkbox
+        isSelected={isOnlyMyCargos}
+        onValueChange={(e) => {
+          setIsOnlyMyCargos(e);
+        }}
+      >
+        Показать только мои грузы
+      </Checkbox>
+    </div>
   );
 };
 

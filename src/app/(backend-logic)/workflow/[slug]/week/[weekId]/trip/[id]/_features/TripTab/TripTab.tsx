@@ -26,7 +26,7 @@ import { Button, Divider, Spinner } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
-import { useSelectionContext } from "../Contexts";
+import { useCargosVisibility, useSelectionContext } from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
@@ -34,12 +34,10 @@ import { getSchema } from "@/utils/supabase/getSchema";
 export const TripTab = ({
   trip,
   columns,
-  isOnlyMycargos,
   onCargosUpdate,
 }: {
   trip: TripType;
   columns: UseTableColumnsSchema<CargoType>[];
-  isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
   // const { data, isFetched, isLoading } = useQuery({
@@ -47,7 +45,7 @@ export const TripTab = ({
   //   queryFn: async () => await getCargos(trip.id.toString()),
   //   enabled: !!trip.id,
   // });
-
+  const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
   const { mutate, isPending, isSuccess } = useMutation({
     mutationKey: [`cargo-${trip.id}`],
     mutationFn: async () => await getCargos(trip.id.toString()),
@@ -68,7 +66,7 @@ export const TripTab = ({
   const { user } = useUser();
 
   const filterBy = () =>
-    isOnlyMycargos
+    isOnlyMyCargos
       ? cargos.filter((e) => e.user_id == user.id.toString())
       : cargos;
 
@@ -83,7 +81,7 @@ export const TripTab = ({
 
       setCargos(filterBy());
     }
-  }, [cargos, isOnlyMycargos]);
+  }, [cargos, isOnlyMyCargos]);
 
   useEffect(() => {
     onCargosUpdate(
