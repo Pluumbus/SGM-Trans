@@ -3,7 +3,7 @@ import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
 import { Button, Spinner, user } from "@nextui-org/react";
 import { useQuery } from "@tanstack/react-query";
-import { useState, useEffect, useCallback, SetStateAction } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { useAnimations } from "@/tool-kit/ui/Effects";
 
@@ -39,37 +39,52 @@ export const ProfilePrize = ({
   const [cargos, setCargos] = useState<{ id: number; amount: number }[]>();
   const [cargosPrize, setCargosPrize] = useState<{
     cargosPrize: number;
-    cargosCount: number;
+    cargosCount;
   }>();
   const [prize, setPrize] = useState<number>();
 
   const { triggerAnimation } = useAnimations();
-  const handleSetWeekFilter = useCallback(() => {
+
+  console.log(weekNum);
+  const handleSetWeekFilter = () => {
+    console.log("TRIGGER CARGOS");
     const userCargos = getCargosIdAmountFromCurrentWeek(
       sortedCargosData,
       weekNum,
       userId
     );
-    const newCargos = getCargosIdAmountFromCurrentWeek(
-      sortedCargosData,
-      weekNum
-    );
 
+    const cargosPrizeData = {
+      cargosPrize: userCargos.length > 25 ? (userCargos.length - 25) * 1000 : 0,
+      cargosCount: userCargos.length,
+    };
     const totalPrize = calculateCurrentPrize(
-      newCargos?.reduce((acc, cur) => acc + cur.amount, 0)
+      cargos.reduce((acc, cur) => acc + cur.amount, 0)
     );
+    setCargosPrize(() => cargosPrizeData);
+    setPrize(() => totalPrize);
+    console.log(totalPrize);
+  };
 
-    setCargosPrize(calculateCargosForUsers(userCargos, userId));
-    setCargos(newCargos);
-    setPrize(isKzUser(userId) ? totalPrize : 0);
-  }, [sortedCargosData, weekNum, userId]);
+  const debouncedSetWeekFilter = useCallback(
+    debounce(handleSetWeekFilter, 300),
+    [handleSetWeekFilter]
+  );
 
   useEffect(() => {
     if (sortedCargosData && isFetched) {
-      handleSetWeekFilter();
+      debouncedSetWeekFilter();
+      const newCargos = getCargosIdAmountFromCurrentWeek(
+        sortedCargosData,
+        weekNum
+      );
+      console.log(newCargos);
+      setCargos(() => newCargos);
     }
-  }, [sortedCargosData, weekNum, isFetched, handleSetWeekFilter]);
-
+    return () => {
+      debouncedSetWeekFilter.cancel();
+    };
+  }, [weekNum, sortedCargosData]);
   useEffect(() => {
     const cn = supabase
       .channel(`profile-prizes`)
@@ -154,6 +169,7 @@ export const getCargosIdAmountFromCurrentWeek = (
   userId?: string,
   dateVal?: { start; end }
 ) => {
+  console.log("weekTest", weekNum);
   if (userId) {
     return data
       ?.filter((i) =>
@@ -191,40 +207,4 @@ export const getCargosIdAmountFromCurrentWeek = (
           }))
         )
     );
-};
-
-const calculateCargosForUsers = (userCargos, userId: string) => {
-  if (userId === "user_2q43LAICTieWjrQavnXs5wNbQsc") {
-    const cargosPrizeSuperLogist = {
-      cargosPrize: userCargos.length * 100,
-      cargosCount: userCargos.length,
-    };
-    return cargosPrizeSuperLogist;
-  }
-  if (userId === "user_2q4308qq9oDBR0iOG6TGOMhavUx") {
-    const cargosPrizeData = {
-      cargosPrize:
-        (userCargos?.reduce((acc, cur) => acc + cur.amount, 0) * 3) / 100,
-      cargosCount: userCargos.length,
-    };
-
-    return cargosPrizeData;
-  } else {
-    const cargosPrizeData = {
-      cargosPrize: userCargos.length > 25 ? (userCargos.length - 25) * 1000 : 0,
-      cargosCount: userCargos.length,
-    };
-    return cargosPrizeData;
-  }
-};
-
-const isKzUser = (userId: string) => {
-  switch (userId) {
-    case "user_2q43LAICTieWjrQavnXs5wNbQsc":
-      return false;
-    case "user_2q4308qq9oDBR0iOG6TGOMhavUx":
-      return false;
-    default:
-      return true;
-  }
 };

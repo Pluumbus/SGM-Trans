@@ -42,7 +42,7 @@ export const deleteCargo = async (cargoId: number | number[]) => {
 export const updateTripDate = async (
   value: string | any,
   tripId,
-  dateIn: boolean
+  dateIn: boolean,
 ) => {
   if (dateIn) {
     const { data, error } = await supabase
@@ -64,6 +64,7 @@ export const updateTripDate = async (
   if (error) {
     throw new Error();
   }
+  return data;
 };
 
 export const updateTripRespUser = async (value: string | any, tripId) => {
@@ -80,7 +81,7 @@ export const updateTripRespUser = async (value: string | any, tripId) => {
 
 export const updateTripDriver = async (
   value: { driver: string; car: string; state_number: string },
-  tripId: number
+  tripId: number,
 ) => {
   const { data, error } = await supabase
     .from("trips")
@@ -99,17 +100,6 @@ export const updateTripNumber = async (newNum: number, tripId: number) => {
     .update({ trip_number: newNum })
     .eq("id", Number(tripId));
 
-  if (error) {
-    throw new Error();
-  }
-  return data;
-};
-
-export const updateExchangeRate = async (value: string, tripId: number) => {
-  const { data, error } = await supabase
-    .from("trips")
-    .update({ exchange_rate: value })
-    .eq("id", tripId);
   if (error) {
     throw new Error();
   }

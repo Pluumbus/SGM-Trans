@@ -75,57 +75,55 @@ export function DataTable() {
       data: AllCargosByWeek[],
       users: StatsUserList[]
     ) => {
-      return (
-        users
-          // .filter(
-          //   (user) =>
-          //     user.role === "Логист" ||
-          //     user.role === "Логист Дистант" ||
-          //     user.role === "Логист Москва" ||
-          //     user.role === "Супер Логист"
-          // )
-          .map((user) => {
-            let totalAmountInRange = 0;
-            let totalBidsInRange = 0;
-            let totalAmount = 0;
-            let totalBids = 0;
+      return users
+        .filter(
+          (user) =>
+            user.role === "Логист" ||
+            user.role === "Логист Дистант" ||
+            user.role === "Логист Москва" ||
+            user.role === "Супер Логист"
+        )
+        .map((user) => {
+          let totalAmountInRange = 0;
+          let totalBidsInRange = 0;
+          let totalAmount = 0;
+          let totalBids = 0;
 
-            data
-              .filter((d) => d.week_number === weekNum)
-              .forEach((week) => {
-                week.trips.forEach((trip) => {
-                  trip.cargos.forEach((cargo) => {
-                    if (cargo.user_id === user.user_id) {
-                      totalAmountInRange += Number(cargo.amount.value);
-                      totalBidsInRange += 1;
-                    }
-                  });
-                });
-              });
-            data.forEach((week) => {
+          data
+            .filter((d) => d.week_number === weekNum)
+            .forEach((week) => {
               week.trips.forEach((trip) => {
                 trip.cargos.forEach((cargo) => {
                   if (cargo.user_id === user.user_id) {
-                    totalAmount += Number(cargo.amount.value);
-                    totalBids += 1;
+                    totalAmountInRange += Number(cargo.amount.value);
+                    totalBidsInRange += 1;
                   }
                 });
               });
             });
-            const bidPrize =
-              calculateCurrentPrize(totalAmountInRange) + totalBidsInRange >
-                25 && (totalBidsInRange - 25) * 1000;
-            return {
-              ...user,
-              totalAmountInRange,
-              totalBidsInRange,
-              bidPrize,
-              totalAmount,
-              totalBids,
-            };
-          })
-          .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange)
-      );
+          data.forEach((week) => {
+            week.trips.forEach((trip) => {
+              trip.cargos.forEach((cargo) => {
+                if (cargo.user_id === user.user_id) {
+                  totalAmount += Number(cargo.amount.value);
+                  totalBids += 1;
+                }
+              });
+            });
+          });
+          const bidPrize =
+            calculateCurrentPrize(totalAmountInRange) + totalBidsInRange > 25 &&
+            (totalBidsInRange - 25) * 1000;
+          return {
+            ...user,
+            totalAmountInRange,
+            totalBidsInRange,
+            bidPrize,
+            totalAmount,
+            totalBids,
+          };
+        })
+        .sort((a, b) => b.totalAmountInRange - a.totalAmountInRange);
     };
 
     const rawTableData = sumUsersCargos(joinData.data, joinData.userList);

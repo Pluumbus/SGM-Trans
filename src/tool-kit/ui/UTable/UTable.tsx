@@ -13,7 +13,7 @@ import {
 } from "@tanstack/react-table";
 import { UseTableProps } from "./types";
 import { renderColumns, renderRows } from "./helpers";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useRef, useState } from "react";
 import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 import { customFilter } from "./helpers/customFilter";
@@ -29,12 +29,19 @@ export const UTable = <T,>({
   isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
   const [mdata, setMData] = useState(data);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (data) {
       setMData(data);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+    }
+  }, [mdata]);
 
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {
@@ -87,7 +94,10 @@ export const UTable = <T,>({
   return (
     <div className="flex flex-col h-fit">
       <UTableTopContent tInstance={tInstance} />
-      <div className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi">
+      <div
+        ref={scrollRef}
+        className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi"
+      >
         <Table
           aria-label={name}
           isCompact={true}

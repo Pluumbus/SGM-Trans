@@ -19,7 +19,7 @@ export const AvatarProfile = () => {
     fileInputRef.current?.click();
   };
   return (
-    <div className="w-[15rem] h-[12rem] ">
+    <div className="w-[12rem] h-[12rem] ">
       <div className="relative w-full h-full group">
         <Avatar
           alt="sgm-avatar"
