@@ -2,7 +2,7 @@
 
 import { UTable } from "@/tool-kit/ui";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
@@ -13,6 +13,7 @@ import {
 import { getCargos } from "../../../_api";
 import supabase from "@/utils/supabase/client";
 import { BarGraph } from "../Statistics/BarGraph";
+import { useUser } from "@clerk/nextjs";
 import React from "react";
 import {
   MngrClientButton,
@@ -24,23 +25,22 @@ import { Button, Divider } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
-import { useCargosVisibility, useSelectionContext } from "../Contexts";
+import { useSelectionContext } from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
-import { useUser } from "@clerk/nextjs";
-import { useDebounce } from "@/tool-kit/hooks";
 
 export const TripTab = ({
   trip,
   columns,
+  isOnlyMycargos,
   onCargosUpdate,
 }: {
   trip: TripType;
   columns: UseTableColumnsSchema<CargoType>[];
+  isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
-  const { isOnlyMyCargos } = useCargosVisibility();
   const { data, isFetched, isLoading } = useQuery({
     queryKey: [`cargo-${trip.id}`],
     queryFn: async () => await getCargos(trip.id.toString()),
@@ -59,6 +59,9 @@ export const TripTab = ({
 
   const { user } = useUser();
 
+  const filterBy = () =>
+    isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+
   useEffect(() => {
     if (data) {
       setRowSelected(
@@ -68,9 +71,9 @@ export const TripTab = ({
         }))
       );
 
-      setCargos(data);
+      setCargos(filterBy());
     }
-  }, [data?.length]);
+  }, [data, isOnlyMycargos]);
 
   useEffect(() => {
     onCargosUpdate(
@@ -129,13 +132,9 @@ export const TripTab = ({
   const { toast } = useToast();
   const [text, copy] = useCopyToClipboard();
 
-  const getSortedCargos = useCallback(() => {
+  const getSortedCargos = () => {
     const priorityCities = ["Астана", "Алмата", "Караганда"];
-
-    const crgs = isOnlyMyCargos
-      ? cargos.filter((e) => e.user_id == user.id)
-      : cargos;
-    return crgs.sort((a, b) => {
+    return cargos.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
       const cityB = b.unloading_point?.city || "";
 
@@ -150,9 +149,10 @@ export const TripTab = ({
 
       return cityA.localeCompare(cityB);
     });
-  }, [isOnlyMyCargos]);
-
-  if (!groupCargosByCity(getSortedCargos())) return <SgmSpinner />;
+  };
+  const citiesData = groupCargosByCity(getSortedCargos());
+  console.log(citiesData);
+  if (!citiesData) return <SgmSpinner />;
   return (
     <>
       {cargos.length > 0 && (
@@ -185,7 +185,7 @@ export const TripTab = ({
       </div>
 
       <div className="space-y-4">
-        {groupCargosByCity(getSortedCargos()).map((e) => (
+        {citiesData.map((e) => (
           <div>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
