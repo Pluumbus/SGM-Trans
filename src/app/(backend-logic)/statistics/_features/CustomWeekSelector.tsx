@@ -32,10 +32,10 @@ export const CustomWeekSelector = ({
 
   useEffect(() => {
     if (data) {
-      const currentWeek = data.find((w) => currentWeekIndicator(w.week_dates));
+      const currentWeek = data?.find((w) => currentWeekIndicator(w.week_dates));
       setWeeks(data);
-      setIsPressed({ week_number: currentWeek.week_number, active: true });
-      setWeekNum(currentWeek.week_number);
+      setIsPressed({ week_number: currentWeek?.week_number, active: true });
+      setWeekNum(currentWeek?.week_number);
     }
   }, [data]);
 
@@ -63,7 +63,7 @@ export const CustomWeekSelector = ({
                     isPressed?.week_number === e.week_number && isPressed.active
                   }
                   color={
-                    isPressed.week_number === e.week_number
+                    isPressed?.week_number === e.week_number
                       ? "primary"
                       : "default"
                   }
