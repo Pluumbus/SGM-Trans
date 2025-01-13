@@ -32,7 +32,6 @@ import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekC
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
 import { useUser } from "@clerk/nextjs";
-import { useDebounce } from "@/tool-kit/hooks";
 
 export const TripTab = ({
   trip,
@@ -147,7 +146,7 @@ export const TripTab = ({
     const crgs = isOnlyMyCargos
       ? cargos.filter((e) => e.user_id == user.id)
       : cargos;
-    return crgs.sort((a, b) => {
+    return crgs?.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
       const cityB = b.unloading_point?.city || "";
 
