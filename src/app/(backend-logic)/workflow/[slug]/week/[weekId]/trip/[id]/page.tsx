@@ -29,7 +29,11 @@ import { TripInfoCard } from "./_features/TripInfoCard";
 import { TripAndWeeksIdType } from "../_api/types";
 import { WorkflowBucket } from "./_features/WorkflowBucket/WorkflowBucket";
 import { getDayOfWeek } from "./_helpers";
-import { SelectionProvider } from "./_features/Contexts";
+import {
+  CargosVisibility,
+  SelectionProvider,
+  useCargosVisibility,
+} from "./_features/Contexts";
 import { TotalStats } from "./_features/Statistics/TotalStats";
 import { getSchema } from "@/utils/supabase/getSchema";
 
@@ -44,7 +48,6 @@ const Page: NextPage = () => {
   const [cargos, setCargos] = useState<CargoType[]>();
   const [week, setWeek] = useState<WeekType>();
 
-  const [isOnlyMycargos, setToLocalStorage] = useState(false);
   const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
     mutationKey: [`trips-${weekId}`],
     mutationFn: async () => await getTripsByWeekId(weekId),
@@ -133,31 +136,21 @@ const Page: NextPage = () => {
     return <Spinner />;
   }
   return (
-    <SelectionProvider>
-      <div>
-        <div className="flex justify-between ">
-          <TripInfoCard
-            onOpenChange={onOpenChange}
-            selectedTabId={selectedTabId}
-            tripsData={tripsData}
-          />
-          <div className="mr-[16rem]">
-            <TotalStats cargos={cargos} onTop={true} />
+    <CargosVisibility>
+      <SelectionProvider>
+        <div>
+          <div className="flex justify-between ">
+            <TripInfoCard
+              onOpenChange={onOpenChange}
+              selectedTabId={selectedTabId}
+              tripsData={tripsData}
+            />
+            <div className="mr-[16rem]">
+              <TotalStats cargos={cargos} onTop={true} />
+            </div>
+            <WorkflowBucket />
           </div>
-          <WorkflowBucket />
-        </div>
-        <div className="flex flex-col ">
-          <div className="flex flex-col justify-center items-center mb-2">
-            <span className="text-xl">Рейсы недели №{week?.week_number}</span>
-            <Checkbox
-              isSelected={isOnlyMycargos}
-              onChange={() => {
-                setToLocalStorage(!isOnlyMycargos);
-              }}
-            >
-              Показать только мои грузы
-            </Checkbox>
-          </div>
+          <TripVisiblity week={week} />
 
           <Tabs
             className="flex justify-center"
@@ -176,7 +169,6 @@ const Page: NextPage = () => {
                   <TripTab
                     trip={trip}
                     columns={columns}
-                    isOnlyMycargos={isOnlyMycargos}
                     onCargosUpdate={(cities, cargos) =>
                       handleCargosUpdate(cities, trip.id, cargos)
                     }
@@ -187,14 +179,35 @@ const Page: NextPage = () => {
               <CreateTripInsideWeek weekId={weekId} inTrip={true} />
             </Tab>
           </Tabs>
+
+          <CargoModal
+            disclosure={disclosure}
+            trip_id={Number(selectedTabId)}
+            prefilledData={null}
+          />
         </div>
-        <CargoModal
-          disclosure={disclosure}
-          trip_id={Number(selectedTabId)}
-          prefilledData={null}
-        />
+      </SelectionProvider>
+    </CargosVisibility>
+  );
+};
+
+const TripVisiblity = ({ week }: { week: WeekType }) => {
+  const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
+
+  return (
+    <div className="flex flex-col ">
+      <div className="flex flex-col justify-center items-center mb-2">
+        <span className="text-xl">Рейсы недели №{week?.week_number}</span>
+        <Checkbox
+          isSelected={isOnlyMyCargos}
+          onValueChange={(e) => {
+            setIsOnlyMyCargos(e);
+          }}
+        >
+          Показать только мои грузы
+        </Checkbox>
       </div>
-    </SelectionProvider>
+    </div>
   );
 };
 

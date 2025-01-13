@@ -38,7 +38,8 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           disclosure.onOpenChange();
         }}
       >
-        {info.getValue() || "-"}
+        {/* info.getValue() */}
+        {new Date().toDateString  () || "-"}
       </div>
       <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
         <ModalContent>
