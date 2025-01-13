@@ -1,7 +1,7 @@
 "use client";
 
 import { UTable } from "@/tool-kit/ui";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { UpdateTripNumber } from "../UpdateTripNumber";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
@@ -22,7 +22,7 @@ import {
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
-import { Button, Divider } from "@nextui-org/react";
+import { Button, Divider, Spinner } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
@@ -42,13 +42,20 @@ export const TripTab = ({
   isOnlyMycargos: boolean;
   onCargosUpdate: (cities: string[], cargos: CargoType[]) => void;
 }) => {
-  const { data, isFetched, isLoading } = useQuery({
-    queryKey: [`cargo-${trip.id}`],
-    queryFn: async () => await getCargos(trip.id.toString()),
-    enabled: !!trip.id,
-  });
+  // const { data, isFetched, isLoading } = useQuery({
+  //   queryKey: [`cargo-${trip.id}`],
+  //   queryFn: async () => await getCargos(trip.id.toString()),
+  //   enabled: !!trip.id,
+  // });
 
-  const [cargos, setCargos] = useState<CargoType[]>(data || []);
+  const { mutate, isPending, isSuccess } = useMutation({
+    mutationKey: [`cargo-${trip.id}`],
+    mutationFn: async () => await getCargos(trip.id.toString()),
+    onSuccess: (data) => {
+      setCargos(data);
+    },
+  });
+  const [cargos, setCargos] = useState<CargoType[]>();
   const [rowSelected, setRowSelected] = useSelectionContext();
 
   const config: UseTableConfig<CargoType> = {
@@ -61,12 +68,14 @@ export const TripTab = ({
   const { user } = useUser();
 
   const filterBy = () =>
-    isOnlyMycargos ? data.filter((e) => e.user_id == user.id.toString()) : data;
+    isOnlyMycargos
+      ? cargos.filter((e) => e.user_id == user.id.toString())
+      : cargos;
 
   useEffect(() => {
-    if (data) {
+    if (cargos) {
       setRowSelected(
-        data.map((e) => ({
+        cargos.map((e) => ({
           number: e.id,
           isSelected: false,
         }))
@@ -74,18 +83,21 @@ export const TripTab = ({
 
       setCargos(filterBy());
     }
-  }, [data, isOnlyMycargos]);
+  }, [cargos, isOnlyMycargos]);
 
   useEffect(() => {
     onCargosUpdate(
-      data?.map((cargo) => cargo.unloading_point.city),
-      data
+      cargos?.map((cargo) => cargo.unloading_point.city),
+      cargos
     );
-  }, [data]);
+  }, [cargos]);
 
   useEffect(() => {
+    mutate();
+  }, []);
+  useEffect(() => {
     const cn = supabase
-      .channel(`workflow-trip${trip.id}`)
+      .channel(`workflow-trip${trip.id}-${user?.id!}`)
       .on(
         "postgres_changes",
         {
@@ -114,7 +126,7 @@ export const TripTab = ({
               return res;
             });
 
-            const rowsToSelect = cargos.map((e) => ({
+            const rowsToSelect = cargos?.map((e) => ({
               number: e.id,
               isSelected: false,
             }));
@@ -135,7 +147,7 @@ export const TripTab = ({
 
   const getSortedCargos = () => {
     const priorityCities = ["Астана", "Алмата", "Караганда"];
-    return cargos.sort((a, b) => {
+    return cargos?.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
       const cityB = b.unloading_point?.city || "";
 
@@ -160,12 +172,12 @@ export const TripTab = ({
     );
   return (
     <>
-      {cargos.length > 0 && (
+      {cargos?.length > 0 && (
         <Button
           variant="ghost"
           onPress={() => {
             const formattedText = cargos
-              .filter((e) => e.client_bin.xin || e.client_bin.tempText)
+              ?.filter((e) => e.client_bin.xin || e.client_bin.tempText)
               .map((e) => {
                 const snts = e.client_bin.snts
                   .filter((el) => el !== "KZ-SNT-")
@@ -178,7 +190,7 @@ export const TripTab = ({
             copy(formattedText);
             toast({
               title: "Скопировано в буфер обмена",
-              description: `Информация о ${cargos.length} клиент(ах) была скопирована`,
+              description: `Информация о ${cargos?.length} клиент(ах) была скопирована`,
             });
           }}
         >
@@ -197,8 +209,8 @@ export const TripTab = ({
             <UTable
               tBodyProps={{
                 emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                isLoading: isLoading,
-                loadingContent: <SgmSpinner />,
+                isLoading: isPending,
+                loadingContent: <Spinner />,
               }}
               data={e.cargos}
               isPagiantion={false}
@@ -216,7 +228,7 @@ export const TripTab = ({
           <DeleteCargo />
         </div>
       )}
-      {cargos.length > 0 && (
+      {cargos?.length > 0 && (
         <div className="flex justify-between">
           <MngrAccButton cargos={cargos} />
           <MngrMscButton cargos={cargos} />
