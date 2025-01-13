@@ -47,7 +47,7 @@ export const Text = ({
   useEffect(() => {
     const handler = setTimeout(() => {
       setDebouncedValue(state);
-    }, 800);
+    }, 1500);
 
     return () => {
       clearTimeout(handler);
