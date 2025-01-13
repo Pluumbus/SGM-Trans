@@ -30,6 +30,7 @@ import { BiSend } from "react-icons/bi";
 import { setUserData } from "../../../../lib/references/clerkUserType/SetUserFuncs";
 import { useToast } from "@/components/ui/use-toast";
 import { roleNamesList } from "@/components/RoleManagment/useRole";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
 
 export const columns: ColumnDef<UsersList>[] = [
   {
@@ -71,9 +72,9 @@ export const columns: ColumnDef<UsersList>[] = [
   {
     accessorKey: "balance",
     header: "Баланс",
-    cell: ({ row }) => {
-      return row.original.balance || 0;
-    },
+    cell: ({ row }) => (
+      <span>{getSeparatedNumber(Number(row.original.balance || 0)) || 0}</span>
+    ),
   },
   {
     accessorKey: "time",
