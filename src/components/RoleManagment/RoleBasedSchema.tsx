@@ -54,7 +54,7 @@ export const useRoleBasedSchema = (): UseTableColumnsSchema<CargoType>[] => {
     // return CashierSchema();
     // return GlobalWareHouseManagerSchema();
 
-    case "Логист":
+    case "Логист Кз":
       return GlobalLogistSchema();
     case "Зав.Склада":
       return GlobalWareHouseManagerSchema();
