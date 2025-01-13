@@ -33,13 +33,13 @@ export const TopProfile = () => {
   return (
     <div>
       <span className="text-2xl ">Личный кабинет</span>
-      <Card className="p-6 mt-4 w-3/4">
+      <Card className="p-6 mt-4 w-2/3">
         <CardBody>
           <div className="flex gap-16  ">
             <AvatarProfile />
             <InputCards />
             <RoleBasedWrapper allowedRoles={["Админ", "Логист"]}>
-              <Card className="w-2/3">
+              <Card className="w-1/3">
                 <div className="flex flex-col">
                   {/* <div className="flex flex-col p-3 items-center">
                     <span>Баланс</span>
@@ -48,7 +48,7 @@ export const TopProfile = () => {
                       {(user?.publicMetadata?.balance as number) || 0}
                     </span>
                   </div> */}
-                  <div className="flex gap-7 p-3 justify-around">
+                  <div className="flex gap-7 p-3 ">
                     <div className="w-2/4">
                       <CustomWeekSelector setWeekNum={setWeekNum} />
                     </div>

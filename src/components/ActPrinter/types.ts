@@ -23,17 +23,3 @@ export type WareHouseActType = {
   transportation_manager: string;
   comments: string;
 };
-
-export type MscActType = {
-  receipt_address: string;
-  unloading_point: string;
-  cargo_name: string;
-  weight: string;
-  volume: string;
-  driver: string;
-  quantity: string;
-  client_bin: string;
-  status: string;
-  is_unpalletizing: string;
-  is_documents: string;
-};

@@ -78,7 +78,7 @@ export const useCompositeStates = <T>(
     }
   }, [info.getValue()]);
 
-  const debouncedValue = useDebouncedState(values, 1500);
+  const debouncedValue = useDebouncedState(values, 500);
 
   const { tableMode } = useTableMode();
 
