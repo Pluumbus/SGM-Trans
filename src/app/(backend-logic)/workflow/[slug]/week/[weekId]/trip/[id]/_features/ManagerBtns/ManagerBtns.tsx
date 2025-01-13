@@ -39,6 +39,36 @@ export const MngrAccButton = ({ cargos }: { cargos: CargoType[] }) => {
   );
 };
 
+export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
+  const { data } = useQuery({
+    queryKey: ["getDriversWithGazellCars"],
+    queryFn: getDriversWithCars,
+  });
+  const actMscData = cargos.map((crg) => {
+    console.log(crg.driver);
+    return {
+      client_bin: crg.client_bin.tempText,
+      receipt_address: crg.receipt_address,
+      unloading_point: crg.unloading_point.city,
+      cargo_name: crg.cargo_name,
+      weight: crg.weight,
+      volume: crg.volume,
+      quantity: crg.quantity.value,
+      driver: data?.filter((f) => f.id === Number(crg.driver.id))[0]?.name,
+      is_documents: crg.is_documents ? "Да" : "Нет",
+      is_unpalletizing: crg.is_unpalletizing ? "Да" : "Нет",
+      status: crg.status,
+    } as MscActType;
+  });
+  return (
+    <div>
+      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
+        <PrintMscButton actMscData={actMscData} />
+      </RoleBasedWrapper>
+    </div>
+  );
+};
+
 export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
   const { data } = useQuery({
     queryKey: ["GetClientForAutocomplete"],
@@ -71,35 +101,6 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
     <div>
       <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
         <PrintWarehouseButton actWrhData={actWrhData} />
-      </RoleBasedWrapper>
-    </div>
-  );
-};
-
-export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
-  const { data } = useQuery({
-    queryKey: ["getDriversWithGazellCars"],
-    queryFn: getDriversWithCars,
-  });
-  const actMscData = cargos.map((crg) => {
-    return {
-      client_bin: crg.client_bin.tempText,
-      receipt_address: crg.receipt_address,
-      unloading_point: crg.unloading_point.city,
-      cargo_name: crg.cargo_name,
-      weight: crg.weight,
-      volume: crg.volume,
-      quantity: crg.quantity.value,
-      driver: data?.filter((f) => f.id === Number(crg.driver.id))[0]?.name,
-      is_documents: crg.is_documents ? "Да" : "Нет",
-      is_unpalletizing: crg.is_unpalletizing ? "Да" : "Нет",
-      status: crg.status,
-    } as MscActType;
-  });
-  return (
-    <div>
-      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
-        <PrintMscButton actMscData={actMscData} />
       </RoleBasedWrapper>
     </div>
   );
