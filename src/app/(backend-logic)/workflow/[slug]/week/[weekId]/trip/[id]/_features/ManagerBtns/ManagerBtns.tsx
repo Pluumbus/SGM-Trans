@@ -51,7 +51,9 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
   });
   return (
     <div>
-      <RoleBasedWrapper allowedRoles={["Менеджер", "Админ"]}>
+      <RoleBasedWrapper
+        allowedRoles={["Менеджер", "Админ", "Логист Москва", "Супер Логист"]}
+      >
         <PrintWarehouseButton actWrhData={actWrhData} />
       </RoleBasedWrapper>
     </div>
