@@ -36,9 +36,8 @@ export const TopProfile = () => {
             <RoleBasedWrapper
               allowedRoles={[
                 "Логист Кз",
-                "Логист Дистант",
-                "Супер Логист",
-                "Логист Москва",
+                // "Супер Логист",
+                // "Логист Москва",
               ]}
             >
               <Card className="w-2/3">
