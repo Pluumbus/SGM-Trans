@@ -18,7 +18,9 @@ export const ProfileButton = () => {
         <div className="flex flex-col">
           <span className="text-sm">Личный кабинет</span>
           <span className="text-xs text-zinc-400">Баланс: {balance}</span>
-          <RoleBasedWrapper allowedRoles={["Логист", "Админ"]}>
+          <RoleBasedWrapper
+            allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
+          >
             <Divider />
             <ProfilePrize isNumberOnly={false} userId={user?.id} />
           </RoleBasedWrapper>

@@ -19,8 +19,8 @@ const RoleBasedWrapper: React.FC<{
           isLoaded && (user?.publicMetadata.role as string | "Пользователь");
         if (
           exclude
-            ? !allowedRoles.includes(userRole)
-            : allowedRoles.includes(userRole)
+            ? !allowedRoles.includes(userRole as Role)
+            : allowedRoles.includes(userRole as Role)
         ) {
           setHasAccess(true);
         }

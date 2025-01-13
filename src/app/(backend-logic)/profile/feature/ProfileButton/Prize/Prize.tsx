@@ -218,7 +218,7 @@ const calculateCargosForUsers = (userCargos, userId: string) => {
   }
 };
 
-const isKzUser = (userId: string) => {
+export const isKzUser = (userId: string) => {
   switch (userId) {
     case "user_2q43LAICTieWjrQavnXs5wNbQsc":
       return false;
