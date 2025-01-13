@@ -2,7 +2,6 @@
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { WeekCard } from "../_feature/WeekCard";
-import { CargosVisibility } from "./week/[weekId]/trip/[id]/_features/Contexts";
 
 interface Props {}
 
