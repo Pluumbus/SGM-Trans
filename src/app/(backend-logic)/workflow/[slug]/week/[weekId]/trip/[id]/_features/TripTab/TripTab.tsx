@@ -16,7 +16,8 @@ import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
 import {
-  MngrClientButton,
+  MngrAccButton,
+  MngrMscButton,
   MngrWrhButton,
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
@@ -151,8 +152,12 @@ export const TripTab = ({
     });
   };
   const citiesData = groupCargosByCity(getSortedCargos());
-  console.log(citiesData);
-  if (!citiesData) return <SgmSpinner />;
+  if (isPending)
+    return (
+      <div className="flex justify-center items-center">
+        <SgmSpinner />
+      </div>
+    );
   return (
     <>
       {cargos.length > 0 && (
@@ -213,7 +218,8 @@ export const TripTab = ({
       )}
       {cargos.length > 0 && (
         <div className="flex justify-between">
-          <MngrClientButton cargos={cargos} />
+          <MngrAccButton cargos={cargos} />
+          <MngrMscButton cargos={cargos} />
           <MngrWrhButton cargos={cargos} />
         </div>
       )}

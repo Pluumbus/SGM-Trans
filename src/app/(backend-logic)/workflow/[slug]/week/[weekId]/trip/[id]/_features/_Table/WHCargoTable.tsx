@@ -9,7 +9,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { getWHCargos } from "../../../_api";
 import { TableModeProvider } from "./TableMode.context";
-import { Divider } from "@nextui-org/react";
+import { Divider, Spinner } from "@nextui-org/react";
 import supabase from "@/utils/supabase/client";
 import { getSchema } from "@/utils/supabase/getSchema";
 
@@ -80,6 +80,12 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
     return null;
   }
 
+  if (isPending)
+    return (
+      <div className="flex justify-center items-center">
+        <SgmSpinner />
+      </div>
+    );
   return (
     <div className="">
       <span className="text-2xl font-semibold pl-4">

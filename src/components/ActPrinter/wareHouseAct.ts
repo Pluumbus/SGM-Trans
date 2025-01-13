@@ -71,27 +71,31 @@ export const wrhBodyHtmlTemp = `
             <table border="1" cellpadding="5" cellspacing="0" style="border-collapse: collapse; width: 100%;">
                 <thead>
                     <tr>
-                        <th>Наименование груза</th>
-                        <th>Вес груза</th>
-                        <th>Объем груза</th>
-                        <th>Количество мест</th>
-                        <th>Дополнительная информация</th>
-                        <th>Компания-получатель</th>
-                        <th>Плательщик</th>
                         <th>Адрес разгрузки</th>
+                        <th>Вес(тонн)</th>
+                        <th>Объем(м.куб)</th>
+                        <th>Кол-во</th>
+                        <th>Распалечиваем</th>
+                        <th>Доп.информация</th>
+                        <th>Компания-получатель</th>
+                        <th>Название груза</th>
+                        <th>Плательщик</th>
+                        <th>Менджер</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each items}}
                         <tr>
-                            <td>{{ cargo_name }}</td>
+                            <td>{{ unloading_point }}</td>
                             <td>{{ weight }}</td>
                             <td>{{ volume }}</td>
                             <td>{{ quantity }}</td>
+                            <td>{{ is_unpalletizing }}</td>
                             <td>{{ comments }}</td>
                             <td>{{ client_bin }}</td>
+                            <td>{{ cargo_name }}</td>
                             <td>{{ transportation_manager }}</td>
-                            <td>{{ unloading_point }}</td>
+                            <td>{{ sgm_manager }}</td>
                         </tr>
                     {{/each}}
                 </tbody>
