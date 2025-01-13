@@ -69,7 +69,7 @@ export const CustomWeekSelector = ({
                   }
                   onPress={() => {
                     setIsPressed({ week_number: e.week_number, active: true });
-                    setWeekNum(e.week_number)
+                    setWeekNum(e.week_number);
                   }}
                 >
                   {e.week_number}

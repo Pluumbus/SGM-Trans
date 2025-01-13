@@ -125,7 +125,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           {isLoading ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (
-            <b className="flex gap-2">
+            <b className="flex gap-2" key={"bold text - 1"}>
               {leadingCountManager?.map((e) => <span key={e}>{e}</span>)}
               <TrendingUp className="h-4 w-4" />
             </b>
@@ -133,7 +133,7 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
           {isLoading ? (
             <Skeleton className="h-[18px] w-[150px]" />
           ) : (
-            <b className="flex gap-2">
+            <b className="flex gap-2" key={"bold text - 2"}>
               {leadingAmountManager}
               <FaCoins className="h-4 w-4" />
             </b>
