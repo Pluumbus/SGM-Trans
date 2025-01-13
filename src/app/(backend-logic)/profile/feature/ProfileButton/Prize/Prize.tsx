@@ -56,7 +56,7 @@ export const ProfilePrize = ({
     );
 
     const totalPrize = calculateCurrentPrize(
-      newCargos.reduce((acc, cur) => acc + cur.amount, 0)
+      newCargos?.reduce((acc, cur) => acc + cur.amount, 0)
     );
 
     setCargosPrize(calculateCargosForUsers(userCargos, userId));
@@ -204,7 +204,7 @@ const calculateCargosForUsers = (userCargos, userId: string) => {
   if (userId === "user_2q4308qq9oDBR0iOG6TGOMhavUx") {
     const cargosPrizeData = {
       cargosPrize:
-        (userCargos.reduce((acc, cur) => acc + cur.amount, 0) * 3) / 100,
+        (userCargos?.reduce((acc, cur) => acc + cur.amount, 0) * 3) / 100,
       cargosCount: userCargos.length,
     };
 
