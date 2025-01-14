@@ -13,10 +13,45 @@ export const TransportationManager = ({
 }: {
   info: Cell<CargoType, ReactNode>;
 }) => {
-  const state = useCompositeStates<Type>(info);
+  const state = useState<Type>(Number(info.getValue()));
+
+  useEffect(() => {
+    if (info && state != info.getValue()) {
+      state[1](Number(info.getValue()));
+    }
+  }, [info.getValue()]);
+
+  const [debouncedValue, setDebouncedValue] = useState<Type>(state[0]);
+
+  const { mutate } = useMutation({
+    mutationFn: async () => {
+      await editCargo(
+        // @ts-ignore
+        info.column.columnDef!.accessorKey,
+        debouncedValue,
+        info.row.original.id
+      );
+    },
+  });
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(state[0]);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [state]);
+
+  useEffect(() => {
+    if (debouncedValue !== Number(info.getValue())) {
+      mutate();
+    }
+  }, [debouncedValue]);
 
   return (
-    <div className="min-w-[250px]">
+    <div>
       <TM state={state} type="Table" info={info} />
     </div>
   );

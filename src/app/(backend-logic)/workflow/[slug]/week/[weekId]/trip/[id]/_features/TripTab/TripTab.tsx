@@ -34,6 +34,7 @@ import {
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
+import { CargoTableProvider } from "../Contexts/CargoTableContext";
 
 export const TripTab = ({
   trip,
@@ -92,10 +93,6 @@ export const TripTab = ({
     mutate(trip.id.toString());
   }, []);
 
-  const {
-    field: { changedField },
-  } = useCargosField();
-
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${trip.id}`)
@@ -109,43 +106,32 @@ export const TripTab = ({
         },
         (payload) => {
           const newCargo = payload.new as CargoType;
-          setCargos((prev) => [...prev, newCargo]);
-        }
-      )
-      .on(
-        "postgres_changes",
-        {
-          event: "UPDATE",
-          schema: getSchema(),
-          table: "cargos",
-          filter: `trip_id=eq.${trip.id}`,
-        },
-        (payload) => {
-          setCargos((prev) => {
-            const updatedCargo = payload.new as CargoType;
-            const excludedFields = changedField ?? [];
+          if (payload.eventType !== "UPDATE") {
+            setCargos((prev) => [...prev, newCargo]);
+            setRowSelected((prev) => [
+              ...prev,
+              { number: newCargo.id, isSelected: false },
+            ]);
+          } else {
+            setCargos((prev) => {
+              const res = prev
+                .map((e) =>
+                  e.id === payload.old.id
+                    ? (payload.new as CargoType)
+                    : (e as CargoType)
+                )
+                .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
-            const nextState = prev
-              .map((oldCargo) => {
-                if (oldCargo.id === payload.old.id) {
-                  const mergedCargo = { ...oldCargo };
+              return res;
+            });
 
-                  (Object.keys(updatedCargo) as Array<keyof CargoType>).forEach(
-                    (key) => {
-                      if (!excludedFields.includes(key)) {
-                        mergedCargo[key] = updatedCargo[key];
-                      }
-                    }
-                  );
+            const rowsToSelect = cargos?.map((e) => ({
+              number: e.id,
+              isSelected: false,
+            }));
 
-                  return mergedCargo;
-                }
-                return oldCargo;
-              })
-              .filter((cargo) => !cargo.is_deleted);
-
-            return nextState;
-          });
+            setRowSelected(rowsToSelect);
+          }
         }
       )
       .subscribe();
@@ -217,26 +203,30 @@ export const TripTab = ({
         </Button>
       )}
       <div className="my-8">
-        <WHCargoTable trip={trip} />
+        <CargoTableProvider>
+          <WHCargoTable trip={trip} />
+        </CargoTableProvider>
       </div>
 
       <div className="space-y-4">
-        {citiesData?.map((e) => (
-          <div>
+        {citiesData.map((e) => (
+          <div key={e.city}>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
-            <UTable
-              tBodyProps={{
-                emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                isLoading: isPending,
-                loadingContent: <Spinner />,
-              }}
-              data={e.cargos}
-              isPagiantion={false}
-              columns={columns}
-              name={`Cargo Table ${trip.id}`}
-              config={config}
-            />
+            <CargoTableProvider>
+              <UTable
+                tBodyProps={{
+                  emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
+                  isLoading: isPending,
+                  loadingContent: <Spinner />,
+                }}
+                data={e.cargos}
+                isPagiantion={false}
+                columns={columns}
+                name={`Cargo Table ${trip.id}`}
+                config={config}
+              />
+            </CargoTableProvider>
           </div>
         ))}
       </div>
