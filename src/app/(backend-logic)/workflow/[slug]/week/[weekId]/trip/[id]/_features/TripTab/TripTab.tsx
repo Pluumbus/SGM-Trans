@@ -26,7 +26,11 @@ import { Button, Divider, Spinner } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
-import { useCargosVisibility, useSelectionContext } from "../Contexts";
+import {
+  useCargosField,
+  useCargosVisibility,
+  useSelectionContext,
+} from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
@@ -85,47 +89,60 @@ export const TripTab = ({
     mutate(trip.id.toString());
   }, []);
 
+  const {
+    field: { changedField },
+  } = useCargosField();
+
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${trip.id}`)
       .on(
         "postgres_changes",
         {
-          event: "*",
+          event: "INSERT",
           schema: getSchema(),
           table: "cargos",
           filter: `trip_id=eq.${trip.id}`,
         },
         (payload) => {
-          console.log("payload", payload);
+          const newCargo = payload.new as CargoType;
+          setCargos((prev) => [...prev, newCargo]);
+        }
+      )
+      .on(
+        "postgres_changes",
+        {
+          event: "UPDATE",
+          schema: getSchema(),
+          table: "cargos",
+          filter: `trip_id=eq.${trip.id}`,
+        },
+        (payload) => {
+          setCargos((prev) => {
+            const updatedCargo = payload.new as CargoType;
+            const excludedFields = changedField ?? [];
 
-          if (payload.eventType !== "UPDATE") {
-            const newCargo = payload.new as CargoType;
-            setCargos((prev) => [...prev, newCargo]);
-            // setRowSelected((prev) => [
-            //   ...prev,
-            //   { number: newCargo.id, isSelected: false },
-            // ]);
-          } else {
-            setCargos((prev) => {
-              const res = prev
-                .map((e) =>
-                  e.id === payload.old.id
-                    ? (payload.new as CargoType)
-                    : (e as CargoType)
-                )
-                .filter((e) => !e.is_deleted);
+            const nextState = prev
+              .map((oldCargo) => {
+                if (oldCargo.id === payload.old.id) {
+                  const mergedCargo = { ...oldCargo };
 
-              return res;
-            });
+                  (Object.keys(updatedCargo) as Array<keyof CargoType>).forEach(
+                    (key) => {
+                      if (!excludedFields.includes(key)) {
+                        mergedCargo[key] = updatedCargo[key];
+                      }
+                    }
+                  );
 
-            // const rowsToSelect = cargos?.map((e) => ({
-            //   number: e.id,
-            //   isSelected: false,
-            // }));
+                  return mergedCargo;
+                }
+                return oldCargo;
+              })
+              .filter((cargo) => !cargo.is_deleted);
 
-            // setRowSelected(rowsToSelect);
-          }
+            return nextState;
+          });
         }
       )
       .subscribe();

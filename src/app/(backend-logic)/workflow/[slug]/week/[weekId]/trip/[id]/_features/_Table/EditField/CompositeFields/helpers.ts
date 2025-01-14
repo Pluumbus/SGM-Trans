@@ -14,15 +14,14 @@ import {
 import { isEqual } from "lodash";
 import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
 import { useTableMode } from "../../TableMode.context";
+import { useCargosField } from "../../../Contexts";
 
 export const useEditCargo = <T>({
   info,
   value,
-  setValues,
 }: {
   info: Cell<CargoType, ReactNode>;
   value: T;
-  setValues: Dispatch<SetStateAction<T>>;
 }) =>
   useMutation({
     mutationFn: async () =>
@@ -36,11 +35,9 @@ export const useEditCargo = <T>({
 const useEditWHCargo = <T>({
   info,
   value,
-  setValues,
 }: {
   info: Cell<WHCargoType, ReactNode>;
   value: T;
-  setValues: Dispatch<SetStateAction<T>>;
 }) =>
   useMutation({
     mutationFn: async () =>
@@ -78,24 +75,31 @@ export const useCompositeStates = <T>(
     }
   }, [info.getValue()]);
 
-  const debouncedValue = useDebouncedState(values, 1000);
+  const debouncedValue = useDebouncedState(values, 300);
 
   const { tableMode } = useTableMode();
 
   const { mutate: editWhCargo } = useEditWHCargo({
     info,
     value: values,
-    setValues,
   });
   const { mutate, isPending } = useEditCargo({
     info,
     value: values,
-    setValues,
   });
+  const { field } = useCargosField();
 
   useEffect(() => {
     if (!isEqual(debouncedValue, info.getValue() as T)) {
-      tableMode == "wh-cargo" ? editWhCargo() : mutate();
+      if (tableMode !== "wh-cargo") {
+        field.setChangedField((prev) => [
+          ...prev,
+          info.column.columnDef!.accessorKey as keyof CargoType,
+        ]);
+        mutate();
+      } else {
+        editWhCargo();
+      }
     }
   }, [debouncedValue]);
 

@@ -1,3 +1,4 @@
+"use client";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import {
   Dispatch,
@@ -14,7 +15,7 @@ type CargoChangingFieldsContextProviderProps = {
 type CargoChangingFieldsContextType = {
   field: {
     changedField: Array<keyof CargoType> | null;
-    setChangedField: Dispatch<SetStateAction<Array<keyof CargoType> | null>>;
+    setChangedField: Dispatch<SetStateAction<Array<keyof CargoType>>>;
   };
 };
 
@@ -25,9 +26,7 @@ export const CargoChangingFieldsContext = createContext(
 export const CargoChangingFieldsContextProvider = ({
   children,
 }: CargoChangingFieldsContextProviderProps) => {
-  const [changedField, setChangedField] = useState<Array<
-    keyof CargoType
-  > | null>(null);
+  const [changedField, setChangedField] = useState<Array<keyof CargoType>>([]);
 
   return (
     <CargoChangingFieldsContext.Provider
