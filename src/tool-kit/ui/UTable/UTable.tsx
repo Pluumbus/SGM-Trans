@@ -28,14 +28,9 @@ export const UTable = <T,>({
   tBodyProps,
   isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
-  const [mdata, setMData] = useState(data);
-  const scrollRef = useRef<HTMLDivElement>(null);
+  console.log("data", data);
 
-  useEffect(() => {
-    if (data) {
-      setMData(data);
-    }
-  }, [data]);
+  const mdata = useMemo(() => data, [data]);
 
   const mColumns = useMemo(() => {
     const normalCols = columns.map((e: any) => {

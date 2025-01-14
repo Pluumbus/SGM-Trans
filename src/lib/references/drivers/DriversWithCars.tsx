@@ -23,29 +23,27 @@ export const DriversWithCars = (
   });
 
   return (
-    <div>
-      <Autocomplete
-        label="Выберите водителя"
-        isLoading={isLoading || !data}
-        {...autocompleteProps}
-      >
-        {data &&
-          data.map((e, i) => (
-            <AutocompleteItem
-              key={e.id}
-              value={e.id}
-              textValue={
-                e.name != "Наемник"
-                  ? `${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`
-                  : `${e.name}`
-              }
-            >
-              {e.name != "Наемник"
+    <Autocomplete
+      label="Выберите водителя"
+      isLoading={isLoading || !data}
+      {...autocompleteProps}
+    >
+      {data &&
+        data.map((e, i) => (
+          <AutocompleteItem
+            key={e.id}
+            value={e.id}
+            textValue={
+              e.name != "Наемник"
                 ? `${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`
-                : `${e.name}`}
-            </AutocompleteItem>
-          ))}
-      </Autocomplete>
-    </div>
+                : `${e.name}`
+            }
+          >
+            {e.name != "Наемник"
+              ? `${e.name} | ${e.cars?.car} | ${e.cars?.state_number}`
+              : `${e.name}`}
+          </AutocompleteItem>
+        ))}
+    </Autocomplete>
   );
 };

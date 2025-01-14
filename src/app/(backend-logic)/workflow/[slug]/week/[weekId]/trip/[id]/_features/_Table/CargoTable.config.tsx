@@ -217,13 +217,15 @@ export const getBaseColumnsConfig = () => {
       accessorKey: "transportation_manager",
       header: "Менеджер по перевозкам",
       size: 25,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField
-          info={info}
-          type={"Composite"}
-          compositeType="transportation_manager"
-        />
-      ),
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        return (
+          <EditField
+            info={info}
+            type={"Composite"}
+            compositeType="transportation_manager"
+          />
+        );
+      },
       filter: false,
     },
 

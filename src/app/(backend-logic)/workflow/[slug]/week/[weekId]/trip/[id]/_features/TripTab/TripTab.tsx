@@ -37,6 +37,7 @@ import { getSchema } from "@/utils/supabase/getSchema";
 
 export const TripTab = ({
   trip,
+
   columns,
   onCargosUpdate,
 }: {
@@ -58,7 +59,9 @@ export const TripTab = ({
 
   const config: UseTableConfig<CargoType> = {
     row: {
-      setRowData(info) {},
+      setRowData(info) {
+        const { original } = info;
+      },
       className: "cursor-pointer",
     },
   };

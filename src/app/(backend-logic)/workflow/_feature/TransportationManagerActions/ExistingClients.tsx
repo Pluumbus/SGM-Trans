@@ -61,9 +61,7 @@ export const ExistingClients = ({
               e.client.full_name.first_name + " " + e.client.company_name
             }
           >
-            <Tooltip content={<span>{str(e)}</span>}>
-              <span>{shortStr(e)}</span>
-            </Tooltip>
+            <span>{shortStr(e)}</span>
           </AutocompleteItem>
         ))}
     </Autocomplete>

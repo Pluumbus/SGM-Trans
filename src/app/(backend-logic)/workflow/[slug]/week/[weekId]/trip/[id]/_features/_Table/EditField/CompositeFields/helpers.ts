@@ -68,12 +68,15 @@ export const useCompositeStates = <T>(
   info: Cell<CargoType, ReactNode>
 ): [values: T, setValues: Dispatch<SetStateAction<T>>, isPending: boolean] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
+  const { field } = useCargosField();
 
   useEffect(() => {
     if (!isEqual(values, info.getValue())) {
       setValues(info.getValue() as T);
     }
-  }, [info.getValue()]);
+  }, [
+    info.row.original[info.column.columnDef!.accessorKey as keyof CargoType],
+  ]);
 
   const debouncedValue = useDebouncedState(values, 300);
 
@@ -87,7 +90,6 @@ export const useCompositeStates = <T>(
     info,
     value: values,
   });
-  const { field } = useCargosField();
 
   useEffect(() => {
     if (!isEqual(debouncedValue, info.getValue() as T)) {

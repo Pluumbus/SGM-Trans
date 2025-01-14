@@ -2,6 +2,7 @@ import { PATHS } from "@/lib/consts";
 import { Card, CardBody } from "@nextui-org/card";
 import { NextPage } from "next";
 import Link from "next/link";
+import { UpdateCargo } from "./(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/UpdateCargo";
 
 interface Props {}
 
@@ -13,6 +14,7 @@ const Page: NextPage<Props> = ({}) => {
           Добро пожаловать на SGM-Trans
         </span>
       </div>
+      <UpdateCargo />
       <div className="grid grid-cols-2 gap-4">
         <Link href={PATHS.client}>
           <Card
