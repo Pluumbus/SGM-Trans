@@ -30,6 +30,7 @@ import { useSelectionContext } from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
+import { CargoTableProvider } from "../Contexts/CargoTableContext";
 
 export const TripTab = ({
   trip,
@@ -95,17 +96,7 @@ export const TripTab = ({
   useEffect(() => {
     mutate();
   }, []);
-  const updateCargo = (oldCargo: CargoType, newCargo: CargoType) => {
-    const updatedCargo = { ...oldCargo };
 
-    for (const key in oldCargo) {
-      if (oldCargo[key] !== newCargo[key]) {
-        updatedCargo[key] = newCargo[key]; // Обновляем только измененные поля
-      }
-    }
-
-    return updatedCargo;
-  };
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${trip.id}-${user?.id!}`)
@@ -118,7 +109,6 @@ export const TripTab = ({
         },
         (payload) => {
           const newCargo = payload.new as CargoType;
-          // console.log(newCargo);
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => [...prev, newCargo]);
             setRowSelected((prev) => [
@@ -127,26 +117,13 @@ export const TripTab = ({
             ]);
           } else {
             setCargos((prev) => {
-              const oldCargo = prev.filter((f) => f.id === newCargo.id)[0];
-              // console.log(oldCargo, "oldCargo");
-
               const res = prev
-                .map((e) => {
-                  if (e.id === payload.old.id) {
-                    // Обновляем объект с учетом отличий
-                    return updateCargo(e, newCargo);
-                  }
-                  return e; // Возвращаем объект без изменений, если id не совпадают
-                })
+                .map((e) =>
+                  e.id === payload.old.id
+                    ? (payload.new as CargoType)
+                    : (e as CargoType)
+                )
                 .filter((e) => e.trip_id == trip.id && !e.is_deleted);
-
-              // const res = prev
-              //   .map((e) =>
-              //     e.id === payload.old.id
-              //       ? (payload.new as CargoType)
-              //       : (e as CargoType)
-              //   )
-              //   .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
               return res;
             });
@@ -223,7 +200,9 @@ export const TripTab = ({
         </Button>
       )}
       <div className="my-8">
-        <WHCargoTable trip={trip} />
+        <CargoTableProvider>
+          <WHCargoTable trip={trip} />
+        </CargoTableProvider>
       </div>
 
       <div className="space-y-4">
@@ -231,18 +210,20 @@ export const TripTab = ({
           <div key={e.city}>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
-            <UTable
-              tBodyProps={{
-                emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                isLoading: isPending,
-                loadingContent: <Spinner />,
-              }}
-              data={e.cargos}
-              isPagiantion={false}
-              columns={columns}
-              name={`Cargo Table ${trip.id}`}
-              config={config}
-            />
+            <CargoTableProvider>
+              <UTable
+                tBodyProps={{
+                  emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
+                  isLoading: isPending,
+                  loadingContent: <Spinner />,
+                }}
+                data={e.cargos}
+                isPagiantion={false}
+                columns={columns}
+                name={`Cargo Table ${trip.id}`}
+                config={config}
+              />
+            </CargoTableProvider>
           </div>
         ))}
       </div>
