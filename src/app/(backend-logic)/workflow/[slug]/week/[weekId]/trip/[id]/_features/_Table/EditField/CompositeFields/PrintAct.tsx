@@ -132,8 +132,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 
   const check = useCheckRole(["Менеджер"]);
 
-  console.log(usersList);
-
   if (isLoading) {
     return <Spinner />;
   }

@@ -114,7 +114,8 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
       <div className={`flex w-full items-end`}>
-        <Textarea
+        <b className=" flex mb-10 w-full">{values?.tempText}</b>
+        {/* <Textarea
           variant="underlined"
           ariz-label="Инфо клиента"
           value={values?.tempText}
@@ -127,13 +128,13 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           classNames={{
             input: "font-bold",
           }}
-        />
+        /> */}
         <div className="flex flex-col">
           <Tooltip
             content={
               <span>
-                Нажмите чтобы <span className="font-semibold">загрузить</span>{" "}
-                все скопированные <span className="font-semibold">СНТ</span>
+                <span className="font-semibold">Загрузить</span>{" "}
+                <span className="font-semibold">СНТ</span>
               </span>
             }
             showArrow

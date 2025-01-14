@@ -43,7 +43,7 @@ export const TM = ({
         className={`gap-2 col-span-2 grid grid-cols-6 ${type == "Table" ? "items-end" : "items-center"}`}
       >
         {type == "Table" ? (
-          <div className="flex flex-col w-[15rem]">
+          <div className="flex flex-col w-[10rem]">
             {/* <Input
               isReadOnly
               variant="underlined"

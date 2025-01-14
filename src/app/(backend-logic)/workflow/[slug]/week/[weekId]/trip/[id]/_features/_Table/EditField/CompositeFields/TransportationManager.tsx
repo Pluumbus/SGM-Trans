@@ -28,7 +28,7 @@ export const TransportationManager = ({
         // @ts-ignore
         info.column.columnDef!.accessorKey,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
   });
@@ -50,7 +50,7 @@ export const TransportationManager = ({
   }, [debouncedValue]);
 
   return (
-    <div className="min-w-[250px]">
+    <div>
       <TM state={state} type="Table" info={info} />
     </div>
   );
