@@ -2,7 +2,7 @@
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { EditField } from "./EditField/EditField";
 import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
@@ -21,22 +21,19 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "CheckBox",
       header: () => {
-        const [rowSelected, setRowSelected] = useSelectionContext();
+        const [rowSelected, __, update] = useSelectionContext();
+        console.log(rowSelected);
+
+        const [isSelected, setIsSelected] = useState<boolean>(
+          rowSelected?.every((e) => e.isSelected)
+        );
         return (
           <div>
             <Checkbox
-              isSelected={rowSelected?.every((e) => e.isSelected)}
-              onChange={() => {
-                const updatedSelection = rowSelected?.every((e) => e.isSelected)
-                  ? rowSelected?.map((item) => ({
-                      ...item,
-                      isSelected: false,
-                    }))
-                  : rowSelected?.map((item) => ({
-                      ...item,
-                      isSelected: true,
-                    }));
-                setRowSelected(updatedSelection);
+              isSelected={isSelected}
+              onValueChange={(e) => {
+                setIsSelected(e);
+                update(undefined);
               }}
             />
           </div>
@@ -45,21 +42,14 @@ export const getBaseColumnsConfig = () => {
       size: 10,
       filter: false,
       cell: (info: Cell<CargoType, ReactNode>) => {
-        const [rowSelected, setRowSelected] = useSelectionContext();
+        const [_, __, update] = useSelectionContext();
+        const [isSelected, setIsSelected] = useState<boolean>(false);
         return (
           <Checkbox
-            isSelected={
-              rowSelected &&
-              rowSelected.find((e) => e.number == info.row.original.id)
-                ?.isSelected
-            }
-            onChange={() => {
-              const updatedSelection = rowSelected?.map((item) =>
-                item.number === info.row.original.id
-                  ? { ...item, isSelected: !item.isSelected }
-                  : item
-              );
-              setRowSelected(updatedSelection);
+            isSelected={isSelected}
+            onValueChange={(e) => {
+              setIsSelected(e);
+              update(info.row.original.id);
             }}
             className="flex flex-col-reverse items-center justify-center"
           >

@@ -39,7 +39,7 @@ export const Status = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         }}
       >
         {info.getValue()
-          ? new Date(info.getValue()).toLocaleDateString("ru-RU", {
+          ? new Date(info.getValue() as string).toLocaleDateString("ru-RU", {
               day: "2-digit",
               month: "short",
             })

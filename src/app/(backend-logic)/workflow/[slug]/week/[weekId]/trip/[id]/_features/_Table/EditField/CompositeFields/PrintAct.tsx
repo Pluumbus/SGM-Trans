@@ -67,7 +67,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       0;
 
   const { mutate, isPending } = useMutation({
-    mutationKey: [`get user ${info.row.original.user_id.toString()}`],
+    mutationKey: [`info.row.original.user_id.toString()`],
     mutationFn: async () => await getUserById(values?.user_id),
     onSuccess: (res) => {
       if (values.is_ready) {
@@ -82,7 +82,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     if (values.user_id && values.is_ready) {
       mutate();
     }
-  }, [values?.user_id]);
+  }, [values?.user_id, values.is_ready]);
 
   useEffect(() => {
     if (!values.is_ready) {
