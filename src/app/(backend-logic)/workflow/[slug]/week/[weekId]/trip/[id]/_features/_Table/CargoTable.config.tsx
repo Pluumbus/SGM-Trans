@@ -18,48 +18,47 @@ import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
-    {
-      accessorKey: "CheckBox",
-      header: () => {
-        const [rowSelected, __, update] = useSelectionContext();
-        console.log(rowSelected);
+    // {
+    //   accessorKey: "CheckBox",
+    //   header: () => {
+    //     const [rowSelected, __, update] = useSelectionContext();
 
-        const [isSelected, setIsSelected] = useState<boolean>(
-          rowSelected?.every((e) => e.isSelected)
-        );
-        return (
-          <div>
-            <Checkbox
-              isSelected={isSelected}
-              onValueChange={(e) => {
-                setIsSelected(e);
-                update(undefined);
-              }}
-            />
-          </div>
-        );
-      },
-      size: 10,
-      filter: false,
-      cell: (info: Cell<CargoType, ReactNode>) => {
-        const [_, __, update] = useSelectionContext();
-        const [isSelected, setIsSelected] = useState<boolean>(false);
-        return (
-          <Checkbox
-            isSelected={isSelected}
-            onValueChange={(e) => {
-              setIsSelected(e);
-              update(info.row.original.id);
-            }}
-            className="flex flex-col-reverse items-center justify-center"
-          >
-            <span className="text-center w-full font-semibold">
-              {Number(info.row.id) + 1}
-            </span>
-          </Checkbox>
-        );
-      },
-    },
+    //     const [isSelected, setIsSelected] = useState<boolean>(
+    //       rowSelected?.every((e) => e.isSelected)
+    //     );
+    //     return (
+    //       <div>
+    //         <Checkbox
+    //           isSelected={isSelected}
+    //           onValueChange={(e) => {
+    //             setIsSelected(e);
+    //             update(undefined);
+    //           }}
+    //         />
+    //       </div>
+    //     );
+    //   },
+    //   size: 10,
+    //   filter: false,
+    //   cell: (info: Cell<CargoType, ReactNode>) => {
+    //     const [_, __, update] = useSelectionContext();
+    //     const [isSelected, setIsSelected] = useState<boolean>(false);
+    //     return (
+    //       <Checkbox
+    //         isSelected={isSelected}
+    //         onValueChange={(e) => {
+    //           setIsSelected(e);
+    //           update(info.row.original.id);
+    //         }}
+    //         className="flex flex-col-reverse items-center justify-center"
+    //       >
+    //         <span className="text-center w-full font-semibold">
+    //           {Number(info.row.id) + 1}
+    //         </span>
+    //       </Checkbox>
+    //     );
+    //   },
+    // },
 
     {
       accessorKey: "receipt_address",
@@ -240,51 +239,51 @@ export const getBaseColumnsConfig = () => {
       filter: false,
     },
 
-    {
-      accessorKey: "user_id",
-      header: () => (
-        <div className="flex flex-col w-4">
-          <span>SGM</span>
-        </div>
-      ),
-      size: 10,
-      cell: (info: Cell<CargoType, ReactNode>) => {
-        const { data, isLoading } = useQuery({
-          queryKey: [`get user ${info.getValue().toString()}`],
-          queryFn: async () => await getUserById(info.getValue().toString()),
-        });
-        if (isLoading) {
-          return <Spinner />;
-        }
-        return (
-          <Tooltip
-            content={
-              <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
-            }
-          >
-            <div className="w-4">
-              <span>{`${data?.firstName[0].toUpperCase() || ""}. ${data?.lastName[0].toUpperCase() || ""}.`}</span>
-            </div>
-          </Tooltip>
-        );
-      },
-      filter: false,
-    },
-    {
-      accessorKey: "act_details",
-      header: () => (
-        <div className="flex flex-col gap-1">
-          <span>Выдача</span>
-          <span>талона</span>
-        </div>
-      ),
-      size: 15,
-      cell: (info: Cell<CargoType, ReactNode>) => (
-        <EditField info={info} type={"Composite"} compositeType="act_details" />
-      ),
+    // {
+    //   accessorKey: "user_id",
+    //   header: () => (
+    //     <div className="flex flex-col w-4">
+    //       <span>SGM</span>
+    //     </div>
+    //   ),
+    //   size: 10,
+    //   cell: (info: Cell<CargoType, ReactNode>) => {
+    //     const { data, isLoading } = useQuery({
+    //       queryKey: [`get user ${info.getValue().toString()}`],
+    //       queryFn: async () => await getUserById(info.getValue().toString()),
+    //     });
+    //     if (isLoading) {
+    //       return <Spinner />;
+    //     }
+    //     return (
+    //       <Tooltip
+    //         content={
+    //           <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
+    //         }
+    //       >
+    //         <div className="w-4">
+    //           <span>{`${data?.firstName[0].toUpperCase() || ""}. ${data?.lastName[0].toUpperCase() || ""}.`}</span>
+    //         </div>
+    //       </Tooltip>
+    //     );
+    //   },
+    //   filter: false,
+    // },
+    // {
+    //   accessorKey: "act_details",
+    //   header: () => (
+    //     <div className="flex flex-col gap-1">
+    //       <span>Выдача</span>
+    //       <span>талона</span>
+    //     </div>
+    //   ),
+    //   size: 15,
+    //   cell: (info: Cell<CargoType, ReactNode>) => (
+    //     <EditField info={info} type={"Composite"} compositeType="act_details" />
+    //   ),
 
-      filter: false,
-    },
+    //   filter: false,
+    // },
     {
       accessorKey: "action",
       header: "",

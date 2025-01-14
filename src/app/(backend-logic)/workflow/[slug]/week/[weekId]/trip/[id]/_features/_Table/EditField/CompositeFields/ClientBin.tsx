@@ -214,7 +214,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         </ScrollShadow>
       )}
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
         <ModalContent>
           <ModalHeader>
             <span>Добавить SNT и БИН/ИИН клиента</span>

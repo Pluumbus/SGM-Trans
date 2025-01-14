@@ -87,7 +87,7 @@ export const TripTab = ({
 
   useEffect(() => {
     const cn = supabase
-      .channel(`workflow-trip${trip.id}-${user?.id!}`)
+      .channel(`workflow-trip${trip.id}`)
       .on(
         "postgres_changes",
         {
@@ -97,13 +97,15 @@ export const TripTab = ({
           filter: `trip_id=eq.${trip.id}`,
         },
         (payload) => {
+          console.log("payload", payload);
+
           if (payload.eventType !== "UPDATE") {
             const newCargo = payload.new as CargoType;
             setCargos((prev) => [...prev, newCargo]);
-            setRowSelected((prev) => [
-              ...prev,
-              { number: newCargo.id, isSelected: false },
-            ]);
+            // setRowSelected((prev) => [
+            //   ...prev,
+            //   { number: newCargo.id, isSelected: false },
+            // ]);
           } else {
             setCargos((prev) => {
               const res = prev
@@ -117,12 +119,12 @@ export const TripTab = ({
               return res;
             });
 
-            const rowsToSelect = cargos?.map((e) => ({
-              number: e.id,
-              isSelected: false,
-            }));
+            // const rowsToSelect = cargos?.map((e) => ({
+            //   number: e.id,
+            //   isSelected: false,
+            // }));
 
-            setRowSelected(rowsToSelect);
+            // setRowSelected(rowsToSelect);
           }
         }
       )
