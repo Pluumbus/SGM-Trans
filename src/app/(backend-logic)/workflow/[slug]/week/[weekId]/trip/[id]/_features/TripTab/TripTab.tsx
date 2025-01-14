@@ -95,6 +95,17 @@ export const TripTab = ({
   useEffect(() => {
     mutate();
   }, []);
+  const updateCargo = (oldCargo: CargoType, newCargo: CargoType) => {
+    const updatedCargo = { ...oldCargo };
+
+    for (const key in oldCargo) {
+      if (oldCargo[key] !== newCargo[key]) {
+        updatedCargo[key] = newCargo[key]; // Обновляем только измененные поля
+      }
+    }
+
+    return updatedCargo;
+  };
   useEffect(() => {
     const cn = supabase
       .channel(`workflow-trip${trip.id}-${user?.id!}`)
@@ -106,8 +117,9 @@ export const TripTab = ({
           table: "cargos",
         },
         (payload) => {
+          const newCargo = payload.new as CargoType;
+          // console.log(newCargo);
           if (payload.eventType !== "UPDATE") {
-            const newCargo = payload.new as CargoType;
             setCargos((prev) => [...prev, newCargo]);
             setRowSelected((prev) => [
               ...prev,
@@ -115,13 +127,26 @@ export const TripTab = ({
             ]);
           } else {
             setCargos((prev) => {
+              const oldCargo = prev.filter((f) => f.id === newCargo.id)[0];
+              // console.log(oldCargo, "oldCargo");
+
               const res = prev
-                .map((e) =>
-                  e.id === payload.old.id
-                    ? (payload.new as CargoType)
-                    : (e as CargoType)
-                )
+                .map((e) => {
+                  if (e.id === payload.old.id) {
+                    // Обновляем объект с учетом отличий
+                    return updateCargo(e, newCargo);
+                  }
+                  return e; // Возвращаем объект без изменений, если id не совпадают
+                })
                 .filter((e) => e.trip_id == trip.id && !e.is_deleted);
+
+              // const res = prev
+              //   .map((e) =>
+              //     e.id === payload.old.id
+              //       ? (payload.new as CargoType)
+              //       : (e as CargoType)
+              //   )
+              //   .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
               return res;
             });
@@ -203,7 +228,7 @@ export const TripTab = ({
 
       <div className="space-y-4">
         {citiesData.map((e) => (
-          <div>
+          <div key={e.city}>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
             <UTable

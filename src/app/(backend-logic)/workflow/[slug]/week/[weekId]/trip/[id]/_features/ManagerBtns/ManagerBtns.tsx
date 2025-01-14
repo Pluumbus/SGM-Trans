@@ -45,7 +45,6 @@ export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
     queryFn: getDriversWithCars,
   });
   const actMscData = cargos.map((crg) => {
-    console.log(crg.driver);
     return {
       client_bin: crg.client_bin.tempText,
       receipt_address: crg.receipt_address,
