@@ -36,6 +36,7 @@ import { TripInfoCard } from "../_features/TripInfoCard";
 import { WorkflowBucket } from "../_features/WorkflowBucket/WorkflowBucket";
 import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
+import { UpdateModal } from "../_features/UpdateCargo/Modal";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -187,6 +188,7 @@ export const MainPage: NextPage = () => {
             trip_id={Number(selectedTabId)}
             prefilledData={null}
           />
+          <UpdateModal />
         </div>
       </SelectionProvider>
     </CargosVisibilityProvider>

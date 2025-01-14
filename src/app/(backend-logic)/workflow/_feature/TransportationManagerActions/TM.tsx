@@ -64,6 +64,7 @@ export const TM = ({
                 <Tooltip content="Добавить Клиента">
                   <Button
                     variant="ghost"
+                    isDisabled={autocompleteProps.isDisabled}
                     onPress={() => {
                       disclosure.onOpenChange();
                     }}
@@ -115,7 +116,7 @@ export const TM = ({
 
       case "Table":
         return (
-          <div className="flex flex-col w-[15rem]">
+          <div className="flex flex-col w-full col-span-6">
             <Input
               isReadOnly
               variant="underlined"
@@ -154,16 +155,6 @@ export const TM = ({
                   <FaWhatsapp size={20} />
                 </Button>
               )}
-            </div>
-            <div className="border border-black p-2">
-              <ExistingClients
-                state={state}
-                props={{
-                  variant: "underlined",
-                  label: null,
-                  isClearable: false,
-                }}
-              />
             </div>
           </div>
         );

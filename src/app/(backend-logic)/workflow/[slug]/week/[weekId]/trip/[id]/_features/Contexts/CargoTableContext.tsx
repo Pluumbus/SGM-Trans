@@ -1,3 +1,4 @@
+"use client";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import React, {
   createContext,
@@ -16,11 +17,6 @@ export const CargoTableProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [value, setValue] = useState<keyof CargoType>();
-
-  const contextValue = {
-    value,
-    setValue,
-  };
 
   return (
     <CargoTableContext.Provider value={[value, setValue]}>

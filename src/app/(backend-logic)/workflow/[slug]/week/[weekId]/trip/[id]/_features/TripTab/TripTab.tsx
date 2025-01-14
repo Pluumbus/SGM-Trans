@@ -35,6 +35,7 @@ import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekC
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
 import { CargoTableProvider } from "../Contexts/CargoTableContext";
+import { useUpdateCargoContext } from "../UpdateCargo";
 
 export const TripTab = ({
   trip,
@@ -58,10 +59,14 @@ export const TripTab = ({
   const [cargos, setCargos] = useState<CargoType[]>();
   const [rowSelected, setRowSelected] = useSelectionContext();
 
+  const { setRow, disclosure } = useUpdateCargoContext();
+
   const config: UseTableConfig<CargoType> = {
     row: {
       setRowData(info) {
         const { original } = info;
+        setRow(original);
+        disclosure.onOpenChange();
       },
       className: "cursor-pointer",
     },
@@ -99,7 +104,7 @@ export const TripTab = ({
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: getSchema(),
           table: "cargos",
           filter: `trip_id=eq.${trip.id}`,
@@ -203,9 +208,7 @@ export const TripTab = ({
         </Button>
       )}
       <div className="my-8">
-        <CargoTableProvider>
-          <WHCargoTable trip={trip} />
-        </CargoTableProvider>
+        <WHCargoTable trip={trip} />
       </div>
 
       <div className="space-y-4">
@@ -213,20 +216,19 @@ export const TripTab = ({
           <div key={e.city}>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
-            <CargoTableProvider>
-              <UTable
-                tBodyProps={{
-                  emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                  isLoading: isPending,
-                  loadingContent: <Spinner />,
-                }}
-                data={e.cargos}
-                isPagiantion={false}
-                columns={columns}
-                name={`Cargo Table ${trip.id}`}
-                config={config}
-              />
-            </CargoTableProvider>
+
+            <UTable
+              tBodyProps={{
+                emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
+                isLoading: isPending,
+                loadingContent: <Spinner />,
+              }}
+              data={e.cargos}
+              isPagiantion={false}
+              columns={columns}
+              name={`Cargo Table ${trip.id}`}
+              config={config}
+            />
           </div>
         ))}
       </div>

@@ -2,26 +2,12 @@
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useContext } from "react";
+import { ReactNode } from "react";
 import { EditField } from "./EditField/EditField";
-import { getUserById } from "../../../_api";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Button,
-  Checkbox,
-  Divider,
-  ScrollShadow,
-  Spinner,
-  Tooltip,
-  useDisclosure,
-} from "@nextui-org/react";
-import { useSelectionContext } from "../Contexts";
+import { Button, ScrollShadow, useDisclosure } from "@nextui-org/react";
 import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
-import {
-  CargoTableContext,
-  CargoTableProvider,
-  useFieldFocus,
-} from "../Contexts/CargoTableContext";
+import { useFieldFocus } from "../Contexts/CargoTableContext";
 import { getDriversWithCars } from "@/lib/references/drivers/feature/api";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { formatDateMonth } from "@/lib/helpers/formatDate";
@@ -506,8 +492,9 @@ export const getBaseColumnsConfig = () => {
         <EditField info={info} type={"Composite"} compositeType="act_details" />
       ),
 
-    //   filter: false,
-    // },
+      filter: false,
+      // },
+    },
     {
       accessorKey: "action",
       header: "",

@@ -152,8 +152,9 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           </Tooltip>
           <Button
             variant="light"
+            isDisabled
             onPress={() => {
-              onOpenChange();
+              // onOpenChange();
             }}
             isIconOnly
           >
@@ -215,7 +216,9 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         </ScrollShadow>
       )}
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+      // isOpen={isOpen} onOpenChange={onOpenChange}
+      >
         <ModalContent>
           <ModalHeader>
             <span>Добавить SNT и БИН/ИИН клиента</span>

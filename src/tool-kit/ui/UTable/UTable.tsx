@@ -28,8 +28,6 @@ export const UTable = <T,>({
   tBodyProps,
   isPagiantion = false,
 }: UseTableProps<T>): ReactNode => {
-  console.log("data", data);
-
   const mdata = useMemo(() => data, [data]);
 
   const mColumns = useMemo(() => {
