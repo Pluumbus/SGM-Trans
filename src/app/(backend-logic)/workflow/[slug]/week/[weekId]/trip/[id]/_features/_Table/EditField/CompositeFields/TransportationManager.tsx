@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Cell } from "@tanstack/react-table";
 import React, { ReactNode, useEffect, useState } from "react";
 import { editCargo } from "../api";
+import { useCompositeStates } from "./helpers";
 
 type Type = CargoType["transportation_manager"];
 
@@ -28,7 +29,7 @@ export const TransportationManager = ({
         // @ts-ignore
         info.column.columnDef!.accessorKey,
         debouncedValue,
-        info.row.original.id,
+        info.row.original.id
       );
     },
   });
@@ -50,7 +51,7 @@ export const TransportationManager = ({
   }, [debouncedValue]);
 
   return (
-    <div className="min-w-[250px]">
+    <div>
       <TM state={state} type="Table" info={info} />
     </div>
   );

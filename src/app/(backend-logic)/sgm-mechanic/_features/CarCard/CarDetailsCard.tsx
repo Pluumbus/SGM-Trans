@@ -77,7 +77,6 @@ export const CarDetailsCard = ({ car: oCarInfo }: CarsWithOmnicommType) => {
     onOpenChange();
   };
   const id = useId();
-  console.log("car", car);
   return (
     <>
       <Card shadow="none">

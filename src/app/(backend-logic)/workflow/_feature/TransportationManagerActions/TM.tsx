@@ -1,4 +1,5 @@
 import {
+  AutocompleteProps,
   Button,
   Input,
   Spinner,
@@ -18,16 +19,19 @@ import { CargoType } from "../types";
 import { useQuery } from "@tanstack/react-query";
 import { getClient } from "../../cashbox/_features/api";
 import { WhatsAppButton } from "@/components";
+import { cx } from "class-variance-authority";
 
 export const TM = ({
   state,
   onChange,
   type = "Modal",
+  autocompleteProps,
   info,
 }: {
   state: [number, React.Dispatch<React.SetStateAction<number>>];
   onChange?: () => void;
-  type?: "Modal" | "Table";
+  type?: "Modal" | "Table" | "Update Cargo Modal";
+  autocompleteProps?: Omit<AutocompleteProps, "children">;
   info?: Cell<CargoType, React.ReactNode>;
 }) => {
   const disclosure = useDisclosure();
@@ -35,45 +39,103 @@ export const TM = ({
   const { data, isLoading } = useQuery({
     queryKey: [`manager info`, state[0]],
     queryFn: async ({ queryKey }) => await getClient(Number(queryKey[1])),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
-  const newData = data || [];
-  return (
-    <>
-      <div
-        className={`gap-2 col-span-2 grid grid-cols-6 ${type == "Table" ? "items-end" : "items-center"}`}
-      >
-        {type == "Table" ? (
-          <div className="flex flex-col w-[15rem]">
-            {/* <Input
-              isReadOnly
-              variant="underlined"
-              className="w-full"
-              value={
-                data[0].client.full_name.first_name +
-                " " +
-                data[0].client.company_name +
-                " " +
-                (data[0].client.phone_number || "")
-              }
-            /> */}
+
+  const Clients = () => {
+    switch (type) {
+      case "Update Cargo Modal":
+        return (
+          <div className="flex flex-col gap-2">
+            <div className="flex gap-2 items-end">
+              <ExistingClients
+                state={state}
+                onChange={onChange}
+                props={{
+                  variant: "flat",
+                  isClearable: false,
+                  ...autocompleteProps,
+                }}
+              />
+
+              <div className="flex flex-col gap-2 col-span-1">
+                <Tooltip content="Добавить Клиента">
+                  <Button
+                    variant="ghost"
+                    isDisabled={autocompleteProps.isDisabled}
+                    onPress={() => {
+                      disclosure.onOpenChange();
+                    }}
+                    isIconOnly
+                  >
+                    <FaPlus />
+                  </Button>
+                </Tooltip>
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <div className="flex gap-2">
+                <Input
+                  label="Имя"
+                  variant="underlined"
+                  value={data?.client.full_name.first_name || ""}
+                  isReadOnly
+                />
+                <Input
+                  label="Компания"
+                  variant="underlined"
+                  value={data?.client.comment || ""}
+                  isReadOnly
+                />
+              </div>
+              <div className="flex gap-2 items-end">
+                <Input
+                  label="Номер телефона"
+                  variant="underlined"
+                  value={data?.client.phone_number || ""}
+                  isReadOnly
+                />
+                <Link
+                  href={
+                    data
+                      ? `https://wa.me/${data[0]?.client?.phone_number.replace(/[\s-]/g, "")}`
+                      : ""
+                  }
+                  target="_blank"
+                >
+                  <Button isIconOnly color="success" variant="flat">
+                    <FaWhatsapp size={20} />
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        );
+
+      case "Table":
+        return (
+          <div className="flex flex-col w-full col-span-6">
             <Input
               isReadOnly
               variant="underlined"
               className="w-full"
-              value={newData[0]?.client?.full_name?.first_name || "Без имени"}
+              value={data?.client?.full_name?.first_name || "Без имени"}
             />
             <Input
               isReadOnly
               variant="underlined"
               className="w-full"
-              value={newData[0]?.client?.company_name || "Без компании"}
+              value={data?.client?.company_name || "Без компании"}
             />
+
             <div className="flex">
               <Input
                 isReadOnly
                 variant="underlined"
                 className="w-full"
-                value={newData[0]?.client?.phone_number || "Без номера"}
+                value={data?.client?.phone_number || "Без номера"}
               />
               {!isLoading ? (
                 <Link
@@ -95,7 +157,9 @@ export const TM = ({
               )}
             </div>
           </div>
-        ) : (
+        );
+      default:
+        return (
           <>
             <div className="col-span-5">
               <ExistingClients
@@ -103,6 +167,7 @@ export const TM = ({
                 onChange={onChange}
                 props={{
                   variant: "flat",
+                  ...autocompleteProps,
                 }}
               />
             </div>
@@ -120,7 +185,20 @@ export const TM = ({
               </Tooltip>
             </div>
           </>
+        );
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={cx(
+          type == "Update Cargo Modal"
+            ? "col-span-2 w-full"
+            : `gap-2 col-span-2 grid grid-cols-6 ${type == "Table" ? "items-end" : "items-center"}`
         )}
+      >
+        <Clients />
       </div>
       <TMModal disclosure={disclosure} state={state} />
     </>

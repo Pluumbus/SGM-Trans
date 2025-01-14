@@ -45,6 +45,7 @@ export const ExistingClients = ({
       isLoading={isLoading || isRefetching}
       label={"Плательщик (Менеджер ведущий перевозку)"}
       selectedKey={value}
+      aria-label="Плательщик (Менеджер ведущий перевозку)"
       onSelectionChange={(e) => {
         setValue(e?.toString() || "");
         state[1](Number(e?.toString()));
@@ -60,9 +61,7 @@ export const ExistingClients = ({
               e.client.full_name.first_name + " " + e.client.company_name
             }
           >
-            <Tooltip content={<span>{str(e)}</span>}>
-              <span>{shortStr(e)}</span>
-            </Tooltip>
+            <span>{shortStr(e)}</span>
           </AutocompleteItem>
         ))}
     </Autocomplete>

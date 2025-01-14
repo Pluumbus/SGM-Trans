@@ -38,6 +38,7 @@ export const columns: ColumnDef<StatsUserList>[] = [
     header: "Премия за неделю",
     cell: ({ cell }) => {
       const { row } = cell;
+
       if (row.original.user_id === "user_2q43LAICTieWjrQavnXs5wNbQsc") {
         return row.original.totalBidsInRange * 100;
       }

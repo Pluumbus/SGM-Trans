@@ -18,13 +18,14 @@ import {
 } from "@nextui-org/react";
 import { useUser } from "@clerk/nextjs";
 import { toast, useToast } from "@/components/ui/use-toast";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { getUserById } from "../../../../../_api";
 import { setUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
 import { FaCircleXmark, FaDownload } from "react-icons/fa6";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { PrintButton } from "@/components/ActPrinter/actGen";
 import { IoCheckmark } from "react-icons/io5";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 type Type = CargoType["act_details"];
 
@@ -35,7 +36,16 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const { user } = useUser();
   const disclosure = useDisclosure();
   const initText = `Одобрить`;
-
+  const { mutate: setBalanceMutation, isPending } = useMutation({
+    mutationFn: async (newBal: number) => {
+      await setUserBalance({
+        userId: user.id,
+        publicMetadata: {
+          balance: newBal,
+        },
+      });
+    },
+  });
   const [givingActText, setGivingActText] = useState<string>(initText);
 
   const { toast } = useToast();
@@ -66,35 +76,63 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       Number(info.row.original.paid_amount) ==
       0;
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: [`get user ${info.row.original.user_id.toString()}`],
-    mutationFn: async () => await getUserById(values?.user_id),
-    onSuccess: (res) => {
-      if (values.is_ready) {
-        setGivingActText(`Одобрил: ${res.firstName}`);
-      } else {
-        setGivingActText(initText);
-      }
-    },
+  // const { mutate, isPending } = useMutation({
+  //   mutationKey: [`get user ${info.row.original.user_id.toString()}`],
+  //   mutationFn: async () => await getUserById(values?.user_id),
+  //   onSuccess: (res) => {
+  //     if (values.is_ready) {
+  //       setGivingActText(`Одобрил: ${res.firstName}`);
+  //     } else {
+  //       setGivingActText(initText);
+  //     }
+  //   },
+  // });
+
+  const { data: usersList, isLoading } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => await getUserList(),
   });
 
   useEffect(() => {
-    if (values.user_id && values.is_ready) {
-      mutate();
+    if (usersList) {
+      const currUser = usersList.filter(
+        (user) => user.id == values?.user_id
+      )[0];
+      if (values.is_ready) {
+        setGivingActText(`Одобрил: ${currUser?.userName}`);
+      } else {
+        setGivingActText(initText);
+      }
     }
-  }, [values?.user_id]);
+  }, [usersList]);
 
   useEffect(() => {
-    if (!values.is_ready) {
-      setGivingActText(initText);
-    } else {
-      mutate();
+    if (
+      info.row.original.paid_amount ===
+        Number(info.row.original.amount.value) &&
+      user?.id! === values?.user_id &&
+      !values?.isPaidBack
+    ) {
+      const newBal =
+        (user?.publicMetadata.balance as number) +
+        info.row.original.paid_amount;
+
+      setBalanceMutation(newBal);
+      setValues((prev) => ({ ...prev, isPaidBack: true }));
     }
-  }, [values?.is_ready]);
+  }, [info.row.original.paid_amount]);
+
+  // useEffect(() => {
+  //   if (!values.is_ready) {
+  //     setGivingActText(initText);
+  //   } else {
+  //     mutate();
+  //   }
+  // }, [values?.is_ready]);
 
   const check = useCheckRole(["Менеджер"]);
 
-  if (isPending) {
+  if (isLoading) {
     return <Spinner />;
   }
 

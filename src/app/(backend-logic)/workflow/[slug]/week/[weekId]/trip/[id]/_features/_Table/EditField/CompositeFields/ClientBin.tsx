@@ -114,7 +114,8 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
       <div className={`flex w-full items-end`}>
-        <Textarea
+        <b className=" flex mb-10 w-full">{values?.tempText}</b>
+        {/* <Textarea
           variant="underlined"
           ariz-label="Инфо клиента"
           value={values?.tempText}
@@ -127,13 +128,13 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           classNames={{
             input: "font-bold",
           }}
-        />
+        /> */}
         <div className="flex flex-col">
           <Tooltip
             content={
               <span>
-                Нажмите чтобы <span className="font-semibold">загрузить</span>{" "}
-                все скопированные <span className="font-semibold">СНТ</span>
+                <span className="font-semibold">Загрузить</span>{" "}
+                <span className="font-semibold">СНТ</span>
               </span>
             }
             showArrow
@@ -151,8 +152,9 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           </Tooltip>
           <Button
             variant="light"
+            isDisabled
             onPress={() => {
-              onOpenChange();
+              // onOpenChange();
             }}
             isIconOnly
           >
@@ -185,11 +187,10 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             }}
           >
             {values?.snts.map((e, i) => (
-              <>
+              <div key={e + i}>
                 <Card
                   shadow="none"
                   className="w-full !overflow-visible pl-1 bg-transparent"
-                  key={e + i}
                 >
                   <CardBody className="w-full h-full p-0 !overflow-visible">
                     <div className="flex w-full justify-between h-full">
@@ -209,13 +210,15 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 {i % 2 !== 0 && (
                   <Divider orientation="horizontal" className="col-span-2" />
                 )}
-              </>
+              </div>
             ))}
           </div>
         </ScrollShadow>
       )}
 
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal
+      // isOpen={isOpen} onOpenChange={onOpenChange}
+      >
         <ModalContent>
           <ModalHeader>
             <span>Добавить SNT и БИН/ИИН клиента</span>

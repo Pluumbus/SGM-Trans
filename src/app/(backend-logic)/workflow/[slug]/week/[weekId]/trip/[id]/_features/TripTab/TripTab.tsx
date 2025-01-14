@@ -26,13 +26,20 @@ import { Button, Divider, Spinner } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
-import { useCargosVisibility, useSelectionContext } from "../Contexts";
+import {
+  useCargosField,
+  useCargosVisibility,
+  useSelectionContext,
+} from "../Contexts";
 import { groupCargosByCity } from "@/app/(backend-logic)/workflow/_feature/WeekCard/helpers";
 import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
+import { CargoTableProvider } from "../Contexts/CargoTableContext";
+import { useUpdateCargoContext } from "../UpdateCargo";
 
 export const TripTab = ({
   trip,
+
   columns,
   onCargosUpdate,
 }: {
@@ -52,9 +59,15 @@ export const TripTab = ({
   const [cargos, setCargos] = useState<CargoType[]>();
   const [rowSelected, setRowSelected] = useSelectionContext();
 
+  const { setRow, disclosure } = useUpdateCargoContext();
+
   const config: UseTableConfig<CargoType> = {
     row: {
-      setRowData(info) {},
+      setRowData(info) {
+        const { original } = info;
+        setRow(original);
+        disclosure.onOpenChange();
+      },
       className: "cursor-pointer",
     },
   };
@@ -87,7 +100,7 @@ export const TripTab = ({
 
   useEffect(() => {
     const cn = supabase
-      .channel(`workflow-trip${trip.id}-${user?.id!}`)
+      .channel(`workflow-trip${trip.id}`)
       .on(
         "postgres_changes",
         {
@@ -97,8 +110,8 @@ export const TripTab = ({
           filter: `trip_id=eq.${trip.id}`,
         },
         (payload) => {
+          const newCargo = payload.new as CargoType;
           if (payload.eventType !== "UPDATE") {
-            const newCargo = payload.new as CargoType;
             setCargos((prev) => [...prev, newCargo]);
             setRowSelected((prev) => [
               ...prev,
@@ -112,7 +125,7 @@ export const TripTab = ({
                     ? (payload.new as CargoType)
                     : (e as CargoType)
                 )
-                .filter((e) => !e.is_deleted);
+                .filter((e) => e.trip_id == trip.id && !e.is_deleted);
 
               return res;
             });
@@ -199,10 +212,11 @@ export const TripTab = ({
       </div>
 
       <div className="space-y-4">
-        {citiesData?.map((e) => (
-          <div>
+        {citiesData.map((e) => (
+          <div key={e.city}>
             <span className="text-2xl font-semibold pl-4">{e.city}</span>
             <Divider />
+
             <UTable
               tBodyProps={{
                 emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,

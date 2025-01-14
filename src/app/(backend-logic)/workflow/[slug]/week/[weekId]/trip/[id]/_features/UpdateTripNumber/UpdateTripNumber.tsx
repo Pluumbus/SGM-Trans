@@ -118,6 +118,10 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
 
+  const isMskTrip = (city_to: string) => {
+    if (city_to === "Москва") return "О- ";
+    return "";
+  };
   if (!tripsData) return <Spinner />;
   return (
     <div className="">
@@ -135,20 +139,22 @@ export const UpdateTripNumber = ({
             <>
               <ModalHeader className="flex flex-col gap-1">
                 <div className="flex gap-2">
-                  <span>Перенести грузы:</span>
-                  <div
-                    className={`grid grid-cols-${selectedCargos.length < 4 ? selectedCargos.length : "3"}`}
-                  >
-                    {selectedCargos.map((cargo, index) => (
+                  <span>Перенести:</span>
+                  {/* <div */}
+                  {/* className={`grid grid-cols-${selectedCargos.length < 4 ? selectedCargos.length : "3"}`}
+                  > */}
+                  {/* {selectedCargos.map((cargo, index) => (
                       <span key={index}>
                         {cargo.number}
                         {index < selectedCargos.length - 1 && (
                           <span>,&nbsp;</span>
                         )}
                       </span>
-                    ))}
-                  </div>
-                  <span>из {currentTripId} рейса</span>
+                    ))}*/}
+                  {/* </div> */}
+                  {selectedCargos.length}
+
+                  <span>груза из {currentTripId} рейса</span>
                 </div>
               </ModalHeader>
               <ModalBody>
@@ -174,6 +180,7 @@ export const UpdateTripNumber = ({
                         }}
                       >
                         <b>{`${e.trip_number}`}</b> |{" "}
+                        <b>{isMskTrip(e.city_to[0])}</b>
                         {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         {sumCargosColorForTrip(e, true)}
                       </AutocompleteItem>

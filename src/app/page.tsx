@@ -13,6 +13,7 @@ const Page: NextPage<Props> = ({}) => {
           Добро пожаловать на SGM-Trans
         </span>
       </div>
+
       <div className="grid grid-cols-2 gap-4">
         <Link href={PATHS.client}>
           <Card

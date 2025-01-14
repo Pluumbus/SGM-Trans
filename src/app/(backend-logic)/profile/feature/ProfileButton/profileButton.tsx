@@ -6,11 +6,11 @@ import Link from "next/link";
 import React from "react";
 import { ProfilePrize } from "./Prize/Prize";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
-import { Divide } from "lucide-react";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
 
 export const ProfileButton = () => {
   const { user } = useUser();
-  const balance = (user?.publicMetadata?.balance as string | undefined) ?? "0";
+  const balance = (user?.publicMetadata?.balance as number) ?? 0;
 
   return (
     <div>
@@ -18,8 +18,9 @@ export const ProfileButton = () => {
         <Avatar src={user?.imageUrl} />
         <div className="flex flex-col ">
           <span className="text-sm">Личный кабинет</span>
-          <Divider />
-          <span className="text-xs text-zinc-400">Баланс: {balance}</span>
+          <span className="text-xs text-zinc-400">
+            Баланс: {getSeparatedNumber(balance)}
+          </span>
           <RoleBasedWrapper
             allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
           >

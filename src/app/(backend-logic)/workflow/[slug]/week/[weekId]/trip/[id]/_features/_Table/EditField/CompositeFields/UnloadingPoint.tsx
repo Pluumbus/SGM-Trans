@@ -14,16 +14,17 @@ export const UnloadingPoint = ({
 }: {
   info: Cell<CargoType, ReactNode>;
 }) => {
-  const [values, setValues] = useCompositeStates<Type>(info);
+  const [values, setValues, isLoading] = useCompositeStates<Type>(info);
   const { tableMode } = useTableMode();
   const isWH = tableMode == "wh-cargo";
 
   return (
     <div className={cx("flex flex-col gap-2 ", isWH ? "w-full" : "w-[8rem]")}>
-      <div className={`flex gap-2 ${!values.withDelivery && "flex-col"}`}>
+      <div className={cx(`flex gap-2 `, !values?.withDelivery && "flex-col")}>
         <Cities
           variant="underlined"
           aria-label="Cities lib"
+          isDisabled={isLoading}
           selectedKey={values.city}
           isClearable={false}
           onSelectionChange={(e) => {
@@ -35,6 +36,7 @@ export const UnloadingPoint = ({
         />
         <Tooltip content="С доставкой?">
           <Checkbox
+            isDisabled={isLoading}
             isSelected={values.withDelivery}
             onValueChange={(e) => {
               setValues((prev) => ({
@@ -42,11 +44,14 @@ export const UnloadingPoint = ({
                 withDelivery: e,
               }));
             }}
-          ></Checkbox>
+          >
+            {!values?.withDelivery && "С доставкой?"}
+          </Checkbox>
         </Tooltip>
       </div>
       {values.withDelivery && (
         <Textarea
+          isDisabled={isLoading}
           aria-label="Unlodaing place textarea"
           variant="underlined"
           value={values.deliveryAddress}

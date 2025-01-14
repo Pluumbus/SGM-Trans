@@ -144,7 +144,7 @@ export function DataTable() {
         totalAmount: getSeparatedNumber(item.totalAmount),
         totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
         prizeSum: getSeparatedNumber(
-          calculateCurrentPrize(totalPrize) > 0
+          item.bidPrize && calculateCurrentPrize(totalPrize) > 0
             ? calculateCurrentPrize(totalPrize) + item.bidPrize
             : 0
         ),

@@ -16,6 +16,7 @@ type RowSelectionType = {
 type ExampleContextType = [
   RowSelectionType[],
   Dispatch<SetStateAction<RowSelectionType[]>>,
+  (id: number | undefined) => void,
 ];
 
 const SelectionContext = createContext<ExampleContextType | undefined>(
@@ -27,8 +28,30 @@ export const SelectionProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [value, setValue] = useState<RowSelectionType[]>();
 
+  const changeIsSelected = (id: number | undefined) => {
+    if (id) {
+      setValue((prev) =>
+        prev?.map((item) =>
+          item.number === id ? { ...item, isSelected: !item.isSelected } : item
+        )
+      );
+    } else {
+      setValue((prev) =>
+        prev?.every((e) => e.isSelected)
+          ? prev?.map((item) => ({
+              ...item,
+              isSelected: false,
+            }))
+          : prev?.map((item) => ({
+              ...item,
+              isSelected: true,
+            }))
+      );
+    }
+  };
+
   return (
-    <SelectionContext.Provider value={[value, setValue]}>
+    <SelectionContext.Provider value={[value, setValue, changeIsSelected]}>
       {children}
     </SelectionContext.Provider>
   );
