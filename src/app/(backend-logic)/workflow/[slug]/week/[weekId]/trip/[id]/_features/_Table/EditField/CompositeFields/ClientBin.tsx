@@ -185,11 +185,10 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             }}
           >
             {values?.snts.map((e, i) => (
-              <>
+              <div key={e + i}>
                 <Card
                   shadow="none"
                   className="w-full !overflow-visible pl-1 bg-transparent"
-                  key={e + i}
                 >
                   <CardBody className="w-full h-full p-0 !overflow-visible">
                     <div className="flex w-full justify-between h-full">
@@ -209,7 +208,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                 {i % 2 !== 0 && (
                   <Divider orientation="horizontal" className="col-span-2" />
                 )}
-              </>
+              </div>
             ))}
           </div>
         </ScrollShadow>

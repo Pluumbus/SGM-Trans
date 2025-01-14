@@ -30,11 +30,11 @@ export const getClient = async (id: number) => {
   const { data, error } = await (await getSupabaseServer())
     .from("cashbox")
     .select("*")
-    .eq("id", id);
+    .eq("id", id).maybeSingle();
 
   if (error) {
     throw new Error(error.message);
   }
 
-  return data as CashboxType[];
+  return data as CashboxType;
 };

@@ -35,8 +35,11 @@ export const TM = ({
   const { data, isLoading } = useQuery({
     queryKey: [`manager info`, state[0]],
     queryFn: async ({ queryKey }) => await getClient(Number(queryKey[1])),
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchOnMount: false,
   });
-  const newData = data || [];
+
   return (
     <>
       <div
@@ -44,36 +47,25 @@ export const TM = ({
       >
         {type == "Table" ? (
           <div className="flex flex-col w-[15rem]">
-            {/* <Input
-              isReadOnly
-              variant="underlined"
-              className="w-full"
-              value={
-                data[0].client.full_name.first_name +
-                " " +
-                data[0].client.company_name +
-                " " +
-                (data[0].client.phone_number || "")
-              }
-            /> */}
             <Input
               isReadOnly
               variant="underlined"
               className="w-full"
-              value={newData[0]?.client?.full_name?.first_name || "Без имени"}
+              value={data?.client?.full_name?.first_name || "Без имени"}
             />
             <Input
               isReadOnly
               variant="underlined"
               className="w-full"
-              value={newData[0]?.client?.company_name || "Без компании"}
+              value={data?.client?.company_name || "Без компании"}
             />
+
             <div className="flex">
               <Input
                 isReadOnly
                 variant="underlined"
                 className="w-full"
-                value={newData[0]?.client?.phone_number || "Без номера"}
+                value={data?.client?.phone_number || "Без номера"}
               />
               {!isLoading ? (
                 <Link
@@ -93,6 +85,16 @@ export const TM = ({
                   <FaWhatsapp size={20} />
                 </Button>
               )}
+            </div>
+            <div className="border border-black p-2">
+              <ExistingClients
+                state={state}
+                props={{
+                  variant: "underlined",
+                  label: null,
+                  isClearable: false,
+                }}
+              />
             </div>
           </div>
         ) : (

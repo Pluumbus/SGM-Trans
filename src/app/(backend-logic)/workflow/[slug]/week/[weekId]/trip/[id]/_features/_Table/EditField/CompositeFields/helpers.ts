@@ -69,7 +69,7 @@ export const useDebouncedState = <T>(value: T, delay: number): T => {
 
 export const useCompositeStates = <T>(
   info: Cell<CargoType, ReactNode>
-): [values: T, setValues: Dispatch<SetStateAction<T>>] => {
+): [values: T, setValues: Dispatch<SetStateAction<T>>, isPending: boolean] => {
   const [values, setValues] = useState<T>(info.getValue() as T);
 
   useEffect(() => {
@@ -78,7 +78,7 @@ export const useCompositeStates = <T>(
     }
   }, [info.getValue()]);
 
-  const debouncedValue = useDebouncedState(values, 1500);
+  const debouncedValue = useDebouncedState(values, 1000);
 
   const { tableMode } = useTableMode();
 
@@ -87,7 +87,7 @@ export const useCompositeStates = <T>(
     value: values,
     setValues,
   });
-  const { mutate } = useEditCargo({
+  const { mutate, isPending } = useEditCargo({
     info,
     value: values,
     setValues,
@@ -99,5 +99,5 @@ export const useCompositeStates = <T>(
     }
   }, [debouncedValue]);
 
-  return [values, setValues];
+  return [values, setValues, isPending];
 };

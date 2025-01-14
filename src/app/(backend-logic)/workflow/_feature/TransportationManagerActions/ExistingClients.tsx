@@ -45,6 +45,7 @@ export const ExistingClients = ({
       isLoading={isLoading || isRefetching}
       label={"Плательщик (Менеджер ведущий перевозку)"}
       selectedKey={value}
+      aria-label="Плательщик (Менеджер ведущий перевозку)"
       onSelectionChange={(e) => {
         setValue(e?.toString() || "");
         state[1](Number(e?.toString()));
