@@ -167,8 +167,10 @@ export const UpdateTripNumber = ({
                   }}
                 >
                   {tripsData
-                    ?.filter((trip) => trip.id !== currentTripId)
-                    .filter((trip) => trip.status !== "Прибыл")
+                    ?.filter(
+                      (trip) =>
+                        trip.id !== currentTripId && trip.status !== "Прибыл"
+                    )
                     .sort((a, b) => a.trip_number - b.trip_number)
                     .map((e) => (
                       <AutocompleteItem

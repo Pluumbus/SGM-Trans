@@ -232,10 +232,10 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
           <span>{trip.driver.state_number}</span>
         </div>
         <div className=" grid-rows-1 break-words">
-          <span>
+          {/* <span>
             {trip.date_in &&
               trip.date_in.slice(0, 5) + "  " + getDayOfWeek(trip.date_in)}
-          </span>
+          </span> */}
         </div>
         <Divider />
       </div>

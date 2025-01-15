@@ -1,6 +1,7 @@
 import {
   Button,
   Checkbox,
+  DatePicker,
   Divider,
   Input,
   Modal,
@@ -18,6 +19,7 @@ import { useMutation } from "@tanstack/react-query";
 import { addWHCargo } from "./api";
 import { useToast } from "@/components/ui/use-toast";
 import { BINInput } from "../../BINInput/BINInput";
+import { UDatePicker } from "@/tool-kit/U";
 
 export const WHAddCargoModal = ({
   disclosure,
@@ -190,6 +192,13 @@ export const WHAddCargoModal = ({
                   className="full"
                 />
               </div>
+
+              <UDatePicker
+                control={control}
+                name="status"
+                label="Дата поступления на склад"
+                granularity="day"
+              />
             </div>
           </ModalBody>
           <Divider />

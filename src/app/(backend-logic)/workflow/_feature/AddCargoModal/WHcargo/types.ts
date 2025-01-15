@@ -16,4 +16,5 @@ export type WHCargoType = Pick<
   | "trip_id"
   | "unloading_point"
   | "is_deleted"
+  | "status"
 >;

@@ -49,14 +49,21 @@ export const TripTab = ({
 }) => {
   const { isOnlyMyCargos } = useCargosVisibility();
 
-  const { mutate, isPending } = useMutation({
-    mutationKey: [`cargo-${trip.id}`],
-    mutationFn: getCargos,
-    onSuccess: (data) => {
-      setCargos(data);
-    },
+  const { data, isFetched, isLoading, isSuccess } = useQuery({
+    queryKey: [`cargo-${trip.id}`],
+    queryFn: async () => await getCargos(trip.id.toString()),
+    enabled: !!trip.id,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+
+    // const { mutate, isPending } = useMutation({
+    //   mutationKey: [`cargo-${trip.id}`],
+    //   mutationFn: getCargos,
+    //   onSuccess: (data) => {
+    //     setCargos(data);
+    //   },
   });
-  const [cargos, setCargos] = useState<CargoType[]>();
+  const [cargos, setCargos] = useState<CargoType[]>(data || []);
   const [rowSelected, setRowSelected] = useSelectionContext();
 
   const { setRow, disclosure } = useUpdateCargoContext();
@@ -75,28 +82,29 @@ export const TripTab = ({
   const { user } = useUser();
 
   useEffect(() => {
-    if (cargos) {
+    if (data) {
       setRowSelected(
-        cargos.map((e) => ({
+        data?.map((e) => ({
           number: e.id,
           isSelected: false,
         }))
       );
     }
-  }, [cargos]);
+  }, [data, isOnlyMyCargos]);
 
   useEffect(() => {
-    if (cargos) {
+    if (data) {
       onCargosUpdate(
-        cargos.map((cargo) => cargo.unloading_point.city),
-        cargos
+        data?.map((cargo) => cargo.unloading_point.city),
+        data
       );
+      setCargos(data);
     }
-  }, [cargos]);
+  }, [data]);
 
-  useEffect(() => {
-    mutate(trip.id.toString());
-  }, []);
+  // useEffect(() => {
+  //   mutate(trip.id.toString());
+  // }, []);
 
   useEffect(() => {
     const cn = supabase
@@ -152,8 +160,8 @@ export const TripTab = ({
   const getSortedCargos = useCallback(() => {
     const priorityCities = ["Астана", "Алмата", "Караганда"];
     const crgs = isOnlyMyCargos
-      ? cargos?.filter((e) => e.user_id == user.id.toString())
-      : cargos;
+      ? data?.filter((e) => e.user_id == user.id.toString())
+      : data;
 
     return crgs?.sort((a, b) => {
       const cityA = a.unloading_point?.city || "";
@@ -174,7 +182,7 @@ export const TripTab = ({
 
   const citiesData = groupCargosByCity(getSortedCargos());
 
-  if (isPending || !citiesData)
+  if (isLoading || !citiesData)
     return (
       <div className="flex justify-center items-center">
         <SgmSpinner />
@@ -212,25 +220,28 @@ export const TripTab = ({
       </div>
 
       <div className="space-y-4">
-        {citiesData.map((e) => (
-          <div key={e.city}>
-            <span className="text-2xl font-semibold pl-4">{e.city}</span>
-            <Divider />
+        {!isLoading &&
+          isFetched &&
+          isSuccess &&
+          citiesData.map((e) => (
+            <div key={e.city}>
+              <span className="text-2xl font-semibold pl-4">{e.city}</span>
+              <Divider />
 
-            <UTable
-              tBodyProps={{
-                emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
-                isLoading: isPending,
-                loadingContent: <Spinner />,
-              }}
-              data={e.cargos}
-              isPagiantion={false}
-              columns={columns}
-              name={`Cargo Table ${trip.id}`}
-              config={config}
-            />
-          </div>
-        ))}
+              <UTable
+                tBodyProps={{
+                  emptyContent: `Пока что в рейсе №${trip.trip_number} нет грузов`,
+                  isLoading: isLoading,
+                  loadingContent: <Spinner />,
+                }}
+                data={e.cargos}
+                isPagiantion={false}
+                columns={columns}
+                name={`Cargo Table ${trip.id}`}
+                config={config}
+              />
+            </div>
+          ))}
       </div>
 
       {rowSelected?.some((e) => e.isSelected) && (

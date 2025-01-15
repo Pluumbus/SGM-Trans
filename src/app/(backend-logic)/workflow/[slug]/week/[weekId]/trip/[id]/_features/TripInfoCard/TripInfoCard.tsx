@@ -40,7 +40,6 @@ export const TripInfoCard = ({
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
 
-  const checkRole = useCheckRole(["Зав.Склада", "Зав.Склада Москва"]);
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => {
@@ -77,7 +76,18 @@ export const TripInfoCard = ({
     (user) => user.id === currentTripData?.user_id
   )[0]?.userName;
 
-  const statusItems = ["Машина закрыта", "В пути", "Прибыл"];
+  const statusItems = [
+    "Машина закрыта",
+    "В пути",
+    "Прибыл",
+    "ВС",
+    "ПН",
+    "ВТ",
+    "СР",
+    "ЧТ",
+    "ПТ",
+    "СБ",
+  ];
 
   const disclosure = useDisclosure();
   return (

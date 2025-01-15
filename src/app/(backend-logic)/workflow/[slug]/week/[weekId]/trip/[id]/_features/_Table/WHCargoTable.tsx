@@ -14,25 +14,27 @@ import supabase from "@/utils/supabase/client";
 import { getSchema } from "@/utils/supabase/getSchema";
 
 export const WHCargoTable = ({ trip }: { trip: TripType }) => {
-  // const {
-  //   data: whCargos,
-  //   isLoading,
-  //   isFetched,
-  //   isSuccess,
-  // } = useQuery({
-  //   queryKey: [`wh-cargos-${trip.id}`],
-  //   queryFn: async () => await getWHCargos(trip.id.toString()),
-  //   enabled: !!trip.id,
-  // });
-
-  const { mutate, isPending, isSuccess } = useMutation({
-    mutationKey: [`wh-cargos-${trip.id}`],
-    mutationFn: async () => await getWHCargos(trip.id.toString()),
-    onSuccess: (data) => {
-      setCargos(data.filter((e) => !e.is_deleted));
-    },
+  const {
+    data: whCargos,
+    isLoading,
+    isFetched,
+    isSuccess,
+  } = useQuery({
+    queryKey: [`wh-cargos-${trip.id}`],
+    queryFn: async () => await getWHCargos(trip.id.toString()),
+    enabled: !!trip.id,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
-  const [cargos, setCargos] = useState<WHCargoType[]>([]);
+
+  // const { mutate, isPending, isSuccess } = useMutation({
+  //   mutationKey: [`wh-cargos-${trip.id}`],
+  //   mutationFn: async () => await getWHCargos(trip.id.toString()),
+  //   onSuccess: (data) => {
+  //     setCargos(data.filter((e) => !e.is_deleted));
+  //   },
+  // });
+  const [cargos, setCargos] = useState<WHCargoType[]>(whCargos || []);
 
   const config: UseTableConfig<WHCargoType> = {
     row: {
@@ -41,15 +43,15 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
     },
   };
 
-  useEffect(() => {
-    mutate();
-  }, []);
-
   // useEffect(() => {
-  //   if (isSuccess) {
-  //     setCargos(whCargos.filter((e) => !e.is_deleted));
-  //   }
-  // }, [isSuccess]);
+  //   mutate();
+  // }, []);
+
+  useEffect(() => {
+    if (isSuccess) {
+      setCargos(whCargos.filter((e) => !e.is_deleted));
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     const cn = supabase
@@ -92,7 +94,7 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
     return null;
   }
 
-  if (isPending)
+  if (isLoading)
     return (
       <div className="flex justify-center items-center">
         <SgmSpinner />
@@ -104,12 +106,12 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
         Грузы добавленные Зав. Складом
       </span>
       <Divider />
-      {!isPending && isSuccess && (
+      {!isLoading && isFetched && isSuccess && (
         <TableModeProvider mode="wh-cargo">
           <UTable
             tBodyProps={{
               emptyContent: `Пока что в рейсе нет добавленных зав складом`,
-              isLoading: isPending,
+              isLoading: isLoading,
               loadingContent: <SgmSpinner />,
             }}
             data={cargos}
