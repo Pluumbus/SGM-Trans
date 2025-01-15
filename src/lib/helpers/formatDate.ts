@@ -3,8 +3,7 @@ export const formatDate = (isoString: string) => {
 };
 
 export const formatDateMonth = (dateString) => {
-  console.log(dateString, "dateString");
-  if (dateString === undefined || null) return "-";
+  if (!dateString) return "-";
   const months = [
     "января",
     "февраля",

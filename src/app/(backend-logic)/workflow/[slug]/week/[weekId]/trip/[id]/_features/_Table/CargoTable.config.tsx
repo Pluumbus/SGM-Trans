@@ -421,7 +421,7 @@ export const getBaseColumnsConfig = () => {
         // console.log(original.status);
         return (
           <span
-            className="flex justify-start w-[6rem] items-center"
+            className="flex justify-center w-[6rem] items-center"
             onClick={() => setValue(info.column.columnDef.accessorKey)}
           >
             {formatDateMonth(original.status)}
