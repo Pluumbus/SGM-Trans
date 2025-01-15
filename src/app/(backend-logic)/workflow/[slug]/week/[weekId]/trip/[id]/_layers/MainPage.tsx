@@ -24,7 +24,6 @@ import {
 import { CreateTripInsideWeek } from "@/app/(backend-logic)/workflow/_feature/WeekCard/WeekCard";
 import supabase from "@/utils/supabase/client";
 import { getSchema } from "@/utils/supabase/getSchema";
-import { getDayOfWeek } from "@internationalized/date";
 import { TripAndWeeksIdType } from "../../_api/types";
 import {
   CargosVisibilityProvider,
@@ -37,6 +36,7 @@ import { WorkflowBucket } from "../_features/WorkflowBucket/WorkflowBucket";
 import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
+import { getDayOfWeek } from "../_helpers";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -232,10 +232,10 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
           <span>{trip.driver.state_number}</span>
         </div>
         <div className=" grid-rows-1 break-words">
-          {/* <span>
+          <span>
             {trip.date_in &&
               trip.date_in.slice(0, 5) + "  " + getDayOfWeek(trip.date_in)}
-          </span> */}
+          </span>
         </div>
         <Divider />
       </div>

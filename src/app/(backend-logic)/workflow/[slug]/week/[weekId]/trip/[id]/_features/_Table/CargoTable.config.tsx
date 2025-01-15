@@ -2,60 +2,66 @@
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode } from "react";
+import { ReactNode, useState } from "react";
 import { EditField } from "./EditField/EditField";
 import { useQuery } from "@tanstack/react-query";
-import { Button, ScrollShadow, useDisclosure } from "@nextui-org/react";
+import {
+  Button,
+  Checkbox,
+  ScrollShadow,
+  useDisclosure,
+} from "@nextui-org/react";
 import { CargoModal } from "@/app/(backend-logic)/workflow/_feature";
 import { useFieldFocus } from "../Contexts/CargoTableContext";
 import { getDriversWithCars } from "@/lib/references/drivers/feature/api";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { formatDateMonth } from "@/lib/helpers/formatDate";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import { useSelectionContext } from "../Contexts";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
-    // {
-    //   accessorKey: "CheckBox",
-    //   header: () => {
-    //     const [rowSelected, __, update] = useSelectionContext();
+    {
+      accessorKey: "CheckBox",
+      header: () => {
+        const [rowSelected, __, update] = useSelectionContext();
 
-    //     const [isSelected, setIsSelected] = useState<boolean>(
-    //       rowSelected?.every((e) => e.isSelected)
-    //     );
-    //     return (
-    //       <div>
-    //         <Checkbox
-    //           isSelected={isSelected}
-    //           onValueChange={(e) => {
-    //             setIsSelected(e);
-    //             update(undefined);
-    //           }}
-    //         />
-    //       </div>
-    //     );
-    //   },
-    //   size: 10,
-    //   filter: false,
-    //   cell: (info: Cell<CargoType, ReactNode>) => {
-    //     const [_, __, update] = useSelectionContext();
-    //     const [isSelected, setIsSelected] = useState<boolean>(false);
-    //     return (
-    //       <Checkbox
-    //         isSelected={isSelected}
-    //         onValueChange={(e) => {
-    //           setIsSelected(e);
-    //           update(info.row.original.id);
-    //         }}
-    //         className="flex flex-col-reverse items-center justify-center"
-    //       >
-    //         <span className="text-center w-full font-semibold">
-    //           {Number(info.row.id) + 1}
-    //         </span>
-    //       </Checkbox>
-    //     );
-    //   },
-    // },
+        const [isSelected, setIsSelected] = useState<boolean>(
+          rowSelected?.every((e) => e.isSelected)
+        );
+        return (
+          <div>
+            <Checkbox
+              isSelected={isSelected}
+              onValueChange={(e) => {
+                setIsSelected(e);
+                update(undefined);
+              }}
+            />
+          </div>
+        );
+      },
+      size: 10,
+      filter: false,
+      cell: (info: Cell<CargoType, ReactNode>) => {
+        const [_, __, update] = useSelectionContext();
+        const [isSelected, setIsSelected] = useState<boolean>(false);
+        return (
+          <Checkbox
+            isSelected={isSelected}
+            onValueChange={(e) => {
+              setIsSelected(e);
+              update(info.row.original.id);
+            }}
+            className="flex flex-col-reverse items-center justify-center"
+          >
+            <span className="text-center w-full font-semibold">
+              {Number(info.row.id) + 1}
+            </span>
+          </Checkbox>
+        );
+      },
+    },
 
     {
       accessorKey: "receipt_address",
@@ -412,6 +418,7 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => {
         const [value, setValue] = useFieldFocus();
         const { original } = info.row;
+        // console.log(original.status);
         return (
           <span
             className="flex justify-start w-[6rem] items-center"

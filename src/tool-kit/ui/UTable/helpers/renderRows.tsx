@@ -33,6 +33,9 @@ export const renderRows = <T,>(
         highlightedRows.has(row.id) && "bg-orange-300",
         "border border-b-2"
       )}
+      onClick={() => {
+        config.setRowData && config.setRowData(row);
+      }}
       onContextMenu={(e) => {
         e.preventDefault();
         toggleHighlight(row.id);
@@ -43,11 +46,6 @@ export const renderRows = <T,>(
         <TableCell
           key={cell.id}
           className={cx(`border-r-1 border-e-gray-200 py-0 h-full`)}
-          onClick={() => {
-            if (cell.column.columnDef!.accessorKey !== "action") {
-              config.setRowData && config.setRowData(row);
-            }
-          }}
         >
           <div>{flexRender(cell.column.columnDef.cell, cell.getContext())}</div>
         </TableCell>
