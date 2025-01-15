@@ -42,16 +42,7 @@ export const TripInfoCard = ({
 
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
-    queryFn: async () => {
-      const users = await getUserList();
-      const filteredUsrs = users.filter(
-        (user) =>
-          user.role === "Логист Кз" ||
-          user.role === "Логист Дистант" ||
-          user.role === "Логист Москва"
-      );
-      return filteredUsrs as UsersList[];
-    },
+    queryFn: async () => await getUserList(),
   });
 
   const { mutate: setStatusMutation } = useMutation({
