@@ -95,12 +95,14 @@ export function DataTable() {
               .filter((d) => d.week_number === weekNum)
               .forEach((week) => {
                 week.trips.forEach((trip) => {
-                  trip.cargos.forEach((cargo) => {
-                    if (cargo.user_id === user.user_id) {
-                      totalAmountInRange += Number(cargo.amount.value);
-                      totalBidsInRange += 1;
-                    }
-                  });
+                  trip.cargos
+                    .filter((crg) => !crg.is_deleted)
+                    .forEach((cargo) => {
+                      if (cargo.user_id === user.user_id) {
+                        totalAmountInRange += Number(cargo.amount.value);
+                        totalBidsInRange += 1;
+                      }
+                    });
                 });
               });
             data.forEach((week) => {
