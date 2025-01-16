@@ -133,7 +133,7 @@ export const UpdateTripNumber = ({
       >
         Перенести выбранные грузы
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
         <ModalContent>
           {(onClose) => (
             <>
@@ -169,12 +169,14 @@ export const UpdateTripNumber = ({
                   {tripsData
                     ?.filter(
                       (trip) =>
-                        trip.id !== currentTripId && trip.status !== "Прибыл"
+                        trip.trip_number !== currentTripId &&
+                        trip.status !== "Прибыл"
                     )
                     .sort((a, b) => a.trip_number - b.trip_number)
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
+                        className="py-4"
                         textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         value={e.trip_number}
                         style={{
