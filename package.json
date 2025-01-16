@@ -15,7 +15,7 @@
     "@internationalized/date": "^3.5.4",
     "@nextui-org/accordion": "^2.2.6",
     "@nextui-org/avatar": "^2.2.5",
-    "@nextui-org/date-picker": "^2.3.8",
+    "@nextui-org/date-picker": "^2.3.9",
     "@nextui-org/react": "^2.6.8",
     "@nextui-org/system": "^2.4.5",
     "@nextui-org/theme": "^2.4.4",

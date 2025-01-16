@@ -197,6 +197,7 @@ export const WHAddCargoModal = ({
                 control={control}
                 name="status"
                 label="Дата поступления на склад"
+                hideTimeZone
                 granularity="day"
               />
             </div>
