@@ -1,6 +1,9 @@
 "use client";
+import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import supabase from "@/utils/supabase/client";
 import { isArray } from "lodash";
+import { useParams } from "next/navigation";
+import { WeekTableType } from "./types";
 
 export const updateTripStatus = async (value: string | any, tripId) => {
   const { data, error } = await supabase
@@ -39,6 +42,34 @@ export const deleteCargo = async (cargoId: number | number[]) => {
   }
 };
 
+export const setTripToNextWeek = async ({
+  trip,
+  weekType,
+}: {
+  trip: TripType;
+  weekType: WeekTableType;
+}) => {
+  const { data: nextWeek } = await supabase
+    .from("weeks")
+    .select("id")
+    .order("id", {})
+    .gt("id", trip.week_id)
+    .eq("table_type", weekType)
+    .maybeSingle();
+
+  if (!nextWeek) {
+    throw new Error("Следующей недели нет");
+  }
+
+  const { data, error } = await supabase
+    .from("trips")
+    .update({ week_id: nextWeek.id })
+    .eq("id", Number(trip.id));
+  if (error) {
+    throw new Error();
+  }
+  return nextWeek;
+};
 export const updateTripDate = async (
   value: string | any,
   tripId,

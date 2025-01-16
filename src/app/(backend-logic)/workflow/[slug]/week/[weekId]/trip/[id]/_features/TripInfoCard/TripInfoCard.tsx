@@ -7,6 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
 
@@ -16,17 +17,24 @@ import { ReactNode, useEffect, useState } from "react";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { IoMdSettings } from "react-icons/io";
-import { UsersList } from "@/lib/references/clerkUserType/types";
+
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
-import { updateTripStatus } from "../../../_api/requests";
+import { setTripToNextWeek, updateTripStatus } from "../../../_api/requests";
 import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";
 import { TripInfoMscCard } from "./TripMscInfoCard";
 import { WHAddCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
-import { useCheckRole } from "@/components/RoleManagment/useRole";
+
 import { TripInfoExchangeRate } from "./TripInfoExchangeRate";
+
+import { FaAngleUp } from "react-icons/fa6";
+import { useConfirmContext } from "@/tool-kit/hooks";
+import { useParams, useRouter } from "next/navigation";
+import { WeekTableType } from "../../../_api/types";
+import { PATHS } from "@/lib/consts";
+import { getPath } from "@/lib/consts/paths";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -81,6 +89,48 @@ export const TripInfoCard = ({
   ];
 
   const disclosure = useDisclosure();
+
+  const {
+    slug,
+  }: {
+    slug: WeekTableType;
+  } = useParams();
+
+  const router = useRouter();
+  const { openModal } = useConfirmContext();
+  const { mutate, isPending } = useMutation({
+    mutationFn: setTripToNextWeek,
+    onError: (err) => {
+      toast({
+        title: `${err}`,
+      });
+    },
+    onSuccess: (data) => {
+      router.push(
+        getPath({
+          params: {
+            id: currentTripData.id,
+            slug,
+            weekId: data.id,
+          },
+        })
+      );
+    },
+  });
+
+  const handleUpdateWeek = () => {
+    openModal({
+      action: async () => {
+        mutate({
+          trip: currentTripData,
+          weekType: slug as WeekTableType,
+        });
+      },
+      isLoading: isPending,
+      title: `Вы уверены что хотите перенести ${currentTripData.trip_number}й рейс в следующую неделю?`,
+      buttonName: "Перенести",
+    });
+  };
   return (
     <>
       <Card className="bg-gray-200 w-[28rem]">
@@ -154,6 +204,17 @@ export const TripInfoCard = ({
                 <Button color="success" onPress={onOpenChange}>
                   Добавить груз
                 </Button>
+              </RoleBasedWrapper>
+              <RoleBasedWrapper allowedRoles={["Админ"]}>
+                <Tooltip content={"Перенести рейс в следующую неделю"}>
+                  <Button
+                    color="warning"
+                    isIconOnly
+                    onPress={() => handleUpdateWeek()}
+                  >
+                    <FaAngleUp />
+                  </Button>
+                </Tooltip>
               </RoleBasedWrapper>
             </div>
           </div>

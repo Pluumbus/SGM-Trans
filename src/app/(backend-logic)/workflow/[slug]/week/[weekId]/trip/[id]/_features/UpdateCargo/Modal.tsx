@@ -19,21 +19,17 @@ import {
   Input,
   Checkbox,
   Textarea,
-  DatePicker,
-  Tooltip,
 } from "@nextui-org/react";
 import { TM } from "@/app/(backend-logic)/workflow/_feature/TransportationManagerActions";
 import { BINInput } from "@/app/(backend-logic)/workflow/_feature/BINInput";
 import { Cities, DriversWithCars } from "@/lib/references";
 import { useUpdateCargoContext } from "./Context";
-import { parseDate } from "@internationalized/date";
-import { formatDate } from "@/lib/helpers";
 import { UDatePicker } from "@/tool-kit/U";
-import { useMutation } from "@tanstack/react-query";
 import { useUpdateCargo } from "./requests";
 import { useFieldFocus } from "../Contexts";
 import { FormNumberInput } from "@/components";
 import { SNTModal } from "./SNTModal";
+import { prefillForm } from "./helpers";
 
 export const UpdateModal = () => {
   const { disclosure, row, sntDisclosure } = useUpdateCargoContext();
@@ -64,7 +60,6 @@ export const UpdateModal = () => {
         },
         amount: {
           value: "",
-          type: "",
         },
         is_unpalletizing: false,
         comments: "",
@@ -92,68 +87,6 @@ export const UpdateModal = () => {
       },
     });
 
-  useEffect(() => {
-    if (!row) return;
-
-    // Top-level fields
-    setValue("id", row.id);
-    setValue("trip_id", row.trip_id);
-    setValue("created_at", row.created_at || "");
-    setValue("receipt_address", row.receipt_address || "");
-    setValue("weight", row.weight || "");
-    setValue("volume", row.volume || "");
-    setValue("is_unpalletizing", row.is_unpalletizing || false);
-    setValue("comments", row.comments || "");
-    setValue("cargo_name", row.cargo_name || "");
-    setValue("transportation_manager", row.transportation_manager || 0);
-    setValue("is_documents", row.is_documents || false);
-
-    setValue("loading_scheme", row.loading_scheme || "");
-    setValue("user_id", row.user_id || "");
-    setValue("paid_amount", row.paid_amount || 0);
-    setValue("request_id", row.request_id);
-    setValue("is_deleted", row.is_deleted || false);
-    setValue("wh_id", row.wh_id);
-    setValue("status", row.status ? new Date(row.status).toISOString() : null);
-
-    // Nested: unloading_point
-    setValue("unloading_point.city", row.unloading_point.city || "");
-    setValue(
-      "unloading_point.withDelivery",
-      row.unloading_point.withDelivery || false
-    );
-    setValue(
-      "unloading_point.deliveryAddress",
-      row.unloading_point.deliveryAddress || ""
-    );
-
-    // Nested: quantity
-    setValue("quantity.value", row.quantity.value || "");
-    setValue("quantity.type", row.quantity.type || "");
-
-    // Nested: driver
-    setValue("driver.id", row.driver.id || "");
-    setValue("driver.value", row.driver.value || "");
-
-    // Nested: amount
-    setValue("amount.value", row.amount.value || "");
-    setValue("amount.type", row.amount.type || null);
-
-    // Nested: client_bin
-    setValue("client_bin.tempText", row.client_bin.tempText || "");
-    setValue("client_bin.xin", row.client_bin.xin || "");
-    setValue("client_bin.snts", row.client_bin.snts || []);
-
-    // Nested: act_details
-    setValue("act_details.is_ready", row.act_details.is_ready || false);
-    setValue("act_details.user_id", row.act_details.user_id || "");
-    setValue("act_details.amount", row.act_details.amount || 0);
-    setValue(
-      "act_details.date_of_act_printed",
-      row.act_details.date_of_act_printed || ""
-    );
-  }, [row, setValue]);
-
   const [withDelivery, driver] = watch([
     "unloading_point.withDelivery",
     "driver",
@@ -164,7 +97,7 @@ export const UpdateModal = () => {
   const onSubmit: SubmitHandler<CargoType> = (data) => {
     mutate(data);
   };
-  const state = useState<number>(row?.transportation_manager);
+  const state = useState<number>(null);
 
   const onChange = () => {
     setValue("transportation_manager", state[0]);
@@ -178,6 +111,12 @@ export const UpdateModal = () => {
     control,
     name: "client_bin.snts",
   });
+
+  useEffect(() => {
+    if (!row) return;
+    prefillForm(setValue, row);
+    state[1](row?.transportation_manager);
+  }, [row, setValue]);
 
   return (
     <>
@@ -226,15 +165,13 @@ export const UpdateModal = () => {
                     />
                   </div>
 
-                  {withDelivery && (
-                    <div>
-                      <Input
-                        variant="underlined"
-                        {...register("unloading_point.deliveryAddress")}
-                        label="Адрес доставки"
-                      />
-                    </div>
-                  )}
+                  <div>
+                    <Input
+                      variant="underlined"
+                      {...register("unloading_point.deliveryAddress")}
+                      label="Адрес доставки"
+                    />
+                  </div>
                 </div>
 
                 {/* weight + volume */}
@@ -258,13 +195,22 @@ export const UpdateModal = () => {
 
                 {/* quantity.value + quantity.type */}
                 <div className="flex flex-col gap-2">
-                  <Input
-                    variant="underlined"
-                    label="Количество (значение)"
-                    type="text"
-                    {...register("quantity.value")}
-                    autoFocus={fieldToFocusOn === "quantity"}
-                  />
+                  <div className="grid grid-cols-2 gap-2">
+                    <Input
+                      variant="underlined"
+                      label="Количество (значение)"
+                      type="text"
+                      {...register("quantity.value")}
+                      autoFocus={fieldToFocusOn === "quantity"}
+                    />
+                    <Input
+                      variant="underlined"
+                      label="Наименование груза"
+                      type="text"
+                      {...register("cargo_name")}
+                      autoFocus={fieldToFocusOn === "cargo_name"}
+                    />
+                  </div>
                   <Input
                     label="Тип груза (коробки/палеты)"
                     variant="underlined"
@@ -353,11 +299,12 @@ export const UpdateModal = () => {
 
                 {/* amount + checkboxes */}
                 <div className="flex flex-col gap-2">
-                  <FormNumberInput
+                  <FormNumberInput<CargoType>
                     name={"amount.value"}
                     setValue={setValue}
+                    initValue={Number(row?.amount?.value)}
                     inputProps={{
-                      label: "Cумма",
+                      label: "Сумма",
                       autoFocus: fieldToFocusOn === "amount",
                       variant: "underlined",
                     }}

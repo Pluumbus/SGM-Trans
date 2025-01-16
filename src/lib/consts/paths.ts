@@ -1,3 +1,5 @@
+import { WeekTableType } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/_api/types";
+
 const WORKFLOW = "/workflow" as const;
 const CLIENT = "/client" as const;
 
@@ -14,3 +16,15 @@ export const PATHS = {
   statistics: `/statistics`,
   requestsForLogist: `/requests`,
 };
+
+export const getPath = ({
+  params,
+  path = "Single Trip",
+}: {
+  params: {
+    slug: WeekTableType;
+    weekId: number;
+    id: number;
+  };
+  path?: "Single Trip";
+}) => `${WORKFLOW}/${params.slug}/week/${params.weekId}/trip/${params.id}`;

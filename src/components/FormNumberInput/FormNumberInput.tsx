@@ -21,6 +21,11 @@ export const FormNumberInput = <T,>({
   });
 
   useEffect(() => {
+    if (!initValue) return;
+    setValue(name, initValue.toString() as PathValue<T, Path<T>>);
+  }, []);
+
+  useEffect(() => {
     if (state.rawValue) {
       setValue(name, state.rawValue.toString() as PathValue<T, Path<T>>);
     }
