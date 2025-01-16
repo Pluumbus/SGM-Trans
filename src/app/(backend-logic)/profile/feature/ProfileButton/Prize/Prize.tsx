@@ -170,6 +170,7 @@ export const getCargosIdAmountFromCurrentWeek = (
           .flatMap((trip) =>
             trip.cargos
               .filter((cargo) => cargo.user_id === userId)
+              .filter((crg) => !crg.is_deleted)
               .map((cargo) => ({
                 id: cargo.id,
                 amount: Number(cargo.amount.value),
@@ -185,10 +186,12 @@ export const getCargosIdAmountFromCurrentWeek = (
       item.trips
         .filter((trip) => trip.cargos.length > 0)
         .flatMap((trip) =>
-          trip.cargos.map((cargo) => ({
-            id: cargo.id,
-            amount: Number(cargo.amount.value),
-          }))
+          trip.cargos
+            .filter((crg) => !crg.is_deleted)
+            .map((cargo) => ({
+              id: cargo.id,
+              amount: Number(cargo.amount.value),
+            }))
         )
     );
 };

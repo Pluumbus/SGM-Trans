@@ -45,13 +45,22 @@ export const columns: ColumnDef<StatsUserList>[] = [
         const bidsSumPerWeek = rowModel.map(
           (item) => item.original.totalBidsInRange
         );
-        return bidsSumPerWeek.reduce((acc, curr) => acc + curr, 0) * 100;
+        return getSeparatedNumber(
+          bidsSumPerWeek.reduce((acc, curr) => acc + curr, 0) * 100
+        );
       }
       if (row.original.role === "Логист Москва") {
         if (row.original.user_id === "user_2q4308qq9oDBR0iOG6TGOMhavUx") {
-          return (
-            (Number(row.original.totalAmountInRange.replace(/,/g, "")) * 3) /
-            100
+          return getSeparatedNumber(
+            Number(
+              (
+                (Number(row.original.totalAmountInRange.replace(/,/g, "")) *
+                  3) /
+                100
+              )
+                .toString()
+                .split(".")[0]
+            )
           );
         }
         return 0;
