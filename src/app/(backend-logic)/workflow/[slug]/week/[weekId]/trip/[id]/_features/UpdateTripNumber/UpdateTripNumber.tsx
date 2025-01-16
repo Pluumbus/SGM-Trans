@@ -19,13 +19,17 @@ import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos, getTrips } from "../../../_api";
 import { COLORS } from "@/lib/colors";
 import { useSelectionContext } from "../Contexts";
+import { useWHSelectionContext } from "../Contexts/WHSelectionContext";
 
 export const UpdateTripNumber = ({
   currentTripId,
+  isWH,
 }: {
   currentTripId: number;
+  isWH: boolean;
 }) => {
   const [selectedRows, setRowSelected] = useSelectionContext();
+  // const [selectedWHRows, setWHRowSelected] = useWHSelectionContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
     {
@@ -33,6 +37,12 @@ export const UpdateTripNumber = ({
       isSelected: boolean;
     }[]
   >([]);
+  // const [selectedWHCargos, setSelectedWHCargos] = useState<
+  //   {
+  //     number: number;
+  //     isSelected: boolean;
+  //   }[]
+  // >([]);
   const [cargos, setCargos] = useState<CargoType[]>();
   const [selectedTrip, setSelectedTrip] = useState<number>();
 
@@ -49,11 +59,20 @@ export const UpdateTripNumber = ({
   });
 
   useEffect(() => {
-    if (selectedRows && data) {
+    if (
+      selectedRows &&
+      // selectedWHRows &&
+      data
+    ) {
       setSelectedCargos(selectedRows.filter((e) => e.isSelected));
+      // setSelectedWHCargos(selectedWHRows.filter((e) => e.isSelected));
       setCargos(data);
     }
-  }, [selectedRows, data]);
+  }, [
+    selectedRows,
+    // selectedWHRows,
+    data,
+  ]);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -68,6 +87,7 @@ export const UpdateTripNumber = ({
         description: `Вы успешно перенесли груз(ы) в ${selectedTrip} рейс`,
       });
       setRowSelected([]);
+      // setWHRowSelected([]);
     },
     onError: () => {
       toast({
@@ -117,10 +137,12 @@ export const UpdateTripNumber = ({
           ? `${COLORS.orange}`
           : `${COLORS.red}`;
   };
-
   const isMskTrip = (city_to: string) => {
     if (city_to === "Москва") return "О- ";
-    return "";
+    // const isMskTrip = (trip: TripType) => {
+    //   const week = weeksData?.filter((w) => w.id === Number(trip.week_id))[0];
+    //   if (week?.table_type === "kz") return "О- ";
+    //   return "";
   };
   if (!tripsData) return <Spinner />;
   return (
