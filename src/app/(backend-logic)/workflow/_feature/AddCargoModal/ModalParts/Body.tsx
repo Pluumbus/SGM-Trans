@@ -22,6 +22,7 @@ import { TM } from "../../TransportationManagerActions";
 
 import { FormNumberInput } from "@/components";
 import { BINInput } from "../../BINInput";
+import { UDatePicker } from "@/tool-kit/U/UDatePicker";
 
 type Props = {
   props: {
@@ -216,7 +217,7 @@ export const Body = ({
           />
         </div>
 
-        <Controller
+        {/* <Controller
           control={control}
           name="status"
           render={({ field }) => (
@@ -229,6 +230,13 @@ export const Body = ({
               label="Дата поступления на склад"
             />
           )}
+        /> */}
+        <UDatePicker
+          control={control}
+          name="status"
+          label="Дата поступления на склад"
+          hideTimeZone
+          granularity="day"
         />
 
         <Input {...register("loading_scheme")} label="Схема погрузки" />
