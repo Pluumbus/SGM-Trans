@@ -1,1 +1,1 @@
-export { WHAddCargoModal } from "./Modal";
+export { WHCargoModal } from "./Modal";

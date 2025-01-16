@@ -17,4 +17,9 @@ export type WHCargoType = Pick<
   | "unloading_point"
   | "is_deleted"
   | "status"
+  | "driver"
+  | "loading_scheme"
+  | "is_unpalletizing"
+  
+  
 >;

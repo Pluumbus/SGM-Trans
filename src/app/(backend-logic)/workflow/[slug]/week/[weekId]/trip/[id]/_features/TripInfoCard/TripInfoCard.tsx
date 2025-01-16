@@ -24,7 +24,7 @@ import { TripInfoDriver } from "./TripInfoDriver";
 import { TripInfoResponsibleUser } from "./TripInfoRespUser";
 import { TripInfoNum } from "./TripInfoNum";
 import { TripInfoMscCard } from "./TripMscInfoCard";
-import { WHAddCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
+import { WHCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 
 import { TripInfoExchangeRate } from "./TripInfoExchangeRate";
@@ -220,7 +220,7 @@ export const TripInfoCard = ({
           </div>
         </CardBody>
       </Card>
-      <WHAddCargoModal disclosure={disclosure} trip_id={currentTripData?.id} />
+      <WHCargoModal disclosure={disclosure} trip_id={currentTripData?.id} />
     </>
   );
 };

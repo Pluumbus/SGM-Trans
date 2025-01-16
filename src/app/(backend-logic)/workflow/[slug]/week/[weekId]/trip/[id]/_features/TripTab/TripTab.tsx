@@ -21,7 +21,7 @@ import {
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
-import { Button, Divider, Spinner } from "@nextui-org/react";
+import { Button, Divider, Spinner, useDisclosure } from "@nextui-org/react";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { useToast } from "@/components/ui/use-toast";
 import { DeleteCargo } from "../DeleteCargo";
@@ -35,6 +35,7 @@ import { WHCargoTable } from "../_Table/WHCargoTable";
 import { getSchema } from "@/utils/supabase/getSchema";
 import { CargoTableProvider } from "../Contexts/CargoTableContext";
 import { useUpdateCargoContext } from "../UpdateCargo";
+import { WHCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
 
 export const TripTab = ({
   trip,
@@ -100,10 +101,6 @@ export const TripTab = ({
       setCargos(data);
     }
   }, [data]);
-
-  // useEffect(() => {
-  //   mutate(trip.id.toString());
-  // }, []);
 
   useEffect(() => {
     const cn = supabase
@@ -180,8 +177,6 @@ export const TripTab = ({
   }, [cargos, isOnlyMyCargos]);
 
   const citiesData = groupCargosByCity(getSortedCargos());
-
-  console.log(cargos);
 
   if (isLoading || !citiesData)
     return (

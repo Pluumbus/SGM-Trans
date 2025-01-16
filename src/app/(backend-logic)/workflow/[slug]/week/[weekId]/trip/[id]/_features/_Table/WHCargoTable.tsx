@@ -9,9 +9,11 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { getWHCargos } from "../../../_api";
 import { TableModeProvider } from "./TableMode.context";
-import { Divider, Spinner } from "@nextui-org/react";
+import { Divider, Spinner, useDisclosure } from "@nextui-org/react";
 import supabase from "@/utils/supabase/client";
 import { getSchema } from "@/utils/supabase/getSchema";
+import { WHCargoModal } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal";
+import { useUpdateCargoContext } from "../UpdateCargo";
 
 export const WHCargoTable = ({ trip }: { trip: TripType }) => {
   const {
@@ -27,25 +29,20 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
     refetchOnWindowFocus: false,
   });
 
-  // const { mutate, isPending, isSuccess } = useMutation({
-  //   mutationKey: [`wh-cargos-${trip.id}`],
-  //   mutationFn: async () => await getWHCargos(trip.id.toString()),
-  //   onSuccess: (data) => {
-  //     setCargos(data.filter((e) => !e.is_deleted));
-  //   },
-  // });
   const [cargos, setCargos] = useState<WHCargoType[]>(whCargos || []);
 
+  const whDisclosure = useDisclosure();
+  const { setWhRow } = useUpdateCargoContext();
   const config: UseTableConfig<WHCargoType> = {
     row: {
-      setRowData(info) {},
+      setRowData(info) {
+        const { original } = info;
+        setWhRow(original);
+        whDisclosure.onOpenChange();
+      },
       className: "cursor-pointer",
     },
   };
-
-  // useEffect(() => {
-  //   mutate();
-  // }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -123,6 +120,8 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
           />
         </TableModeProvider>
       )}
+
+      <WHCargoModal disclosure={whDisclosure} mode="Update" />
     </div>
   );
 };
