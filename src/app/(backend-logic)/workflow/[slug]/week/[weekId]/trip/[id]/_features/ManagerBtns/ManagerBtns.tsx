@@ -17,6 +17,54 @@ import {
   getClientsNames,
 } from "@/app/(backend-logic)/workflow/cashbox/_features/api/server";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import * as XLSX from "xlsx";
+import {
+  Alert,
+  Button,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+} from "@nextui-org/react";
+import { FC } from "react";
+import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
+import { FaFileAlt } from "react-icons/fa";
+
+type DownloadExcelButtonProps = {
+  cargos: CargoType[];
+  trip: TripType;
+};
+export const AllManagerButtons = ({
+  cargos,
+  trip,
+}: {
+  cargos: CargoType[];
+  trip: TripType;
+}) => {
+  return (
+    <Dropdown>
+      <DropdownTrigger>
+        <Button variant="flat" color="success">
+          <FaFileAlt size={25} />
+        </Button>
+      </DropdownTrigger>
+      <DropdownMenu aria-label="Static Actions">
+        <DropdownItem key="copyToExcel">
+          <ExportToExcel cargos={cargos} trip={trip} />
+        </DropdownItem>
+        <DropdownItem key="Msc">
+          <MngrMscButton cargos={cargos} />
+        </DropdownItem>
+        <DropdownItem key="Acc">
+          <MngrAccButton cargos={cargos} />
+        </DropdownItem>
+        <DropdownItem key="Wh">
+          <MngrWrhButton cargos={cargos} />
+        </DropdownItem>
+      </DropdownMenu>
+    </Dropdown>
+  );
+};
 
 export const MngrAccButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
@@ -108,5 +156,78 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
         <PrintWarehouseButton actWrhData={actWrhData} />
       </RoleBasedWrapper>
     </div>
+  );
+};
+
+export const ExportToExcel: FC<DownloadExcelButtonProps> = ({
+  cargos,
+  trip,
+}) => {
+  const { data: UsersList } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => await getUserList(),
+  });
+  const { data: Drivers } = useQuery({
+    queryKey: ["getDriversWithGazellCars"],
+    queryFn: getDriversWithCars,
+  });
+
+  const flatData = cargos.map((cargo) => {
+    const { data: TM } = useQuery({
+      queryKey: [`manager info`, cargo.transportation_manager],
+      queryFn: async ({ queryKey }) => await getClient(Number(queryKey[1])),
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      refetchOnMount: false,
+    });
+
+    return {
+      "Адрес получения": cargo.receipt_address,
+      "Город разгрузки":
+        cargo.unloading_point.city + " " + cargo.unloading_point.withDelivery
+          ? cargo.unloading_point.deliveryAddress
+          : "",
+      Вес: cargo.weight,
+      Объем: cargo.volume,
+      "Кол-во": cargo.quantity.value + " " + cargo.quantity.type || "",
+      Водитель: Drivers?.filter((d) => d.id === Number(cargo.driver.id))[0]
+        ?.name,
+      Сумма: cargo.amount.value + " " + (cargo.amount.type ?? ""),
+      Распалечиваем: cargo.is_unpalletizing ? "Да" : "Нет",
+      Комментарии: cargo.comments,
+      "БИН Клиента":
+        cargo.client_bin.xin +
+        " " +
+        cargo.client_bin.tempText +
+        " " +
+        cargo.client_bin.snts.join(", "),
+      "Название груза": cargo.cargo_name,
+      Плательщик:
+        TM?.client.full_name.first_name +
+        " " +
+        TM?.client.phone_number +
+        " " +
+        TM?.client.company_name,
+      "Наличие документов": cargo.is_documents ? "Да" : "Нет",
+      Статус: cargo.status && cargo.status.slice(0, 10),
+      "SGM Менеджер": UsersList?.filter((user) => user?.id === cargo.user_id)[0]
+        ?.userName,
+    };
+  });
+  const worksheet = XLSX.utils.json_to_sheet(flatData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Таблица");
+
+  const download = () => {
+    XLSX.writeFile(
+      workbook,
+      `${trip.trip_number} рейс,  ${trip.status} - ${trip.city_to}, ${trip.driver.driver + " " + trip.driver.state_number}.xlsx`
+    );
+  };
+
+  return (
+    <>
+      <span onClick={download}>Экспортировать в Excel</span>
+    </>
   );
 };

@@ -16,9 +16,8 @@ import { BarGraph } from "../Statistics/BarGraph";
 import { useUser } from "@clerk/nextjs";
 import React from "react";
 import {
-  MngrAccButton,
-  MngrMscButton,
-  MngrWrhButton,
+  AllManagerButtons,
+  ExportToExcel,
 } from "@/app/(backend-logic)/workflow/[slug]/week/[weekId]/trip/[id]/_features/ManagerBtns/ManagerBtns";
 import { SgmSpinner } from "@/components/ui/SgmSpinner";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
@@ -182,38 +181,44 @@ export const TripTab = ({
 
   const citiesData = groupCargosByCity(getSortedCargos());
 
+  console.log(cargos);
+
   if (isLoading || !citiesData)
     return (
       <div className="flex justify-center items-center">
         <SgmSpinner />
       </div>
     );
+
   return (
     <>
       {cargos?.length > 0 && (
-        <Button
-          variant="ghost"
-          onPress={() => {
-            const formattedText = cargos
-              ?.filter((e) => e.client_bin.xin || e.client_bin.tempText)
-              .map((e) => {
-                const snts = e.client_bin.snts
-                  .filter((el) => el !== "KZ-SNT-")
-                  .join("");
+        <div className="flex justify-between">
+          <Button
+            variant="ghost"
+            onPress={() => {
+              const formattedText = cargos
+                ?.filter((e) => e.client_bin.xin || e.client_bin.tempText)
+                .map((e) => {
+                  const snts = e.client_bin.snts
+                    .filter((el) => el !== "KZ-SNT-")
+                    .join("");
 
-                return `${e.client_bin.tempText || ""}\nБИН: ${e.client_bin.xin || ""}\n${snts}`.trim();
-              })
-              .join("\n\n");
+                  return `${e.client_bin.tempText || ""}\nБИН: ${e.client_bin.xin || ""}\n${snts}`.trim();
+                })
+                .join("\n\n");
 
-            copy(formattedText);
-            toast({
-              title: "Скопировано в буфер обмена",
-              description: `Информация о ${cargos?.length} клиент(ах) была скопирована`,
-            });
-          }}
-        >
-          Скопировать всех клиентов
-        </Button>
+              copy(formattedText);
+              toast({
+                title: "Скопировано в буфер обмена",
+                description: `Информация о ${cargos?.length} клиент(ах) была скопирована`,
+              });
+            }}
+          >
+            Скопировать всех клиентов
+          </Button>
+          <AllManagerButtons cargos={cargos} trip={trip} />
+        </div>
       )}
       <div className="my-8">
         <WHCargoTable trip={trip} />
@@ -250,13 +255,11 @@ export const TripTab = ({
           <DeleteCargo />
         </div>
       )}
-      {cargos?.length > 0 && (
-        <div className="flex justify-between">
-          <MngrAccButton cargos={cargos} />
-          <MngrMscButton cargos={cargos} />
-          <MngrWrhButton cargos={cargos} />
+      {/* {cargos?.length > 0 && (
+        <div className="flex justify-end">
+          <AllManagerButtons cargos={cargos} trip={trip} />
         </div>
-      )}
+      )} */}
       <div className="mb-8"></div>
       <BarGraph cargos={cargos} />
       <div className="mb-8"></div>

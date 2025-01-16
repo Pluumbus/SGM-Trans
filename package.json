@@ -53,6 +53,7 @@
     "translit-russian": "^0.0.2",
     "transliterate": "^1.0.1",
     "transliteration": "^2.3.5",
+    "xlsx": "^0.18.5",
     "zod": "^3.23.8",
     "zustand": "^5.0.0-rc.2"
   },

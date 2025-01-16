@@ -91,11 +91,9 @@ export const PrintAccountantButton = ({
   };
 
   return (
-    <div>
-      <Button color="success" onPress={handlePrintClick}>
-        Печать для бухгалтера
-      </Button>
-    </div>
+    <>
+      <span onClick={handlePrintClick}>Печать для бухгалтера</span>
+    </>
   );
 };
 
@@ -131,11 +129,9 @@ export const PrintWarehouseButton = ({
   };
 
   return (
-    <div>
-      <Button color="success" onPress={handlePrintClick}>
-        Печать для склада
-      </Button>
-    </div>
+    <>
+      <span onClick={handlePrintClick}>Печать для склада</span>
+    </>
   );
 };
 
@@ -171,10 +167,8 @@ export const PrintMscButton = ({
   };
 
   return (
-    <div>
-      <Button color="success" onPress={handlePrintClick}>
-        Задание на погрузку печать
-      </Button>
-    </div>
+    <>
+      <span onClick={handlePrintClick}>Задание на погрузку печать</span>
+    </>
   );
 };
