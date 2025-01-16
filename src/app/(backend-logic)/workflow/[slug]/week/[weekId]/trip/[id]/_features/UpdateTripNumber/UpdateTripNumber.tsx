@@ -19,13 +19,17 @@ import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos, getTrips } from "../../../_api";
 import { COLORS } from "@/lib/colors";
 import { useSelectionContext } from "../Contexts";
+import { useWHSelectionContext } from "../Contexts/WHSelectionContext";
 
 export const UpdateTripNumber = ({
   currentTripId,
+  isWH,
 }: {
   currentTripId: number;
+  isWH: boolean;
 }) => {
   const [selectedRows, setRowSelected] = useSelectionContext();
+  // const [selectedWHRows, setWHRowSelected] = useWHSelectionContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
     {
@@ -33,6 +37,12 @@ export const UpdateTripNumber = ({
       isSelected: boolean;
     }[]
   >([]);
+  // const [selectedWHCargos, setSelectedWHCargos] = useState<
+  //   {
+  //     number: number;
+  //     isSelected: boolean;
+  //   }[]
+  // >([]);
   const [cargos, setCargos] = useState<CargoType[]>();
   const [selectedTrip, setSelectedTrip] = useState<number>();
 
@@ -49,11 +59,20 @@ export const UpdateTripNumber = ({
   });
 
   useEffect(() => {
-    if (selectedRows && data) {
+    if (
+      selectedRows &&
+      // selectedWHRows &&
+      data
+    ) {
       setSelectedCargos(selectedRows.filter((e) => e.isSelected));
+      // setSelectedWHCargos(selectedWHRows.filter((e) => e.isSelected));
       setCargos(data);
     }
-  }, [selectedRows, data]);
+  }, [
+    selectedRows,
+    // selectedWHRows,
+    data,
+  ]);
 
   const { mutate } = useMutation({
     mutationFn: async () => {
@@ -68,6 +87,7 @@ export const UpdateTripNumber = ({
         description: `Вы успешно перенесли груз(ы) в ${selectedTrip} рейс`,
       });
       setRowSelected([]);
+      // setWHRowSelected([]);
     },
     onError: () => {
       toast({
@@ -117,10 +137,12 @@ export const UpdateTripNumber = ({
           ? `${COLORS.orange}`
           : `${COLORS.red}`;
   };
-
   const isMskTrip = (city_to: string) => {
     if (city_to === "Москва") return "О- ";
-    return "";
+    // const isMskTrip = (trip: TripType) => {
+    //   const week = weeksData?.filter((w) => w.id === Number(trip.week_id))[0];
+    //   if (week?.table_type === "kz") return "О- ";
+    //   return "";
   };
   if (!tripsData) return <Spinner />;
   return (
@@ -133,7 +155,7 @@ export const UpdateTripNumber = ({
       >
         Перенести выбранные грузы
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} size="3xl">
         <ModalContent>
           {(onClose) => (
             <>
@@ -169,12 +191,14 @@ export const UpdateTripNumber = ({
                   {tripsData
                     ?.filter(
                       (trip) =>
-                        trip.id !== currentTripId && trip.status !== "Прибыл"
+                        trip.trip_number !== currentTripId &&
+                        trip.status !== "Прибыл"
                     )
                     .sort((a, b) => a.trip_number - b.trip_number)
                     .map((e) => (
                       <AutocompleteItem
                         key={e.id}
+                        className="py-4"
                         textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                         value={e.trip_number}
                         style={{
