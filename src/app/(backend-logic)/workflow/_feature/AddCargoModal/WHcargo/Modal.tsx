@@ -90,7 +90,9 @@ export const WHCargoModal = ({
             mode == "Create" ? mutate(dto) : updateWHCargoMutation(data);
           })}
         >
-          <ModalHeader>Создание груза</ModalHeader>
+          <ModalHeader>
+            {mode == "Create" ? "Создание груза" : "Обновите данные груза"}
+          </ModalHeader>
           <Divider />
           <ModalBody>
             <div className="grid grid-cols-2 gap-2 w-full ">

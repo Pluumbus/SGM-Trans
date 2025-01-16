@@ -1,6 +1,7 @@
 import {
   AutocompleteProps,
   Button,
+  Divider,
   Input,
   Spinner,
   Tooltip,
@@ -116,27 +117,18 @@ export const TM = ({
 
       case "Table":
         return (
-          <div className="flex flex-col w-full col-span-6">
-            <Input
-              isReadOnly
-              variant="underlined"
-              className="w-full"
-              value={data?.client?.full_name?.first_name || "Без имени"}
-            />
-            <Input
-              isReadOnly
-              variant="underlined"
-              className="w-full"
-              value={data?.client?.company_name || "Без компании"}
-            />
-
-            <div className="flex">
-              <Input
-                isReadOnly
-                variant="underlined"
-                className="w-full"
-                value={data?.client?.phone_number || "Без номера"}
-              />
+          <div className="flex flex-col w-full col-span-6 justify-end">
+            <span className="w-full">
+              {data?.client?.full_name?.first_name || "Без имени"}
+            </span>
+            <span className="w-full">
+              {data?.client?.company_name || "Без компании"}
+            </span>
+            <Divider className="mt-2" />
+            <div className="flex w-full items-center">
+              <span className="w-3/4">
+                {data?.client?.phone_number || "Без номера"}
+              </span>
               {!isLoading ? (
                 <Link
                   href={

@@ -1,7 +1,7 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { getRequests } from "../_api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getRequests, getRequestsFromBitrix } from "../_api";
 import {
   Autocomplete,
   AutocompleteItem,
@@ -44,6 +44,13 @@ export const ReqList = () => {
       setInitReqs(data);
     },
   });
+
+  const { data } = useQuery({
+    queryKey: ["GetRequestsFromBitrix"],
+    queryFn: getRequestsFromBitrix,
+  });
+
+  console.log("data B24", data);
 
   useEffect(() => {
     mutate();

@@ -31,10 +31,10 @@ import { AdjustedRequestDTO } from "../types";
 export const ReqFullInfoCard = () => {
   const { selectedReq: info, disclosure, tripDisclosure } = useReqItem();
   const { toast } = useToast();
-  const { data, isLoading } = useQuery({
-    queryKey: [`${info.logist_id}`],
-    queryFn: async () => await getUserById(info.logist_id),
-  });
+  // const { data, isLoading } = useQuery({
+  //   queryKey: [`${info.logist_id}`],
+  //   queryFn: async () => await getUserById(info.logist_id),
+  // });
   const { mutate, isPending } = useMutation({
     mutationFn: setRequestStatus,
     onSuccess: (data) => {
@@ -172,7 +172,7 @@ export const ReqFullInfoCard = () => {
         </CardBody>
         <Divider orientation="horizontal" />
         <CardFooter className="gap-2 flex flex-col w-full">
-          {info.status == ClientRequestStatus.REJECTED && (
+          {/* {info.status == ClientRequestStatus.REJECTED && (
             <Alert
               color="danger"
               title={
@@ -181,12 +181,12 @@ export const ReqFullInfoCard = () => {
                 ) : (
                   <div className="flex gap-2">
                     <span>Эта заявка была ранее отклонена:</span>
-                    <span>{`${data.firstName} ${data.lastName}`}</span>
+                     <span>{`${data.firstName} ${data.lastName}`}</span>
                   </div>
                 )
               }
             />
-          )}
+          )} */}
           <div className="flex gap-8 justify-start w-full">
             <Button
               color="success"
@@ -252,12 +252,12 @@ const UserInfo = ({ userId }: { userId: string }) => {
   }
   return (
     <div className="flex gap-2 items-center">
-      <span className="text-gray-500 text-sm">кем создана:</span>
+      {/* <span className="text-gray-500 text-sm">кем создана:</span>
       <Avatar src={data.avatar} alt={`SGM ${data.avatar} avatar`} />
       <div className="flex h-full flex-col">
         <span>{data.firstName}</span>
         <span>{data.lastName}</span>
-      </div>
+      </div> */}
     </div>
   );
 };
