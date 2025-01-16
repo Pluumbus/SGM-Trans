@@ -25,7 +25,11 @@ export const ProfileButton = () => {
             allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
           >
             <Divider />
-            <ProfilePrize isNumberOnly={false} userId={user?.id} />
+            <ProfilePrize
+              isNumberOnly={false}
+              userId={user?.id}
+              // userId={"user_2rLaX5Fe4Y69PmWBSdvNm9bBxAn"}
+            />
           </RoleBasedWrapper>
         </div>
       </Link>

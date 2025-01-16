@@ -224,6 +224,10 @@ export const isKzUser = (userId: string) => {
       return false;
     case "user_2q4308qq9oDBR0iOG6TGOMhavUx":
       return false;
+    case "user_2rNcH8Rzxw4GHw5NvfBqJJdMuyN":
+      return false;
+    case "user_2rLaX5Fe4Y69PmWBSdvNm9bBxAn":
+      return false;
     default:
       return true;
   }
