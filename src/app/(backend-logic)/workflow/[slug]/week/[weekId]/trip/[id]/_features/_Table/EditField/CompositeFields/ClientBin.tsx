@@ -26,16 +26,67 @@ type Type = CargoType["client_bin"];
 
 export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const SNT = "KZ-SNT-";
-
-  const values: CargoType["client_bin"] = info.getValue();
-
+  const [values, setValues] = useCompositeStates<Type>(info);
   const checkEmptySNT = () =>
     values?.snts?.every((e) => e.trim() == SNT || e.trim() == "");
 
   const { onOpenChange, isOpen } = useDisclosure();
 
+  useEffect(() => {
+    if (isOpen && !values.snts?.every((e) => e.startsWith(SNT))) {
+      setValues((prev) => {
+        const res = prev.snts.map((e) =>
+          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
+        );
+
+        return {
+          ...prev,
+          snts: res,
+        };
+      });
+    }
+  }, [isOpen]);
+
+  const addSNT = () => {
+    setValues((prev) => ({
+      ...prev,
+      snts: [...prev?.snts, ""],
+    }));
+  };
+
+  const handleSntChange = (value: string, index: number) => {
+    const updatedSnts = [...values.snts];
+    updatedSnts[index] = value;
+
+    setValues((prev) => ({
+      ...prev,
+      snts: updatedSnts,
+    }));
+
+    if (value.length >= 47 && index === values.snts.length - 1) {
+      setValues((prev) => ({
+        ...prev,
+        snts: [...prev.snts, ""],
+      }));
+    }
+  };
+
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
+  const handleInsertSNT = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+
+      const crgs = text.split("\n").map((e) => e.trim());
+      setValues((prev) => ({
+        ...prev,
+        snts: [...crgs],
+      }));
+      toast({
+        title: `Вы внесли ${crgs.length} СНТ`,
+      });
+    } catch (error) {}
+  };
   const { toast } = useToast();
 
   const copyXIN = () => {
@@ -63,8 +114,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   return (
     <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
       <div className={`flex w-full items-end`}>
-        <b className=" flex mb-10 w-full">{values?.tempText}</b>
-
+        <b className=" flex mb-2 w-full">{values?.tempText}</b>
         <div className="flex flex-col">
           <Tooltip
             content={
@@ -75,16 +125,19 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             }
             showArrow
           >
-            {/* <Button
+            <Button
               variant="flat"
               color="success"
-              
+              className="mt-1"
+              onPress={() => {
+                handleInsertSNT();
+              }}
               isIconOnly
             >
               <FaUpload />
-            </Button> */}
+            </Button>
           </Tooltip>
-          <Button
+          {/* <Button
             variant="light"
             isDisabled
             onPress={() => {
@@ -93,7 +146,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             isIconOnly
           >
             <FaPlus />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
@@ -115,7 +168,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
           offset={10}
         >
           <div
-            className=" grid grid-cols-2 h-full overflow-visible gap-y-2 mt-1 pb-4 hover:opacity-75"
+            className="grid grid-cols-2 h-full overflow-visible mt-1 pb-4 hover:opacity-75"
             onClick={() => {
               copySnts();
             }}
@@ -124,7 +177,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
               <div key={e + i}>
                 <Card
                   shadow="none"
-                  className="w-full !overflow-visible pl-1 bg-transparent"
+                  className="w-full h-full !overflow-visible pl-1 bg-transparent border-b-1 border-b-gray-400 rounded-none"
                 >
                   <CardBody className="w-full h-full p-0 !overflow-visible">
                     <div className="flex w-full justify-between h-full">
@@ -135,15 +188,12 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
                       </span>
                       {i % 2 == 0 && (
                         <div className="h-full col-span-1">
-                          <Divider orientation="vertical" />
+                          <Divider orientation="vertical" className="min-h-6" />
                         </div>
                       )}
                     </div>
                   </CardBody>
                 </Card>
-                {i % 2 !== 0 && (
-                  <Divider orientation="horizontal" className="col-span-2" />
-                )}
               </div>
             ))}
           </div>

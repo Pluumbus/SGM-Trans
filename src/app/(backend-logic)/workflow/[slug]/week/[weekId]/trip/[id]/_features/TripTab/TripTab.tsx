@@ -145,7 +145,6 @@ export const TripTab = ({
         },
         (payload) => {
           const newCargo = payload.new as CargoType;
-          console.log("newCargo", newCargo);
 
           if (payload.eventType !== "UPDATE") {
             setCargos((prev) => {
