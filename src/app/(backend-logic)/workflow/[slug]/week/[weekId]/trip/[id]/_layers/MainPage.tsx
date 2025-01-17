@@ -37,6 +37,7 @@ import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
 import { getDayOfWeek } from "../_helpers";
+import { WHSelectionProvider } from "../_features/Contexts/WHSelectionContext";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -140,6 +141,7 @@ export const MainPage: NextPage = () => {
   return (
     <CargosVisibilityProvider>
       <SelectionProvider>
+        {/* <WHSelectionProvider> */}
         <div>
           <div className="flex justify-between ">
             <TripInfoCard
@@ -190,6 +192,7 @@ export const MainPage: NextPage = () => {
           />
           <UpdateModal />
         </div>
+        {/* </WHSelectionProvider> */}
       </SelectionProvider>
     </CargosVisibilityProvider>
   );
@@ -232,10 +235,7 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
           <span>{trip.driver.state_number}</span>
         </div>
         <div className=" grid-rows-1 break-words">
-          {/* <span>
-            {trip.date_in &&
-              trip.date_in.slice(0, 5) + "  " + getDayOfWeek(trip.date_in)}
-          </span> */}
+          <span>{trip.date_in?.slice(0, 5)}</span>
         </div>
         <Divider />
       </div>
