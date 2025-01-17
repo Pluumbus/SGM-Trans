@@ -274,7 +274,7 @@ export const CreateTripInsideWeek = ({
                       onSelectionChange={(e) => {
                         setFormState((prev) => ({
                           ...prev,
-                          driver: e.toString(),
+                          driver: e?.toString(),
                         }));
                       }}
                     />
