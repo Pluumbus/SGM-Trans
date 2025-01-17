@@ -7,7 +7,6 @@ import "./globals.css";
 import React from "react";
 import { ConfirmProvider } from "@/tool-kit/hooks/useConfirm/useConfirmContext";
 import { AnimationRenderer } from "@/tool-kit/ui/Effects";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

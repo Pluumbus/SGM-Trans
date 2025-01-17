@@ -47,7 +47,7 @@ export const ReqList = () => {
 
   const { data } = useQuery({
     queryKey: ["GetRequestsFromBitrix"],
-    queryFn: getRequestsFromBitrix,
+    queryFn: async () => await getRequestsFromBitrix(),
   });
 
   console.log("data B24", data);

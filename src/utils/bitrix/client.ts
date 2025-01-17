@@ -1,18 +1,8 @@
-import { B24Hook } from "@bitrix24/b24jssdk";
+import Bitrix from "@2bad/bitrix";
 
-let bitrixClient = null;
+const bitrix = Bitrix(
+  process.env.NEXT_PUBLIC_BITRIX24_API_URL!,
+  "3ksesvu6gpspswfg6ch5t2n3x00hordd"
+);
 
-const initializeBitrixClient = () => {
-  if (bitrixClient) {
-    return bitrixClient;
-  }
-  bitrixClient = new B24Hook({
-    b24Url: process.env.NEXT_PUBLIC_BITRIX24_API_URL!,
-    secret: process.env.NEXT_PUBLIC_BITRIX24_API_SECRET_KEY!,
-    userId: 1,
-  });
-
-  return bitrixClient;
-};
-
-export default initializeBitrixClient;
+export default bitrix;
