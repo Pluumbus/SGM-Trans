@@ -26,67 +26,16 @@ type Type = CargoType["client_bin"];
 
 export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const SNT = "KZ-SNT-";
-  const [values, setValues] = useCompositeStates<Type>(info);
+
+  const values: CargoType["client_bin"] = info.getValue();
+
   const checkEmptySNT = () =>
     values?.snts?.every((e) => e.trim() == SNT || e.trim() == "");
 
   const { onOpenChange, isOpen } = useDisclosure();
 
-  useEffect(() => {
-    if (isOpen && !values.snts?.every((e) => e.startsWith(SNT))) {
-      setValues((prev) => {
-        const res = prev.snts.map((e) =>
-          !e.startsWith(SNT) ? `KZ-SNT-${e}` : e
-        );
-
-        return {
-          ...prev,
-          snts: res,
-        };
-      });
-    }
-  }, [isOpen]);
-
-  const addSNT = () => {
-    setValues((prev) => ({
-      ...prev,
-      snts: [...prev?.snts, ""],
-    }));
-  };
-
-  const handleSntChange = (value: string, index: number) => {
-    const updatedSnts = [...values.snts];
-    updatedSnts[index] = value;
-
-    setValues((prev) => ({
-      ...prev,
-      snts: updatedSnts,
-    }));
-
-    if (value.length >= 47 && index === values.snts.length - 1) {
-      setValues((prev) => ({
-        ...prev,
-        snts: [...prev.snts, ""],
-      }));
-    }
-  };
-
   const [copiedText, copyToClipboard] = useCopyToClipboard();
 
-  const handleInsertSNT = async () => {
-    try {
-      const text = await navigator.clipboard.readText();
-
-      const crgs = text.split("\n").map((e) => e.trim());
-      setValues((prev) => ({
-        ...prev,
-        snts: [...crgs],
-      }));
-      toast({
-        title: `Вы внесли ${crgs.length} СНТ`,
-      });
-    } catch (error) {}
-  };
   const { toast } = useToast();
 
   const copyXIN = () => {
@@ -115,20 +64,7 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     <div className={`${checkEmptySNT() && "bg-red-100"} px-2 min-w-[15rem]`}>
       <div className={`flex w-full items-end`}>
         <b className=" flex mb-10 w-full">{values?.tempText}</b>
-        {/* <Textarea
-          variant="underlined"
-          ariz-label="Инфо клиента"
-          value={values?.tempText}
-          onChange={(e) => {
-            setValues((prev) => ({
-              ...prev,
-              tempText: e.target.value || "",
-            }));
-          }}
-          classNames={{
-            input: "font-bold",
-          }}
-        /> */}
+
         <div className="flex flex-col">
           <Tooltip
             content={
@@ -139,16 +75,14 @@ export const ClientBin = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
             }
             showArrow
           >
-            <Button
+            {/* <Button
               variant="flat"
               color="success"
-              onPress={() => {
-                handleInsertSNT();
-              }}
+              
               isIconOnly
             >
               <FaUpload />
-            </Button>
+            </Button> */}
           </Tooltip>
           <Button
             variant="light"

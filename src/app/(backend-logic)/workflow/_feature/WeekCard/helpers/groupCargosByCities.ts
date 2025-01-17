@@ -33,10 +33,13 @@ export const groupCargosByCity = (
     });
   }
 
-  const result = Object.keys(cityMap).map((city) => ({
-    city,
-    cargos: cityMap[city],
-  }));
+  const result = Object.keys(cityMap).map((city) => {
+    const ct = city == "" ? "Грузы без города" : city;
+    return {
+      city: ct,
+      cargos: cityMap[city],
+    };
+  });
 
   return result;
 };

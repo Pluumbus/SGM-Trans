@@ -63,7 +63,36 @@ export const TripTab = ({
     //     setCargos(data);
     //   },
   });
+
   const [cargos, setCargos] = useState<CargoType[]>(data || []);
+
+  const getSortedCargos = useCallback(
+    (cargos: CargoType[]) => {
+      const priorityCities = ["Астана", "Алмата", "Караганда"];
+      const crgs = isOnlyMyCargos
+        ? cargos?.filter((e) => e.user_id == user.id.toString())
+        : cargos;
+
+      return crgs?.sort((a, b) => {
+        const cityA = a.unloading_point?.city || "";
+        const cityB = b.unloading_point?.city || "";
+
+        const indexA = priorityCities.indexOf(cityA);
+        const indexB = priorityCities.indexOf(cityB);
+
+        const finalIndexA = indexA === -1 ? Infinity : indexA;
+        const finalIndexB = indexB === -1 ? Infinity : indexB;
+
+        if (finalIndexA < finalIndexB) return -1;
+        if (finalIndexA > finalIndexB) return 1;
+
+        return cityA.localeCompare(cityB);
+      });
+    },
+    [cargos, isOnlyMyCargos, data]
+  );
+
+  const [citiesData, setCitiesData] = useState(null);
   const [rowSelected, setRowSelected] = useSelectionContext();
 
   const { setRow, disclosure } = useUpdateCargoContext();
@@ -89,6 +118,7 @@ export const TripTab = ({
           isSelected: false,
         }))
       );
+      setCitiesData(groupCargosByCity(getSortedCargos(data)));
     }
   }, [data, isOnlyMyCargos]);
 
@@ -115,8 +145,15 @@ export const TripTab = ({
         },
         (payload) => {
           const newCargo = payload.new as CargoType;
+          console.log("newCargo", newCargo);
+
           if (payload.eventType !== "UPDATE") {
-            setCargos((prev) => [...prev, newCargo]);
+            setCargos((prev) => {
+              setCitiesData(
+                groupCargosByCity(getSortedCargos([...prev, newCargo]))
+              );
+              return [...prev, newCargo];
+            });
             setRowSelected((prev) => [
               ...prev,
               { number: newCargo.id, isSelected: false },
@@ -130,6 +167,8 @@ export const TripTab = ({
                     : (e as CargoType)
                 )
                 .filter((e) => e.trip_id == trip.id && !e.is_deleted);
+
+              setCitiesData(groupCargosByCity(getSortedCargos(res)));
 
               return res;
             });
@@ -152,31 +191,6 @@ export const TripTab = ({
 
   const { toast } = useToast();
   const [_, copy] = useCopyToClipboard();
-
-  const getSortedCargos = useCallback(() => {
-    const priorityCities = ["Астана", "Алмата", "Караганда"];
-    const crgs = isOnlyMyCargos
-      ? data?.filter((e) => e.user_id == user.id.toString())
-      : data;
-
-    return crgs?.sort((a, b) => {
-      const cityA = a.unloading_point?.city || "";
-      const cityB = b.unloading_point?.city || "";
-
-      const indexA = priorityCities.indexOf(cityA);
-      const indexB = priorityCities.indexOf(cityB);
-
-      const finalIndexA = indexA === -1 ? Infinity : indexA;
-      const finalIndexB = indexB === -1 ? Infinity : indexB;
-
-      if (finalIndexA < finalIndexB) return -1;
-      if (finalIndexA > finalIndexB) return 1;
-
-      return cityA.localeCompare(cityB);
-    });
-  }, [cargos, isOnlyMyCargos]);
-
-  const citiesData = groupCargosByCity(getSortedCargos());
 
   if (isLoading || !citiesData)
     return (
@@ -246,7 +260,7 @@ export const TripTab = ({
 
       {rowSelected?.some((e) => e.isSelected) && (
         <div className="my-2 flex gap-2">
-          <UpdateTripNumber currentTripId={trip.trip_number} />
+          <UpdateTripNumber currentTripNumber={trip.trip_number} />
           <DeleteCargo />
         </div>
       )}

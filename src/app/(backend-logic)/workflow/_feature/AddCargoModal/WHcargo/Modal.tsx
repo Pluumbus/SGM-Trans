@@ -42,7 +42,7 @@ export const WHCargoModal = ({
     "driver",
   ]);
   const { toast } = useToast();
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: addWHCargo,
     onSuccess: () => {
       toast({
@@ -61,12 +61,13 @@ export const WHCargoModal = ({
     },
   });
 
-  const { mutate: updateWHCargoMutation } = useMutation({
-    mutationFn: updateWHCargo,
-    onSuccess: () => {
-      disclosure.onClose();
-    },
-  });
+  const { mutate: updateWHCargoMutation, isPending: isPendingUpdate } =
+    useMutation({
+      mutationFn: updateWHCargo,
+      onSuccess: () => {
+        disclosure.onClose();
+      },
+    });
   const onChangeBIN = (str: string) => {
     setValue("client_bin.xin", str);
   };
@@ -77,6 +78,7 @@ export const WHCargoModal = ({
   return (
     <Modal
       isOpen={disclosure.isOpen}
+      isDismissable={!(isPendingUpdate || isPending)}
       onOpenChange={disclosure.onOpenChange}
       size="2xl"
     >
@@ -215,10 +217,20 @@ export const WHCargoModal = ({
           </ModalBody>
           <Divider />
           <ModalFooter className="flex gap-2">
-            <Button variant="light" color="danger" type="reset">
+            <Button
+              variant="light"
+              color="danger"
+              type="reset"
+              isLoading={isPendingUpdate || isPending}
+            >
               Отмена
             </Button>
-            <Button color="success" variant="flat" type="submit">
+            <Button
+              color="success"
+              variant="flat"
+              type="submit"
+              isLoading={isPendingUpdate || isPending}
+            >
               {mode == "Create" ? " Создать груз" : "Обновить груз"}
             </Button>
           </ModalFooter>

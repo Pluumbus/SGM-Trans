@@ -19,14 +19,13 @@ import { useToast } from "@/components/ui/use-toast";
 import { getAllCargos, getTrips } from "../../../_api";
 import { COLORS } from "@/lib/colors";
 import { useSelectionContext } from "../Contexts";
-import { useWHSelectionContext } from "../Contexts/WHSelectionContext";
 
 export const UpdateTripNumber = ({
-  currentTripId,
-  isWH,
+  currentTripNumber,
+  isWH = false,
 }: {
-  currentTripId: number;
-  isWH: boolean;
+  currentTripNumber: number;
+  isWH?: boolean;
 }) => {
   const [selectedRows, setRowSelected] = useSelectionContext();
   // const [selectedWHRows, setWHRowSelected] = useWHSelectionContext();
@@ -176,7 +175,7 @@ export const UpdateTripNumber = ({
                   {/* </div> */}
                   {selectedCargos.length}
 
-                  <span>груза из {currentTripId} рейса</span>
+                  <span>груза из {currentTripNumber} рейса</span>
                 </div>
               </ModalHeader>
               <ModalBody>
@@ -191,7 +190,7 @@ export const UpdateTripNumber = ({
                   {tripsData
                     ?.filter(
                       (trip) =>
-                        trip.trip_number !== currentTripId &&
+                        trip.trip_number !== currentTripNumber &&
                         trip.status !== "Прибыл"
                     )
                     .sort((a, b) => a.trip_number - b.trip_number)
