@@ -3,7 +3,7 @@ import { StatsUserList } from "@/lib/references/stats/types";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CrownText } from "@/tool-kit/ui";
 import { Avatar } from "@nextui-org/react";
-import { ColumnDef } from "@tanstack/react-table";
+import { ColumnDef, Table } from "@tanstack/react-table";
 import { isKzUser } from "../../profile/feature/ProfileButton/Prize/Prize";
 
 export const columns: ColumnDef<StatsUserList>[] = [
@@ -40,13 +40,27 @@ export const columns: ColumnDef<StatsUserList>[] = [
       const { row } = cell;
 
       if (row.original.user_id === "user_2q43LAICTieWjrQavnXs5wNbQsc") {
-        return row.original.totalBidsInRange * 100;
+        const rowModel = cell.column.getFacetedRowModel().rows;
+
+        const bidsSumPerWeek = rowModel.map(
+          (item) => item.original.totalBidsInRange
+        );
+        return getSeparatedNumber(
+          bidsSumPerWeek.reduce((acc, curr) => acc + curr, 0) * 100
+        );
       }
       if (row.original.role === "Логист Москва") {
         if (row.original.user_id === "user_2q4308qq9oDBR0iOG6TGOMhavUx") {
-          return (
-            (Number(row.original.totalAmountInRange.replace(/,/g, "")) * 3) /
-            100
+          return getSeparatedNumber(
+            Number(
+              (
+                (Number(row.original.totalAmountInRange.replace(/,/g, "")) *
+                  3) /
+                100
+              )
+                .toString()
+                .split(".")[0]
+            )
           );
         }
         return 0;
@@ -72,3 +86,7 @@ export const columns: ColumnDef<StatsUserList>[] = [
     },
   },
 ];
+
+function getColumnValues<T>(tableInstance: Table<T>, columnId: string): T[] {
+  return tableInstance.getRowModel().rows.map((row) => row.getValue(columnId));
+}

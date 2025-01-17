@@ -6,7 +6,7 @@ import { User } from "@clerk/nextjs/server";
 
 export type AllCargosByWeek = {
   week_number: number;
-  trips: { cargos: { amount: any; user_id: string }[] }[];
+  trips: { cargos: { amount: any; user_id: string; is_deleted: boolean }[] }[];
 };
 
 export const getAllCargosByWeek = async () => {
@@ -22,7 +22,7 @@ export const getAllCargosByWeek = async () => {
 
   const { data: joinData, error: joinError } = await (await getSupabaseServer())
     .from("weeks")
-    .select(`week_number, trips(cargos(amount,user_id))`);
+    .select(`week_number, trips(cargos(amount,user_id, is_deleted))`);
 
   if (joinError) console.log(joinError.message);
 

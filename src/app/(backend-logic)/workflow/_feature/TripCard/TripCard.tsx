@@ -13,6 +13,7 @@ import {
   getTripsByWeekId,
   getCargosByTripId,
 } from "../../[slug]/week/[weekId]/trip/_api/index";
+import { getSchema } from "@/utils/supabase/getSchema";
 
 export type TripType = {
   id: number;
@@ -38,15 +39,14 @@ export const TripCard = ({
   const columns = useMemo(() => getBaseTripColumnsConfig(), []);
   const pathname = usePathname();
   const router = useRouter();
+  const { slug } = useParams();
 
   const { data: tripsData, isLoading } = useQuery({
-    queryKey: [`trips/${weekId}`],
+    queryKey: [`trips/${weekId}/${slug}`],
     queryFn: async () => await getTripsByWeekId(weekId),
   });
 
   const [trips, setTrips] = useState<TripType[]>([]);
-
-  const { slug } = useParams();
 
   useEffect(() => {
     if (!isLoading && tripsData.length > trips.length) {
@@ -71,7 +71,7 @@ export const TripCard = ({
       .channel(`view-trips-${slug}`)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "trips" },
+        { event: "*", schema: getSchema(), table: "trips" },
         (payload) => {
           setTrips((prev) => [...prev, payload.new as TripType]);
           setWeeks((prev) =>

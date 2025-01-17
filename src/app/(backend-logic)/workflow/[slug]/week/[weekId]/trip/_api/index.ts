@@ -75,14 +75,19 @@ export const GetWeeksTripsCargos = async () => {
   const { data, error } = await (await server)
     .from("weeks")
     .select(
-      "week_dates,week_number,trips(trip_number,cargos(id,amount,user_id))"
+      "week_dates,week_number,trips(trip_number,cargos(id,amount,user_id,is_deleted))"
     );
   if (error) throw new Error(error.message);
   return data as {
     week_dates: { end_date: string; start_date: string };
     trips: {
       trip_number: number;
-      cargos: { id: number; amount: { value }; user_id: string }[];
+      cargos: {
+        id: number;
+        amount: { value };
+        user_id: string;
+        is_deleted: boolean;
+      }[];
     }[];
   }[];
 };

@@ -68,7 +68,6 @@ export const getBaseColumnsConfig = () => {
       header: () => (
         <div className="flex flex-col gap-1 items-center">
           <span>Адрес получения</span>
-          {/* <span>получения</span> */}
         </div>
       ),
       size: 10,
@@ -292,22 +291,28 @@ export const getBaseColumnsConfig = () => {
     {
       accessorKey: "comments",
       header: "Комментарии",
-      size: 25,
+      size: 10,
       cell: (info: Cell<CargoType, ReactNode>) => {
         const { original } = info.row;
         const [value, setValue] = useFieldFocus();
 
         return (
-          <span
-            className="flex justify-center"
+          <div
+            className="flex justify-center items-center p-2 max-h-[12rem] max-w-[8rem] break-words "
             onClick={() => setValue(info.column.columnDef.accessorKey)}
           >
-            {original.comments}
-          </span>
+            <ScrollShadow
+              className="max-h-[10rem]  max-w-full"
+              onClick={() => setValue(info.column.columnDef.accessorKey)}
+            >
+              {original.comments}
+            </ScrollShadow>
+          </div>
         );
       },
       filter: false,
     },
+
     // {
     //   accessorKey: "comments",
     //   header: "Комментарии",
