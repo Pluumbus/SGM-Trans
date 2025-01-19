@@ -4,12 +4,12 @@ import {
   ClientRequestTypeDTO,
 } from "@/app/(client-logic)/client/types";
 import supabase from "@/utils/supabase/client";
-import { currentUser } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
 
 export const getRequests = async (): Promise<
   Array<ClientRequestTypeDTO & { trip_id: number }>
 > => {
-  const user = await currentUser();
+  const { user } = useUser();
   const { data, error } = await supabase
     .from("requests")
     .select("*")
@@ -28,11 +28,11 @@ export const setRequestStatus = async ({
   reqId: number;
   status: ClientRequestStatus;
 }): Promise<ClientRequestTypeDTO[]> => {
-  const { id } = await currentUser();
+  const { user } = useUser();
   const { data, error } = await supabase
     .from("requests")
     .update({
-      logist_id: id,
+      logist_id: user?.id!,
       status: status,
     })
     .eq("id", reqId)
