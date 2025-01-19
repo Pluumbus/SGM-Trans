@@ -48,6 +48,8 @@ export const prefillForm = (
   //   setValue("amount.value", row.amount.value);
   setValue("amount.type", row.amount.type || null);
 
+  console.log("row", row);
+
   // Nested: client_bin
   setValue("client_bin.tempText", row.client_bin.tempText || "");
   setValue("client_bin.xin", row.client_bin.xin || "");
