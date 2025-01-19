@@ -12,7 +12,7 @@ async function getSupabaseServer() {
   // if (!user?.id) redirectToSignIn();
 
   try {
-    const accessToken = await getToken({ template: "SGM-PROD" });
+    const accessToken = await getToken({ template: "SGM-TRANS" });
 
     return createClient(supabaseUrl, supabaseAnonKey, {
       db: {
