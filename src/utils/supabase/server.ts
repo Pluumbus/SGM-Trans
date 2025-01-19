@@ -11,7 +11,7 @@ async function getSupabaseServer() {
   const { userId, getToken } = await auth();
   // if (!userId) throw new Error("User not authenticated");
 
-  const accessToken = await getToken({ template: "SGM-TRANS" });
+  const accessToken = await getToken({ template: "SGM-PROD" });
 
   return createClient(supabaseUrl, supabaseAnonKey, {
     db: {
