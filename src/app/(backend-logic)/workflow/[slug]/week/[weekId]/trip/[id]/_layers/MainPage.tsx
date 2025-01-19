@@ -37,7 +37,6 @@ import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
 import { getDayOfWeek } from "../_helpers";
-import { WHSelectionProvider } from "../_features/Contexts/WHSelectionContext";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{

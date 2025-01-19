@@ -19,7 +19,6 @@ import {
 import { useUser } from "@clerk/nextjs";
 import { toast, useToast } from "@/components/ui/use-toast";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { getUserById } from "../../../../../_api";
 import { setUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
 import { FaCircleXmark, FaDownload } from "react-icons/fa6";
 import { useCheckRole } from "@/components/RoleManagment/useRole";
@@ -75,18 +74,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     Number(info.row.original.amount.value) -
       Number(info.row.original.paid_amount) ==
       0;
-
-  // const { mutate, isPending } = useMutation({
-  //   mutationKey: [`get user ${info.row.original.user_id.toString()}`],
-  //   mutationFn: async () => await getUserById(values?.user_id),
-  //   onSuccess: (res) => {
-  //     if (values.is_ready) {
-  //       setGivingActText(`Одобрил: ${res.firstName}`);
-  //     } else {
-  //       setGivingActText(initText);
-  //     }
-  //   },
-  // });
 
   const { data: usersList, isLoading } = useQuery({
     queryKey: ["getUsersList"],

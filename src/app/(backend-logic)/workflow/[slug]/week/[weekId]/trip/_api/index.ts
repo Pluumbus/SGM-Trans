@@ -1,23 +1,24 @@
 "use client";
-import { clerkClient } from "@clerk/nextjs/server";
+
+import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import {
   CargoType,
   WeekType,
 } from "@/app/(backend-logic)/workflow/_feature/types";
-import { TripAndWeeksIdType, WeekTableType } from "./types";
-import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
 import supabase from "@/utils/supabase/client";
+import { clerkClient } from "@clerk/nextjs/server";
+import { TripAndWeeksIdType, WeekTableType } from "./types";
 
-export const getUserById = async (userId: string) => {
-  const user = await (await clerkClient()).users.getUser(userId);
+// export const getUserById = async (userId: string) => {
+//   const user = await (await clerkClient()).users.getUser(userId);
 
-  return {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    avatar: user.imageUrl,
-  };
-};
+//   return {
+//     firstName: user.firstName,
+//     lastName: user.lastName,
+//     avatar: user.imageUrl,
+//   };
+// };
 
 export const getWHCargos = async (
   trip_id: string,

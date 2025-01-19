@@ -469,26 +469,7 @@ export const getBaseColumnsConfig = () => {
           </span>
         );
       },
-      // cell: (info: Cell<CargoType, ReactNode>) => {
-      //   const { data, isLoading } = useQuery({
-      //     queryKey: [`get user ${info.getValue().toString()}`],
-      //     queryFn: async () => await getUserById(info.getValue().toString()),
-      //   });
-      //   if (isLoading) {
-      //     return <Spinner />;
-      //   }
-      //   return (
-      //     <Tooltip
-      //       content={
-      //         <span>{`${data?.firstName || ""} ${data?.lastName || ""}`}</span>
-      //       }
-      //     >
-      //       <div className="w-4">
-      //         <span>{`${data?.firstName[0].toUpperCase() || ""}. ${data?.lastName[0].toUpperCase() || ""}.`}</span>
-      //       </div>
-      //     </Tooltip>
-      //   );
-      // },
+
       filter: false,
     },
     {
