@@ -13,6 +13,7 @@ export const getUserList = async () => {
     balance: user.publicMetadata?.balance as number | undefined,
     time: user.publicMetadata?.time as number | undefined,
     prevTime: user.publicMetadata?.prevTime as number | undefined,
+    imageUrl: user.imageUrl,
   })) satisfies UsersList[];
 
   return userList;
