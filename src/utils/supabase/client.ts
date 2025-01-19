@@ -20,7 +20,9 @@ function createClerkSupabaseClient() {
       fetch: async (url, options = {}) => {
         const clerkToken = await window.Clerk.session?.getToken({
           template:
-            process.env.NODE_ENV === "development" ? "SGM-TRANS" : "SGM-PROD",
+            // process.env.NODE_ENV === "development" ?
+            "SGM-TRANS",
+          // : "SGM-PROD",
         });
 
         const headers = new Headers(options?.headers);
