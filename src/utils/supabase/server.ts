@@ -8,19 +8,21 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 async function getSupabaseServer() {
-  const { userId, getToken, redirectToSignIn } = await auth();
-  const user = await currentUser();
+  const { getToken } = await auth();
+  // if (!user?.id) redirectToSignIn();
 
-  if (!user?.id) redirectToSignIn();
+  try {
+    const accessToken = await getToken({ template: "SGM-PROD" });
 
-  const accessToken = await getToken({ template: "SGM-PROD" });
-
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    db: {
-      schema: getSchema(),
-    },
-    global: { headers: { Authorization: `Bearer ${accessToken}` } },
-  });
+    return createClient(supabaseUrl, supabaseAnonKey, {
+      db: {
+        schema: getSchema(),
+      },
+      global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    });
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 export default getSupabaseServer;
