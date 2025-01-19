@@ -1,11 +1,9 @@
-"use server";
-import getSupabaseServer from "@/utils/supabase/server";
+"use client";
+import supabase from "@/utils/supabase/client";
 import { CashboxType } from "../../types";
 
 export const getClients = async () => {
-  const { data, error } = await (await getSupabaseServer())
-    .from("cashbox")
-    .select("*");
+  const { data, error } = await supabase.from("cashbox").select("*");
 
   if (error) {
     throw new Error(error.message);
@@ -15,9 +13,7 @@ export const getClients = async () => {
 };
 
 export const getClientsNames = async () => {
-  const { data, error } = await (await getSupabaseServer())
-    .from("cashbox")
-    .select("id,client");
+  const { data, error } = await supabase.from("cashbox").select("id,client");
 
   if (error) {
     throw new Error(error.message);
@@ -27,10 +23,11 @@ export const getClientsNames = async () => {
 };
 
 export const getClient = async (id: number) => {
-  const { data, error } = await (await getSupabaseServer())
+  const { data, error } = await supabase
     .from("cashbox")
     .select("*")
-    .eq("id", id).maybeSingle();
+    .eq("id", id)
+    .maybeSingle();
 
   if (error) {
     throw new Error(error.message);

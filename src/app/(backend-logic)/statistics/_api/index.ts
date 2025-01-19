@@ -1,7 +1,7 @@
-"use server";
+"use client";
 import { StatsUserList } from "@/lib/references/stats/types";
 import getClerkClient from "@/utils/clerk/clerk";
-import getSupabaseServer from "@/utils/supabase/server";
+import supabase from "@/utils/supabase/client";
 import { User } from "@clerk/nextjs/server";
 
 export type AllCargosByWeek = {
@@ -20,7 +20,7 @@ export const getAllCargosByWeek = async () => {
     role: user.publicMetadata?.role as string | undefined,
   }));
 
-  const { data: joinData, error: joinError } = await (await getSupabaseServer())
+  const { data: joinData, error: joinError } = await supabase
     .from("weeks")
     .select(`week_number, trips(cargos(amount,user_id, is_deleted))`);
 

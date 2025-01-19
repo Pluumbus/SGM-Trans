@@ -1,5 +1,5 @@
-"use server";
-import getSupabaseServer from "@/utils/supabase/server";
+"use client";
+import supabase from "@/utils/supabase/client";
 
 export const uploadFileToDb = async (
   fileName: string,
@@ -7,10 +7,8 @@ export const uploadFileToDb = async (
   weekId: string,
   fCreated_at: string,
   fileId: string,
-  path: string,
+  path: string
 ) => {
-  const supabase = await getSupabaseServer();
-
   const { data: oldData, error: oldError } = await supabase
     .from("weeks")
     .select("docs")
@@ -50,8 +48,6 @@ export const uploadFileToDb = async (
 };
 
 export const getDocsFromWeek = async (weekId: string) => {
-  const supabase = await getSupabaseServer();
-
   const { data, error } = await supabase
     .from("weeks")
     .select("docs")
@@ -66,8 +62,6 @@ export const getDocsFromWeek = async (weekId: string) => {
 };
 
 export const deleteFileFromDb = async (weekId: string, path: string) => {
-  const supabase = await getSupabaseServer();
-
   const { data: oldData, error: fetchError } = await supabase
     .from("weeks")
     .select("docs")
@@ -81,7 +75,7 @@ export const deleteFileFromDb = async (weekId: string, path: string) => {
   const currentDocs = oldData?.docs?.doc || [];
 
   const updatedDocs = currentDocs.filter(
-    (doc: { pathName: string }) => !doc.pathName.includes(path),
+    (doc: { pathName: string }) => !doc.pathName.includes(path)
   );
 
   const { error: updateError } = await supabase

@@ -1,6 +1,4 @@
-"use server";
-
-import getSupabaseServer from "@/utils/supabase/server";
+"use client";
 import { clerkClient } from "@clerk/nextjs/server";
 import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
 import {
@@ -9,6 +7,7 @@ import {
 } from "@/app/(backend-logic)/workflow/_feature/types";
 import { TripAndWeeksIdType, WeekTableType } from "./types";
 import { WHCargoType } from "@/app/(backend-logic)/workflow/_feature/AddCargoModal/WHcargo/types";
+import supabase from "@/utils/supabase/client";
 
 export const getUserById = async (userId: string) => {
   const user = await (await clerkClient()).users.getUser(userId);
@@ -24,8 +23,7 @@ export const getWHCargos = async (
   trip_id: string,
   wDeleted: boolean = false
 ): Promise<WHCargoType[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("wh_cargos")
     .select("*")
     .eq("trip_id", trip_id);
@@ -40,8 +38,7 @@ export const getCargos = async (
   trip_id: string,
   wDeleted: boolean = false
 ): Promise<CargoType[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("cargos")
     .select("*")
     .eq("trip_id", trip_id)
@@ -57,11 +54,9 @@ export const getCargos = async (
 export const getAllCargos = async (
   field?: string | string[]
 ): Promise<CargoType[]> => {
-  const server = getSupabaseServer();
-
   const whatToGet = Array.isArray(field) ? field.join(",") : field || "*";
 
-  const { data, error } = await (await server).from("cargos").select(whatToGet);
+  const { data, error } = await supabase.from("cargos").select(whatToGet);
 
   if (error) {
     throw new Error(error.message);
@@ -71,8 +66,7 @@ export const getAllCargos = async (
 };
 
 export const GetWeeksTripsCargos = async () => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("weeks")
     .select(
       "week_dates,week_number,trips(trip_number,cargos(id,amount,user_id,is_deleted))"
@@ -95,8 +89,7 @@ export const GetWeeksTripsCargos = async () => {
 export const getCargosByTripId = async (
   trip_id: number | string
 ): Promise<CargoType[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("cargos")
     .select("*")
     .eq("trip_id", trip_id);
@@ -111,8 +104,7 @@ export const getCargosByTripId = async (
 export const getTripsByWeekId = async (
   weekId: string
 ): Promise<TripAndWeeksIdType[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("trips")
     .select("*, weeks(*)")
     .eq("week_id", weekId);
@@ -127,8 +119,7 @@ export const getTripsByWeekId = async (
 export const getWeeks = async (
   type: WeekTableType = "ru"
 ): Promise<(WeekType & { trips: TripType[] })[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from("weeks")
     .select("*, trips(*)")
     .eq("table_type", type);
@@ -141,8 +132,7 @@ export const getWeeks = async (
 };
 
 export const getTrips = async (): Promise<TripType[]> => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server).from(`trips`).select("*");
+  const { data, error } = await supabase.from(`trips`).select("*");
 
   if (error) {
     throw new Error(error.message);
@@ -152,8 +142,7 @@ export const getTrips = async (): Promise<TripType[]> => {
 };
 
 export const getJustWeeks = async (type: WeekTableType = "ru") => {
-  const server = getSupabaseServer();
-  const { data, error } = await (await server)
+  const { data, error } = await supabase
     .from(`weeks`)
     .select("*")
     .eq("table_type", type);
