@@ -4,6 +4,9 @@ const isProduction = process.env.NODE_ENV === "production";
 const outputDir = process.env.BRANCH === "dev" ? "dev" : ".next";
 
 const nextConfig = {
+  experimental: {
+    runtime: "edge",
+  },
   output: "standalone",
   distDir: outputDir,
   compiler: {
