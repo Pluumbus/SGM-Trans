@@ -87,10 +87,7 @@ export const UpdateModal = () => {
       },
     });
 
-  const [withDelivery, driver] = watch([
-    "unloading_point.withDelivery",
-    "driver",
-  ]);
+  const [xin, driver] = watch(["client_bin.xin", "driver"]);
 
   const { mutate, isPending } = useUpdateCargo();
 
@@ -229,10 +226,10 @@ export const UpdateModal = () => {
                   />
                   <div className="flex gap-2 items-end">
                     <BINInput
-                      {...register("client_bin.xin")}
                       inputProps={{
                         variant: "underlined",
                       }}
+                      initValue={xin}
                       onChange={onChangeBIN}
                     />
                     <div>

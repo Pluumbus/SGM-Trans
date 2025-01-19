@@ -14,9 +14,10 @@ import {
 type Props = {
   inputProps?: InputProps;
   onChange?: (str: string) => void;
+  initValue?: string;
 };
 
-export const BINInput = ({ inputProps, onChange }: Props) => {
+export const BINInput = ({ inputProps, onChange, initValue }: Props) => {
   const [filter, setFilter] = useState<string>("");
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [isCardVisible, setIsCardVisible] = useState<boolean>(false);
@@ -88,10 +89,13 @@ export const BINInput = ({ inputProps, onChange }: Props) => {
   }, [highlightedIndex]);
 
   useEffect(() => {
-    if (filter) {
-      onChange?.(filter);
+    if (initValue) {
+      setFilter(initValue);
     }
-  }, [filter]);
+    return () => {
+      setFilter("");
+    };
+  }, [initValue]);
 
   return (
     <div className="w-full relative">
