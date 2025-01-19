@@ -1,9 +1,11 @@
 "use server";
 import { UsersList } from "@/lib/references/clerkUserType/types";
+import getClerkClient from "@/utils/clerk/clerk";
 import { clerkClient, User } from "@clerk/nextjs/server";
 
 export const getUserList = async () => {
-  const users = await clerkClient.users.getUserList({ limit: 99 });
+  // const users = await (await clerkClient()).users.getUserList({ limit: 99 });
+  const users = await (await getClerkClient()).users.getUserList();
   const userList = users.data.map((user: User) => ({
     id: user.id,
     userName: user.fullName || "Имя отсутствует",
