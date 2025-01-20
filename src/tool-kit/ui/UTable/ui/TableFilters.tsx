@@ -8,7 +8,7 @@ export const TableFilters = ({ headers }: any) => {
       {headers.map((header, i) =>
         header.column.getCanFilter() && header.column.columnDef.filter ? (
           <FilterInput header={header} key={i + 9} />
-        ) : null,
+        ) : null
       )}
     </>
   );

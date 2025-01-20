@@ -20,6 +20,7 @@ import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { useSelectionContext } from "../Contexts";
 import { getCargoAudit } from "../UpdateCargo/requests";
 import { useLastLogOnField } from "./helpers";
+import { customFilter } from "@/tool-kit/ui/UTable/helpers/customFilter";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -369,6 +370,8 @@ export const getBaseColumnsConfig = () => {
         );
       },
       filter: true,
+      filterBy: ["client_bin.tempText", "client_bin.xin"],
+      filterFn: customFilter,
     },
     {
       accessorKey: "is_documents",
