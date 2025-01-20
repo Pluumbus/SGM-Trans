@@ -79,11 +79,8 @@ export const getBaseColumnsConfig = () => {
         const [value, setValue] = useFieldFocus();
 
         return (
-          <div
-            className="flex flex-col justify-center items-center p-2 max-h-[12rem]"
-            onClick={() => setValue(info.column.columnDef.accessorKey)}
-          >
-            <ScrollShadow>
+          <div onClick={() => setValue(info.column.columnDef.accessorKey)}>
+            <ScrollShadow className="max-h-[10rem]  max-w-[10rem]">
               <span>{original.receipt_address}</span>
             </ScrollShadow>
           </div>
