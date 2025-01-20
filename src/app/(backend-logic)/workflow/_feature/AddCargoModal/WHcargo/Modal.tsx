@@ -37,10 +37,7 @@ export const WHCargoModal = ({
   const { register, handleSubmit, control, reset, setValue, watch } =
     useForm<WHCargoType>();
 
-  const [withDelivery, driver] = watch([
-    "unloading_point.withDelivery",
-    "driver",
-  ]);
+  const [xin, driver] = watch(["client_bin.xin", "driver"]);
   const { toast } = useToast();
   const { mutate, isPending } = useMutation({
     mutationFn: addWHCargo,
@@ -109,7 +106,7 @@ export const WHCargoModal = ({
                   {...register("client_bin.tempText")}
                   label={`Клиент\n\n(получатель груза)`}
                 />
-                <BINInput onChange={onChangeBIN} />
+                <BINInput onChange={onChangeBIN} initValue={xin} />
               </div>
               <div className="grid grid-cols-2 col-span-2 space-y-2">
                 <div className="grid grid-cols-2 col-span-2 gap-2 items-center">

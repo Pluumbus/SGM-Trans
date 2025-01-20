@@ -25,11 +25,6 @@ export function Chart({ cargos }: { cargos: CargoType[] }) {
   const [leadingCountManager, setLeadingCountManager] = useState([]);
   const [leadingAmountManager, setLeadingAmountManager] = useState();
 
-  // const { mutateAsync, isPending } = useMutation({
-  //   mutationKey: ["get users"],
-  //   mutationFn: async (user_id: string) => await getUserById(user_id),
-  //   retryDelay: 5000,
-  // });
   const { data: allUsers, isLoading } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),

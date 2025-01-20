@@ -35,10 +35,11 @@ type Props = {
 export const Body = ({
   props: { register, watch, control, setValue },
 }: Props) => {
-  const [withDelivery, amountType, is_documents] = watch([
+  const [withDelivery, amountType, is_documents, xin] = watch([
     "unloading_point.withDelivery",
     "amount.type",
     "is_documents",
+    "client_bin.xin",
   ]);
   const state = useState<number>(null);
 
@@ -65,7 +66,11 @@ export const Body = ({
               {...register("client_bin.tempText")}
               label={`Клиент\n\n(получатель груза)`}
             />
-            <BINInput {...register("client_bin.xin")} onChange={onChangeBIN} />
+            <BINInput
+              {...register("client_bin.xin")}
+              initValue={xin}
+              onChange={onChangeBIN}
+            />
           </div>
         </div>
 

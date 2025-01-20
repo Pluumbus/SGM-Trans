@@ -15,7 +15,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import React from "react";
-import { getUserById } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useReqItem } from "./Context";
 import { setRequestStatus } from "../_api";
@@ -31,10 +30,7 @@ import { AdjustedRequestDTO } from "../types";
 export const ReqFullInfoCard = () => {
   const { selectedReq: info, disclosure, tripDisclosure } = useReqItem();
   const { toast } = useToast();
-  // const { data, isLoading } = useQuery({
-  //   queryKey: [`${info.logist_id}`],
-  //   queryFn: async () => await getUserById(info.logist_id),
-  // });
+
   const { mutate, isPending } = useMutation({
     mutationFn: setRequestStatus,
     onSuccess: (data) => {
@@ -243,13 +239,13 @@ export const ReqFullInfoCard = () => {
 };
 
 const UserInfo = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: [`${userId}`],
-    queryFn: async () => await getUserById(userId),
-  });
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // const { data, isLoading } = useQuery({
+  //   queryKey: [`${userId}`],
+  //   queryFn: async () => await getUserById(userId),
+  // });
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
   return (
     <div className="flex gap-2 items-center">
       {/* <span className="text-gray-500 text-sm">кем создана:</span>

@@ -29,6 +29,7 @@ import { AllCargosByWeek, getAllCargosByWeek } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
 import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
+import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export function DataTable() {
   const {
@@ -40,6 +41,21 @@ export function DataTable() {
     queryFn: async () => await getAllCargosByWeek(),
   });
 
+  const { data: allUsers } = useQuery({
+    queryKey: ["getUsersList"],
+    queryFn: async () => await getUserList(),
+  });
+
+  const userList =
+    allUsers &&
+    allUsers?.map((user) => ({
+      user_id: user.id,
+      userName: user.userName || "Имя отсутствует",
+      avatar: user.imageUrl,
+      role: user.role as string | undefined,
+    }));
+
+  console.log(joinData);
   const [tableData, setTableData] = useState<StatsUserList[]>([]);
 
   const [weekNum, setWeekNum] = useState<number>();
@@ -132,7 +148,10 @@ export function DataTable() {
       );
     };
 
-    const rawTableData = sumUsersCargos(joinData.data, joinData.userList);
+    const rawTableData = sumUsersCargos(
+      joinData.data,
+      userList as StatsUserList[]
+    );
 
     const leaderUserSum = findMaxValue(rawTableData);
 
@@ -158,10 +177,10 @@ export function DataTable() {
   };
 
   useEffect(() => {
-    if (isJoinFetched && joinData) {
+    if (isJoinFetched && joinData && allUsers) {
       handleSetWeekFilter();
     }
-  }, [weekNum, joinData, isJoinFetched]);
+  }, [weekNum, joinData, isJoinFetched, allUsers]);
 
   if (isLoading) {
     return <Spinner />;

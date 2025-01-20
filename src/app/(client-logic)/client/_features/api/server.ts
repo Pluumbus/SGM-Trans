@@ -1,17 +1,15 @@
-"use server";
+"use client";
 
-import getSupabaseServer from "@/utils/supabase/server";
+import supabase from "@/utils/supabase/client";
 import { ClientRequestType } from "../../types";
-import { currentUser } from "@clerk/nextjs/server";
+import { useUser } from "@clerk/nextjs";
 
 export const getClientRequests = async () => {
-  const user = currentUser();
-  const { data, error } = await (
-    await getSupabaseServer()
-  )
+  const { user } = useUser();
+  const { data, error } = await supabase
     .from("requests")
     .select("*")
-    .eq("user_id", (await user).id);
+    .eq("user_id", user.id);
 
   if (error) {
     throw new Error(error.message);

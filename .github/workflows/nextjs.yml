@@ -50,6 +50,7 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           OMNICOMM_USER_LOGIN: ${{ secrets.OMNICOMM_USER_LOGIN }}
           OMNICOMM_USER_PWD: ${{ secrets.OMNICOMM_USER_PWD }}
@@ -83,3 +84,5 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
             sudo systemctl restart run-nodejs-service.service
           EOF
+
+#

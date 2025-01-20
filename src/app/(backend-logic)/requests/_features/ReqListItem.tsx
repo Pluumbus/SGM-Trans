@@ -9,7 +9,6 @@ import {
   useDisclosure,
 } from "@nextui-org/react";
 import React from "react";
-import { getUserById } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { useQuery } from "@tanstack/react-query";
 import { ReqModal } from "./ReqModal";
 import { useReqItem } from "./Context";
@@ -88,20 +87,20 @@ export const ReqListItem = ({
 };
 
 const UserInfo = ({ userId }: { userId: string }) => {
-  const { data, isLoading } = useQuery({
-    queryKey: [`${userId}`],
-    queryFn: async () => await getUserById(userId),
-  });
-  if (isLoading) {
-    return <Spinner />;
-  }
+  // const { data, isLoading } = useQuery({
+  //   queryKey: [`${userId}`],
+  //   queryFn: async () => await getUserById(userId),
+  // });
+  // if (isLoading) {
+  //   return <Spinner />;
+  // }
   return (
     <div className="flex gap-2 items-center">
-      <Avatar src={data.avatar} alt={`SGM ${data.avatar} avatar`} />
+      {/* <Avatar src={data.avatar} alt={`SGM ${data.avatar} avatar`} />
       <div className="flex h-full flex-col ">
         <span>{data.firstName}</span>
         <span>{data.lastName}</span>
-      </div>
+      </div> */}
     </div>
   );
 };
