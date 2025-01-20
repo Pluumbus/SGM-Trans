@@ -117,8 +117,8 @@ export const MainPage: NextPage = () => {
     const mainCity = tripsData.filter((trip) => trip.id === tripid)[0]
       .city_to[0];
 
-    const newCities =
-      uniqueData.length <= 5 ? uniqueData.slice(0, 3) : uniqueData.slice(0, 4);
+    // const newCities =
+    //   uniqueData.length <= 5 ? uniqueData.slice(0, 3) : uniqueData.slice(0, 4);
 
     uniqueData.unshift(mainCity);
 

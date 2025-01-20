@@ -33,7 +33,6 @@ import { FaAngleUp } from "react-icons/fa6";
 import { useConfirmContext } from "@/tool-kit/hooks";
 import { useParams, useRouter } from "next/navigation";
 import { WeekTableType } from "../../../_api/types";
-import { PATHS } from "@/lib/consts";
 import { getPath } from "@/lib/consts/paths";
 
 export const TripInfoCard = ({
@@ -47,6 +46,11 @@ export const TripInfoCard = ({
 }) => {
   const [currentTripData, setCurrentTripData] = useState<TripType>();
   const [statusVal, setStatusVal] = useState<string | undefined>();
+  const {
+    slug,
+  }: {
+    slug: WeekTableType;
+  } = useParams();
 
   const { data: allUsers } = useQuery({
     queryKey: ["getUsersList"],
@@ -87,14 +91,8 @@ export const TripInfoCard = ({
     "ПТ",
     "СБ",
   ];
-
+  const closedStatusItems = ["Машина закрыта", "В пути", "Прибыл"];
   const disclosure = useDisclosure();
-
-  const {
-    slug,
-  }: {
-    slug: WeekTableType;
-  } = useParams();
 
   const router = useRouter();
   const { openModal } = useConfirmContext();
@@ -192,6 +190,9 @@ export const TripInfoCard = ({
                 <Button
                   color="success"
                   onPress={disclosure.onOpenChange}
+                  isDisabled={closedStatusItems.includes(
+                    currentTripData?.status
+                  )}
                   variant="flat"
                 >
                   Добавить груз от лица Зав Склада
@@ -201,7 +202,13 @@ export const TripInfoCard = ({
                 allowedRoles={["Зав.Склада", "Зав.Склада Москва"]}
                 exclude={true}
               >
-                <Button color="success" onPress={onOpenChange}>
+                <Button
+                  color="success"
+                  onPress={onOpenChange}
+                  isDisabled={closedStatusItems.includes(
+                    currentTripData?.status
+                  )}
+                >
                   Добавить груз
                 </Button>
               </RoleBasedWrapper>
@@ -211,6 +218,9 @@ export const TripInfoCard = ({
                     color="warning"
                     isIconOnly
                     onPress={() => handleUpdateWeek()}
+                    isDisabled={closedStatusItems.includes(
+                      currentTripData?.status
+                    )}
                   >
                     <FaAngleUp />
                   </Button>
