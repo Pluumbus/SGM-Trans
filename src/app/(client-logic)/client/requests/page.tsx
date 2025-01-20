@@ -4,7 +4,11 @@ import { RequestsList } from "./_features";
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  return <div></div>;
+  return (
+    <div>
+      <RequestsList />
+    </div>
+  );
 };
 
 export default Page;
