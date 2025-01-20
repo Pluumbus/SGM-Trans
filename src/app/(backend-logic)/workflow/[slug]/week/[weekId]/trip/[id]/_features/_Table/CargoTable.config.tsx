@@ -18,6 +18,8 @@ import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { formatDateMonth } from "@/lib/helpers/formatDate";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 import { useSelectionContext } from "../Contexts";
+import { getCargoAudit } from "../UpdateCargo/requests";
+import { useLastLogOnField } from "./helpers";
 
 export const getBaseColumnsConfig = () => {
   const columnsConfig: UseTableColumnsSchema<CargoType>[] = [
@@ -132,12 +134,19 @@ export const getBaseColumnsConfig = () => {
       cell: (info: Cell<CargoType, ReactNode>) => {
         const { original } = info.row;
         const [value, setValue] = useFieldFocus();
+        const { data, isLoading } = useLastLogOnField({
+          field: "weight",
+          info: info,
+        });
 
         return (
           <div
             className="flex flex-col justify-center items-center"
             onClick={() => setValue(info.column.columnDef.accessorKey)}
           >
+            <span className="flex justify-center text-gray-400">
+              {!isLoading && data && data[data.length - 1]?.toString()}
+            </span>
             <span>{original.weight}</span>
           </div>
         );
@@ -160,11 +169,19 @@ export const getBaseColumnsConfig = () => {
         const { original } = info.row;
         const [value, setValue] = useFieldFocus();
 
+        const { data, isLoading } = useLastLogOnField({
+          field: "volume",
+          info: info,
+        });
+
         return (
           <div
             className="flex flex-col justify-center items-center"
             onClick={() => setValue(info.column.columnDef.accessorKey)}
           >
+            <div className="flex flex-col gap-1 text-gray-400">
+              {!isLoading && data && data[data.length - 1]?.toString()}
+            </div>
             <span>{original.volume}</span>
           </div>
         );
@@ -240,8 +257,18 @@ export const getBaseColumnsConfig = () => {
         const { original } = info.row;
         const [value, setValue] = useFieldFocus();
 
+        const { data, isLoading } = useLastLogOnField({
+          field: "amount",
+          info: info,
+        });
+
+        console.log("data", data);
+
         return (
           <div onClick={() => setValue(info.column.columnDef.accessorKey)}>
+            <span className="flex justify-center text-gray-400">
+              {!isLoading && data && data[data.length - 1]?.value.toString()}
+            </span>
             <span className="flex justify-center">
               {getSeparatedNumber(Number(original.amount.value))}
             </span>
