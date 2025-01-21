@@ -15,6 +15,7 @@ import {
   unloadingPointDictionary,
 } from "./types";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
+import { parseDate } from "@internationalized/date";
 
 export const Audit = () => {
   const { row } = useUpdateCargoContext();
@@ -67,7 +68,7 @@ export const Audit = () => {
       />
       <ScrollShadow className="h-[35rem]">
         {filteredData
-          .sort((a, b) => b.id - a.id)
+          ?.sort((a, b) => b.id - a.id)
           .map((e) => (
             <div
               key={e.id}
@@ -91,7 +92,7 @@ export const Audit = () => {
               </span>
               <div className="flex justify-center col-span-3">
                 <ScrollShadow className="py-4 h-40">
-                  {e.changed_fields.map((el) => {
+                  {e.changed_fields?.map((el) => {
                     switch (el) {
                       case "act_details":
                         return null;
@@ -111,6 +112,8 @@ export const Audit = () => {
                         return <div>{UnloadingPointDataCell(el, e)}</div>;
                       case "quantity":
                         return <div>{QuantityDataCell(el, e)}</div>;
+                      case "status":
+                        return <div>{StatusDataCell(el, e)}</div>;
                       default:
                         return (
                           <div key={el}>
@@ -353,6 +356,26 @@ const QuantityDataCell = (key: any, e: AuditCargosType) => {
                 </div>
               ))}
           </span>
+        </span>
+      </div>
+      <Divider />
+    </div>
+  );
+};
+
+const StatusDataCell = (key: any, e: AuditCargosType) => {
+  const date = new Date(e.cargo.new[key]);
+  return (
+    <div key={key}>
+      <div className="grid grid-cols-5 gap-4 px-4 py-2">
+        <span className="font-semibold border-r-1 ">
+          {cargoTypeDictionary[key]}:{" "}
+        </span>
+        <span className="col=span-2 border-r-1 px-2">
+          Было: <b>{e.cargo.old[key] ?? ""} </b>
+        </span>
+        <span className="col=span-2">
+          Стало: <b>{date.toLocaleDateString()}</b>
         </span>
       </div>
       <Divider />
