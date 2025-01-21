@@ -52,6 +52,8 @@ export const Audit = () => {
     setFilteredData(res);
   };
 
+  console.log(filteredData);
+
   if (isLoading || isLoadingUsers) {
     return <SgmSpinner />;
   }
@@ -69,6 +71,7 @@ export const Audit = () => {
       <ScrollShadow className="h-[35rem]">
         {filteredData
           ?.sort((a, b) => b.id - a.id)
+          .filter((f) => f.changed_fields !== null)
           .map((e) => (
             <div
               key={e.id}

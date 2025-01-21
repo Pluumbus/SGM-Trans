@@ -147,14 +147,14 @@ const CashoboxSummary = ({
     ?.flatMap((e) => e.cargos)
     ?.reduce(
       (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
       0
     );
   const sum = data
     ?.flatMap((e) => e.cargos)
     ?.reduce(
       (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
       0
     );
 
