@@ -41,7 +41,7 @@ export function DataTable() {
     queryFn: async () => await getAllCargosByWeek(),
   });
 
-  const { data: allUsers } = useQuery({
+  const { data: allUsers, isFetched } = useQuery({
     queryKey: ["getUsersList"],
     queryFn: async () => await getUserList(),
   });
@@ -88,8 +88,8 @@ export function DataTable() {
 
   const handleSetWeekFilter = () => {
     const sumUsersCargos = (
-      data: AllCargosByWeek[],
-      users: StatsUserList[]
+      data: AllCargosByWeek[] = [],
+      users: StatsUserList[] = []
     ) => {
       return (
         users
@@ -166,7 +166,7 @@ export function DataTable() {
         totalAmountInRange: getSeparatedNumber(item.totalAmountInRange),
         prizeSum: getSeparatedNumber(
           item.bidPrize && calculateCurrentPrize(totalPrize) > 0
-            ? calculateCurrentPrize(totalPrize) + item.bidPrize
+            ? Math.round(calculateCurrentPrize(totalPrize) + item.bidPrize)
             : 0
         ),
         leadUserSum:
@@ -177,10 +177,10 @@ export function DataTable() {
   };
 
   useEffect(() => {
-    if (isJoinFetched && joinData && allUsers) {
+    if (isJoinFetched && joinData && allUsers && isFetched) {
       handleSetWeekFilter();
     }
-  }, [weekNum, joinData, isJoinFetched, allUsers]);
+  }, [weekNum, joinData, isJoinFetched, allUsers, isFetched]);
 
   if (isLoading) {
     return <Spinner />;
