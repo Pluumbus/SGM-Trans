@@ -1,23 +1,26 @@
-import { callBitrixApi } from "@/utils/bitrix";
+export const fetchBitrixLeads = async () => {
+  // URL входящего вебхука
+  const url =
+    "https://sgmtrans.bitrix24.kz/rest/1/3c4cwbytj70532k8/crm.lead.list.json";
 
-export async function GET() {
   try {
-    const leads = await callBitrixApi("crm.lead.list", {
-      select: ["ID", "TITLE", "NAME", "EMAIL"],
-    });
-    return new Response(JSON.stringify(leads), {
-      status: 200,
+    // Выполняем GET-запрос к API Bitrix24
+    const response = await fetch(`${url}?start=0`, {
+      method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     });
+
+    if (!response.ok) {
+      throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
+    }
+
+    // Возвращаем данные в формате JSON
+    const data = await response.json();
+    return data.result; // Возвращаем массив данных из поля result
   } catch (error) {
-    console.error("Error fetching leads:", error);
-    return new Response(JSON.stringify({ error: "Error fetching leads" }), {
-      status: 500,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    console.error("Ошибка при запросе к Bitrix24 API:", error.message);
+    throw error; // Выбрасываем ошибку, чтобы обработать её в вызывающем коде
   }
-}
+};
