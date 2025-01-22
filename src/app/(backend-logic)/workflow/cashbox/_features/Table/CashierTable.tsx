@@ -4,8 +4,8 @@ import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useCashierColumnsConfig } from "./Table.config";
 import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
-import { useMutation } from "@tanstack/react-query";
-import { getClients } from "../api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getClients, getTripNumber } from "../api";
 import {
   Button,
   Card,
@@ -19,6 +19,7 @@ import supabase from "@/utils/supabase/client";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { TMModal } from "../../../_feature/TransportationManagerActions/TMModal";
 import { FaPlus } from "react-icons/fa6";
+import { useCashboxMode } from "../Context";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
@@ -43,8 +44,9 @@ export const CashierTable = () => {
   const [clients, setClients] = useState<CashboxType[]>([]);
 
   const [mskClientsOnly, setMskClientsOnly] = useState<CashboxType[]>([]);
+  const [kzClientsOnly, setKzClientsOnly] = useState<CashboxType[]>([]);
 
-  const [isMSKOnly, setIsMSKOnly] = useState<boolean>(false);
+  const { mode, setMode } = useCashboxMode();
 
   const { mutate, isPending } = useMutation({
     mutationKey: ["get clients for cashbox"],
@@ -55,7 +57,15 @@ export const CashierTable = () => {
     },
   });
 
-  const getClientsFortable = () => (isMSKOnly ? mskClientsOnly : clients);
+  const getClientsFortable = () => {
+    switch (mode) {
+      case "MSK":
+        return mskClientsOnly;
+
+      default:
+        return clients;
+    }
+  };
 
   useEffect(() => {
     mutate();
@@ -109,17 +119,35 @@ export const CashierTable = () => {
           </div>
         </CardBody>
       </Card>
-      <div className="flex justify-center w-full">
-        <Checkbox
-          isSelected={isMSKOnly}
-          onValueChange={(e) => {
-            setIsMSKOnly(e);
-          }}
-        >
-          Показать только клиентов которые оплачивают в МСК
-        </Checkbox>
+      <div className="flex justify-center w-full items-center">
+        <div className="flex flex-col gap-2">
+          <Checkbox
+            isSelected={mode == "MSK"}
+            onValueChange={(e) => {
+              setMode(e ? "MSK" : "none");
+            }}
+          >
+            Показать только клиентов которые оплачивают в МСК
+          </Checkbox>
+          <Checkbox
+            isSelected={mode == "Arrived"}
+            onValueChange={(e) => {
+              setMode(e ? "Arrived" : "none");
+            }}
+          >
+            Показать только клиентов грузы которых уже прибыли
+          </Checkbox>
+          <Checkbox
+            isSelected={mode == "KZ"}
+            onValueChange={(e) => {
+              setMode(e ? "KZ" : "none");
+            }}
+          >
+            Показать только клиентов с Обраток
+          </Checkbox>
+        </div>
       </div>
-      <CashoboxSummary data={clients} isMSKOnly={isMSKOnly} />
+      <CashoboxSummary data={clients} isMSKOnly={mode == "MSK"} />
       <UTable
         props={{
           isCompact: false,
@@ -143,28 +171,47 @@ const CashoboxSummary = ({
 }) => {
   const disclosure = useDisclosure();
   const state = useState<number>();
-  const mskSum = getMSKClients(data)
-    ?.flatMap((e) => e.cargos)
-    ?.reduce(
-      (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
-      0
-    );
-  const sum = data
-    ?.flatMap((e) => e.cargos)
-    ?.reduce(
-      (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount)),
-      0
-    );
+  const { cargos, mode } = useCashboxMode();
+
+  let sum = 0;
+
+  switch (mode) {
+    case "MSK":
+      sum = getMSKClients(data)
+        ?.flatMap((e) => e.cargos)
+        ?.reduce(
+          (total, el) =>
+            total +
+            (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
+          0
+        );
+      break;
+    case "KZ":
+    case "Arrived":
+      sum = cargos?.reduce(
+        (total, el) =>
+          total +
+          (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
+        0
+      );
+      break;
+    default:
+      sum = data
+        ?.flatMap((e) => e.cargos)
+        ?.reduce(
+          (total, el) =>
+            total +
+            (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
+          0
+        );
+      break;
+  }
 
   return (
     <div className="flex gap-8 items-center">
       <div className="flex gap-2 items-center">
         <span>Общая сумма кассы:</span>
-        <span className="font-semibold">
-          {getSeparatedNumber(isMSKOnly ? mskSum : sum)} тг
-        </span>
+        <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
       </div>
       <div>
         <Button
