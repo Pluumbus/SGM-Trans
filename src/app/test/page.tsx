@@ -1,27 +1,18 @@
 "use client";
-import { useAnimations } from "@/tool-kit/ui/Effects";
-import { Button } from "@nextui-org/react";
+import { useQueries, useQuery } from "@tanstack/react-query";
 import { NextPage } from "next";
+import { fetchBitrixLeads } from "../api/b24/getLeads";
+import { LeadType } from "../api/types";
 
 interface Props {}
 
 const Page: NextPage<Props> = ({}) => {
-  const { triggerAnimation } = useAnimations();
-  return (
-    <div className="flex gap-4">
-      <Button
-        onPress={() => {
-          triggerAnimation("fireworks", {
-            prize: {
-              amount: 1111000000,
-            },
-          });
-        }}
-      >
-        Феерверки
-      </Button>
-    </div>
-  );
+  const { data } = useQuery({
+    queryKey: ["TEST123"],
+    queryFn: async () => await fetchBitrixLeads(),
+  });
+  console.log(data);
+  return <div className="flex gap-4">{JSON.stringify(data)}</div>;
 };
 
 export default Page;

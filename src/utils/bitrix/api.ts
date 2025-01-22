@@ -1,7 +1,7 @@
 import initializeBitrixClient from "./client";
 
 export const callBitrixApi = async (method, params = {}) => {
-  const bitrixClient = initializeBitrixClient();
+  const bitrixClient = initializeBitrixClient;
   try {
     const response = await bitrixClient.call(method, params);
     return response;
