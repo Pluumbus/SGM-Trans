@@ -106,7 +106,7 @@ export const MngrMscButton = ({ cargos }: { cargos: CargoType[] }) => {
       driver: data?.filter((f) => f.id === Number(crg.driver.id))[0]?.name,
       is_documents: crg.is_documents ? "Да" : "Нет",
       is_unpalletizing: crg.is_unpalletizing ? "Да" : "Нет",
-      status: crg.status,
+      status: new Date(crg.status).toLocaleDateString(),
     } as MscActType;
   });
   return (
@@ -140,6 +140,7 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
         " " +
         (crg.unloading_point.deliveryAddress || ""),
       cargo_name: crg.cargo_name,
+      quantity_type: crg.quantity.type,
       is_unpalletizing: crg.is_unpalletizing ? "Да" : "Нет",
       sgm_manager: userData?.filter((u) => u.id === crg.user_id)[0]?.userName,
       weight: crg.weight,

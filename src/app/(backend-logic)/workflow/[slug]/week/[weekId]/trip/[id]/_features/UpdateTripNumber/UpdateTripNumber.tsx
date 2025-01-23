@@ -16,9 +16,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
 import { updateTripNumber } from "./api";
 import { useToast } from "@/components/ui/use-toast";
-import { getAllCargos, getTrips } from "../../../_api";
+import {
+  getAllCargos,
+  GetDataForUpdateTripNumber,
+  getTrips,
+} from "../../../_api";
 import { COLORS } from "@/lib/colors";
 import { useSelectionContext } from "../Contexts";
+import { useParams } from "next/navigation";
 
 export const UpdateTripNumber = ({
   currentTripNumber,
@@ -28,6 +33,12 @@ export const UpdateTripNumber = ({
   isWH?: boolean;
 }) => {
   const [selectedRows, setRowSelected] = useSelectionContext();
+  const { weekId, id, slug } = useParams<{
+    weekId: string;
+    slug: string;
+    id: string;
+  }>();
+
   // const [selectedWHRows, setWHRowSelected] = useWHSelectionContext();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [selectedCargos, setSelectedCargos] = useState<
@@ -42,20 +53,39 @@ export const UpdateTripNumber = ({
   //     isSelected: boolean;
   //   }[]
   // >([]);
-  const [cargos, setCargos] = useState<CargoType[]>();
+  const [cargos, setCargos] =
+    useState<{ weight: string; volume: string; trip_id: number }[]>();
+  const [trips, setTrips] = useState<
+    {
+      trip_number: number;
+      driver: { driver: string; car: string; state_number: string };
+      city_to: string[];
+      status: string;
+      cargos: {
+        trip_id: number;
+        weight: string;
+        volume: string;
+      }[];
+    }[]
+  >();
   const [selectedTrip, setSelectedTrip] = useState<number>();
 
   const { toast } = useToast();
 
-  const { data } = useQuery({
-    queryKey: ["getAllCargos"],
-    queryFn: async () => await getAllCargos(),
+  const { data, isLoading } = useQuery({
+    queryKey: ["GetDataForUpdateTripNumber"],
+    queryFn: async () => await GetDataForUpdateTripNumber(weekId, slug),
   });
 
-  const { data: tripsData, isLoading: tripsLoading } = useQuery({
-    queryKey: ["getAllTrips"],
-    queryFn: async () => await getTrips(),
-  });
+  // const { data } = useQuery({
+  //   queryKey: ["getAllCargos"],
+  //   queryFn: async () => await getAllCargos(),
+  // });
+
+  // const { data: tripsData, isLoading: tripsLoading } = useQuery({
+  //   queryKey: ["getAllTrips"],
+  //   queryFn: async () => await getTrips(),
+  // });
 
   useEffect(() => {
     if (
@@ -65,7 +95,12 @@ export const UpdateTripNumber = ({
     ) {
       setSelectedCargos(selectedRows.filter((e) => e.isSelected));
       // setSelectedWHCargos(selectedWHRows.filter((e) => e.isSelected));
-      setCargos(data);
+      setCargos(
+        data.flatMap(
+          (w) => w.trips.find((trip) => trip.trip_number == Number(id))?.cargos
+        )
+      );
+      setTrips(data.flatMap((w) => w.trips));
     }
   }, [
     selectedRows,
@@ -95,14 +130,14 @@ export const UpdateTripNumber = ({
       });
     },
   });
-  const sumCargosColorForTrip = (trip: TripType, isText: boolean) => {
-    const sorted = cargos?.filter((cargo) => cargo.trip_id === trip.id);
+  const sumCargosColorForTrip = (trip, isText: boolean) => {
+    const sorted = cargos?.filter((cargo) => cargo?.trip_id === trip.id);
     const totalWeight = sorted?.reduce(
-      (sum, cargo) => sum + parseFloat(cargo.weight),
+      (sum, cargo) => sum + parseFloat(cargo?.weight),
       0
     );
     const totalVolume = sorted?.reduce(
-      (sum, cargo) => sum + parseFloat(cargo.volume),
+      (sum, cargo) => sum + parseFloat(cargo?.volume),
       0
     );
 
@@ -136,14 +171,8 @@ export const UpdateTripNumber = ({
           ? `${COLORS.orange}`
           : `${COLORS.red}`;
   };
-  const isMskTrip = (city_to: string) => {
-    if (city_to === "Москва") return "О- ";
-    // const isMskTrip = (trip: TripType) => {
-    //   const week = weeksData?.filter((w) => w.id === Number(trip.week_id))[0];
-    //   if (week?.table_type === "kz") return "О- ";
-    //   return "";
-  };
-  if (!tripsData) return <Spinner />;
+  // if (!tripsData) return <Spinner />;
+
   return (
     <div className="">
       <Button
@@ -187,29 +216,32 @@ export const UpdateTripNumber = ({
                     setSelectedTrip(e as number);
                   }}
                 >
-                  {tripsData
+                  {trips
                     ?.filter(
                       (trip) =>
                         trip.trip_number !== currentTripNumber &&
                         trip.status !== "Прибыл"
                     )
-                    .sort((a, b) => a.trip_number - b.trip_number)
-                    .map((e) => (
-                      <AutocompleteItem
-                        key={e.id}
-                        className="py-4"
-                        textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
-                        value={e.trip_number}
-                        style={{
-                          border: ` 2px solid ${sumCargosColorForTrip(e, false)}`,
-                        }}
-                      >
-                        <b>{`${e.trip_number}`}</b> |{" "}
-                        <b>{isMskTrip(e.city_to[0])}</b>
-                        {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
-                        {sumCargosColorForTrip(e, true)}
-                      </AutocompleteItem>
-                    ))}
+                    ?.sort((a, b) => a.trip_number - b.trip_number)
+                    ?.map((e) =>
+                      !data && isLoading ? (
+                        <Spinner />
+                      ) : (
+                        <AutocompleteItem
+                          key={e.trip_number}
+                          className="py-4"
+                          textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
+                          value={e.trip_number}
+                          style={{
+                            border: ` 2px solid ${sumCargosColorForTrip(e, false)}`,
+                          }}
+                        >
+                          <b>{`${e.trip_number}`}</b> |{" "}
+                          {`${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
+                          {sumCargosColorForTrip(e, true)}
+                        </AutocompleteItem>
+                      )
+                    )}
                 </Autocomplete>
               </ModalBody>
               <ModalFooter>

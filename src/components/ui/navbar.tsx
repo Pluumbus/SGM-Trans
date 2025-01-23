@@ -52,6 +52,14 @@ const Navbar = () => {
             >
               Машины
             </Link>
+            <RoleBasedWrapper allowedRoles={["Кассир", "Админ"]}>
+              <Link
+                href={PATHS.statistics}
+                className="mr-5 cursor-pointer hover:text-gray-900"
+              >
+                Статистика
+              </Link>
+            </RoleBasedWrapper>
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
                 href={PATHS.sgm_mechanic}
@@ -64,19 +72,11 @@ const Navbar = () => {
               </Link>
 
               <Link
-                href={PATHS.statistics}
+                href={PATHS.requestsForLogist}
                 className="mr-5 cursor-pointer hover:text-gray-900"
               >
-                Статистика
+                Заявки от клиентов
               </Link>
-              {userRole == "Админ" && (
-                <Link
-                  href={PATHS.requestsForLogist}
-                  className="mr-5 cursor-pointer hover:text-gray-900"
-                >
-                  Заявки от клиентов
-                </Link>
-              )}
               {/* <DevToggle /> */}
             </RoleBasedWrapper>
           </nav>

@@ -92,6 +92,34 @@ export const GetWeeksTripsCargos = async () => {
   }[];
 };
 
+export const GetDataForUpdateTripNumber = async (
+  weekId: string,
+  slug: string
+) => {
+  const server = getSupabaseServer();
+  const { data, error } = await (await server)
+    .from("weeks")
+    .select(
+      "table_type,trips(trip_number,driver,status,city_to,cargos(weight,trip_id,volume))"
+    )
+    .eq("table_type", slug);
+  // .in("id", [Number(weekId) - 1, Number(weekId + 1)]);
+  if (error) throw new Error(error.message);
+  return data as {
+    table_type: string;
+    trips: {
+      trip_number: number;
+      driver: { driver: string; car: string; state_number: string };
+      city_to: string[];
+      status: string;
+      cargos: {
+        trip_id: number;
+        weight: string;
+        volume: string;
+      }[];
+    }[];
+  }[];
+};
 export const getCargosByTripId = async (
   trip_id: number | string
 ): Promise<CargoType[]> => {

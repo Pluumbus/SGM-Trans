@@ -177,10 +177,10 @@ export function DataTable() {
   };
 
   useEffect(() => {
-    if (isJoinFetched && joinData && allUsers && isFetched) {
+    if (isJoinFetched && joinData) {
       handleSetWeekFilter();
     }
-  }, [weekNum, joinData, isJoinFetched, allUsers, isFetched]);
+  }, [weekNum, joinData, isJoinFetched]);
 
   if (isLoading) {
     return <Spinner />;

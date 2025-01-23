@@ -89,7 +89,7 @@ export const wrhBodyHtmlTemp = `
                             <td>{{ unloading_point }}</td>
                             <td>{{ weight }}</td>
                             <td>{{ volume }}</td>
-                            <td>{{ quantity }}</td>
+                            <td>{{ quantity }} - {{ quantity_type }} </td>
                             <td>{{ is_unpalletizing }}</td>
                             <td>{{ comments }}</td>
                             <td>{{ client_bin }}</td>

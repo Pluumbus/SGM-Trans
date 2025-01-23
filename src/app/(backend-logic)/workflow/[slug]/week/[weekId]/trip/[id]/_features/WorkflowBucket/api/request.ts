@@ -27,7 +27,7 @@ export const uploadFile = async (file: File, weekId: string) => {
     weekId,
     currentFileSelect.created_at,
     currentFileSelect.id,
-    fName,
+    fName
   );
 };
 

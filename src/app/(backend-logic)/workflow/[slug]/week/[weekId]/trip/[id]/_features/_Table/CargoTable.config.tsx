@@ -263,8 +263,6 @@ export const getBaseColumnsConfig = () => {
           info: info,
         });
 
-        console.log("data", data);
-
         return (
           <div onClick={() => setValue(info.column.columnDef.accessorKey)}>
             <span className="flex justify-center text-gray-400">

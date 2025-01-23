@@ -18,6 +18,7 @@ export type WareHouseActType = {
   cargo_name: string;
   weight: string;
   volume: string;
+  quantity_type: string;
   quantity: string;
   client_bin: string;
   transportation_manager: string;

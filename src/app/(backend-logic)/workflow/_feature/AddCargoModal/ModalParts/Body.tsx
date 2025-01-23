@@ -237,6 +237,7 @@ export const Body = ({
           )}
         /> */}
         <UDatePicker
+          {...register("status")}
           control={control}
           name="status"
           label="Дата поступления на склад"
