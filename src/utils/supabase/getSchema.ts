@@ -6,4 +6,3 @@ export const getSchema = (): "dev" | "public" => {
   }
   return process.env.NODE_ENV === "development" ? "dev" : "public";
 };
-//
