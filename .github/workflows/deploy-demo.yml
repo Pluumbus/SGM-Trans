@@ -1,8 +1,8 @@
-name: Deploy Next.js site
+name: Deploy Next.js site (Demo)
 
 on:
   push:
-    branches: ["main"]
+    branches: ["demo"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages"
+  group: "deploy-demo"
   cancel-in-progress: false
 
 jobs:
@@ -49,8 +49,8 @@ jobs:
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
         env:
-          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
-          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY_PROD }}
+          NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY_PROD }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           OMNICOMM_USER_LOGIN: ${{ secrets.OMNICOMM_USER_LOGIN }}
           OMNICOMM_USER_PWD: ${{ secrets.OMNICOMM_USER_PWD }}
@@ -72,7 +72,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/new_web
+          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/demo_web
 
       - name: Restart service on server
         env:
@@ -82,7 +82,5 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
           ssh -i private_key -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-            sudo systemctl restart run-nodejs-service.service
+            sudo systemctl restart demo-nodejs-service.service
           EOF
-
-#

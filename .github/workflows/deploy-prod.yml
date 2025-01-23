@@ -1,8 +1,8 @@
-name: Deploy Next.js site (Demo)
+name: Deploy Next.js site
 
 on:
   push:
-    branches: ["demo"]
+    branches: ["main"]
   workflow_dispatch:
 
 permissions:
@@ -11,7 +11,7 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages-demo"
+  group: "deploy-prod"
   cancel-in-progress: false
 
 jobs:
@@ -72,7 +72,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/demo_web
+          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/new_web
 
       - name: Restart service on server
         env:
@@ -82,5 +82,7 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
           ssh -i private_key -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-            sudo systemctl restart demo-nodejs-service.service
+            sudo systemctl restart run-nodejs-service.service
           EOF
+
+#
