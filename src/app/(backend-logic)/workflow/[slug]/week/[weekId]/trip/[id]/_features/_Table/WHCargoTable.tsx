@@ -115,7 +115,7 @@ export const WHCargoTable = ({ trip }: { trip: TripType }) => {
             isPagiantion={false}
             //   @ts-ignore
             columns={WHSchema()}
-            name={`Cargo Table ${trip.id}`}
+            name={`WHCargo Table`}
             config={config}
           />
         </TableModeProvider>

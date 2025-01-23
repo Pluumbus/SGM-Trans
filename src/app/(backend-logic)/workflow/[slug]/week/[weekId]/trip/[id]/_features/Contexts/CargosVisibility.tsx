@@ -4,6 +4,7 @@ import {
   SetStateAction,
   createContext,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -21,7 +22,14 @@ export const CargosVisibility = createContext({} as CargosVisibilityType);
 export const CargosVisibilityProvider = ({
   children,
 }: CargosVisibilityProviderProps) => {
-  const [isOnlyMyCargos, setIsOnlyMyCargos] = useState<boolean>(false);
+  const [isOnlyMyCargos, setIsOnlyMyCargos] = useState<boolean>(() => {
+    const storedValue = localStorage.getItem("isOnlyMyCargos");
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("isOnlyMyCargos", JSON.stringify(isOnlyMyCargos));
+  }, [isOnlyMyCargos]);
   return (
     <CargosVisibility.Provider
       value={{
