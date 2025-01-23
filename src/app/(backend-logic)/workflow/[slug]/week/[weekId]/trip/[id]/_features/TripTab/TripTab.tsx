@@ -250,7 +250,7 @@ export const TripTab = ({
                 data={e.cargos}
                 isPagiantion={false}
                 columns={columns}
-                name={`Cargo Table ${trip.id}`}
+                name={`Cargo Table`}
                 config={config}
               />
             </div>

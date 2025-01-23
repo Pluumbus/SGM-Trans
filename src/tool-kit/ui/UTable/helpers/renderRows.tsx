@@ -2,27 +2,13 @@ import { TableCell, TableRow } from "@nextui-org/react";
 import { Table, flexRender } from "@tanstack/react-table";
 import { RowConfigProps } from "../types";
 import { cx } from "class-variance-authority";
-import { useState } from "react";
 
 export const renderRows = <T,>(
   tInstance: Table<T>,
-  config: RowConfigProps<T>
+  config: RowConfigProps<T>,
+  highlightedRows: Set<string>,
+  toggleHighlight: (rowId: string) => void
 ) => {
-  const [highlightedRows, setHighlightedRows] = useState<Set<string>>(
-    new Set()
-  );
-
-  const toggleHighlight = (rowId: string) => {
-    setHighlightedRows((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(rowId)) {
-        newSet.delete(rowId);
-      } else {
-        newSet.add(rowId);
-      }
-      return newSet;
-    });
-  };
   return tInstance.getRowModel().rows.map((row, i) => (
     <TableRow
       className={cx(

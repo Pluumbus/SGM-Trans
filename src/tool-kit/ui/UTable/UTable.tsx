@@ -78,9 +78,25 @@ export const UTable = <T,>({
     },
   });
 
+  const [highlightedRows, setHighlightedRows] = useState<Set<string>>(
+    new Set()
+  );
+
+  const toggleHighlight = (rowId: string) => {
+    setHighlightedRows((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(rowId)) {
+        newSet.delete(rowId);
+      } else {
+        newSet.add(rowId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <div className="flex flex-col h-fit">
-      <UTableTopContent tInstance={tInstance} />
+      <UTableTopContent tInstance={tInstance} name={name} />
       <div className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-100 bg-pi">
         <Table
           aria-label={name}
@@ -92,7 +108,12 @@ export const UTable = <T,>({
         >
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
           <TableBody {...tBodyProps}>
-            {renderRows(tInstance, config!.row)}
+            {renderRows(
+              tInstance,
+              config!.row,
+              highlightedRows,
+              toggleHighlight
+            )}
           </TableBody>
         </Table>
       </div>
