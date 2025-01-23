@@ -1,6 +1,6 @@
 export const getSchema = (): "dev" | "public" => {
   // return "public";
-  return "dev";
+  // return "dev";
   if (typeof window !== "undefined") {
     return window.location.hostname === "localhost" ? "dev" : "public";
   }
