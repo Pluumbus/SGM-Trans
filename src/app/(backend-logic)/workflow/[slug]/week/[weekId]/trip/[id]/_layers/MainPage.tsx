@@ -128,7 +128,7 @@ export const MainPage: NextPage = () => {
       )
     );
     const newTripsData = tripsData.map((trip) =>
-      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
+      trip?.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];
 
     setTripsData(newTripsData);

@@ -70,7 +70,7 @@ export const TripTab = ({
     (cargos: CargoType[]) => {
       const priorityCities = ["Астана", "Алмата", "Караганда"];
       const crgs = isOnlyMyCargos
-        ? cargos?.filter((e) => e.user_id == user.id.toString())
+        ? cargos?.filter((e) => e.user_id == user?.id.toString())
         : cargos;
 
       return crgs?.sort((a, b) => {
