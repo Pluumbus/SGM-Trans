@@ -100,7 +100,7 @@ export const GetDataForUpdateTripNumber = async (
   const { data, error } = await (await server)
     .from("weeks")
     .select(
-      "table_type,trips(trip_number,driver,status,city_to,cargos(weight,trip_id,volume))"
+      "table_type,trips(id,trip_number,driver,status,city_to,cargos(weight,trip_id,volume))"
     )
     .eq("table_type", slug);
   // .in("id", [Number(weekId) - 1, Number(weekId + 1)]);
@@ -108,6 +108,7 @@ export const GetDataForUpdateTripNumber = async (
   return data as {
     table_type: string;
     trips: {
+      id: number;
       trip_number: number;
       driver: { driver: string; car: string; state_number: string };
       city_to: string[];

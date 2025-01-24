@@ -57,6 +57,7 @@ export const UpdateTripNumber = ({
     useState<{ weight: string; volume: string; trip_id: number }[]>();
   const [trips, setTrips] = useState<
     {
+      id: number;
       trip_number: number;
       driver: { driver: string; car: string; state_number: string };
       city_to: string[];
@@ -228,7 +229,7 @@ export const UpdateTripNumber = ({
                         <Spinner />
                       ) : (
                         <AutocompleteItem
-                          key={e.trip_number}
+                          key={e.id}
                           className="py-4"
                           textValue={`${e.trip_number} | ${e.driver.driver.split(" ")[0]} - ${e.driver.state_number} (${e.city_to.map((e) => e)})`}
                           value={e.trip_number}
