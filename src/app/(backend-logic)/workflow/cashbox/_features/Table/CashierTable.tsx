@@ -129,7 +129,7 @@ export const CashierTable = () => {
           >
             Показать только клиентов которые оплачивают в МСК
           </Checkbox>
-          <Checkbox
+          {/* <Checkbox
             isSelected={mode == "Arrived"}
             onValueChange={(e) => {
               setMode(e ? "Arrived" : "none");
@@ -144,7 +144,7 @@ export const CashierTable = () => {
             }}
           >
             Показать только клиентов с Обраток
-          </Checkbox>
+          </Checkbox> */}
         </div>
       </div>
       <CashoboxSummary data={clients} isMSKOnly={mode == "MSK"} />
@@ -190,7 +190,9 @@ const CashoboxSummary = ({
     <div className="flex gap-8 items-center">
       <div className="flex gap-2 items-center">
         <span>Общая сумма кассы:</span>
-        <span className="font-semibold">{getSeparatedNumber(sum)} тг</span>
+        <span className="font-semibold">
+          {isMSKOnly ? mskSum : getSeparatedNumber(sum)} тг
+        </span>
       </div>
       <div>
         <Button

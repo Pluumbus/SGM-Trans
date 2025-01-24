@@ -232,7 +232,7 @@ const FullName = ({
 const CargoItem = ({ cargo, info }) => {
   const paidAmount = getSeparatedNumber(Number(cargo?.paid_amount));
   const amountToPay = getSeparatedNumber(Number(cargo?.amount.value));
-  const { mode, setCargos } = useCashboxMode();
+  // const { mode, setCargos } = useCashboxMode();
 
   const { data, isLoading } = useQuery({
     queryKey: [info.row.original.cargos.map((c) => c.id).join(", ")],
@@ -245,36 +245,36 @@ const CargoItem = ({ cargo, info }) => {
     },
   });
 
-  useEffect(() => {
-    if (data) {
-      const thisCargoTrip = data.find((trip) => trip.id === cargo.trip_id);
-      if (!thisCargoTrip) return;
+  // useEffect(() => {
+  //   if (data) {
+  //     const thisCargoTrip = data.find((trip) => trip.id === cargo.trip_id);
+  //     if (!thisCargoTrip) return;
 
-      switch (mode) {
-        case "KZ":
-          if (thisCargoTrip.weeks?.table_type === "kz") {
-            setCargos((prev) => addCargoIfNotExists(prev, cargo));
-          }
-          break;
+  //     switch (mode) {
+  //       case "KZ":
+  //         if (thisCargoTrip.weeks?.table_type === "kz") {
+  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         }
+  //         break;
 
-        case "Arrived":
-          if (thisCargoTrip.status === "Прибыл") {
-            setCargos((prev) => addCargoIfNotExists(prev, cargo));
-          }
-          break;
+  //       case "Arrived":
+  //         if (thisCargoTrip.status === "Прибыл") {
+  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         }
+  //         break;
 
-        case "none":
-        default:
-          setCargos((prev) => addCargoIfNotExists(prev, cargo));
-          break;
-      }
-    }
-  }, [data]);
+  //       case "none":
+  //       default:
+  //         setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         break;
+  //     }
+  //   }
+  // }, [data]);
 
-  const addCargoIfNotExists = (prev, newCargo) => {
-    const alreadyInState = prev.some((p) => p.id === newCargo.id);
-    return alreadyInState ? prev : [...prev, newCargo];
-  };
+  // const addCargoIfNotExists = (prev, newCargo) => {
+  //   const alreadyInState = prev.some((p) => p.id === newCargo.id);
+  //   return alreadyInState ? prev : [...prev, newCargo];
+  // };
 
   const disclosure = useDisclosure();
 
