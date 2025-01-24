@@ -191,7 +191,7 @@ const CashoboxSummary = ({
       <div className="flex gap-2 items-center">
         <span>Общая сумма кассы:</span>
         <span className="font-semibold">
-          {isMSKOnly ? mskSum : getSeparatedNumber(sum)} тг
+          {getSeparatedNumber(isMSKOnly ? mskSum : sum)} тг
         </span>
       </div>
       <div>
