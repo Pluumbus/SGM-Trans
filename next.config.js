@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 
 const isProduction = process.env.NODE_ENV === "production";
-// const outputDir = process.env.BRANCH === "dev" ? "dev" : ".next";
-const outputDir = isProduction ? ".next" : "dev";
+const outputDir = process.env.BRANCH === "dev" ? "dev" : ".next";
 
 
 const nextConfig = {
