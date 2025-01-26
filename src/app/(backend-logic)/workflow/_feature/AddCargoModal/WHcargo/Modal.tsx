@@ -48,7 +48,7 @@ export const WHCargoModal = ({
           "На данный момент, ваш груз сохранен, но не действиетелен. Подождите пока логист добавит его",
       });
       reset();
-      disclosure.onOpenChange();
+      disclosure.onClose();
     },
     onError: (error) => {
       toast({
@@ -63,6 +63,7 @@ export const WHCargoModal = ({
       mutationFn: updateWHCargo,
       onSuccess: () => {
         disclosure.onClose();
+        reset();
       },
     });
   const onChangeBIN = (str: string) => {

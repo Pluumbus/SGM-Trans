@@ -70,7 +70,7 @@ export const TripTab = ({
     (cargos: CargoType[]) => {
       const priorityCities = ["Астана", "Алмата", "Караганда"];
       const crgs = isOnlyMyCargos
-        ? cargos?.filter((e) => e.user_id == user.id.toString())
+        ? cargos?.filter((e) => e.user_id == user?.id.toString())
         : cargos;
 
       return crgs?.sort((a, b) => {
@@ -250,7 +250,7 @@ export const TripTab = ({
                 data={e.cargos}
                 isPagiantion={false}
                 columns={columns}
-                name={`Cargo Table ${trip.id}`}
+                name={`Cargo Table`}
                 config={config}
               />
             </div>
