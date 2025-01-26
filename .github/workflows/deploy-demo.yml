@@ -43,6 +43,17 @@ jobs:
           node-version: "20"
           cache: ${{ steps.detect-package-manager.outputs.manager }}
 
+          ##dont forget to delete
+      - name: Debug Secrets
+        run: |
+          echo "CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}"
+          echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}"
+
+      - name: Verify Clerk Secret
+        run: echo $CLERK_SECRET_KEY
+        env:
+          CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
+
       - name: Install dependencies
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
 
