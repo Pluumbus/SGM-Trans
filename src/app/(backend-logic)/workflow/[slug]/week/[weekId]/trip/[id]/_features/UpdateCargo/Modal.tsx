@@ -343,7 +343,6 @@ export const UpdateModal = () => {
                       onChange={onChange}
                       autocompleteProps={{
                         variant: "underlined",
-                        isDisabled: true,
                       }}
                       type="Update Cargo Modal"
                     />

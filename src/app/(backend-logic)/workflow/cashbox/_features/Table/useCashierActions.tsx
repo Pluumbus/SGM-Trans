@@ -1,12 +1,12 @@
 import { useDisclosure } from "@nextui-org/react";
 import { ChangeClientBalance } from "./Modals";
 import { Cell } from "@tanstack/react-table";
-import { CashboxType } from "../../types";
 import { ReactNode } from "react";
 import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
 import { ChangePaymentTerms } from "./Modals/ChangePaymentTerms";
+import { CashboxTableType } from "@/lib/types/cashbox.types";
 
-export const useCashierActions = (info: Cell<CashboxType, ReactNode>) => {
+export const useCashierActions = (info: Cell<CashboxTableType, ReactNode>) => {
   const cahngeClientBalance = useDisclosure();
   const addPaymentTocargo = useDisclosure();
   const changePaymentTerms = useDisclosure();

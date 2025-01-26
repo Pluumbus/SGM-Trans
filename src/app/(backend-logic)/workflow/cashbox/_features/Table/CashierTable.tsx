@@ -4,8 +4,8 @@ import { UseTableConfig } from "@/tool-kit/ui/UTable/types";
 import { useCashierColumnsConfig } from "./Table.config";
 import { CashboxType } from "../../types";
 import { UTable } from "@/tool-kit/ui";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { getClients, getTripNumber } from "../api";
+import { useMutation } from "@tanstack/react-query";
+import { getClients } from "../api";
 import {
   Button,
   Card,
@@ -20,10 +20,12 @@ import { getSeparatedNumber } from "@/tool-kit/hooks";
 import { TMModal } from "../../../_feature/TransportationManagerActions/TMModal";
 import { FaPlus } from "react-icons/fa6";
 import { useCashboxMode } from "../Context";
+import { getSchema } from "@/utils/supabase/getSchema";
+import { CashboxTableType } from "@/lib/types/cashbox.types";
 
 export const CashierTable = () => {
   const columns = useCashierColumnsConfig();
-  const config: UseTableConfig<CashboxType> = {
+  const config: UseTableConfig<CashboxTableType> = {
     row: {
       setRowData(info) {},
       setClassNameOnRow(info) {
@@ -41,10 +43,10 @@ export const CashierTable = () => {
     },
   };
 
-  const [clients, setClients] = useState<CashboxType[]>([]);
-
-  const [mskClientsOnly, setMskClientsOnly] = useState<CashboxType[]>([]);
-  const [kzClientsOnly, setKzClientsOnly] = useState<CashboxType[]>([]);
+  const [clients, setClients] = useState<CashboxTableType[]>([]);
+  const [originalClients, setOriginalClients] = useState<CashboxTableType[]>(
+    []
+  );
 
   const { mode, setMode } = useCashboxMode();
 
@@ -52,24 +54,21 @@ export const CashierTable = () => {
     mutationKey: ["get clients for cashbox"],
     mutationFn: async () => await getClients(),
     onSuccess: (data) => {
-      setClients(data);
-      setMskClientsOnly(getMSKClients(data));
+      setClients(getClientsByMode(data, mode));
+      setOriginalClients(data);
     },
   });
-
-  const getClientsFortable = () => {
-    switch (mode) {
-      case "MSK":
-        return mskClientsOnly;
-
-      default:
-        return clients;
-    }
-  };
 
   useEffect(() => {
     mutate();
   }, []);
+
+  useEffect(() => {
+    if (clients && mode) {
+      setClients(getClientsByMode(originalClients, mode));
+      console.log("mode", mode);
+    }
+  }, [mode]);
 
   useEffect(() => {
     const cn = supabase
@@ -78,11 +77,11 @@ export const CashierTable = () => {
         "postgres_changes",
         {
           event: "*",
-          schema: "public",
+          schema: getSchema(),
           table: "cashbox",
         },
         (payload) => {
-          const updatedClient = payload.new as CashboxType;
+          const updatedClient = payload.new as CashboxTableType;
 
           if (payload.eventType == "INSERT")
             setClients((prev) => [...prev, updatedClient]);
@@ -102,10 +101,6 @@ export const CashierTable = () => {
     };
   }, []);
 
-  if (isPending) {
-    return <Spinner />;
-  }
-
   return (
     <div>
       <Card shadow="none" className="w-2/12">
@@ -122,6 +117,7 @@ export const CashierTable = () => {
       <div className="flex justify-center w-full items-center">
         <div className="flex flex-col gap-2">
           <Checkbox
+            isDisabled={isPending}
             isSelected={mode == "MSK"}
             onValueChange={(e) => {
               setMode(e ? "MSK" : "none");
@@ -129,30 +125,35 @@ export const CashierTable = () => {
           >
             Показать только клиентов которые оплачивают в МСК
           </Checkbox>
-          {/* <Checkbox
-            isSelected={mode == "Arrived"}
-            onValueChange={(e) => {
-              setMode(e ? "Arrived" : "none");
-            }}
-          >
-            Показать только клиентов грузы которых уже прибыли
-          </Checkbox>
           <Checkbox
+            isDisabled={isPending}
             isSelected={mode == "KZ"}
             onValueChange={(e) => {
               setMode(e ? "KZ" : "none");
             }}
           >
             Показать только клиентов с Обраток
+          </Checkbox>
+          {/* <Checkbox
+          isDisabled={isPending}
+            isSelected={mode == "Arrived"}
+            onValueChange={(e) => {
+              setMode(e ? "Arrived" : "none");
+            }}
+          >
+            Показать только клиентов грузы которых уже прибыли
           </Checkbox> */}
         </div>
       </div>
-      <CashoboxSummary data={clients} isMSKOnly={mode == "MSK"} />
+      <CashoboxSummary data={clients} />
       <UTable
         props={{
           isCompact: false,
         }}
-        data={getClientsFortable()}
+        tBodyProps={{
+          isLoading: isPending,
+        }}
+        data={clients}
         isPagiantion={false}
         columns={columns}
         name={`Cashier Table`}
@@ -162,38 +163,37 @@ export const CashierTable = () => {
   );
 };
 
-const CashoboxSummary = ({
-  data,
-  isMSKOnly,
-}: {
-  data: CashboxType[];
-  isMSKOnly: boolean;
-}) => {
+const CashoboxSummary = ({ data }: { data: CashboxTableType[] }) => {
   const disclosure = useDisclosure();
+  const { mode } = useCashboxMode();
+
   const state = useState<number>();
-  const mskSum = getMSKClients(data)
-    ?.flatMap((e) => e.cargos)
-    ?.reduce(
-      (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
-      0
-    );
-  const sum = data
-    ?.flatMap((e) => e.cargos)
-    ?.reduce(
-      (total, el) =>
-        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
-      0
-    );
+  const clients = getClientsByMode(data, mode);
+
+  const debt = getDebt(clients);
+  const paidSum = getPaidSum(clients);
 
   return (
     <div className="flex gap-8 items-center">
-      <div className="flex gap-2 items-center">
-        <span>Общая сумма кассы:</span>
-        <span className="font-semibold">
-          {getSeparatedNumber(isMSKOnly ? mskSum : sum)} тг
-        </span>
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <span>Общий долг кассы:</span>
+          <span className="font-semibold">{getSeparatedNumber(debt)} тг</span>
+        </div>
+        <div className="flex gap-2 items-center">
+          <span>Оплачено на сумму:</span>
+          <span className="font-semibold">
+            {getSeparatedNumber(paidSum)} тг
+          </span>
+        </div>
+        {/* <div className="flex gap-2 items-center">
+          <span>Общая сумма прибывших грузов:</span>
+          <span className="font-semibold">
+            {getSeparatedNumber(arrivedSum)} тг
+          </span>
+        </div> */}
       </div>
+
       <div>
         <Button
           color="success"
@@ -211,7 +211,37 @@ const CashoboxSummary = ({
   );
 };
 
-const getMSKClients = (data: CashboxType[]) =>
+const getClientsByMode = (
+  data: CashboxTableType[],
+  mode: ReturnType<typeof useCashboxMode>["mode"]
+) => {
+  switch (mode) {
+    case "KZ":
+      return getKZClients(data);
+    case "MSK":
+      return getMSKClients(data);
+    case "none":
+      return data;
+    default:
+      return data;
+  }
+};
+
+const getPaidSum = (data: CashboxTableType[]) =>
+  data
+    ?.flatMap((e) => e.cargos)
+    ?.reduce((total, el) => total + Number(el?.paid_amount || 0), 0);
+
+const getDebt = (data: CashboxTableType[]) =>
+  data
+    ?.flatMap((e) => e.cargos)
+    ?.reduce(
+      (total, el) =>
+        total + (Number(el?.amount?.value || 0) - Number(el?.paid_amount || 0)),
+      0
+    );
+
+const getMSKClients = (data: CashboxTableType[]) =>
   data.filter(
     (e) =>
       Array.isArray(e.cargos) &&
@@ -219,4 +249,15 @@ const getMSKClients = (data: CashboxType[]) =>
         (el) =>
           el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
       )
+  );
+const getKZClients = (data: CashboxTableType[]) =>
+  data.filter(
+    (e) =>
+      Array.isArray(e.cargos) && e.cargos.some((el) => el.week_type == "kz")
+  );
+const getArrivedClients = (data: CashboxTableType[]) =>
+  data.filter(
+    (e) =>
+      Array.isArray(e.cargos) &&
+      e.cargos.some((el) => el.trip_status === "Прибыл")
   );

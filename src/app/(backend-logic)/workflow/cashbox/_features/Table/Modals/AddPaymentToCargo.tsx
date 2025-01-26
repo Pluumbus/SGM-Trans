@@ -12,18 +12,17 @@ import {
   ModalHeader,
   Tooltip,
 } from "@nextui-org/react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import React, { Dispatch, ReactNode, SetStateAction, useState } from "react";
 
 import { Cell } from "@tanstack/react-table";
-import { CashboxType } from "../../../types";
+
 import { useToast } from "@/components/ui/use-toast";
-import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
+
 import {
   addOperations,
   changeClientBalance,
   changeExactAmountPaidToCargo,
-  getTripNumber,
 } from "../../api";
 import {
   useNumberState,
@@ -31,14 +30,15 @@ import {
   useConfirmContext,
 } from "@/tool-kit/hooks";
 import { useUser } from "@clerk/nextjs";
+import { CashboxDTOType, CashboxTableType } from "@/lib/types/cashbox.types";
 
 type AddPaymentToCargoArgs = {
   disclosure: {
     isOpen: boolean;
     onOpenChange: () => void;
   };
-  cargo?: CargoType;
-  info: Cell<CashboxType, ReactNode>;
+  cargo?: CashboxDTOType["cargos"][number];
+  info: Cell<CashboxTableType, ReactNode>;
 };
 
 export const AddPaymentToCargo = ({
@@ -55,7 +55,9 @@ export const AddPaymentToCargo = ({
     separator: ",",
   });
 
-  const calculateNewDuty = (currentCargo: CargoType) => {
+  const calculateNewDuty = (
+    currentCargo: CashboxTableType["cargos"][number]
+  ) => {
     const o = info.row.original;
     const balance = isUsingBalance ? Number(o.current_balance) : 0;
 
@@ -157,14 +159,14 @@ export const AddPaymentToCargo = ({
       const cargo = info.row.original.cargos.find((e) => e.id == formState);
       toast({
         title: `Успех`,
-        description: `Вы успешно добавили оплату для груза №${cargo.id} в №${cargo.trip_id} рейсе`,
+        description: `Вы успешно добавили оплату для груза №${cargo.id} в №${cargo.trip_number} рейсе`,
       });
       disclosure.onOpenChange();
     },
     onError: () => {
       toast({
         title: `Ошибка`,
-        description: `Не удалось добавить оплату для груза №${cargo.id} в №${cargo.trip_id} рейсе`,
+        description: `Не удалось добавить оплату для груза №${cargo.id} в №${cargo.trip_number} рейсе`,
       });
     },
   });
@@ -175,7 +177,7 @@ export const AddPaymentToCargo = ({
     e.preventDefault();
 
     const client = `${info.row.original.client.full_name.first_name} ${info.row.original.client.full_name.last_name} ${info.row.original.client.company_name && `который работает на ${info.row.original.client.company_name}`}`;
-    const tripId = `${info.row.original.cargos.find((e) => e.id == formState).trip_id}`;
+    const tripId = `${info.row.original.cargos.find((e) => e.id == formState).trip_number}`;
     openModal({
       action: async () => mutate(),
       isLoading: isPending,
@@ -276,26 +278,15 @@ const AutocompleteTrips = ({
   form,
   info,
 }: {
-  cargo: CargoType;
+  cargo: CashboxTableType["cargos"][number];
   form: [null | number, Dispatch<SetStateAction<Number | null>>];
-  info: Cell<CashboxType, React.ReactNode>;
+  info: Cell<CashboxTableType, React.ReactNode>;
 }) => {
   const [formState, setFormState] = form;
 
-  const { data, isLoading } = useQuery({
-    queryKey: [info.row.original.cargos.map((cargo) => cargo.id).join(", ")],
-    queryFn: async () => {
-      const res = info.row.original.cargos.map(
-        async (e) => await getTripNumber(e.trip_id)
-      );
-      const result = Promise.all(res);
-      return result;
-    },
-  });
   return (
     <>
       <Autocomplete
-        isLoading={isLoading}
         defaultSelectedKey={cargo && cargo?.id}
         label="Выберите груз"
         selectedKey={formState?.toString() || null}
@@ -305,9 +296,7 @@ const AutocompleteTrips = ({
       >
         {info.row.original.cargos?.map((el) => {
           const number = getSeparatedNumber(Number(el.amount.value));
-          const tripNumber = data?.find(
-            (e) => e?.id == el.trip_id
-          )?.trip_number;
+          const tripNumber = cargo?.trip_number;
           return (
             <AutocompleteItem
               value={el.id}

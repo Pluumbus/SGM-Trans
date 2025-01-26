@@ -1,7 +1,7 @@
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
-import { CashboxType } from "../../types";
+
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useEffect, useId } from "react";
+import { ReactNode, useId } from "react";
 import { CiSettings } from "react-icons/ci";
 import {
   Button,
@@ -9,8 +9,6 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-  Skeleton,
-  Spinner,
   Tooltip,
   useDisclosure,
 } from "@nextui-org/react";
@@ -18,18 +16,16 @@ import { useCashierActions } from "./useCashierActions";
 import { divide, isArray } from "lodash";
 import { AddPaymentToCargo } from "./Modals/AddPaymentToCargo";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
-import Link from "next/link";
+
 import { PAYMENT_TERMS } from "./Modals/ChangePaymentTerms";
 import { customFilter } from "@/tool-kit/ui/UTable/helpers/customFilter";
 import { customArrayFilter } from "@/tool-kit/ui/UTable/helpers/customArrayfilter";
 import { Operations } from "./Modals";
-import { useQuery } from "@tanstack/react-query";
-import { getTripNumber } from "../api";
-import { useCashboxMode } from "../Context";
+import { CashboxDTOType, CashboxTableType } from "@/lib/types/cashbox.types";
 
 export const useCashierColumnsConfig =
-  (): UseTableColumnsSchema<CashboxType>[] => {
-    const columnsConfig: UseTableColumnsSchema<CashboxType>[] = [
+  (): UseTableColumnsSchema<CashboxTableType>[] => {
+    const columnsConfig: UseTableColumnsSchema<CashboxTableType>[] = [
       {
         accessorKey: "client",
         header: "Клиент",
@@ -41,13 +37,13 @@ export const useCashierColumnsConfig =
           "client.company_name",
         ],
         filterFn: customFilter,
-        cell: (info: Cell<CashboxType, ReactNode>) => (
+        cell: (info: Cell<CashboxTableType, ReactNode>) => (
           <div>
             <FullName
               //@ts-ignore
-              value={info.getValue() as CashboxType["client"]}
+              value={info.getValue() as CashboxDTOType["client"]}
               operations={
-                info.row.original.operations as CashboxType["operations"]
+                info.row.original.operations as CashboxDTOType["operations"]
               }
             />
           </div>
@@ -57,9 +53,11 @@ export const useCashierColumnsConfig =
         accessorKey: "amount_to_pay",
         header: "Сумма долга",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
+        cell: (info: Cell<CashboxTableType, ReactNode>) => {
           const paidAmount = useNumberState({
-            initValue: Number(info.getValue() as CashboxType["amount_to_pay"]),
+            initValue: Number(
+              info.getValue() as CashboxDTOType["amount_to_pay"]
+            ),
           });
           return <div>{paidAmount?.value || ""}</div>;
         },
@@ -68,10 +66,10 @@ export const useCashierColumnsConfig =
         accessorKey: "current_balance",
         header: "Текущий баланс клиента",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
+        cell: (info: Cell<CashboxTableType, ReactNode>) => {
           const paidAmount = useNumberState({
             initValue: Number(
-              info.getValue() as CashboxType["current_balance"]
+              info.getValue() as CashboxDTOType["current_balance"]
             ),
           });
           return <div>{paidAmount.value || ""}</div>;
@@ -83,8 +81,8 @@ export const useCashierColumnsConfig =
         filter: true,
         filterBy: ["trip_id"],
         filterFn: customArrayFilter,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
-          const cargos = info.getValue() as CashboxType["cargos"];
+        cell: (info: Cell<CashboxTableType, ReactNode>) => {
+          const cargos = info.getValue() as CashboxDTOType["cargos"];
           return (
             isArray(cargos) && (
               <div className="grid grid-cols-2 min-w-[250px]">
@@ -105,7 +103,7 @@ export const useCashierColumnsConfig =
         accessorKey: "payment_terms",
         header: "Срок оплаты по договору",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
+        cell: (info: Cell<CashboxTableType, ReactNode>) => {
           const getTextValueForHrs = (hrs: number): string | null =>
             PAYMENT_TERMS.find((term) => term.hrs === hrs)
               ? PAYMENT_TERMS.find((term) => term.hrs === hrs).textValue
@@ -117,7 +115,7 @@ export const useCashierColumnsConfig =
         accessorKey: "action",
         header: "",
         filter: false,
-        cell: (info: Cell<CashboxType, ReactNode>) => {
+        cell: (info: Cell<CashboxTableType, ReactNode>) => {
           const actions = useCashierActions(info);
           return (
             <div key={`cashier actions ${info.id}`}>
@@ -155,8 +153,8 @@ const FullName = ({
   value,
   operations,
 }: {
-  value: CashboxType["client"];
-  operations: CashboxType["operations"];
+  value: CashboxDTOType["client"];
+  operations: CashboxDTOType["operations"];
 }) => {
   const disclosure = useDisclosure();
   const TooltipContent = () => (
@@ -229,58 +227,17 @@ const FullName = ({
   );
 };
 
-const CargoItem = ({ cargo, info }) => {
+const CargoItem = ({
+  cargo,
+  info,
+}: {
+  cargo: CashboxDTOType["cargos"][number] & { index: number };
+  info: Cell<CashboxTableType, ReactNode>;
+}) => {
   const paidAmount = getSeparatedNumber(Number(cargo?.paid_amount));
   const amountToPay = getSeparatedNumber(Number(cargo?.amount.value));
-  // const { mode, setCargos } = useCashboxMode();
-
-  const { data, isLoading } = useQuery({
-    queryKey: [info.row.original.cargos.map((c) => c.id).join(", ")],
-    queryFn: async () => {
-      const requests = info.row.original.cargos.map((c) =>
-        getTripNumber(c.trip_id)
-      );
-      const result = await Promise.all(requests);
-      return result;
-    },
-  });
-
-  // useEffect(() => {
-  //   if (data) {
-  //     const thisCargoTrip = data.find((trip) => trip.id === cargo.trip_id);
-  //     if (!thisCargoTrip) return;
-
-  //     switch (mode) {
-  //       case "KZ":
-  //         if (thisCargoTrip.weeks?.table_type === "kz") {
-  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
-  //         }
-  //         break;
-
-  //       case "Arrived":
-  //         if (thisCargoTrip.status === "Прибыл") {
-  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
-  //         }
-  //         break;
-
-  //       case "none":
-  //       default:
-  //         setCargos((prev) => addCargoIfNotExists(prev, cargo));
-  //         break;
-  //     }
-  //   }
-  // }, [data]);
-
-  // const addCargoIfNotExists = (prev, newCargo) => {
-  //   const alreadyInState = prev.some((p) => p.id === newCargo.id);
-  //   return alreadyInState ? prev : [...prev, newCargo];
-  // };
 
   const disclosure = useDisclosure();
-
-  if (isLoading) {
-    return <Skeleton className="h-4 w-20" />;
-  }
 
   return (
     <>
@@ -293,7 +250,7 @@ const CargoItem = ({ cargo, info }) => {
         <div
           className={`flex gap-2 font-semibold py-1 hover:opacity-80 cursor-pointer ${cargo?.paid_amount < Number(cargo?.amount.value) ? "text-red-700" : "text-green-600"}`}
         >
-          <span>№{data?.find((e) => e?.id == cargo.trip_id)?.trip_number}</span>
+          <span>№{cargo.trip_number}</span>
           <span>-</span>
           <span>{amountToPay} тг.</span>
         </div>

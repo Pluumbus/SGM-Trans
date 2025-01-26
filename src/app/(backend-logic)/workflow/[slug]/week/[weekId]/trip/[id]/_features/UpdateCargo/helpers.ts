@@ -23,7 +23,9 @@ export const prefillForm = (
   setValue("request_id", row.request_id);
   setValue("is_deleted", row.is_deleted || false);
   setValue("wh_id", row.wh_id);
-  setValue("status", row.status ? new Date(row.status).toISOString() : null);
+  console.log("row", row);
+
+  setValue("status", row.status ? row?.status.split("[")[0] : null);
 
   // Nested: unloading_point
   setValue("unloading_point.city", row.unloading_point.city || "");
