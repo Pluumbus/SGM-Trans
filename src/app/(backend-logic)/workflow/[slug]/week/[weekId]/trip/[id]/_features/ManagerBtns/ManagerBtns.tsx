@@ -70,10 +70,17 @@ export const MngrAccButton = ({ cargos }: { cargos: CargoType[] }) => {
   const filteredCargos = cargos.filter(
     (cargo) => cargo.amount?.type === "Б/нал"
   );
+  const { data } = useQuery({
+    queryKey: ["GetClientForAutocomplete"],
+    queryFn: async () => await getClientsNames(),
+  });
   const actAccountantData = filteredCargos.map((crg) => {
+    const tm = data?.find((d) => d.id === crg.transportation_manager);
+
     return {
       amount: crg.amount.value,
-      client_bin: crg.client_bin.tempText,
+      transportation_manager:
+        tm?.client.full_name.first_name + " " + tm?.client.phone_number,
       unloading_point: crg.unloading_point.city,
       receipt_address: crg.receipt_address,
     } as AccountantActType;
@@ -130,7 +137,7 @@ export const MngrWrhButton = ({ cargos }: { cargos: CargoType[] }) => {
     queryFn: async () => getUserList(),
   });
   const actWrhData = cargos.map((crg) => {
-    const tm = data?.filter((d) => d.id === crg.transportation_manager)[0];
+    const tm = data?.find((d) => d.id === crg.transportation_manager);
     return {
       client_bin: crg.client_bin.tempText,
       transportation_manager:

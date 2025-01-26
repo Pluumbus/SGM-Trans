@@ -8,7 +8,7 @@ export type ActType = {
 
 export type AccountantActType = {
   amount: string;
-  client_bin: string;
+  transportation_manager: string;
   unloading_point: string;
   receipt_address: string;
 };
