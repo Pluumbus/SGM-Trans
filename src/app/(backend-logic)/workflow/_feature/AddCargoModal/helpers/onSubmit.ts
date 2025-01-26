@@ -25,9 +25,6 @@ export const addCargoOnSubmit = (
     },
     unloading_point: unlPoint,
     // @ts-ignore
-    status: data.status?.year
-      ? // @ts-ignore
-        `${data.status.year}-${data.status.month}-${data.status.day}`
-      : null,
+    status: data?.status,
   });
 };

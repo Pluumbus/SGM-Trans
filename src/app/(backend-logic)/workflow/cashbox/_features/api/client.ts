@@ -1,7 +1,11 @@
 "use client";
-import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
+import {
+  CargoType,
+  WeekType,
+} from "@/app/(backend-logic)/workflow/_feature/types";
 import supabase from "@/utils/supabase/client";
 import { CashboxType } from "../../types";
+import { TripType } from "../../../_feature/TripCard/TripCard";
 
 export const changeClientBalance = async (clientId: number, value: number) => {
   const { data, error } = await supabase
@@ -18,7 +22,7 @@ export const changeClientBalance = async (clientId: number, value: number) => {
 export const getTripNumber = async (tripId: number) => {
   const { data, error } = await supabase
     .from("trips")
-    .select("trip_number, id")
+    .select("trip_number, id, status, weeks(table_type)")
     .eq("id", Number(tripId))
     .maybeSingle();
 
@@ -26,9 +30,11 @@ export const getTripNumber = async (tripId: number) => {
     throw new Error(error.message);
   }
 
-  return data as {
+  return data satisfies {
     trip_number: number;
     id: number;
+    status: TripType["status"];
+    weeks: { table_type: WeekType["table_type"] };
   };
 };
 export const changeClientPaymentTerms = async (

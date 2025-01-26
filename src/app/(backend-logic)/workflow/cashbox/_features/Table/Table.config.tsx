@@ -1,7 +1,7 @@
 import { UseTableColumnsSchema } from "@/tool-kit/ui";
 import { CashboxType } from "../../types";
 import { Cell } from "@tanstack/react-table";
-import { ReactNode, useId } from "react";
+import { ReactNode, useEffect, useId } from "react";
 import { CiSettings } from "react-icons/ci";
 import {
   Button,
@@ -9,6 +9,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
+  Skeleton,
   Spinner,
   Tooltip,
   useDisclosure,
@@ -24,6 +25,7 @@ import { customArrayFilter } from "@/tool-kit/ui/UTable/helpers/customArrayfilte
 import { Operations } from "./Modals";
 import { useQuery } from "@tanstack/react-query";
 import { getTripNumber } from "../api";
+import { useCashboxMode } from "../Context";
 
 export const useCashierColumnsConfig =
   (): UseTableColumnsSchema<CashboxType>[] => {
@@ -230,22 +232,54 @@ const FullName = ({
 const CargoItem = ({ cargo, info }) => {
   const paidAmount = getSeparatedNumber(Number(cargo?.paid_amount));
   const amountToPay = getSeparatedNumber(Number(cargo?.amount.value));
+  // const { mode, setCargos } = useCashboxMode();
 
   const { data, isLoading } = useQuery({
-    queryKey: [info.row.original.cargos.map((cargo) => cargo.id).join(", ")],
+    queryKey: [info.row.original.cargos.map((c) => c.id).join(", ")],
     queryFn: async () => {
-      const res = info.row.original.cargos.map(
-        async (e) => await getTripNumber(e.trip_id)
+      const requests = info.row.original.cargos.map((c) =>
+        getTripNumber(c.trip_id)
       );
-      const result = Promise.all(res);
+      const result = await Promise.all(requests);
       return result;
     },
   });
 
+  // useEffect(() => {
+  //   if (data) {
+  //     const thisCargoTrip = data.find((trip) => trip.id === cargo.trip_id);
+  //     if (!thisCargoTrip) return;
+
+  //     switch (mode) {
+  //       case "KZ":
+  //         if (thisCargoTrip.weeks?.table_type === "kz") {
+  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         }
+  //         break;
+
+  //       case "Arrived":
+  //         if (thisCargoTrip.status === "Прибыл") {
+  //           setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         }
+  //         break;
+
+  //       case "none":
+  //       default:
+  //         setCargos((prev) => addCargoIfNotExists(prev, cargo));
+  //         break;
+  //     }
+  //   }
+  // }, [data]);
+
+  // const addCargoIfNotExists = (prev, newCargo) => {
+  //   const alreadyInState = prev.some((p) => p.id === newCargo.id);
+  //   return alreadyInState ? prev : [...prev, newCargo];
+  // };
+
   const disclosure = useDisclosure();
 
   if (isLoading) {
-    return <Spinner />;
+    return <Skeleton className="h-4 w-20" />;
   }
 
   return (

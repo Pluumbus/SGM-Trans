@@ -114,7 +114,7 @@ export const MainPage: NextPage = () => {
     setCargos(cargos);
     const uniqueData = Array.from(new Set(cities));
 
-    const mainCity = tripsData.filter((trip) => trip.id === tripid)[0]
+    const mainCity = tripsData?.filter((trip) => trip?.id === tripid)[0]
       .city_to[0];
 
     // const newCities =
@@ -124,11 +124,11 @@ export const MainPage: NextPage = () => {
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter((trip) => trip.id === tripid)[0].city_to = uniqueData)
+        (tripsData.filter((trip) => trip?.id === tripid)[0].city_to = uniqueData)
       )
     );
     const newTripsData = tripsData.map((trip) =>
-      trip.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
+      trip?.id === tripid ? { ...trip, city_to: newCurrentTripCities } : trip
     ) as TripType[];
 
     setTripsData(newTripsData);
