@@ -18,6 +18,7 @@ import { UPagination, UTableTopContent } from "./ui";
 import { useRowsPerPage } from "./hooks";
 import { customFilter } from "./helpers/customFilter";
 import { customArrayFilter } from "./helpers/customArrayfilter";
+import { SgmSpinner } from "@/components/ui/SgmSpinner";
 
 export const UTable = <T,>({
   data = [],
@@ -107,7 +108,7 @@ export const UTable = <T,>({
           className="h-full max-h-screen"
         >
           <TableHeader>{renderColumns(tInstance)}</TableHeader>
-          <TableBody {...tBodyProps}>
+          <TableBody {...tBodyProps} loadingContent={<SgmSpinner />}>
             {renderRows(
               tInstance,
               config!.row,

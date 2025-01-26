@@ -11,6 +11,7 @@ import RoleBasedWrapper from "../RoleManagment/RoleBasedWrapper";
 import { BiSolidCarMechanic } from "react-icons/bi";
 import { PATHS } from "@/lib/consts";
 import DevToggle from "./TestMode";
+import { Bell } from "@/tool-kit/Notification";
 
 // Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
@@ -60,6 +61,7 @@ const Navbar = () => {
                 Статистика
               </Link>
             </RoleBasedWrapper>
+
             <RoleBasedWrapper allowedRoles={["Админ"]}>
               <Link
                 href={PATHS.sgm_mechanic}
@@ -158,13 +160,15 @@ const Navbar = () => {
           </NavigationMenuList>
         </NavigationMenu> */
         )}
-
-        <SignedOut>
-          <SignInButton>Войти</SignInButton>
-        </SignedOut>
-        <SignedIn>
-          <ProfileButton />
-        </SignedIn>
+        <div className="flex gap-4 items-center">
+          <Bell />
+          <SignedOut>
+            <SignInButton>Войти</SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <ProfileButton />
+          </SignedIn>
+        </div>
       </div>
     </header>
   );

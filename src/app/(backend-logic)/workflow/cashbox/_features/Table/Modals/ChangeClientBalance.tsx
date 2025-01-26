@@ -12,9 +12,9 @@ import { useMutation } from "@tanstack/react-query";
 import React, { ReactNode, useState } from "react";
 import { changeClientBalance } from "../../api";
 import { Cell } from "@tanstack/react-table";
-import { CashboxType } from "../../../types";
 import { useToast } from "@/components/ui/use-toast";
 import { useNumberState } from "@/tool-kit/hooks";
+import { CashboxTableType } from "@/lib/types/cashbox.types";
 
 export const ChangeClientBalance = ({
   disclosure,
@@ -24,7 +24,7 @@ export const ChangeClientBalance = ({
     isOpen: boolean;
     onOpenChange: () => void;
   };
-  info: Cell<CashboxType, ReactNode>;
+  info: Cell<CashboxTableType, ReactNode>;
 }) => {
   const [balance, setBalance] = useState<{
     value: string;

@@ -9,15 +9,16 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
-import { CashboxType } from "../../../types";
+
 import { Cell } from "@tanstack/react-table";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { changeClientPaymentTerms } from "../../api";
 import { useToast } from "@/components/ui/use-toast";
+import { CashboxTableType } from "@/lib/types/cashbox.types";
 
 type PropsType = {
-  info: Cell<CashboxType, React.ReactNode>;
+  info: Cell<CashboxTableType, React.ReactNode>;
   disclosure: {
     isOpen: boolean;
     onOpenChange: () => void;

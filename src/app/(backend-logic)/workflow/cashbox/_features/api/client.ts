@@ -6,6 +6,7 @@ import {
 import supabase from "@/utils/supabase/client";
 import { CashboxType } from "../../types";
 import { TripType } from "../../../_feature/TripCard/TripCard";
+import { CashboxTableType } from "@/lib/types/cashbox.types";
 
 export const changeClientBalance = async (clientId: number, value: number) => {
   const { data, error } = await supabase
@@ -54,7 +55,7 @@ export const changeClientPaymentTerms = async (
 };
 
 export const changeExactAmountPaidToCargo = async (
-  cargo: CargoType,
+  cargo: CashboxTableType["cargos"][number],
   paidAmount: number
 ) => {
   const { data, error } = await supabase
