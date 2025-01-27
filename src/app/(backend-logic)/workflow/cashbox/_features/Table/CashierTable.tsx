@@ -66,7 +66,6 @@ export const CashierTable = () => {
   useEffect(() => {
     if (clients && mode) {
       setClients(getClientsByMode(originalClients, mode));
-      console.log("mode", mode);
     }
   }, [mode]);
 
@@ -134,15 +133,15 @@ export const CashierTable = () => {
           >
             Показать только клиентов с Обраток
           </Checkbox>
-          {/* <Checkbox
-          isDisabled={isPending}
+          <Checkbox
+            isDisabled={isPending}
             isSelected={mode == "Arrived"}
             onValueChange={(e) => {
               setMode(e ? "Arrived" : "none");
             }}
           >
             Показать только клиентов грузы которых уже прибыли
-          </Checkbox> */}
+          </Checkbox>
         </div>
       </div>
       <CashoboxSummary data={clients} />
@@ -186,12 +185,6 @@ const CashoboxSummary = ({ data }: { data: CashboxTableType[] }) => {
             {getSeparatedNumber(paidSum)} тг
           </span>
         </div>
-        {/* <div className="flex gap-2 items-center">
-          <span>Общая сумма прибывших грузов:</span>
-          <span className="font-semibold">
-            {getSeparatedNumber(arrivedSum)} тг
-          </span>
-        </div> */}
       </div>
 
       <div>
@@ -220,6 +213,8 @@ const getClientsByMode = (
       return getKZClients(data);
     case "MSK":
       return getMSKClients(data);
+    case "Arrived":
+      return getArrivedClients(data);
     case "none":
       return data;
     default:
@@ -241,23 +236,52 @@ const getDebt = (data: CashboxTableType[]) =>
       0
     );
 
-const getMSKClients = (data: CashboxTableType[]) =>
-  data.filter(
-    (e) =>
-      Array.isArray(e.cargos) &&
-      e.cargos.some(
+const getMSKClients = (data: CashboxTableType[]) => {
+  const filteredClients = data
+    .filter(
+      (e) =>
+        Array.isArray(e.cargos) &&
+        e.cargos.some(
+          (el) =>
+            el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
+        )
+    )
+    .map((e) => ({
+      ...e,
+      cargos: e.cargos.filter(
         (el) =>
           el.amount?.type === "Нал в МСК" || el.amount?.type === "Б/нал в МСК"
-      )
-  );
-const getKZClients = (data: CashboxTableType[]) =>
-  data.filter(
-    (e) =>
-      Array.isArray(e.cargos) && e.cargos.some((el) => el.week_type == "kz")
-  );
-const getArrivedClients = (data: CashboxTableType[]) =>
-  data.filter(
-    (e) =>
-      Array.isArray(e.cargos) &&
-      e.cargos.some((el) => el.trip_status === "Прибыл")
-  );
+      ),
+    }));
+
+  return filteredClients;
+};
+
+const getKZClients = (data: CashboxTableType[]) => {
+  const filteredClients = data
+    .filter(
+      (e) =>
+        Array.isArray(e.cargos) && e.cargos.some((el) => el.week_type == "kz")
+    )
+    .map((e) => ({
+      ...e,
+      cargos: e.cargos.filter((el) => el.week_type == "kz"),
+    }));
+
+  return filteredClients;
+};
+
+const getArrivedClients = (data: CashboxTableType[]) => {
+  const filteredClients = data
+    .filter(
+      (e) =>
+        Array.isArray(e.cargos) &&
+        e.cargos.some((el) => el.trip_status === "Прибыл")
+    )
+    .map((e) => ({
+      ...e,
+      cargos: e.cargos.filter((el) => el.trip_status === "Прибыл"),
+    }));
+
+  return filteredClients;
+};

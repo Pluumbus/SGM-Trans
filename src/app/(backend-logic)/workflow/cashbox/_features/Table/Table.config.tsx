@@ -159,7 +159,7 @@ const FullName = ({
   const disclosure = useDisclosure();
   const TooltipContent = () => (
     <div className="flex flex-col gap-4">
-      {value.comment ? (
+      {value?.comment ? (
         <div className="flex flex-col gap-1">
           <span>Заметка о клиенте:</span>
           <span className="font-semibold">{value.comment}</span>
@@ -172,7 +172,7 @@ const FullName = ({
 
   const id = useId();
 
-  if (value.comment) {
+  if (value?.comment) {
     return (
       <>
         <Tooltip
