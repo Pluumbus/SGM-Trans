@@ -193,3 +193,17 @@ export const getJustWeeks = async (type: WeekTableType = "ru") => {
 
   return data as WeekType[];
 };
+
+// export const getWeeksTrips = async (type: WeekTableType = "ru") => {
+//   const server = getSupabaseServer();
+//   const { data, error } = await (await server)
+//     .from(`weeks`)
+//     .select("*, trip")
+//     .eq("table_type", type);
+
+//   if (error) {
+//     throw new Error(error.message);
+//   }
+
+//   return data as WeekType[];
+// };

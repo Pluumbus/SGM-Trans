@@ -4,11 +4,8 @@ import { useState } from "react";
 import { IoIosCheckmark, IoMdSettings } from "react-icons/io";
 import { updateTripNumber } from "../../../_api/requests";
 import { toast } from "@/components/ui/use-toast";
-import { useParams, useRouter } from "next/navigation";
 
 export const TripInfoNum = ({ id, tempId }: { id: number; tempId: number }) => {
-  const router = useRouter();
-
   const [tripNumber, setTripNumber] = useState(id);
   const [isChanging, setIsChanging] = useState(false);
   const { mutate } = useMutation({
