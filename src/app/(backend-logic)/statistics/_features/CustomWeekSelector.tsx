@@ -116,8 +116,8 @@ export const CustomMainWeekSelector = () => {
   useEffect(() => {
     if (data) {
       const currentWeek = data?.find((w) => w.id === Number(weekId));
-      const indx = data.findIndex((w) => w.id === currentWeek.id);
-      const sortedWeeks = data.slice(
+      const indx = data?.findIndex((w) => w.id === currentWeek.id);
+      const sortedWeeks = data?.slice(
         Math.max(0, indx - 2),
         Math.min(data.length, indx + 2)
       );
