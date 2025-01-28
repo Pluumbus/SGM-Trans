@@ -7,6 +7,7 @@ import supabase from "@/utils/supabase/client";
 import { CashboxType } from "../../types";
 import { TripType } from "../../../_feature/TripCard/TripCard";
 import { CashboxTableType } from "@/lib/types/cashbox.types";
+import { changeUserBalance } from "@/lib/references/clerkUserType/SetUserFuncs";
 
 export const changeClientBalance = async (clientId: number, value: number) => {
   const { data, error } = await supabase
@@ -61,11 +62,18 @@ export const changeExactAmountPaidToCargo = async (
   const { data, error } = await supabase
     .from("cargos")
     .update({ paid_amount: Number(paidAmount) })
-    .eq("id", Number(cargo.id));
+    .eq("id", Number(cargo.id))
+    .select("user_id");
 
   if (error) {
     throw new Error(error.message);
   }
+  await changeUserBalance({
+    userId: data[0].user_id,
+    addBal: Number(paidAmount),
+  });
+
+  console.log(data);
 
   return data;
 };

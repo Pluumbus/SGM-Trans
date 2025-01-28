@@ -173,6 +173,7 @@ export const UpdateTripNumber = ({
           : `${COLORS.red}`;
   };
   // if (!tripsData) return <Spinner />;
+  const closedStatusItems = ["Машина закрыта", "В пути", "Прибыл"];
 
   return (
     <div className="">
@@ -221,7 +222,7 @@ export const UpdateTripNumber = ({
                     ?.filter(
                       (trip) =>
                         trip.trip_number !== currentTripNumber &&
-                        trip.status !== "Прибыл"
+                        !closedStatusItems.includes(trip.status)
                     )
                     ?.sort((a, b) => a.trip_number - b.trip_number)
                     ?.map((e) =>

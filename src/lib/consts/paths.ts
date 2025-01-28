@@ -10,6 +10,7 @@ export const PATHS = {
   profile: `/profile`,
   workflow_ru: `${WORKFLOW}/ru`,
   workflow_kz: `${WORKFLOW}/kz`,
+  workflow_sl: `${WORKFLOW}/sl`,
   cashbox: `${WORKFLOW}/cashbox`,
   cars_drivers: `/cars&drivers`,
   sgm_mechanic: `/sgm-mechanic`,

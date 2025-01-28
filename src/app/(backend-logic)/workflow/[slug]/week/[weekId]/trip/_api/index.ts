@@ -194,16 +194,40 @@ export const getJustWeeks = async (type: WeekTableType = "ru") => {
   return data as WeekType[];
 };
 
-// export const getWeeksTrips = async (type: WeekTableType = "ru") => {
-//   const server = getSupabaseServer();
-//   const { data, error } = await (await server)
-//     .from(`weeks`)
-//     .select("*, trip")
-//     .eq("table_type", type);
+export const getUserCargos = async (user_id: string) => {
+  const server = getSupabaseServer();
+  const { data, error } = await (await server)
+    .from(`trips`)
+    .select("trip_number,status, cargos(act_details, is_deleted, client_bin)")
+    .eq("user_id", user_id);
 
-//   if (error) {
-//     throw new Error(error.message);
-//   }
+  if (error) {
+    throw new Error(error.message);
+  }
 
-//   return data as WeekType[];
-// };
+  //@ts-ignore
+  return data as {
+    trip_number: number;
+    status: string;
+    cargos: {
+      act_details: {
+        is_ready: boolean;
+        user_id: string;
+        amount: number;
+        date_of_act_printed: string;
+        isPaidBack: boolean;
+      };
+      is_deleted: boolean;
+      client_bin: { xin: string; tempText: string };
+    }[];
+  }[];
+  // as {
+  // act_details: {
+  //   is_ready: boolean;
+  //   user_id: string;
+  //   amount: number;
+  //   date_of_act_printed: string;
+  //   isPaidBack: boolean;
+  // };
+  // }[];
+};
