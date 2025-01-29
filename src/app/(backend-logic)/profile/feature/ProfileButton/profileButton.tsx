@@ -4,7 +4,7 @@ import { useUser } from "@clerk/nextjs";
 import { Avatar, Divider } from "@nextui-org/react";
 import Link from "next/link";
 import React from "react";
-import { ProfilePrize } from "./Prize/Prize";
+import { ProfilePrize } from "../Prize/Prize";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 import { getSeparatedNumber } from "@/tool-kit/hooks";
 
@@ -21,12 +21,12 @@ export const ProfileButton = () => {
           <span className="text-xs text-zinc-400">
             Баланс: {getSeparatedNumber(balance)}
           </span>
-          {/* <RoleBasedWrapper
+          <RoleBasedWrapper
             allowedRoles={[
               "Логист Кз",
               "Супер Логист",
               "Логист Москва",
-              "Админ",
+              // "Админ",
             ]}
           >
             <Divider />
@@ -35,7 +35,7 @@ export const ProfileButton = () => {
               userId={user?.id}
               // userId={"user_2myHMgc4DzpQ8jT8BdoqgcYTnj9"}
             />
-          </RoleBasedWrapper> */}
+          </RoleBasedWrapper>
         </div>
       </Link>
     </div>

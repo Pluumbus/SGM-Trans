@@ -164,8 +164,7 @@ export const ProfilePrize = ({
 export const getCargosIdAmountFromCurrentWeek = (
   data: any[],
   weekNum?: number,
-  userId?: string,
-  dateVal?: { start; end }
+  userId?: string
 ) => {
   if (userId) {
     return data

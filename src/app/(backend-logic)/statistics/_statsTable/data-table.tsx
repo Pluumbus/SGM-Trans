@@ -28,7 +28,7 @@ import { StatsUserList } from "@/lib/references/stats/types";
 import { AllCargosByWeek, getAllCargosByWeek } from "../_api";
 import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CustomWeekSelector } from "../_features/CustomWeekSelector";
-import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/PrizeFormula";
+import { calculateCurrentPrize } from "@/app/(backend-logic)/profile/feature/Prize/PrizeFormula";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
 
 export function DataTable() {

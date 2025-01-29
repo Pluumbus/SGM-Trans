@@ -1,6 +1,6 @@
 "use client";
 import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
-import { ProfilePrize } from "@/app/(backend-logic)/profile/feature/ProfileButton/Prize/Prize";
+import { ProfilePrize } from "@/app/(backend-logic)/profile/feature/Prize/Prize";
 import { useUser } from "@clerk/nextjs";
 import { Card, CardBody, Divider } from "@nextui-org/react";
 import { InputCards } from "./InputCards";
@@ -32,8 +32,8 @@ export const TopProfile = () => {
               allowedRoles={[
                 "Логист Кз",
                 // "Админ",
-                // "Супер Логист",
-                // "Логист Москва",
+                "Супер Логист",
+                "Логист Москва",
               ]}
             >
               <Card className="w-2/4">
@@ -52,6 +52,7 @@ export const TopProfile = () => {
                         <ProfilePrize
                           isNumberOnly={true}
                           userId={user?.id}
+                          // userId={"user_2myHMgc4DzpQ8jT8BdoqgcYTnj9"}
                           weekNum={weekNum}
                         />
                       </div>
