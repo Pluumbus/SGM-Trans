@@ -367,6 +367,7 @@ const QuantityDataCell = (key: any, e: AuditCargosType) => {
 };
 
 const StatusDataCell = (key: any, e: AuditCargosType) => {
+  const date = new Date(e.cargo.new[key]);
   return (
     <div key={key}>
       <div className="grid grid-cols-5 gap-4 px-4 py-2">
@@ -374,10 +375,10 @@ const StatusDataCell = (key: any, e: AuditCargosType) => {
           {cargoTypeDictionary[key]}:{" "}
         </span>
         <span className="col=span-2 border-r-1 px-2">
-          Было: <b>{new Date(e.cargo.old[key]).toLocaleDateString() ?? ""} </b>
+          Было: <b>{e.cargo.old[key] ?? ""} </b>
         </span>
         <span className="col=span-2">
-          Стало: <b>{new Date(e.cargo.new[key]).toLocaleDateString()}</b>
+          Стало: <b>{date.toLocaleDateString()}</b>
         </span>
       </div>
       <Divider />
