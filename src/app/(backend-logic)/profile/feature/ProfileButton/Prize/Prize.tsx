@@ -134,10 +134,12 @@ export const ProfilePrize = ({
           <span>
             Сумма:{" "}
             <b>
-              {getSeparatedNumber(
-                Math.round(prize) + cargosPrize?.cargosPrize,
-                ","
-              )}
+              {cargosPrize?.cargosCount > 25
+                ? getSeparatedNumber(
+                    Math.round(prize) + cargosPrize?.cargosPrize,
+                    ","
+                  )
+                : 0}
             </b>
           </span>
           <span>
@@ -147,10 +149,12 @@ export const ProfilePrize = ({
       ) : (
         <span className="text-xs text-zinc-400 ">
           Премия:{" "}
-          {getSeparatedNumber(
-            Math.round(prize) + cargosPrize?.cargosPrize,
-            ","
-          )}
+          {cargosPrize?.cargosCount > 25
+            ? getSeparatedNumber(
+                Math.round(prize) + cargosPrize?.cargosPrize,
+                ","
+              )
+            : 0}
         </span>
       )}
     </div>

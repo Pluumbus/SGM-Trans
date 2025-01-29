@@ -236,7 +236,7 @@ export const Body = ({
             />
           )}
         /> */}
-        <UDatePicker
+        {/* <UDatePicker
           {...register("status")}
           control={control}
           name="status"
@@ -245,7 +245,7 @@ export const Body = ({
           granularity="day"
         />
 
-        <Input {...register("loading_scheme")} label="Схема погрузки" />
+        <Input {...register("loading_scheme")} label="Схема погрузки" /> */}
       </div>
     </ModalBody>
   );
