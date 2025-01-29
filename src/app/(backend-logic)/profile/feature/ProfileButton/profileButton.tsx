@@ -21,16 +21,21 @@ export const ProfileButton = () => {
           <span className="text-xs text-zinc-400">
             Баланс: {getSeparatedNumber(balance)}
           </span>
-          <RoleBasedWrapper
-            allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
+          {/* <RoleBasedWrapper
+            allowedRoles={[
+              "Логист Кз",
+              "Супер Логист",
+              "Логист Москва",
+              "Админ",
+            ]}
           >
             <Divider />
             <ProfilePrize
               isNumberOnly={false}
               userId={user?.id}
-              // userId={"user_2rLaX5Fe4Y69PmWBSdvNm9bBxAn"}
+              // userId={"user_2myHMgc4DzpQ8jT8BdoqgcYTnj9"}
             />
-          </RoleBasedWrapper>
+          </RoleBasedWrapper> */}
         </div>
       </Link>
     </div>
