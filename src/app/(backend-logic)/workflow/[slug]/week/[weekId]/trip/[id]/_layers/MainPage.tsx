@@ -1,7 +1,7 @@
 "use client";
 
-import { useParams, usePathname, useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
   Checkbox,
@@ -36,11 +36,7 @@ import { WorkflowBucket } from "../_features/WorkflowBucket/WorkflowBucket";
 import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
-import { getDayOfWeek } from "../_helpers";
-import {
-  CustomMainWeekSelector,
-  CustomWeekSelector,
-} from "@/app/(backend-logic)/statistics/_features/CustomWeekSelector";
+import { CustomMainWeekSelector } from "@/app/(backend-logic)/statistics/_features/CustomWeekSelector";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -53,8 +49,6 @@ export const MainPage: NextPage = () => {
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [cargos, setCargos] = useState<CargoType[]>();
   const [week, setWeek] = useState<WeekType>();
-
-  const [cWeekId, setCweekId] = useState<WeekType["id"]>();
 
   const [isOnlyMycargos, setToLocalStorage] = useState(false);
 
@@ -73,9 +67,6 @@ export const MainPage: NextPage = () => {
       setTripsData(processedData);
     },
   });
-  useEffect(() => {
-    if (cWeekId && cWeekId !== Number(weekId)) handleChangeWeekId(cWeekId);
-  }, [cWeekId]);
 
   useEffect(() => {
     mutate();
@@ -146,11 +137,6 @@ export const MainPage: NextPage = () => {
     setTripsData(newTripsData);
   };
 
-  const handleChangeWeekId = (weekId: number) => {
-    // let firstTripId = tripsData[0]?.trip_number;
-    // router.replace(`/workflow/${slug}/week/${weekId}/trip/${firstTripId - 1}`);
-  };
-
   if (isPending) {
     return <Spinner />;
   }
@@ -171,7 +157,7 @@ export const MainPage: NextPage = () => {
             <WorkflowBucket />
           </div>
           <div className="flex flex-col ">
-            <TabVisibility week={week} setWeekId={setCweekId} />
+            <TabVisibility />
 
             <Tabs
               className="flex justify-center"
@@ -214,21 +200,11 @@ export const MainPage: NextPage = () => {
   );
 };
 
-const TabVisibility = ({
-  week,
-  setWeekId,
-  // tripsData,
-}: {
-  week: WeekType;
-  // tripsData: TripType[];
-  setWeekId: React.Dispatch<React.SetStateAction<number>>;
-}) => {
+const TabVisibility = () => {
   const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
 
   return (
     <div className="flex flex-col justify-center items-center mb-2 gap-3">
-      {/* <span className="text-xl">Рейсы недели №{week?.week_number}</span> */}
-
       <Checkbox
         isSelected={isOnlyMyCargos}
         onValueChange={(e) => {

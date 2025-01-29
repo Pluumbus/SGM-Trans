@@ -236,16 +236,16 @@ export const Body = ({
             />
           )}
         /> */}
-        <UDatePicker
+        {/* <UDatePicker
           {...register("status")}
           control={control}
           name="status"
           label="Дата поступления на склад"
           hideTimeZone
           granularity="day"
-        />
+        /> */}
 
-        <Input {...register("loading_scheme")} label="Схема погрузки" />
+        {/* <Input {...register("loading_scheme")} label="Схема погрузки" /> */}
       </div>
     </ModalBody>
   );

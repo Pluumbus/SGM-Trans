@@ -389,7 +389,7 @@ export const getBaseColumnsConfig = () => {
             className="flex justify-center"
             onClick={() => setValue(info.column.columnDef.accessorKey)}
           >
-            {original.is_documents ? "Да" : "Нет"}
+            {original.is_documents ? "Да" : ""}
           </span>
         );
       },
