@@ -243,9 +243,9 @@ export const Body = ({
           label="Дата поступления на склад"
           hideTimeZone
           granularity="day"
-        /> */}
+        />
 
-        {/* <Input {...register("loading_scheme")} label="Схема погрузки" /> */}
+        <Input {...register("loading_scheme")} label="Схема погрузки" /> */}
       </div>
     </ModalBody>
   );

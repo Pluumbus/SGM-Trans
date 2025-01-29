@@ -22,12 +22,7 @@ export const ProfileButton = () => {
             Баланс: {getSeparatedNumber(balance)}
           </span>
           <RoleBasedWrapper
-            allowedRoles={[
-              "Логист Кз",
-              "Супер Логист",
-              "Логист Москва",
-              // "Админ",
-            ]}
+            allowedRoles={["Логист Кз", "Супер Логист", "Логист Москва"]}
           >
             <Divider />
             <ProfilePrize
