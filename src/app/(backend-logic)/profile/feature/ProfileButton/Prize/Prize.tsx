@@ -134,7 +134,7 @@ export const ProfilePrize = ({
           <span>
             Сумма:{" "}
             <b>
-              {cargosPrize.cargosCount > 25
+              {cargosPrize?.cargosCount > 25
                 ? getSeparatedNumber(
                     Math.round(prize) + cargosPrize?.cargosPrize,
                     ","
@@ -149,7 +149,7 @@ export const ProfilePrize = ({
       ) : (
         <span className="text-xs text-zinc-400 ">
           Премия:{" "}
-          {cargosPrize.cargosCount > 25
+          {cargosPrize?.cargosCount > 25
             ? getSeparatedNumber(
                 Math.round(prize) + cargosPrize?.cargosPrize,
                 ","

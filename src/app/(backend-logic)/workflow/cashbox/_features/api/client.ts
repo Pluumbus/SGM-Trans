@@ -63,17 +63,18 @@ export const changeExactAmountPaidToCargo = async (
     .from("cargos")
     .update({ paid_amount: Number(paidAmount) })
     .eq("id", Number(cargo.id))
-    .select("user_id");
+    .select("user_id, act_details")
+    .single();
 
   if (error) {
     throw new Error(error.message);
   }
-  await changeUserBalance({
-    userId: data[0].user_id,
-    addBal: Number(paidAmount),
-  });
-
-  console.log(data);
+  if (data.act_details.is_ready) {
+    await changeUserBalance({
+      userId: data.user_id,
+      addBal: Number(paidAmount),
+    });
+  }
 
   return data;
 };
