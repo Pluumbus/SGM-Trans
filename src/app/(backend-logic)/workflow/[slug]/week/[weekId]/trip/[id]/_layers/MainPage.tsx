@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
+  Button,
   Checkbox,
   Divider,
   Spinner,
@@ -37,6 +38,8 @@ import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
 import { CustomMainWeekSelector } from "@/app/(backend-logic)/statistics/_features/CustomWeekSelector";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -244,6 +247,17 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
         <Divider />
       </div>
       <TabCities city_to={trip.city_to} />
+      <RoleBasedWrapper allowedRoles={["Админ", "Кассир"]}>
+        {trip.driver.hire && (
+          <Button
+            color={trip.driver.hire.isPaid ? "success" : "danger"}
+            size="sm"
+            variant="flat"
+          >
+            {getSeparatedNumber(Number(trip.driver.hire.amount))}
+          </Button>
+        )}
+      </RoleBasedWrapper>
     </div>
   );
 };

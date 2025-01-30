@@ -34,6 +34,7 @@ import { useConfirmContext } from "@/tool-kit/hooks";
 import { useParams, useRouter } from "next/navigation";
 import { WeekTableType } from "../../../_api/types";
 import { getPath } from "@/lib/consts/paths";
+import { TripInfoPayHireDriver } from "./TripInfoPayHireDriver";
 
 export const TripInfoCard = ({
   selectedTabId,
@@ -149,6 +150,11 @@ export const TripInfoCard = ({
               currentTripData={currentTripData}
               tripId={currentTripData?.id}
             />
+            {currentTripData?.driver.hire && (
+              <RoleBasedWrapper allowedRoles={["Админ", "Кассир"]}>
+                <TripInfoPayHireDriver currentTripData={currentTripData} />
+              </RoleBasedWrapper>
+            )}
 
             {
               <div>
