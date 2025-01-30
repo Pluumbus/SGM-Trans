@@ -186,9 +186,9 @@ export const ReqFullInfoCard = () => {
               {/* } */}
             </Button>
             <div className="flex gap-2 items-center">
-              <span className="text-sm text-gray-500">
+              {/* <span className="text-sm text-gray-500">
                 Нашли ошибку в заполнении заявки?
-              </span>
+              </span> */}
               <Button
                 isLoading={isPending}
                 color="danger"
