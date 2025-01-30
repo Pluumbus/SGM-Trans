@@ -192,16 +192,16 @@ const ItemTitle = ({ e }: { e }) => {
                 <DetailIcon name={el.name} />
               </span>
               <span>
-                {
-                  getSeparatedNumber(
-                    Number(el.mileage.next_mileage) !== 0
-                      ? Number(el.mileage.next_mileage) -
-                          Number(
-                            e.omnicommData && e.omnicommData[0].ccan?.spn245
-                          )
-                      : 0
-                  ).split(".")[0]
-                }
+                {e.omnicommData
+                  ? getSeparatedNumber(
+                      Number(el.mileage.next_mileage) !== 0
+                        ? Number(el.mileage.next_mileage) -
+                            Number(
+                              e.omnicommData && e.omnicommData[0].ccan?.spn245
+                            )
+                        : 0
+                    ).split(".")[0]
+                  : 0}
               </span>
             </div>
             <Divider orientation="vertical" className="h-auto min-h-3" />
