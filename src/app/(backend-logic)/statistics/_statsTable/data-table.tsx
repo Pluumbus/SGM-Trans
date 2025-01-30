@@ -108,8 +108,8 @@ export function DataTable() {
             let totalBids = 0;
 
             data
-              .filter((d) => d.week_number === weekNum)
-              .forEach((week) => {
+              ?.filter((d) => d.week_number === weekNum)
+              ?.forEach((week) => {
                 week.trips.forEach((trip) => {
                   trip.cargos
                     .filter((crg) => !crg.is_deleted)
