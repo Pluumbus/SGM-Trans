@@ -12,8 +12,7 @@ import {
   Tab,
   Tabs,
 } from "@nextui-org/react";
-import { ReqListItem } from "./ReqListItem";
-import { useReqItem } from "./Context";
+import { BitrixReqListItem, ReqListItem } from "./ReqListItem";
 import { ReqFullInfoCard } from "./ReqCard";
 import { allCities, AllCitiesType } from "@/lib/references/cities/citiesRef";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -25,6 +24,9 @@ import {
 import { useUser } from "@clerk/nextjs";
 import supabase from "@/utils/supabase/client";
 import { AdjustedRequestDTO } from "../types";
+import { fetchBitrixLeads } from "@/app/api/b24/getLeads";
+import leadsMockData, { LeadType } from "@/app/api/types";
+import { useLeadItem } from "./BitrixContext";
 
 type SortByType = 1 | 2 | 3;
 
@@ -45,81 +47,87 @@ export const ReqList = () => {
     },
   });
 
-  const { data } = useQuery({
-    queryKey: ["GetRequestsFromBitrix"],
-    queryFn: async () => await getRequestsFromBitrix(),
+  const {
+    data: leads,
+    isFetched: isFetchedLeads,
+    isLoading: isLoadingLEads,
+  } = useQuery({
+    queryKey: ["getLeadsFromBitrix"],
+    queryFn: async () => await fetchBitrixLeads(),
+    refetchOnReconnect: false,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   });
-
-  console.log("data B24", data);
+  console.log(leads);
 
   useEffect(() => {
     mutate();
   }, []);
   const { user } = useUser();
 
-  const { selectedReq, setSelectedReq, disclosure } = useReqItem();
+  const { selectedLead, setSelectedLead, disclosure } = useLeadItem();
 
-  const { debounce } = useDebounce();
+  // const { debounce } = useDebounce();
 
-  const handleFilter = (e: string) => {
-    debounce(() => {
-      setRequests((prev) =>
-        prev.filter((el) => e == el.unloading_point.city || e == el.departure)
-      );
-    }, 200);
-  };
-  const handleSort = (
-    dataToSortFrom?: Array<ClientRequestTypeDTO & { trip_id: number }>
-  ) => {
-    switch (sortBy) {
-      case 1:
-        setRequests(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.CREATED
-          )
-        );
-        setSelectedReq(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.CREATED
-          )[0]
-        );
-        break;
-      case 2:
-        setRequests(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.IN_REVIEW
-          )
-        );
-        setSelectedReq(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.IN_REVIEW
-          )[0] as ClientRequestTypeDTO & {
-            trip_id: number;
-          }
-        );
-        break;
-      case 3:
-        setRequests(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.REJECTED
-          )
-        );
-        setSelectedReq(
-          (dataToSortFrom || initialReqs).filter(
-            (e) => e.status === ClientRequestStatus.REJECTED
-          )[0]
-        );
-        break;
-      default:
-        break;
-    }
-  };
+  // const handleFilter = (e: string) => {
+  //   debounce(() => {
+  //     setSelectedLead((prev) =>
+  //       prev.filter((el) => e == el.unloading_point.city || e == el.departure)
+  //     );
+  //   }, 200);
+  // };
+  // const handleSort = (
+  //   dataToSortFrom?: Array<ClientRequestTypeDTO & { trip_id: number }>
+  // ) => {
+  //   switch (sortBy) {
+  //     case 1:
+  //       setRequests(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.CREATED
+  //         )
+  //       );
+  //       setSelectedReq(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.CREATED
+  //         )[0]
+  //       );
+  //       break;
+  //     case 2:
+  //       setRequests(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.IN_REVIEW
+  //         )
+  //       );
+  //       setSelectedReq(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.IN_REVIEW
+  //         )[0] as ClientRequestTypeDTO & {
+  //           trip_id: number;
+  //         }
+  //       );
+  //       break;
+  //     case 3:
+  //       setRequests(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.REJECTED
+  //         )
+  //       );
+  //       setSelectedReq(
+  //         (dataToSortFrom || initialReqs).filter(
+  //           (e) => e.status === ClientRequestStatus.REJECTED
+  //         )[0]
+  //       );
+  //       break;
+  //     default:
+  //       break;
+  //   }
+  // };
 
-  useEffect(() => {
-    if (isSuccess) {
-      handleSort();
-    }
-  }, [sortBy, isSuccess, initialReqs]);
+  // useEffect(() => {
+  //   if (isSuccess) {
+  //     handleSort();
+  //   }
+  // }, [sortBy, isSuccess, initialReqs]);
 
   useEffect(() => {
     if (!user?.id || !isSuccess) return;
@@ -188,7 +196,7 @@ export const ReqList = () => {
                 <Tab key={3} title={<span>Отклонненые заявки</span>} />
               </Tabs>
 
-              <Autocomplete
+              {/* <Autocomplete
                 label={<span>Выберите&nbsp;город</span>}
                 variant="underlined"
                 className="col-span-2"
@@ -196,7 +204,7 @@ export const ReqList = () => {
                 onSelectionChange={(city) => {
                   setFilterBy(city as string);
                   if (city) handleFilter(city as string);
-                  else handleSort();
+                  // else handleSort();
                 }}
               >
                 {allCities.map((city) => (
@@ -204,20 +212,38 @@ export const ReqList = () => {
                     {city}
                   </AutocompleteItem>
                 ))}
-              </Autocomplete>
+              </Autocomplete> */}
             </div>
           </CardBody>
         </Card>
       </div>
       <div className="flex gap-4 w-full ">
         <div className="flex flex-col gap-4 w-1/2">
-          {requests.map((req) => (
+          {/* {requests.map((req) => (
             <div className="w-full" key={req.id}>
               <ReqListItem info={req} />
             </div>
-          ))}
+          ))} */}
+          {/* {leads
+            ?.sort(
+              (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
+            )
+            .map((l) => (
+              <div className="w-full" key={l.id}>
+                <BitrixReqListItem lead={l} />
+              </div>
+            ))} */}
+          {leadsMockData
+            ?.sort(
+              (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
+            )
+            .map((l) => (
+              <div className="w-full" key={l.id}>
+                <BitrixReqListItem lead={l} />
+              </div>
+            ))}
           <EmptyReqsCard
-            requests={requests}
+            leads={leads}
             sort={[sortBy, setSortBy]}
             filter={filterBy}
             initialReqs={initialReqs}
@@ -225,20 +251,22 @@ export const ReqList = () => {
           />
         </div>
 
-        <div className="w-1/2">{selectedReq?.id && <ReqFullInfoCard />}</div>
+        <div className="w-1/2">{selectedLead?.id && <ReqFullInfoCard />}</div>
       </div>
     </div>
   );
 };
 
 const EmptyReqsCard = ({
-  requests,
+  // requests,
+  leads,
   sort,
   initialReqs,
   user,
   filter,
 }: {
-  requests: ClientRequestTypeDTO[];
+  // requests: ClientRequestTypeDTO[];
+  leads: LeadType[];
   sort: [SortByType, Dispatch<SetStateAction<SortByType>>];
   initialReqs: ClientRequestTypeDTO[];
   filter: AllCitiesType | null;
@@ -246,7 +274,7 @@ const EmptyReqsCard = ({
 }) => {
   const [sortBy, setSortBy] = sort;
 
-  if (requests.length == 0) {
+  if (leads?.length == 0) {
     const ReqInReview = () => {
       return (
         <div

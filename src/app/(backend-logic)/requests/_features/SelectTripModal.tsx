@@ -15,6 +15,7 @@ import { useReqItem } from "./Context";
 import { useQuery } from "@tanstack/react-query";
 import { getTrips } from "../../workflow/[slug]/week/[weekId]/trip/_api";
 import { AdjustedRequestDTO } from "../types";
+import { useLeadItem } from "./BitrixContext";
 
 export const SelectTripModal = ({
   disclosure,
@@ -22,10 +23,11 @@ export const SelectTripModal = ({
   disclosure: ReturnType<typeof useDisclosure>;
 }) => {
   const {
+    selectedLead,
+
+    setSelectedLead,
     disclosure: cargoDisclosure,
-    selectedReq,
-    setSelectedReq,
-  } = useReqItem();
+  } = useLeadItem();
   const { data: tripsData, isLoading: tripsLoading } = useQuery({
     queryKey: ["getAllTrips"],
     queryFn: async () => await getTrips(),
@@ -42,9 +44,9 @@ export const SelectTripModal = ({
             aria-label="Выберите рейс"
             label="Выберите рейс"
             isLoading={tripsLoading}
-            selectedKey={(selectedReq as AdjustedRequestDTO).trip_id}
+            // selectedKey={(selectedReq as AdjustedRequestDTO).trip_id}
             onSelectionChange={(e) => {
-              setSelectedReq((prev) => ({ ...prev, trip_id: e as number }));
+              setSelectedLead((prev) => ({ ...prev, trip_id: e as number }));
             }}
           >
             {tripsData
@@ -77,7 +79,7 @@ export const SelectTripModal = ({
             Отмена
           </Button>
           <Button
-            isDisabled={!(selectedReq as AdjustedRequestDTO).trip_id}
+            // isDisabled={!(selectedReq as AdjustedRequestDTO).trip_id}
             onPress={() => {
               cargoDisclosure.onOpenChange();
             }}

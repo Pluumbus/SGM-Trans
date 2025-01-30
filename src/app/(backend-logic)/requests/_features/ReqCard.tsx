@@ -16,8 +16,7 @@ import {
 } from "@nextui-org/react";
 import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useReqItem } from "./Context";
-import { setRequestStatus } from "../_api";
+import { addLeadToReview, setLeadStatus, setRequestStatus } from "../_api";
 import { useToast } from "@/components/ui/use-toast";
 import { useCopyToClipboard } from "@uidotdev/usehooks";
 import { IoCopyOutline } from "react-icons/io5";
@@ -26,13 +25,27 @@ import { CargoModal } from "../../workflow/_feature";
 import { CargoModalMode } from "../../workflow/_feature/AddCargoModal/CargoModal";
 import { SelectTripModal } from "./SelectTripModal";
 import { AdjustedRequestDTO } from "../types";
+import { useLeadItem } from "./BitrixContext";
 
 export const ReqFullInfoCard = () => {
-  const { selectedReq: info, disclosure, tripDisclosure } = useReqItem();
+  const { selectedLead: info, disclosure, tripDisclosure } = useLeadItem();
   const { toast } = useToast();
 
+  const { mutate: addLead, isPending: AddLeadPenginx } = useMutation({
+    mutationFn: addLeadToReview,
+    onSuccess: (data) => {
+      toast({
+        description: (
+          <Alert
+            color="success"
+            title={`Вы приняли заявку №${info.id} в рассмотрение`}
+          />
+        ),
+      });
+    },
+  });
   const { mutate, isPending } = useMutation({
-    mutationFn: setRequestStatus,
+    mutationFn: setLeadStatus,
     onSuccess: (data) => {
       switch (data[0].status) {
         case ClientRequestStatus.IN_REVIEW:
@@ -71,9 +84,9 @@ export const ReqFullInfoCard = () => {
   const [_, copy] = useCopyToClipboard();
 
   const copyPhoneNumber = () => {
-    copy(info.phone_number);
+    copy(info.phone?.value);
     toast({
-      description: `${info.phone_number} скопирован`,
+      description: `${info.phone?.value} скопирован`,
     });
   };
 
@@ -81,71 +94,39 @@ export const ReqFullInfoCard = () => {
     <>
       <Card shadow="none" className="border">
         <CardHeader>
-          <div className="text-lg font-semibold">
-            <span>Номер заявки: </span>
-            <span>{info.id}</span>
+          <div className="text-lg font-semibold flex justify-between w-full">
+            <div>
+              <span>Номер заявки: </span>
+              <span>{info.id}</span>
+            </div>
+            <div>
+              <span>Дата: </span>
+              <span>{new Date(info.date_create).toLocaleDateString()}</span>
+            </div>
           </div>
-          <div className="flex gap-2 ml-4">
-            <span>Статус: </span>
-
-            <span>{info.status}</span>
-          </div>
+          <div className="flex gap-2 ml-4"></div>
         </CardHeader>
         <Divider orientation="horizontal" />
         <CardBody>
           <div className="pr-2 flex flex-col gap-2">
             <div className="flex justify-between ">
               <div className="flex gap-2 items-center">
-                <span>{info.cargo_name}</span>
-                <Divider orientation="vertical" />
                 <div className="flex gap-2 text-gray-600">
-                  <span>{info.volume} куб.</span>
-                  <span>{info.weight} тонн</span>
-                  <div className="flex gap-1">
-                    <span>{info.quantity.value}</span>
-                    <span>{info.quantity.type || "шт"}</span>
-                  </div>
+                  <span>{info.title}</span>
                 </div>
               </div>
 
-              <UserInfo userId={info.user_id} />
+              {/* <UserInfo userId={info.user_id} /> */}
             </div>
             <Divider orientation="horizontal" />
-            <div className="grid grid-cols-2">
-              <div className="flex flex-col">
-                <div className="flex  gap-2">
-                  <span className="text-gray-600">Откуда: </span>
-                  <span>{info.departure}</span>
-                </div>
-              </div>
-              <div className="flex flex-col items-end">
-                <div className="flex gap-2">
-                  <span className="text-gray-600">Куда: </span>
-                  <span>{info.unloading_point.city}</span>
-                </div>
-
-                {info.unloading_point.withDelivery && (
-                  <div className="flex gap-2">
-                    <span className="text-gray-600">
-                      С доставкой на адрес:{" "}
-                    </span>
-                    <span>
-                      {info.unloading_point.deliveryAddress ||
-                        "Адрес не был указан"}
-                    </span>
-                  </div>
-                )}
-              </div>
-            </div>
-            <Divider orientation="horizontal" />
-            <div className="flex flex-col">
-              <div className="flex gap-2">
-                <span className="text-gray-600">Комментарий от клиента: </span>
-                <span>{info.comments}</span>
+            <div className="flex justify-between items-center">
+              <div>
+                <span className="text-gray-600">Почта:</span>
+                <span> {info.email?.value || "Отсутствует"}</span>
               </div>
               <div className="flex gap-2">
                 <div
-                  className="flex gap-2 hover:!text-gray-500 cursor-pointer items-center"
+                  className="flex gap-2 hover:!text-gray-500 cursor-pointer"
                   onClick={() => {
                     copyPhoneNumber();
                   }}
@@ -153,7 +134,7 @@ export const ReqFullInfoCard = () => {
                   <Tooltip content="Скопировать номер" showArrow>
                     <div className="flex gap-2 items-center">
                       <span className="text-gray-600">Номер клиента: </span>
-                      <span>{info.phone_number}</span>
+                      <span>{info.phone?.value}</span>
                       <span className="mt-1">
                         <IoCopyOutline />
                       </span>
@@ -161,7 +142,7 @@ export const ReqFullInfoCard = () => {
                   </Tooltip>
                 </div>
 
-                <WhatsAppButton phoneNumber={info.phone_number} />
+                <WhatsAppButton phoneNumber={info.phone.value} />
               </div>
             </div>
           </div>
@@ -188,42 +169,40 @@ export const ReqFullInfoCard = () => {
               color="success"
               variant="ghost"
               onPress={() => {
-                if (info.status == ClientRequestStatus.IN_REVIEW) {
-                  tripDisclosure.onOpenChange();
-                } else {
-                  mutate({
-                    reqId: info.id,
-                    status: ClientRequestStatus.IN_REVIEW,
-                  });
-                }
+                // if (info.status == ClientRequestStatus.IN_REVIEW) {
+                // tripDisclosure.onOpenChange();
+                // }
+                //  else {
+                addLead({
+                  lead: info,
+                });
+                // }
               }}
               isLoading={isPending}
             >
               {/* temp solution TODO: make changes here */}
-              {info.status == ClientRequestStatus.IN_REVIEW
-                ? "Создать груз на основе заявки"
-                : "Взять в рассмотрение"}
+              {/* {info.status == ClientRequestStatus.IN_REVIEW */}
+              {/* ? "Создать груз на основе заявки" */}Взять в рассмотрение
+              {/* } */}
             </Button>
-            {info.status !== ClientRequestStatus.REJECTED && (
-              <div className="flex gap-2 items-center">
-                <span className="text-sm text-gray-500">
-                  Нашли ошибку в заполнении заявки?
-                </span>
-                <Button
-                  isLoading={isPending}
-                  color="danger"
-                  variant="light"
-                  onPress={() => {
-                    mutate({
-                      reqId: info.id,
-                      status: ClientRequestStatus.REJECTED,
-                    });
-                  }}
-                >
-                  Отклонить заявку
-                </Button>
-              </div>
-            )}
+            <div className="flex gap-2 items-center">
+              <span className="text-sm text-gray-500">
+                Нашли ошибку в заполнении заявки?
+              </span>
+              <Button
+                isLoading={isPending}
+                color="danger"
+                variant="light"
+                onPress={() => {
+                  mutate({
+                    leadId: Number(info.id),
+                    status: ClientRequestStatus.REJECTED,
+                  });
+                }}
+              >
+                Отклонить заявку
+              </Button>
+            </div>
           </div>
         </CardFooter>
       </Card>
@@ -231,29 +210,9 @@ export const ReqFullInfoCard = () => {
       <CargoModal
         tripDisclosure={tripDisclosure}
         disclosure={disclosure}
-        prefilledData={info as AdjustedRequestDTO}
+        // prefilledData={info as AdjustedRequestDTO}
         mode={CargoModalMode.FROM_REQUEST}
       />
     </>
-  );
-};
-
-const UserInfo = ({ userId }: { userId: string }) => {
-  // const { data, isLoading } = useQuery({
-  //   queryKey: [`${userId}`],
-  //   queryFn: async () => await getUserById(userId),
-  // });
-  // if (isLoading) {
-  //   return <Spinner />;
-  // }
-  return (
-    <div className="flex gap-2 items-center">
-      {/* <span className="text-gray-500 text-sm">кем создана:</span>
-      <Avatar src={data.avatar} alt={`SGM ${data.avatar} avatar`} />
-      <div className="flex h-full flex-col">
-        <span>{data.firstName}</span>
-        <span>{data.lastName}</span>
-      </div> */}
-    </div>
   );
 };
