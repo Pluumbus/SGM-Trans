@@ -56,7 +56,13 @@ const Page: NextPage<Props> = () => {
   //   refetchOnWindowFocus: false,
   // });
 
-  const { data: omnicommCars, isLoading: isLoadingOmnicomm } = useQuery({
+  const {
+    data: omnicommCars,
+    isLoading: isLoadingOmnicomm,
+    isError,
+    isLoadingError,
+    error,
+  } = useQuery({
     queryKey: ["TempKey"],
     queryFn: async () => await getAllVehiclesCan().then((d) => d),
     // .then((data) => data.data.vehicleDataList),
@@ -104,53 +110,59 @@ const Page: NextPage<Props> = () => {
   }
   return (
     <DisclosureProvider>
-      <Accordion
-        className="grid grid-cols-3 gap-4"
-        showDivider={false}
-        selectionMode="single"
-      >
-        {cars
-          ?.sort((a, b) => {
-            const carComparison = a.car.localeCompare(b.car);
-            if (carComparison !== 0) {
-              return carComparison;
-            }
-            return a.state_number.localeCompare(b.state_number);
-          })
-          .map(
-            (e) =>
-              !isLoadingOmnicomm &&
-              e.car !== "без имени" && (
-                <AccordionItem
-                  key={e.id}
-                  aria-label={`Accordion ${e.id}`}
-                  className="border border-gray-600 pr-2"
-                  title={
-                    <ItemTitle
-                      e={{
-                        ...e,
-                        omnicommData: omnicommCars?.find(
-                          (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
-                        ) as VehicleCan,
-                      }}
-                    />
-                  }
-                >
-                  <CarCard
-                    key={`CarCard ${e.id}`}
-                    car={{
-                      ...e,
-                      omnicommData:
-                        (omnicommCars?.find(
-                          (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
-                        ) as VehicleCan) || null,
-                    }}
-                  />
-                </AccordionItem>
-              )
-          )}
-      </Accordion>
-      <ManageDetail />
+      {isError || isLoadingError || error ? (
+        "ОШИБКА: Не удалось получить данные с омником"
+      ) : (
+        <>
+          <Accordion
+            className="grid grid-cols-3 gap-4"
+            showDivider={false}
+            selectionMode="single"
+          >
+            {cars
+              ?.sort((a, b) => {
+                const carComparison = a.car.localeCompare(b.car);
+                if (carComparison !== 0) {
+                  return carComparison;
+                }
+                return a.state_number.localeCompare(b.state_number);
+              })
+              .map(
+                (e) =>
+                  !isLoadingOmnicomm &&
+                  e.car !== "без имени" && (
+                    <AccordionItem
+                      key={e.id}
+                      aria-label={`Accordion ${e.id}`}
+                      className="border border-gray-600 pr-2"
+                      title={
+                        <ItemTitle
+                          e={{
+                            ...e,
+                            omnicommData: omnicommCars?.find(
+                              (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
+                            ) as VehicleCan,
+                          }}
+                        />
+                      }
+                    >
+                      <CarCard
+                        key={`CarCard ${e.id}`}
+                        car={{
+                          ...e,
+                          omnicommData:
+                            (omnicommCars?.find(
+                              (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
+                            ) as VehicleCan) || null,
+                        }}
+                      />
+                    </AccordionItem>
+                  )
+              )}
+          </Accordion>
+          <ManageDetail />
+        </>
+      )}
     </DisclosureProvider>
   );
 };
