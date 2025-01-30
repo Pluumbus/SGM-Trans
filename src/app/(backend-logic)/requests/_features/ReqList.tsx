@@ -224,16 +224,7 @@ export const ReqList = () => {
               <ReqListItem info={req} />
             </div>
           ))} */}
-          {/* {leads
-            ?.sort(
-              (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
-            )
-            .map((l) => (
-              <div className="w-full" key={l.id}>
-                <BitrixReqListItem lead={l} />
-              </div>
-            ))} */}
-          {leadsMockData
+          {leads
             ?.sort(
               (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
             )
@@ -242,6 +233,15 @@ export const ReqList = () => {
                 <BitrixReqListItem lead={l} />
               </div>
             ))}
+          {/* {leadsMockData
+            ?.sort(
+              (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
+            )
+            .map((l) => (
+              <div className="w-full" key={l.id}>
+                <BitrixReqListItem lead={l} />
+              </div>
+            ))} */}
           <EmptyReqsCard
             leads={leads}
             sort={[sortBy, setSortBy]}
