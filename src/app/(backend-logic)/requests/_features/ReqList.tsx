@@ -8,6 +8,7 @@ import {
   Card,
   CardBody,
   CardHeader,
+  ScrollShadow,
   Spinner,
   Tab,
   Tabs,
@@ -58,7 +59,6 @@ export const ReqList = () => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   });
-  console.log(leads);
 
   useEffect(() => {
     mutate();
@@ -224,15 +224,18 @@ export const ReqList = () => {
               <ReqListItem info={req} />
             </div>
           ))} */}
-          {leads
-            ?.sort(
-              (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
-            )
-            .map((l) => (
-              <div className="w-full" key={l.id}>
-                <BitrixReqListItem lead={l} />
-              </div>
-            ))}
+          <ScrollShadow className="max-h-screen">
+            {leads
+              ?.sort(
+                (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)
+              )
+              .map((l) => (
+                <div className="w-full mb-2" key={l.id}>
+                  <BitrixReqListItem lead={l} />
+                </div>
+              ))}
+          </ScrollShadow>
+
           {/* {leadsMockData
             ?.sort(
               (a, b) => Date.parse(b.date_create) - Date.parse(a.date_create)

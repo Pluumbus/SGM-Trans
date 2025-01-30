@@ -105,7 +105,7 @@ export const BitrixReqListItem = ({ lead }: { lead: LeadType }) => {
           }}
         >
           <div className="pr-2 flex flex-col gap-2">
-            <div className="grid grid-cols-5  max-h-[6rem] items-center gap-6">
+            <div className="grid grid-cols-5  max-h-[7rem] items-center gap-6">
               {/* <div>{lead.id}</div> */}
               <span className="flex ">Имя: {lead.name}</span>
               <span>{lead.title}</span>
