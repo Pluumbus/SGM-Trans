@@ -191,10 +191,22 @@ const ItemTitle = ({ e }: { e }) => {
                 <DetailIcon name={el.name} />
               </span>
               <span>
-                {getSeparatedNumber(
+                {/* {getSeparatedNumber(
                   Number(el.mileage.next_mileage) !== 0
                     ? Number(el.mileage.next_mileage) -
                         Number(e.omnicommData && e.omnicommData[0].ccan?.spn245)
+                    : 0
+                )} */}
+                {/* {getSeparatedNumber(
+                  Number(el.mileage.next_mileage) !== 0
+                    ? Number(e.omnicommData && e.omnicommData[0].ccan?.spn245) -
+                        Number(el.mileage.last_mileage)
+                    : 0
+                )} */}
+                {getSeparatedNumber(
+                  Number(el.mileage.next_mileage) !== 0
+                    ? Number(el.mileage.next_mileage) -
+                        Number(el.mileage.last_mileage)
                     : 0
                 )}
               </span>
