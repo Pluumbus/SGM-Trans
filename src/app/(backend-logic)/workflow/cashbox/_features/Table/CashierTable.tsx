@@ -176,11 +176,11 @@ const CashoboxSummary = ({ data }: { data: CashboxTableType[] }) => {
     <div className="flex gap-8 items-center">
       <div className="flex flex-col gap-2">
         <div className="flex gap-2 items-center">
-          <span>Общий долг кассы:</span>
+          <span>Сумма в работе:</span>
           <span className="font-semibold">{getSeparatedNumber(debt)} тг</span>
         </div>
         <div className="flex gap-2 items-center">
-          <span>Оплачено на сумму:</span>
+          <span>Оплачено с начала года:</span>
           <span className="font-semibold">
             {getSeparatedNumber(paidSum)} тг
           </span>
