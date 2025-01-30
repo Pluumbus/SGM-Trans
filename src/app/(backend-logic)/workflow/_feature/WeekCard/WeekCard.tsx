@@ -137,6 +137,7 @@ export const CreateTripInsideWeek = ({
     city_to: string[];
     driver: string;
     car: string;
+    hire?: { amount: string; type: string; hire_date: string; isPaid: boolean };
   }>(initData);
 
   const [isHire, setIsHire] = useState(false);
@@ -146,16 +147,6 @@ export const CreateTripInsideWeek = ({
   }>();
   const { mutate } = useMutation({
     mutationFn: async () => {
-      console.log({
-        city_from: formState.city_from,
-        city_to: formState.city_to.filter((city) => city !== ""),
-        driver: {
-          car: formState.car.split(" - ")[0] || "",
-          driver: formState.driver || "",
-          state_number: formState.car.split(" - ")[1] || "",
-        },
-        week_id: Number(weekId),
-      });
       await supabase.from("trips").insert({
         city_from: formState.city_from,
         city_to: formState.city_to.filter((city) => city !== ""),
@@ -163,6 +154,7 @@ export const CreateTripInsideWeek = ({
           car: formState.car.split(" - ")[0] || "",
           driver: formState.driver || "",
           state_number: formState.car.split(" - ")[1] || "",
+          hire: formState.hire && formState.hire,
         },
         week_id: Number(weekId),
       });
@@ -323,12 +315,12 @@ export const CreateTripInsideWeek = ({
                 </div>
               ) : (
                 <div className="flex flex-col gap-4">
-                  <div className="flex gap-2">
-                    <div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-2">
                       {" "}
                       <Input
                         variant="bordered"
-                        placeholder="Иванов Иван"
+                        label="Ф.И.О"
                         onChange={(e) =>
                           setFormState((prev) => ({
                             ...prev,
@@ -336,19 +328,45 @@ export const CreateTripInsideWeek = ({
                           }))
                         }
                       />
+                      <div className="flex gap-2">
+                        <Input
+                          variant="bordered"
+                          label="Сумма"
+                          onChange={(e) =>
+                            setFormState((prev) => ({
+                              ...prev,
+                              hire: { ...prev.hire, amount: e.target.value },
+                            }))
+                          }
+                        />
+                        <Input
+                          variant="bordered"
+                          label="Тип суммы"
+                          onChange={(e) =>
+                            setFormState((prev) => ({
+                              ...prev,
+                              hire: {
+                                ...prev.hire,
+                                type: e.target.value,
+                                hire_date: new Date().toLocaleDateString(),
+                              },
+                            }))
+                          }
+                        />
+                      </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-col gap-2">
                       <Input
                         name="car"
                         variant="bordered"
-                        placeholder="DAF XF 480"
+                        label="Машина"
                         onChange={handleInputChange}
                       />
                       <Input
                         name="state_number"
                         variant="bordered"
-                        placeholder="747 CU 01"
+                        label="Номер"
                         onChange={handleInputChange}
                       />
                     </div>
@@ -444,14 +462,6 @@ export const weekRangesOverlapping = ({
   return start1 <= end2 && start2 <= end1;
 };
 
-// export const currentWeekIndicator = ({ end_date, start_date }) => {
-//   const today = new Date();
-
-//   const start = new Date(start_date);
-//   const end = new Date(end_date);
-
-//   return today >= start && today <= end;
-// };
 export const currentWeekIndicator = ({ start_date, end_date }) => {
   const today = new Date();
   const todayNormalized = new Date(
@@ -482,10 +492,9 @@ export const isDateInCurrentWeek = (dateString: string): boolean => {
     today.getDate()
   );
 
-  // Получаем первый и последний день текущей недели
-  const dayOfWeek = today.getDay(); // День недели (0 - воскресенье, 1 - понедельник, ...)
-  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek; // Смещение для понедельника
-  const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek; // Смещение для воскресенья
+  const dayOfWeek = today.getDay();
+  const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+  const diffToSunday = dayOfWeek === 0 ? 0 : 7 - dayOfWeek;
 
   const startOfWeek = new Date(todayNormalized);
   startOfWeek.setDate(todayNormalized.getDate() + diffToMonday);
@@ -493,13 +502,11 @@ export const isDateInCurrentWeek = (dateString: string): boolean => {
   const endOfWeek = new Date(todayNormalized);
   endOfWeek.setDate(todayNormalized.getDate() + diffToSunday);
 
-  // Преобразуем переданную дату
   const inputDate = new Date(
     new Date(dateString).getFullYear(),
     new Date(dateString).getMonth(),
     new Date(dateString).getDate()
   );
 
-  // Проверяем, входит ли дата в текущую неделю
   return inputDate >= startOfWeek && inputDate <= endOfWeek;
 };

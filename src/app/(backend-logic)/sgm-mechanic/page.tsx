@@ -119,7 +119,8 @@ const Page: NextPage<Props> = () => {
           })
           .map(
             (e) =>
-              !isLoadingOmnicomm && (
+              !isLoadingOmnicomm &&
+              e.car !== "без имени" && (
                 <AccordionItem
                   key={e.id}
                   aria-label={`Accordion ${e.id}`}
@@ -184,8 +185,8 @@ const ItemTitle = ({ e }: { e }) => {
         </div>
       </div>
       <div className="flex gap-2 text-xs">
-        {e.details?.details?.map((el) => (
-          <>
+        {e.details?.details?.map((el, i) => (
+          <div key={i}>
             <div className="flex flex-col gap-1 items-center justify-center">
               <span>
                 <DetailIcon name={el.name} />
@@ -204,7 +205,7 @@ const ItemTitle = ({ e }: { e }) => {
               </span>
             </div>
             <Divider orientation="vertical" className="h-auto min-h-3" />
-          </>
+          </div>
         ))}
         {e.details?.accumulator?.last_swap == null ? (
           <Tooltip content="Аккумуляторы не меняли местами" showArrow>
