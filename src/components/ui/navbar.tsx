@@ -13,7 +13,6 @@ import { PATHS } from "@/lib/consts";
 import DevToggle from "./TestMode";
 import { Bell } from "@/tool-kit/Notification";
 
-// Изменить ссылки в линках. Сделать их все постоянными и изменяемыми только в одном месте
 const Navbar = () => {
   const userRole = useRole();
   return (
