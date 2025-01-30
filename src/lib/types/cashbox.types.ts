@@ -1,9 +1,7 @@
-import {
-  CargoType,
-  WeekType,
-} from "@/app/(backend-logic)/workflow/_feature/types";
+import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { GeneralTableType } from "./general.types";
-import { TripType } from "@/app/(backend-logic)/workflow/_feature/TripCard/TripCard";
+import { TripDTOType } from "./trip.types";
+import { WeekDTOType } from "./week.types";
 
 export type CashboxDTOType = {
   client: {
@@ -20,10 +18,11 @@ export type CashboxDTOType = {
   current_balance: number;
   cargos: Array<{
     id: CargoType["id"];
-    trip_number: TripType["trip_number"];
-    trip_status: TripType["status"];
-    week_type: WeekType["table_type"];
-    week_number: WeekType["week_number"];
+    trip_number: TripDTOType["trip_number"];
+    trip_status: TripDTOType["status"];
+    paid_amount: CargoType["paid_amount"];
+    week_type: WeekDTOType["table_type"];
+    week_number: WeekDTOType["week_number"];
     amount: CargoType["amount"];
   }>;
   payment_terms: number;

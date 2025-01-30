@@ -33,6 +33,10 @@ export const TripInfoDriver = ({
     car: "",
     state_number: "",
   });
+  const [summInput, setSummInput] = useState({
+    summ: "",
+    summ_type: "",
+  });
 
   const [isHireDriver, setIsHireDriver] = useState<boolean>(false);
 
@@ -49,14 +53,30 @@ export const TripInfoDriver = ({
   });
 
   const { mutate: setDriverMutation } = useMutation({
-    mutationKey: ["setTripStatus"],
+    mutationKey: ["setTripDriver"],
     mutationFn: async () => {
       const [car, state_number] = tripCar.split(" - ");
 
-      await updateTripDriver(
-        { driver: tripDriver, car: car, state_number: state_number },
-        tripId,
-      );
+      if (isHireDriver) {
+        await updateTripDriver(
+          {
+            driver: tripDriver,
+            car: car,
+            state_number: state_number,
+            hire: {
+              amount: summInput?.summ,
+              type: summInput?.summ_type,
+              hire_date: new Date().toLocaleDateString(),
+            },
+          },
+          tripId
+        );
+      } else {
+        await updateTripDriver(
+          { driver: tripDriver, car: car, state_number: state_number },
+          tripId
+        );
+      }
     },
     onSuccess() {
       toast({
@@ -73,8 +93,19 @@ export const TripInfoDriver = ({
     }));
     if (secondaryInputCar.car !== "" && secondaryInputCar.state_number !== "")
       setTripCar(
-        secondaryInputCar.car + " - " + secondaryInputCar.state_number,
+        secondaryInputCar.car + " - " + secondaryInputCar.state_number
       );
+  };
+  const handleInputSummChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setSummInput((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    // if (secondaryInputCar.car !== "" && secondaryInputCar.state_number !== "")
+    //   setTripCar(
+    //     secondaryInputCar.car + " - " + secondaryInputCar.state_number
+    //   );
   };
   //#TODO: Если надо будет убирать водителей которые уже участвуют в рейсах
   // const res = driversData
@@ -176,6 +207,21 @@ export const TripInfoDriver = ({
                         variant="bordered"
                         placeholder="747 CU 01"
                         onChange={handleInputChange}
+                      />
+                    </div>
+                    Введите сумму и тип суммы.
+                    <div className="flex gap-4">
+                      <Input
+                        name="summ"
+                        variant="bordered"
+                        placeholder="Сумма"
+                        onChange={handleInputSummChange}
+                      />
+                      <Input
+                        name="summ_type"
+                        variant="bordered"
+                        placeholder="Тип суммы"
+                        onChange={handleInputSummChange}
                       />
                     </div>
                   </ModalBody>

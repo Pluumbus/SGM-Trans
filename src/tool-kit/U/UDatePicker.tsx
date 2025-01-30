@@ -35,11 +35,11 @@ export function UDatePicker<TFieldValues extends FieldValues = FieldValues>({
       name={name}
       control={control}
       defaultValue={
-        (defaultValue as PathValue<TFieldValues, Path<TFieldValues>>) ??
-        (now(getLocalTimeZone())
-          // @ts-ignore тут просто сам JS тупит, он говорит ожидает 1 тему, а получил 0, хотя у него в интрефейсе прописано что он ниче не ждет
-          .toDate(getLocalTimeZone())
-          .toISOString() as PathValue<TFieldValues, Path<TFieldValues>>)
+        (defaultValue as PathValue<TFieldValues, Path<TFieldValues>>) || null
+        // (now(getLocalTimeZone())
+        //   // @ts-ignore тут просто сам JS тупит, он говорит ожидает 1 тему, а получил 0, хотя у него в интрефейсе прописано что он ниче не ждет
+        //   .toDate(getLocalTimeZone())
+        //   .toISOString() as PathValue<TFieldValues, Path<TFieldValues>>)
       }
       render={({ field }) => {
         const { onChange, value } = field;

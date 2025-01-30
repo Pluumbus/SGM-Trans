@@ -110,7 +110,7 @@ export const updateTripRespUser = async (value: string | any, tripId) => {
 };
 
 export const updateTripDriver = async (
-  value: { driver: string; car: string; state_number: string },
+  value: TripType["driver"],
   tripId: number
 ) => {
   const { data, error } = await supabase

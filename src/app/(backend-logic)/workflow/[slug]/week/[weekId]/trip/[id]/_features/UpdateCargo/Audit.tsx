@@ -16,6 +16,7 @@ import {
 } from "./types";
 import { CargoType } from "@/app/(backend-logic)/workflow/_feature/types";
 import { parseDate } from "@internationalized/date";
+import { getClient } from "@/app/(backend-logic)/workflow/cashbox/_features/api/server";
 
 export const Audit = () => {
   const { row } = useUpdateCargoContext();
@@ -117,6 +118,8 @@ export const Audit = () => {
                         return <div>{QuantityDataCell(el, e)}</div>;
                       case "status":
                         return <div>{StatusDataCell(el, e)}</div>;
+                      case "transportation_manager":
+                        return <div>{TMDataCell(el, e)}</div>;
                       default:
                         return (
                           <div key={el}>
@@ -191,6 +194,44 @@ const BooleanDataCell = (key: any, e: AuditCargosType) => {
         </span>
         <span className="col=span-2">
           Стало: <b>{e.cargo.new[key] ? "Да" : "Нет"}</b>
+        </span>
+      </div>
+      <Divider />
+    </div>
+  );
+};
+
+const TMDataCell = (key: any, e: AuditCargosType) => {
+  const { data, isLoading } = useQuery({
+    queryKey: [e.cargo.old[key] + " " + e.cargo.new[key]],
+    queryFn: async () => {
+      const oldTm = await getClient(e.cargo.old[key]);
+      const newTm = await getClient(e.cargo.new[key]);
+      return { oldTm: oldTm, newTm: newTm };
+    },
+  });
+  return (
+    <div key={key}>
+      <div className="grid grid-cols-5 gap-4 px-4 py-2">
+        <span className="font-semibold border-r-1 ">
+          {cargoTypeDictionary[key]}:{" "}
+        </span>
+        <span className="col=span-2 border-r-1 px-2">
+          Было:{" "}
+          <b>
+            {data?.oldTm?.client?.full_name.first_name +
+              " " +
+              data?.oldTm?.client?.full_name.last_name}{" "}
+          </b>
+        </span>
+        <span className="col=span-2">
+          Стало:{" "}
+          <b>
+            {" "}
+            {data?.newTm?.client?.full_name.first_name +
+              " " +
+              data?.newTm?.client?.full_name.last_name}{" "}
+          </b>
         </span>
       </div>
       <Divider />
@@ -367,7 +408,6 @@ const QuantityDataCell = (key: any, e: AuditCargosType) => {
 };
 
 const StatusDataCell = (key: any, e: AuditCargosType) => {
-  const date = new Date(e.cargo.new[key]);
   return (
     <div key={key}>
       <div className="grid grid-cols-5 gap-4 px-4 py-2">
@@ -375,10 +415,10 @@ const StatusDataCell = (key: any, e: AuditCargosType) => {
           {cargoTypeDictionary[key]}:{" "}
         </span>
         <span className="col=span-2 border-r-1 px-2">
-          Было: <b>{e.cargo.old[key] ?? ""} </b>
+          Было: <b>{new Date(e.cargo.old[key]).toLocaleDateString() ?? ""} </b>
         </span>
         <span className="col=span-2">
-          Стало: <b>{date.toLocaleDateString()}</b>
+          Стало: <b>{new Date(e.cargo.new[key]).toLocaleDateString()}</b>
         </span>
       </div>
       <Divider />

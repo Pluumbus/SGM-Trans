@@ -35,16 +35,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
   const { user } = useUser();
   const disclosure = useDisclosure();
   const initText = `Одобрить`;
-  const { mutate: setBalanceMutation, isPending } = useMutation({
-    mutationFn: async (newBal: number) => {
-      await setUserBalance({
-        userId: user.id,
-        publicMetadata: {
-          balance: newBal,
-        },
-      });
-    },
-  });
   const [givingActText, setGivingActText] = useState<string>(initText);
 
   const { toast } = useToast();
@@ -92,22 +82,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
       }
     }
   }, [usersList]);
-
-  useEffect(() => {
-    if (
-      info.row.original.paid_amount ===
-        Number(info.row.original.amount.value) &&
-      user?.id! === values?.user_id &&
-      !values?.isPaidBack
-    ) {
-      const newBal =
-        (user?.publicMetadata.balance as number) +
-        info.row.original.paid_amount;
-
-      setBalanceMutation(newBal);
-      setValues((prev) => ({ ...prev, isPaidBack: true }));
-    }
-  }, [info.row.original.paid_amount]);
 
   // useEffect(() => {
   //   if (!values.is_ready) {

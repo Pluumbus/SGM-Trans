@@ -1,9 +1,10 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import {
+  Button,
   Checkbox,
   Divider,
   Spinner,
@@ -36,7 +37,9 @@ import { WorkflowBucket } from "../_features/WorkflowBucket/WorkflowBucket";
 import { getTripsByWeekId } from "../../_api";
 import { TripTab } from "../_features/TripTab";
 import { UpdateModal } from "../_features/UpdateCargo/Modal";
-import { getDayOfWeek } from "../_helpers";
+import { CustomMainWeekSelector } from "@/app/(backend-logic)/statistics/_features/CustomWeekSelector";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
+import RoleBasedWrapper from "@/components/RoleManagment/RoleBasedWrapper";
 
 export const MainPage: NextPage = () => {
   const { weekId, id } = useParams<{
@@ -45,11 +48,13 @@ export const MainPage: NextPage = () => {
   }>();
 
   const [selectedTabId, setSelectedTabId] = useState(id);
+
   const [tripsData, setTripsData] = useState<TripType[]>([]);
   const [cargos, setCargos] = useState<CargoType[]>();
   const [week, setWeek] = useState<WeekType>();
 
   const [isOnlyMycargos, setToLocalStorage] = useState(false);
+
   const { mutate, isPending } = useMutation<TripAndWeeksIdType[]>({
     mutationKey: [`trips-${weekId}`],
     mutationFn: async () => await getTripsByWeekId(weekId),
@@ -124,7 +129,8 @@ export const MainPage: NextPage = () => {
 
     const newCurrentTripCities = Array.from(
       new Set(
-        (tripsData.filter((trip) => trip?.id === tripid)[0].city_to = uniqueData)
+        (tripsData.filter((trip) => trip?.id === tripid)[0].city_to =
+          uniqueData)
       )
     );
     const newTripsData = tripsData.map((trip) =>
@@ -154,7 +160,7 @@ export const MainPage: NextPage = () => {
             <WorkflowBucket />
           </div>
           <div className="flex flex-col ">
-            <TabVisibility week={week} />
+            <TabVisibility />
 
             <Tabs
               className="flex justify-center"
@@ -197,12 +203,13 @@ export const MainPage: NextPage = () => {
   );
 };
 
-const TabVisibility = ({ week }: { week: WeekType }) => {
+const TabVisibility = () => {
   const { isOnlyMyCargos, setIsOnlyMyCargos } = useCargosVisibility();
 
   return (
-    <div className="flex flex-col justify-center items-center mb-2">
-      <span className="text-xl">Рейсы недели №{week?.week_number}</span>
+    <div className="flex flex-col justify-center items-center mb-2 gap-3">
+      {/* <span className="text-xl">Рейсы недели №{week?.week_number}</span> */}
+
       <Checkbox
         isSelected={isOnlyMyCargos}
         onValueChange={(e) => {
@@ -211,6 +218,7 @@ const TabVisibility = ({ week }: { week: WeekType }) => {
       >
         Показать только мои грузы
       </Checkbox>
+      <CustomMainWeekSelector />
     </div>
   );
 };
@@ -239,6 +247,17 @@ const TabTitle = ({ trip }: { trip: TripType }) => {
         <Divider />
       </div>
       <TabCities city_to={trip.city_to} />
+      <RoleBasedWrapper allowedRoles={["Админ", "Кассир"]}>
+        {trip.driver.hire && (
+          <Button
+            color={trip.driver.hire.isPaid ? "success" : "danger"}
+            size="sm"
+            variant="flat"
+          >
+            {getSeparatedNumber(Number(trip.driver.hire.amount))}
+          </Button>
+        )}
+      </RoleBasedWrapper>
     </div>
   );
 };

@@ -13,6 +13,7 @@ export type CarsType = {
   car_type: "truck" | "gazell";
   details: CarDetailsType;
   omnicomm_uuid: string;
+  attribute?: { volume: number; weight: number };
 };
 
 export type SingleDetailType =

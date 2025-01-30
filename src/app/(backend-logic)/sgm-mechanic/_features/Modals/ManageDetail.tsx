@@ -60,18 +60,20 @@ export const ManageDetail = () => {
     const getNextMileage = () => {
       if (getValues().inputMileage) {
         return Number(
-          data.car.details?.temp_can_mileage
+          data.car.omnicommData[0].ccan?.spn245
             ? Number(getValues().inputMileage) +
                 Number(
                   parseFloat(
-                    data.car.details?.temp_can_mileage.toString(),
-                  ).toFixed(2),
+                    data.car.omnicommData[0].ccan?.spn245.toString()
+                  ).toFixed(2)
                 )
-            : 0,
+            : 0
         );
       } else {
-        return data.car.details?.temp_can_mileage
-          ? parseFloat(data.car.details?.temp_can_mileage.toString()).toFixed(2)
+        return data.car.omnicommData[0].ccan?.spn245
+          ? parseFloat(
+              data.car.omnicommData[0].ccan?.spn245.toString()
+            ).toFixed(2)
           : 0;
       }
     };
@@ -84,9 +86,14 @@ export const ManageDetail = () => {
       ...dataWOInputField,
       mileage: {
         next_mileage: getNextMileage(),
-        last_mileage: data.car.details?.temp_can_mileage
-          ? parseFloat(data.car.details?.temp_can_mileage.toString()).toFixed(2)
+        last_mileage: data.car.omnicommData[0].ccan?.spn245
+          ? parseFloat(
+              data.car.omnicommData[0].ccan?.spn245.toString()
+            ).toFixed(2)
           : 0,
+        // last_mileage: data.car.details?.temp_can_mileage
+        //   ? parseFloat(data.car.details?.temp_can_mileage.toString()).toFixed(2)
+        //   : 0,
       },
       installation_date:
         typeof formData.installation_date == "string" &&
@@ -143,8 +150,8 @@ export const ManageDetail = () => {
                     formatDate(
                       field.value
                         ? new Date(field.value?.toString())?.toISOString()
-                        : new Date().toISOString(),
-                    ),
+                        : new Date().toISOString()
+                    )
                   )}
                   onChange={(e) => {
                     field.onChange(e);
@@ -174,8 +181,8 @@ export const ManageDetail = () => {
                     formatDate(
                       field.value
                         ? new Date(field.value?.toString())?.toISOString()
-                        : new Date().toISOString(),
-                    ),
+                        : new Date().toISOString()
+                    )
                   )}
                   onChange={(e) => {
                     field.onChange(e);

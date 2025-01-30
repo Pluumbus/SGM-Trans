@@ -133,7 +133,14 @@ export const ProfilePrize = ({
           {" "}
           <span>
             Сумма:{" "}
-            <b>{getSeparatedNumber(prize + cargosPrize?.cargosPrize, ",")}</b>
+            <b>
+              {cargosPrize?.cargosCount > 25
+                ? getSeparatedNumber(
+                    Math.round(prize) + cargosPrize?.cargosPrize,
+                    ","
+                  )
+                : 0}
+            </b>
           </span>
           <span>
             Грузы: <b>{cargosPrize?.cargosCount}</b>
@@ -141,7 +148,13 @@ export const ProfilePrize = ({
         </div>
       ) : (
         <span className="text-xs text-zinc-400 ">
-          Премия: {getSeparatedNumber(prize + cargosPrize?.cargosPrize, ",")}
+          Премия:{" "}
+          {cargosPrize?.cargosCount > 25
+            ? getSeparatedNumber(
+                Math.round(prize) + cargosPrize?.cargosPrize,
+                ","
+              )
+            : 0}
         </span>
       )}
     </div>
@@ -151,8 +164,7 @@ export const ProfilePrize = ({
 export const getCargosIdAmountFromCurrentWeek = (
   data: any[],
   weekNum?: number,
-  userId?: string,
-  dateVal?: { start; end }
+  userId?: string
 ) => {
   if (userId) {
     return data

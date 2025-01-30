@@ -119,7 +119,8 @@ const Page: NextPage<Props> = () => {
           })
           .map(
             (e) =>
-              !isLoadingOmnicomm && (
+              !isLoadingOmnicomm &&
+              e.car !== "без имени" && (
                 <AccordionItem
                   key={e.id}
                   aria-label={`Accordion ${e.id}`}
@@ -139,9 +140,10 @@ const Page: NextPage<Props> = () => {
                     key={`CarCard ${e.id}`}
                     car={{
                       ...e,
-                      omnicommData: omnicommCars?.find(
-                        (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
-                      ) as VehicleCan,
+                      omnicommData:
+                        (omnicommCars?.find(
+                          (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
+                        ) as VehicleCan) || null,
                     }}
                   />
                 </AccordionItem>
@@ -183,25 +185,29 @@ const ItemTitle = ({ e }: { e }) => {
         </div>
       </div>
       <div className="flex gap-2 text-xs">
-        {e.details?.details.map((el) => (
-          <>
+        {e.details?.details?.map((el, i) => (
+          <div key={i}>
             <div className="flex flex-col gap-1 items-center justify-center">
               <span>
                 <DetailIcon name={el.name} />
               </span>
               <span>
-                {getSeparatedNumber(
-                  Number(el.mileage.next_mileage) !== 0
-                    ? Number(el.mileage.next_mileage) -
-                        Number(e.omnicommData && e.omnicommData[0].ccan?.spn245)
-                    : 0
-                )}
+                {
+                  getSeparatedNumber(
+                    Number(el.mileage.next_mileage) !== 0
+                      ? Number(el.mileage.next_mileage) -
+                          Number(
+                            e.omnicommData && e.omnicommData[0].ccan?.spn245
+                          )
+                      : 0
+                  ).split(".")[0]
+                }
               </span>
             </div>
             <Divider orientation="vertical" className="h-auto min-h-3" />
-          </>
+          </div>
         ))}
-        {e.details?.accumulator.last_swap == null ? (
+        {e.details?.accumulator?.last_swap == null ? (
           <Tooltip content="Аккумуляторы не меняли местами" showArrow>
             <div className="flex flex-col gap-1 items-center justify-center">
               <span>
@@ -218,7 +224,7 @@ const ItemTitle = ({ e }: { e }) => {
               <IoSwapVerticalOutline size={20} />
             </span>
             <span>
-              {new Date(e.details.accumulator?.last_swap).toLocaleDateString()}
+              {new Date(e.details?.accumulator?.last_swap).toLocaleDateString()}
             </span>
           </div>
         )}

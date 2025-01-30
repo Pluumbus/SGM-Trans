@@ -12,6 +12,7 @@ const Page: NextPage<Props> = ({}) => {
     queryFn: async () => await fetchBitrixLeads(),
   });
   console.log(data);
+  // return <div className="flex gap-4">{data satisfies LeadType[]}</div>;
   return <div className="flex gap-4">{JSON.stringify(data)}</div>;
 };
 

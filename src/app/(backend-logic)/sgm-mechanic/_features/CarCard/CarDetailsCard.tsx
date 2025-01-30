@@ -365,7 +365,7 @@ const currentMileage = (
     ? getSeparatedNumber(
         Number(
           parseFloat(
-            (data?.car.omnicommData[0].ccan?.spn245
+            (data?.car?.omnicommData && data?.car?.omnicommData[0]?.ccan?.spn245
               ? Number(
                   parseFloat(
                     data?.car.omnicommData[0].ccan?.spn245.toString()
