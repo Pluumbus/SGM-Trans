@@ -17,15 +17,14 @@ export const fetchFromAPI = async (endpoint: string, options?: RequestInit) => {
         Authorization: `JWT ${jwtToken}`,
         "Content-Type": "application/json",
       },
-    },
+    }
   );
 
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 500) {
       jwtToken = await refreshJWTToken();
       return fetchFromAPI(endpoint, options);
     }
-    console.log(await response);
 
     throw new Error(`Error: ${response.status}`);
   }
@@ -91,7 +90,7 @@ const getJWTToken = async () => {
         login: `imperiya`,
         password: `sgmkz2030`,
       }),
-    },
+    }
   );
   if (!response.ok) {
     const errorText = await response.text();
@@ -121,7 +120,7 @@ const refreshJWTToken = async () => {
         "Content-Type": "application/json",
       },
       // body: JSON.stringify({ refresh: refreshToken }),
-    },
+    }
   );
 
   if (!response.ok) {
