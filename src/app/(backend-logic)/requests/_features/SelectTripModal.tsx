@@ -32,6 +32,7 @@ export const SelectTripModal = ({
     queryKey: ["getAllTrips"],
     queryFn: async () => await getTrips(),
   });
+  console.log(selectedLead);
   return (
     <Modal isOpen={disclosure.isOpen} onOpenChange={disclosure.onOpenChange}>
       <ModalContent>
@@ -46,7 +47,7 @@ export const SelectTripModal = ({
             isLoading={tripsLoading}
             // selectedKey={(selectedReq as AdjustedRequestDTO).trip_id}
             onSelectionChange={(e) => {
-              setSelectedLead((prev) => ({ ...prev, trip_id: e as number }));
+              setSelectedLead((prev) => ({ ...prev, trip_id: Number(e) }));
             }}
           >
             {tripsData

@@ -170,7 +170,7 @@ export const ReqFullInfoCard = () => {
               variant="ghost"
               onPress={() => {
                 // if (info.status == ClientRequestStatus.IN_REVIEW) {
-                // tripDisclosure.onOpenChange();
+                tripDisclosure.onOpenChange();
                 // }
                 //  else {
                 addLead({
@@ -182,7 +182,8 @@ export const ReqFullInfoCard = () => {
             >
               {/* temp solution TODO: make changes here */}
               {/* {info.status == ClientRequestStatus.IN_REVIEW */}
-              {/* ? "Создать груз на основе заявки" */}Взять в рассмотрение
+              {/* ? "Создать груз на основе заявки" */}Создать груз на основе
+              заявки
               {/* } */}
             </Button>
             <div className="flex gap-2 items-center">
@@ -211,6 +212,7 @@ export const ReqFullInfoCard = () => {
         tripDisclosure={tripDisclosure}
         disclosure={disclosure}
         // prefilledData={info as AdjustedRequestDTO}
+        trip_id={info?.trip_id}
         mode={CargoModalMode.FROM_REQUEST}
       />
     </>
