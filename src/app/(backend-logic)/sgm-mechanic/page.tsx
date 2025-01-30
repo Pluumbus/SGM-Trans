@@ -184,7 +184,7 @@ const ItemTitle = ({ e }: { e }) => {
         </div>
       </div>
       <div className="flex gap-2 text-xs">
-        {e.details?.details.map((el) => (
+        {e.details?.details?.map((el) => (
           <>
             <div className="flex flex-col gap-1 items-center justify-center">
               <span>
@@ -202,7 +202,7 @@ const ItemTitle = ({ e }: { e }) => {
             <Divider orientation="vertical" className="h-auto min-h-3" />
           </>
         ))}
-        {e.details?.accumulator.last_swap == null ? (
+        {e.details?.accumulator?.last_swap == null ? (
           <Tooltip content="Аккумуляторы не меняли местами" showArrow>
             <div className="flex flex-col gap-1 items-center justify-center">
               <span>
@@ -219,7 +219,7 @@ const ItemTitle = ({ e }: { e }) => {
               <IoSwapVerticalOutline size={20} />
             </span>
             <span>
-              {new Date(e.details.accumulator?.last_swap).toLocaleDateString()}
+              {new Date(e.details?.accumulator?.last_swap).toLocaleDateString()}
             </span>
           </div>
         )}
