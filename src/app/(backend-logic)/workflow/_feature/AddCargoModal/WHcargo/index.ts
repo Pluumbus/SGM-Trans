@@ -1,1 +1,0 @@
-export { WHCargoModal } from "./Modal";

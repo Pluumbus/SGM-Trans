@@ -1,1 +1,0 @@
-export { DeleteCargo } from "./DeleteCargo";

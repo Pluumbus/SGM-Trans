@@ -1,43 +1,9 @@
 {
   "compilerOptions": {
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "strict": false,
-    "noEmitOnError": false,
+    "module": "commonjs",
+    "target": "ES2020",
     "esModuleInterop": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "noEmit": false,
-    "resolveJsonModule": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "incremental": true,
-    "plugins": [
-      {
-        "name": "next"
-      }
-    ],
-    "paths": {
-      "@/*": [
-        "./src/*"
-      ]
-    },
-    "target": "ES2017"
-  },
-  "include": [
-    "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    ".next/types/**/*.ts",
-    "src/lib/references/cities/citiesRef.ts",
-    "src/lib/references/clerkUserType/SetUserFuncs.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+    "strict": true,
+    "skipLibCheck": true
+  }
 }

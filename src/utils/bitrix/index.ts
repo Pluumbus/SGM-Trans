@@ -1,1 +1,0 @@
-export { callBitrixApi } from "./api";

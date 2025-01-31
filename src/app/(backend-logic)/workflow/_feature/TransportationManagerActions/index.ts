@@ -1,1 +1,0 @@
-export { TM } from "./TM";

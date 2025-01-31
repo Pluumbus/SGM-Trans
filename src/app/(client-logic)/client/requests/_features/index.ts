@@ -1,1 +1,0 @@
-export { RequestsList } from "./RequestsList";
