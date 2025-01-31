@@ -18,23 +18,23 @@ export const sendNotification = async (notification: NotificationDTOType) => {
 
   if (error) throw new Error(error.message);
 };
+
 export const updateNotificationProperty = async ({
   notification,
+  userId,
   mode = "is_sent_toast",
 }: {
   notification: NotificationTableType;
+  userId: string;
   mode?: "is_read" | "is_sent_toast";
 }) => {
-  const { user } = useUser();
-  const newView =
-    mode == "is_sent_toast"
-      ? (notification.view.find((e) => e.user == user.id).is_sent_toast = true)
-      : (notification.view.find((e) => e.user == user.id).is_read = true);
+  const updatedView = notification.view.map((entry) =>
+    entry.user === userId ? { ...entry, [mode]: true } : entry
+  );
+
   const { error } = await supabase
     .from("notifications")
-    .update({
-      view: newView,
-    })
+    .update({ view: updatedView })
     .eq("id", notification.id);
 
   if (error) throw new Error(error.message);

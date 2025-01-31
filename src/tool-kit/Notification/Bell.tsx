@@ -56,7 +56,8 @@ export const Bell = () => {
             {isLoading ? (
               <Skeleton className="h-4 w-20 rounded-xl" />
             ) : (
-              <NotificationsList notifications={notifications} />
+              <></>
+              // <NotificationsList notifications={notifications} />
             )}
           </DropdownItem>
         </DropdownMenu>

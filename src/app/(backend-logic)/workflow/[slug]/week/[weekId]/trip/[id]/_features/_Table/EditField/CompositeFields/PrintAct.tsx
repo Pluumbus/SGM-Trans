@@ -25,6 +25,8 @@ import { useCheckRole } from "@/components/RoleManagment/useRole";
 import { PrintButton } from "@/components/ActPrinter/actGen";
 import { IoCheckmark } from "react-icons/io5";
 import { getUserList } from "@/lib/references/clerkUserType/getUserList";
+import { TIME, useNotifications } from "@/tool-kit/Notification";
+import { getSeparatedNumber } from "@/tool-kit/hooks";
 
 type Type = CargoType["act_details"];
 
@@ -83,14 +85,6 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
     }
   }, [usersList]);
 
-  // useEffect(() => {
-  //   if (!values.is_ready) {
-  //     setGivingActText(initText);
-  //   } else {
-  //     mutate();
-  //   }
-  // }, [values?.is_ready]);
-
   const check = useCheckRole(["Менеджер"]);
 
   if (isLoading) {
@@ -130,6 +124,7 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
         )}
       </div>
       <GlobalActModal
+        info={info}
         disclosure={disclosure}
         cargoInfo={{
           cargoPrice: Number(info.row.original.amount.value),
@@ -144,9 +139,11 @@ export const PrintAct = ({ info }: { info: Cell<CargoType, ReactNode> }) => {
 const GlobalActModal = ({
   disclosure,
   cargoInfo,
+  info,
   setValues,
 }: {
   disclosure: { onOpenChange: () => void; isOpen: boolean };
+  info: Cell<CargoType, ReactNode>;
   cargoInfo: {
     cargoPrice: number;
     cargoPaidAmount: number;
@@ -173,8 +170,25 @@ const GlobalActModal = ({
       }));
       disclosure.onOpenChange();
       toast({ title: `Печать талона на груз одобрена` });
+
+      scheduleRecurringNotification();
     },
   });
+
+  const { notificationMutation } = useNotifications();
+  const scheduleRecurringNotification = () => {
+    const cargo = info.row.original;
+    notificationMutation.mutate({
+      data: {
+        users: [user.id],
+        message: `Оповещение: ${cargo.client_bin.tempText} еще не оплатил ${getSeparatedNumber(Number(cargo.amount.value))}тг за груз`,
+        type: "warning",
+        stopCondition: cargo.paid_amount == Number(cargo.amount.value),
+      },
+      delayMs: TIME.NOW,
+      repeatMs: TIME.MINUTE,
+    });
+  };
   // sum to substract from logist balance
   const logistSum = cargoInfo.cargoPrice - cargoInfo.cargoPaidAmount;
   return (
