@@ -17,7 +17,7 @@ export type NotificationDTOType = {
    * - "success": For positive feedback or successful actions.
    * - "default": For neutral or general notifications.
    */
-  type: NotificationType;
+  type?: NotificationType;
 
   /**
    * @type message - The content of the notification.
@@ -25,12 +25,13 @@ export type NotificationDTOType = {
    */
   message: string;
 
-  /**
-   * @type is_read - A boolean indicating whether the notification has been read by the user.
-   * - `false`: The notification is unread (default state).
-   * - `true`: The notification has been marked as read by the user.
-   */
-  is_read: boolean;
+  view?: {
+    is_read: boolean;
+    is_sent_toast: boolean;
+    user: string;
+  }[];
+
+  when?: string;
 };
 
 export type NotificationTableType = NotificationDTOType & GeneralTableType;

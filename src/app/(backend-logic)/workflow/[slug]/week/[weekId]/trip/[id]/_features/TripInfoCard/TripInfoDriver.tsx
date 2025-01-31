@@ -55,7 +55,7 @@ export const TripInfoDriver = ({
 
       await updateTripDriver(
         { driver: tripDriver, car: car, state_number: state_number },
-        tripId,
+        tripId
       );
     },
     onSuccess() {
@@ -73,7 +73,7 @@ export const TripInfoDriver = ({
     }));
     if (secondaryInputCar.car !== "" && secondaryInputCar.state_number !== "")
       setTripCar(
-        secondaryInputCar.car + " - " + secondaryInputCar.state_number,
+        secondaryInputCar.car + " - " + secondaryInputCar.state_number
       );
   };
   //#TODO: Если надо будет убирать водителей которые уже участвуют в рейсах
