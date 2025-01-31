@@ -74,7 +74,7 @@ export const accountantBodyHtmlTemp = `
                         <th>Адрес получения</th>
                         <th>Город разгрузки</th>
                         <th>Сумма</th>
-                        <th>Компания-получатель</th>
+                        <th>Плательщик</th>
                         </tr>
                 </thead>
                 <tbody>
@@ -83,7 +83,7 @@ export const accountantBodyHtmlTemp = `
                         <td>{{ receipt_address }}</td>
                         <td>{{ unloading_point }}</td>
                         <td>{{ amount }}</td>
-                        <td>{{ client_bin }}</td>
+                        <td>{{ transportation_manager }}</td>
                         </tr>
                     {{/each}}
                 </tbody>

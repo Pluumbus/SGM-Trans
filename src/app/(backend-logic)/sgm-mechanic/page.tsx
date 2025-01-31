@@ -139,9 +139,10 @@ const Page: NextPage<Props> = () => {
                     key={`CarCard ${e.id}`}
                     car={{
                       ...e,
-                      omnicommData: omnicommCars?.find(
-                        (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
-                      ) as VehicleCan,
+                      omnicommData:
+                        (omnicommCars?.find(
+                          (el) => el[0].vehicleID == Number(e.omnicomm_uuid)
+                        ) as VehicleCan) || null,
                     }}
                   />
                 </AccordionItem>

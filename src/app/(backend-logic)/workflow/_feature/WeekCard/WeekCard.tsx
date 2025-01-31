@@ -452,7 +452,7 @@ export const weekRangesOverlapping = ({
 
 //   return today >= start && today <= end;
 // };
-export const currentWeekIndicator = ({ end_date, start_date }) => {
+export const currentWeekIndicator = ({ start_date, end_date }) => {
   const today = new Date();
   const todayNormalized = new Date(
     today.getFullYear(),

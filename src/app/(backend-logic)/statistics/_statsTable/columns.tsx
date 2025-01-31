@@ -4,7 +4,7 @@ import { getSeparatedNumber, useNumberState } from "@/tool-kit/hooks";
 import { CrownText } from "@/tool-kit/ui";
 import { Avatar } from "@nextui-org/react";
 import { ColumnDef, Table } from "@tanstack/react-table";
-import { isKzUser } from "../../profile/feature/ProfileButton/Prize/Prize";
+import { isKzUser } from "../../profile/feature/Prize/Prize";
 
 export const columns: ColumnDef<StatsUserList>[] = [
   {

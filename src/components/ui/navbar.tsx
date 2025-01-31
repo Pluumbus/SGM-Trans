@@ -46,6 +46,14 @@ const Navbar = () => {
                 Касса
               </Link>
             </RoleBasedWrapper>
+            <RoleBasedWrapper allowedRoles={["Админ", "Супер Логист"]}>
+              <Link
+                href={PATHS.workflow_sl}
+                className="mr-5 cursor-pointer hover:text-gray-900"
+              >
+                Супер Логист
+              </Link>
+            </RoleBasedWrapper>
 
             <Link
               href={PATHS.cars_drivers}

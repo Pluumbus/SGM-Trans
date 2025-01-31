@@ -30,9 +30,7 @@ export const getBaseTripColumnsConfig = () => {
             return <div>{info.getValue()}</div>;
           }
           return (
-            <div>
-              {driverData.driver + " | " + driverData.state_number}
-            </div>
+            <div>{driverData.driver + " | " + driverData.state_number}</div>
           );
         },
         filter: false,
@@ -56,7 +54,15 @@ export const getBaseTripColumnsConfig = () => {
         ),
         filter: false,
       },
-
+      {
+        accessorKey: "status",
+        header: "Статус",
+        size: 20,
+        cell: (info: Cell<TripType & { weeks: WeekType }, ReactNode>) => (
+          <span>{info.getValue()?.toString()}</span>
+        ),
+        filter: false,
+      },
       {
         accessorKey: "action",
         header: "",
