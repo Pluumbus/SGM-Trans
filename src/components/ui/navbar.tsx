@@ -79,15 +79,23 @@ const Navbar = () => {
                   <BiSolidCarMechanic size={20} />
                 </span>
               </Link>
-
+            </RoleBasedWrapper>
+            <RoleBasedWrapper
+              allowedRoles={[
+                "Админ",
+                "Логист Кз",
+                "Логист Москва",
+                "Супер Логист",
+              ]}
+            >
               <Link
                 href={PATHS.requestsForLogist}
                 className="mr-5 cursor-pointer hover:text-gray-900"
               >
                 Заявки от клиентов
               </Link>
-              {/* <DevToggle /> */}
             </RoleBasedWrapper>
+            {/* <DevToggle /> */}
           </nav>
           /* <NavigationMenu>
           <NavigationMenuList>
