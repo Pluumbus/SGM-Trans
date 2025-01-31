@@ -2,7 +2,7 @@ name: Deploy Node.js server
 
 on:
   push:
-    branches: ["main"]
+    branches: ["demo"]
   workflow_dispatch:
 
 permissions:
@@ -61,6 +61,8 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
             cd /opt/my-node-app
-            npm install  # Install any new dependencies (if required)
-            pm2 restart app || pm2 start app.js --name "my-node-app" # Restart your Node.js server using PM2
+            npm ci --omit=dev  # Install production dependencies
+            pm2 reload my-node-app || pm2 start dist/server.js --name "my-node-app"
+            pm2 save
           EOF
+
