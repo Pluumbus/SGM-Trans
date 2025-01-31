@@ -3,7 +3,7 @@ import getSupabaseServer from "../utils/supabase";
 import { NotificationDTOType } from "../types";
 /**
  * @swagger
- * /send-now:
+ * /sendNow:
  *   post:
  *     summary: Send a notification immediately
  *     tags: [Notifications]
@@ -57,7 +57,7 @@ export const sendNow = async (
 
 /**
  * @swagger
- * /schedule-notification:
+ * /scheduleNotification:
  *   post:
  *     summary: Schedule a notification
  *     tags: [Notifications]

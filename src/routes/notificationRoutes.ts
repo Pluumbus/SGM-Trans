@@ -6,7 +6,7 @@ import {
 
 const router = Router();
 
-router.post("/send-now", sendNow as Application);
-router.post("/schedule", scheduleNotification as Application);
+router.post("/sendNow", sendNow as Application);
+router.post("/scheduleNotification", scheduleNotification as Application);
 
 export default router;
