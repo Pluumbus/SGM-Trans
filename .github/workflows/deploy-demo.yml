@@ -24,14 +24,14 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20" 
-          cache: 'npm' 
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm install
 
       - name: Build your app
-        run: npm run build 
+        run: npm run build
 
       - name: Install SSH client
         run: sudo apt-get install openssh-client
@@ -50,7 +50,7 @@ jobs:
           mkdir -p ~/.ssh
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/my-node-app
+          rsync -avz --no-perms --omit-dir-times --exclude '.git' --exclude '.github' -e "ssh -i ~/.ssh/id_rsa -p $SSH_PORT -o StrictHostKeyChecking=no" . $SSH_USERNAME@$SSH_HOST:/opt/demo-web
 
       - name: Restart Node.js application
         env:
@@ -60,6 +60,5 @@ jobs:
           SSH_PORT: ${{ secrets.SSH_PORT }}
         run: |
           ssh -i private_key -o StrictHostKeyChecking=no -p $SSH_PORT $SSH_USERNAME@$SSH_HOST << EOF
-            sudo systemctl restart run-nodejs-service.service
+            sudo systemctl restart demo-nodejs-service.service
           EOF
-
